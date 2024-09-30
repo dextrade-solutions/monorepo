@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
-import wasm from 'vite-plugin-wasm';
 import { defineConfig } from 'vite';
+import wasm from 'vite-plugin-wasm';
 
 import serializeTokensPlugin from './src/plugins/serializeTokensPlugin.ts';
 
@@ -27,5 +27,8 @@ export default defineConfig({
       //   }),
       // ],
     },
+  },
+  build: {
+    target: 'esnext',
   },
 });

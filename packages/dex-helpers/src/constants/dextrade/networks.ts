@@ -23,6 +23,7 @@ export enum NetworkNames {
   base = 'base',
   polygon = 'polygon',
   litecon = 'litecoin',
+  solana = 'solana',
 
   // testnets
   sepolia = 'sepolia',

@@ -8860,6 +8860,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solflare-wallet/sdk@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@solflare-wallet/sdk@npm:1.4.2"
+  dependencies:
+    bs58: "npm:^5.0.0"
+    eventemitter3: "npm:^5.0.1"
+    uuid: "npm:^9.0.0"
+  peerDependencies:
+    "@solana/web3.js": "*"
+  checksum: 10/12d5986b279ec7ebfbae9c517468b6a9ec7183c711649fd885a45e3198f2c18bb57103c5dcf0e715ad56563d03e32e240399774bf7460a3a09f9799588b18d65
+  languageName: node
+  linkType: hard
+
 "@spruceid/siwe-parser@npm:1.1.3, @spruceid/siwe-parser@npm:^1.1.3":
   version: 1.1.3
   resolution: "@spruceid/siwe-parser@npm:1.1.3"
@@ -44757,6 +44770,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:^2.2.3"
     "@rollup/plugin-inject": "npm:^5.0.5"
     "@scure/bip39": "npm:^1.3.0"
+    "@solflare-wallet/sdk": "npm:^1.4.2"
     "@tanstack/query-sync-storage-persister": "npm:^5.40.0"
     "@tanstack/react-query": "npm:^5.32.1"
     "@tanstack/react-query-persist-client": "npm:^5.40.1"

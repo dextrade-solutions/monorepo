@@ -145,7 +145,7 @@ export default defineConfig({
       IS_PWA: JSON.stringify(true),
       SENTRY_DSN: JSON.stringify(process.env.VITE_SENTRY_DSN) || null,
       SENTRY_DSN_DEV: JSON.stringify(process.env.VITE_SENTRY_DSN_DEV) || null,
-      TESTNET_MODE_INITIAL: 'True',
+      // TESTNET_MODE_INITIAL: 'True',
       DEFAULT_PASSWORD:
         JSON.stringify(process.env.VITE_DEFAULT_PASSWORD) || null,
       INFURA_PROJECT_ID:
