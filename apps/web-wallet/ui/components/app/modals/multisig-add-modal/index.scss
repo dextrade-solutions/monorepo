@@ -1,0 +1,15 @@
+@import "multisig-modal-layout";
+
+.multisig-add-modal {
+  width: 100%;
+
+  &__field {
+    width: 100%;
+    min-height: 54px;
+  }
+
+  &__actions {
+    display: flex;
+    transform: translateX(16px);
+  }
+}

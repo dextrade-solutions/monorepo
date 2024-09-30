@@ -1,0 +1,113 @@
+@import 'multisig-layout';
+
+.multisig-create {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  &__token {
+    width: 100%;
+    margin-bottom: 36px;
+    &__select {
+      &__option {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+
+        & img {
+          margin-right: 14px;
+        }
+      }
+    }
+  }
+
+  &__signatures {
+    &__container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+
+    & p {
+      @include H6;
+      min-width: 70%;
+    }
+  }
+
+  &__identifiers {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+
+    &__title {
+      @include H6;
+      color: var(--color-typography-alternative);
+      font-weight: 500;
+    }
+
+    &__list {
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: auto;
+
+      &-item {
+        border: 1px solid var(--color-border-muted);
+        border-radius: 7px;
+        padding: 8px 10px 10px;
+
+        &__date {
+          @include H7;
+          text-align: center;
+          color: var(--color-typography-alternative);
+          margin-bottom: 4px;
+        }
+
+        &__content {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          align-items: flex-start;
+          color: var(--color-typography-default);
+          @include H7;
+
+          &__desc {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+
+            &__symbol {
+              display: flex;
+              gap: 4px;
+
+              & span:last-of-type {
+                color: var(--color-typography-alternative);
+              }
+            }
+          }
+
+          &__actions {
+            display: flex;
+            gap: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  &__footer {
+    &__submit {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+.bank-account-picker {
+  &__option {
+    padding: 10px 20px;
+    border-top: 1px solid #eee;
+
+    .button {
+      width: auto;
+    }
+  }
+
+  &__save-btn.btn-link {
+    padding: 10px 20px;
+    font-size: $font-size-h6;
+  }
+
+  &__cancel-btn.btn-link {
+    padding: 10px 20px;
+    color: var(--color-text-alternative);
+    font-size: $font-size-h6;
+  }
+
+  &__add-new.btn-link {
+    border-top: 1px solid #eee;
+    padding: 10px 8px;
+    justify-content: flex-start;
+  }
+}

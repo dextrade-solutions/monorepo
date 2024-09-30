@@ -1,0 +1,13 @@
+.file-field {
+  &__btn {
+    border: 2.5px dashed var(--color-primary-default);
+    padding: 10px;
+    border-radius: 18px;
+    max-width: 50%;
+    white-space: nowrap;
+
+    img {
+      width: 100%;
+    }
+  }
+}

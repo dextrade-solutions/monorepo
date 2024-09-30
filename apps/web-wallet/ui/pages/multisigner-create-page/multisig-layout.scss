@@ -1,0 +1,59 @@
+.multisig-create-layout {
+  &__container {
+    touch-action: none;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+  }
+
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 0 auto;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background-color: var(--color-background-alternative);
+  overflow: hidden;
+
+  &__head {
+    padding: 20px 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__title {
+      @include H6;
+    }
+  }
+
+  &__content {
+    padding: 16px 20px 0;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--color-border-muted);
+    padding: 22px 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include screen-sm-min {
+    &__container {
+      padding: 20px 0;
+      max-width: 460px;
+    }
+    max-width: 460px;
+  }
+}

@@ -1,0 +1,13 @@
+:root {
+  // Accents
+  // Everything below this line is part of the new color system
+  --mainnet: #29b6af;
+  --inherit: inherit;
+  --transparent: transparent;
+  --color-network-linea-testnet-default: #000;
+  --color-network-linea-testnet-inverse: #fcfcfc;
+  // DO NOT CHANGE
+  // Required for the QR reader to work properly
+  --qr-code-white-background: #fff;
+  --color-amount-default: #43AB84;
+}

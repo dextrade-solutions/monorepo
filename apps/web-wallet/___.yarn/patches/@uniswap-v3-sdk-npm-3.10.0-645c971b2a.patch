@@ -1,0 +1,22 @@
+diff --git a/dist/v3-sdk.cjs.development.js b/dist/v3-sdk.cjs.development.js
+index 33a9c1817070bf39b98d5a9fd71b8fc903c7617e..079f5ee8684044100c474caf13e6638aaf17c039 100644
+--- a/dist/v3-sdk.cjs.development.js
++++ b/dist/v3-sdk.cjs.development.js
+@@ -564,13 +564,13 @@ var runtime = (function (exports) {
+   // iterator prototype chain incorrectly implement this, causing the Generator
+   // object to not be returned from this call. This ensures that doesn't happen.
+   // See https://github.com/facebook/regenerator/issues/274 for more details.
+-  Gp[iteratorSymbol] = function() {
++  define(Gp, iteratorSymbol, function() {
+     return this;
+-  };
++  });
+ 
+-  Gp.toString = function() {
++  define(Gp, 'toString', function() {
+     return "[object Generator]";
+-  };
++  });
+ 
+   function pushTryEntry(locs) {
+     var entry = { tryLoc: locs[0] };

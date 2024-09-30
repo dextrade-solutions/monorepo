@@ -1,0 +1,29 @@
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { ONE_INCH_ROUTER_ABI, ONE_INCH_SPOT_ABI } from './oneInch.abi';
+
+// https://docs.1inch.io/docs/spot-price-aggregator/introduction/#examples
+export const ONE_INCH_SPOT_CONTRACT =
+  '0x0AdDd25a91563696D8567Df78D5A01C9a991F9B8';
+
+export const ONE_INCH_SWAP_CONTRACT =
+  '0x1111111254EEB25477B68fb85Ed929f73A960582';
+
+export const ONE_INCH_QUOTER_CONTRACT = {
+  [CHAIN_IDS.MAINNET]: ONE_INCH_SPOT_CONTRACT,
+  [CHAIN_IDS.BSC]: ONE_INCH_SPOT_CONTRACT,
+};
+
+export const ONE_INCH_QUOTER_ABI = {
+  [CHAIN_IDS.MAINNET]: ONE_INCH_SPOT_ABI,
+  [CHAIN_IDS.BSC]: ONE_INCH_SPOT_ABI,
+};
+
+export const ONE_INCH_SWAP_ROUTER_CONTRACT = {
+  [CHAIN_IDS.MAINNET]: ONE_INCH_SWAP_CONTRACT,
+  [CHAIN_IDS.BSC]: ONE_INCH_SWAP_CONTRACT,
+};
+
+export const ONE_INCH_SWAP_ROUTER_ABI = {
+  [CHAIN_IDS.MAINNET]: ONE_INCH_ROUTER_ABI,
+  [CHAIN_IDS.BSC]: ONE_INCH_ROUTER_ABI,
+};

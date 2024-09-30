@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index 954d5f9eb69cc6851b79554cf972fbfecb7e1136..e8445c8147acab9caa8e84119039b688ddf2fc31 100755
+--- a/index.js
++++ b/index.js
+@@ -92,7 +92,7 @@ function copy(text, options) {
+       debug && console.error("unable to copy using clipboardData: ", err);
+       debug && console.error("falling back to prompt");
+       message = format("message" in options ? options.message : defaultMessage);
+-      window.prompt(message, text);
++      // window.prompt(message, text);
+     }
+   } finally {
+     if (selection) {

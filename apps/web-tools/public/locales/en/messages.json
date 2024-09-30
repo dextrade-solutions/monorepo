@@ -1,0 +1,226 @@
+{
+  "ADDITIONAL_INFO": {
+    "message": "Additional info"
+  },
+  "CARD_NUMBER": {
+    "message": "Card number"
+  },
+  "IBAN": {
+    "message": "IBAN"
+  },
+  "IBAN_OR_CARD_NUMBER": {
+    "message": "IBAN or card number"
+  },
+  "IMAGE_QR": {
+    "message": "Image QR"
+  },
+  "IMAGE": {
+    "message": "Image"
+  },
+  "EMAIL": {
+    "message": "Email"
+  },
+  "NUMBER_ONLY": {
+    "message": "Number only"
+  },
+  "LAST_4_DIGITS": {
+    "message": "Last 4 digits"
+  },
+  "PHONE": {
+    "message": "Phone"
+  },
+  "USER_NAME": {
+    "message": "User name"
+  },
+  "FULL_NAME": {
+    "message": "Full name"
+  },
+  "BANK_NAME": {
+    "message": "Bank name"
+  },
+  "ACCOUNT_OPENING_DEPARTMENT": {
+    "message": "Bank account opening department"
+  },
+  "BAN": {
+    "message": "Bank account"
+  },
+  "BANK_TRANSFER": {
+    "message": "Bank transfer"
+  },
+  "WIRE_TRANSFER": {
+    "message": "Wire transfer"
+  },
+  "approvalTimerP2PLabel": {
+    "message": "Approval time $1"
+  },
+  "approvalTimerP2PInfo": {
+    "message": "If you do not confirm the exchange in the time, it will be automatically cancelled"
+  },
+  "Search name or contract address": {
+    "message": "Search name or contract address"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "No tokens available matching $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapSwapSwitch": {
+    "message": "Switch from and to tokens"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "Select Coin": {
+    "message": "Select Coin"
+  },
+  "provider": {
+    "message": "Provider"
+  },
+  "rating": {
+    "message": "Rating"
+  },
+  "status": {
+    "message": "Status"
+  },
+  "offline": {
+    "message": "Offline"
+  },
+  "online": {
+    "message": "Online"
+  },
+  "reserve": {
+    "message": "Reserve"
+  },
+  "min": {
+    "message": "Min"
+  },
+  "max": {
+    "message": "Max"
+  },
+  "myPaymentMethods": {
+    "message": "My payment methods"
+  },
+  "selectPaymentMehtodPlaceholder": {
+    "message": "Select P2P payment  method "
+  },
+  "selectBankAccount": {
+    "message": "Select bank account"
+  },
+  "add": {
+    "message": "Add"
+  },
+  "addNew": {
+    "message": "Add new"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "cancelTrade": {
+    "message": "Cancel trade"
+  },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
+  },
+  "transactionFee": {
+    "message": "Transaction fee"
+  },
+  "auto": {
+    "message": "Auto"
+  },
+  "quantity": {
+    "message": "Quantity"
+  },
+  "price": {
+    "message": "Price"
+  },
+  "limits": {
+    "message": "Limits"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "bankAccountPickerTitle": {
+    "message": "My payment methods"
+  },
+  "Swap Processing": {
+    "message": "Swap Processing"
+  },
+  "Swap Canceled": {
+    "message": "Swap Canceled"
+  },
+  "Reservation": {
+    "message": "Reservation"
+  },
+  "Completed": {
+    "message": "Completed"
+  },
+  "Expired": {
+    "message": "Expired"
+  },
+  "Client transaction sending": {
+    "message": "Client transaction sending"
+  },
+  "sortBy": {
+    "message": "Sort by"
+  },
+  "BY_RESERVE": {
+    "message": "Reserve"
+  },
+  "BY_ONLINE": {
+    "message": "Online"
+  },
+  "BY_PRICE": {
+    "message": "Price"
+  },
+  "BY_RATING": {
+    "message": "Rating"
+  },
+  "WAIT_EXCHANGER_VERIFY": {
+		"message": "Wait exchanger verify"
+	},
+  "NEW": {
+		"message": "New"
+	},
+  "CANCELED": {
+		"message": "Canceled"
+	},
+  "CLIENT_TRANSACTION_VERIFY": {
+		"message": "Verifying transaction"
+	},
+  "CLIENT_TRANSACTION_FAILED": {
+		"message": "Transaction failed"
+	},
+  "WAIT_EXCHANGER_TRANSFER": {
+		"message": "Exchange"
+	},
+  "EXCHANGER_TRANSACTION_VERIFY": {
+		"message": "Verifying transaction"
+	},
+  "EXCHANGER_TRANSACTION_FAILED": {
+		"message": "Transaction failed"
+	},
+  "VERIFIED": {
+		"message": "Verified"
+	},
+  "COMPLETED": {
+		"message": "Completed"
+	},
+  "EXPIRED": {
+		"message": "Expired"
+	},
+  "DISPUTE": {
+		"message": "Dispute"
+	},
+  "kyc": { "message": "KYC" },
+  "settings": { "message": "Settings" },
+  "payment-methods": { "message": "Payment methods" },
+  "general": { "message": "General" },
+  "language": { "message": "Language" },
+  "activity": { "message": "Activity" },
+  "back": { "message": "Back" },
+  "youGive": { "message": "You give" },
+  "youGet": { "message": "You get" },
+  "approveRefundAfterTimeLock": { "message": "Time lock $1" }
+}

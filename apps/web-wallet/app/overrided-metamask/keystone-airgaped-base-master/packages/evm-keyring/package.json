@@ -1,0 +1,33 @@
+{
+  "name": "@keystonehq/evm-keyring",
+  "version": "0.5.2",
+  "description": "evm-keyring interact with Keystone",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "start": "tsdx watch",
+    "build": "tsdx build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Renfeng Shi<renfeng@keyst.one>",
+  "license": "ISC",
+  "dependencies": {
+    "@keystonehq/bc-ur-registry": "^0.5.4",
+    "@keystonehq/bc-ur-registry-evm": "^0.5.2",
+    "@keystonehq/sdk": "^0.19.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/uuid": "^9.0.0",
+    "tsdx": "^0.14.1",
+    "typescript": "^4.9.5"
+  },
+  "gitHead": "83d8e223d29e5cc71dccc963388d65a87c894636"
+}

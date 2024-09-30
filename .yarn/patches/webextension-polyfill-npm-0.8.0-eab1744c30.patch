@@ -1,0 +1,18 @@
+diff --git a/dist/browser-polyfill.js b/dist/browser-polyfill.js
+index 230b763171fa683a6cc7a3c76f44da52ea8ac3a3..cf036a3316797c1ad72fa5489113c82446b002da 100644
+--- a/dist/browser-polyfill.js
++++ b/dist/browser-polyfill.js
+@@ -1264,7 +1264,12 @@
+     };
+ 
+     if (typeof chrome != "object" || !chrome || !chrome.runtime || !chrome.runtime.id) {
+-      throw new Error("This script should only be loaded in a browser extension.");
++      if (!process.env.IS_PWA) {
++        throw new Error("This script should only be loaded in a browser extension.");
++      } else {
++        module.exports = {};
++        return;
++      }
+     } // The build process adds a UMD wrapper around this file, which makes the
+     // `module` variable available.
+ 

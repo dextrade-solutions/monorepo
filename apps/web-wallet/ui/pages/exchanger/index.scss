@@ -1,0 +1,22 @@
+@import 'exchanger-view/index';
+@import 'dropdown-tokens-pair/index';
+@import 'exchanger-exchange/index';
+
+.exchanger {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: auto;
+  position: relative;
+  overflow: auto;
+
+  .page-container {
+    background-color: var(--color-background-alternative);
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

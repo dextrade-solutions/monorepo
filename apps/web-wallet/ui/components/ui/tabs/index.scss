@@ -1,0 +1,45 @@
+@import 'tab/index';
+@import 'dropdown-tab/index';
+
+.tabs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+  // Just for Firefox — https://github.com/MetaMask/metamask-extension/issues/8700
+  -moz-transform: translateZ(0);
+
+  &--disabled {
+    cursor: default;
+    opacity: 0.7;
+    touch-action: none;
+
+    &__list {
+      cursor: not-allowed;
+    }
+  }
+
+  &--autogrow {
+    .tab {
+      flex: 1;
+    }
+  }
+
+  &__list {
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid var(--color-border-default);
+    height: auto;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden auto;
+  }
+}

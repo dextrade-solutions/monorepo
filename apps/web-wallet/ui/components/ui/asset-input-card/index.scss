@@ -1,0 +1,86 @@
+.coin-input-card {
+  box-shadow: var(--component-card-shadow-default);
+  background: var(--color-background-alternative);
+  border-radius: 20px;
+  padding: 14px;
+  flex: 1;
+
+  &__fiat-info {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+
+  &__token-info {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+
+  &__input-amount {
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    button {
+      margin-right: 10px;
+      margin-bottom: 3px;
+    }
+
+    &__end {
+      display: flex;
+      align-self: center;
+      justify-content: flex-end;
+      gap: 8px;
+      height: auto;
+      padding-left: 4px;
+
+      & button {
+        margin: 0;
+      }
+
+      &__price {
+        @include H7;
+
+        color: var(--color-typography-alternative);
+        display: inline-flex;
+        align-self: center;
+      }
+    }
+  }
+
+  &__fiat {
+    color: var(--brand-colors-grey-grey400);
+  }
+
+  &__balance {
+    display: flex;
+    font-size: 12px;
+    color: var(--brand-colors-grey-grey300);
+  }
+
+  &__reserve {
+    display: flex;
+    font-size: 12px;
+    color: var(--brand-colors-grey-grey300);
+  }
+
+  .default-token-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-background-alternative);
+    flex: 0 1 auto;
+  }
+}

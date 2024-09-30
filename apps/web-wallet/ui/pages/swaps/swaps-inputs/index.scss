@@ -1,0 +1,17 @@
+.swap-inputs {
+
+  & .coin-input-card {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+
+  &__balance {
+    flex: 1;
+    align-items: flex-start;
+    gap: 8px;
+
+    &__price {
+      @include H8;
+    }
+  }
+}

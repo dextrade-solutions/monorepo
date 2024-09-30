@@ -1,0 +1,64 @@
+
+.exchanger-exchange {
+  &__add-btn {
+    cursor: pointer;
+    color: var(--color-primary-default);
+  }
+}
+
+.exchanger-card {
+
+  &__delete-btn {
+    cursor: pointer;
+    color: var(--color-primary-default);
+  }
+}
+
+
+.exchange-rate-field {
+  margin: 20px 0;
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-border-default);
+  background: var(--color-background-default);
+  overflow: hidden;
+
+  .loading-skeleton {
+    width: 100%;
+  }
+
+  &__btn {
+    padding: 10px;
+  }
+
+  &__rate {
+    position: relative;
+    overflow: hidden;
+    padding: 10px;
+
+    .exchange-rate {
+      transform: translateY(-150%);
+      transition: 0.2s;
+
+      &--reversed {
+        transform: translateY(150%);
+        transition: 0.2s;
+      }
+    }
+
+    .current {
+      transform: translateY(0%);
+      position: absolute;
+      top: 10px;
+    }
+  }
+
+  &__swap-rate {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+}

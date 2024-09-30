@@ -1,0 +1,15 @@
+{
+  "name": "dex-helpers",
+  "packageManager": "yarn@4.4.1",
+  "files": [
+    "lib"
+  ],
+  "packages": {
+    "dex-services": "workspace:^"
+  },
+  "main": "./lib/main.ts",
+  "module": "./lib/main.ts",
+  "exports": {
+    ".": "./lib/main.ts"
+  }
+}

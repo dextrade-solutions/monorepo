@@ -1,0 +1,10 @@
+.confirm-transaction-modal {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 100%;
+  & .page-container {
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+}

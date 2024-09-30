@@ -1,0 +1,35 @@
+.tab {
+  display: flex;
+
+  & button {
+    cursor: pointer;
+    padding: 8px;
+    min-width: 50px;
+    text-align: center;
+    display: block;
+    width: 100%;
+    background-color: unset;
+    font-size: unset;
+    color: unset;
+  }
+
+  &--active {
+    color: var(--color-text-default);
+    border-bottom: 2px solid var(--color-primary-default);
+  }
+
+  &--disabled {
+    touch-action: none;
+    & button {
+      cursor: not-allowed;
+      color: var(--color-typography-disabled);
+    }
+
+    &.tab--active {
+      border-bottom: 2px solid var(--color-primary-disabled);
+      & button {
+        color: var(--color-primary-disabled);
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.exchange-stats-card {
+  box-shadow: 0 2px 11px 0 rgba(51, 84, 165, 0.15);
+  border-radius: 20px;
+  background: var(--color-background-alternative);
+
+  &__exchange-icon {
+    height: 15px;
+  }
+
+  button.exchanger-setting__action-btn {
+    padding: 0 11px;
+  }
+
+  .exchanger-setting__expand-btn  {
+    @media (max-width: $screen-xs-max) {
+      .mm-text {
+        display: none;
+      }
+    }
+  }
+
+  .exchanger-setting__action-btn,
+  .exchanger-setting__expand-btn {
+    padding: 0;
+    margin: 0 8px;
+    box-shadow: none;
+    border-radius: 24px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}

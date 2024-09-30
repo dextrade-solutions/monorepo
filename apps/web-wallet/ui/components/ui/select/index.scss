@@ -1,0 +1,78 @@
+.select {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  background-color: var(--color-background-default);
+  color: var(--color-text-default);
+  min-height: 48px;
+
+  & .MuiInputBase-root {
+    border-color: var(--color-border-default);
+    border-radius: 7px;
+    border-width: 1px;
+    width: 100%;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  & .MuiSelect-select {
+    padding: 10px 18px;
+  }
+
+  &__item {
+    &.MuiListItem-gutters {
+      padding: 10px 18px;
+    }
+    &.MuiButtonBase-root {
+      border-bottom: 1px solid var(--color-border-muted);
+
+      &:first-of-type {
+        border-top: 1px solid var(--color-border-muted);
+      }
+    }
+  }
+
+  &__input {
+    padding: 0 10px 8px;
+
+    .MuiTextField-root {
+      width: 100%;
+    }
+  }
+
+  //& .MuiInput-input,
+  //& .MuiInputBase-input {
+  //  color: var(--color-text-default) !important;
+  //}
+
+  //&__select {
+  //  appearance: none;
+  //  -moz-appearance: none;
+  //  -webkit-appearance: none;
+  //
+  //  @include H6;
+  //
+  //  color: var(--color-text-default);
+  //  border: 1px solid var(--color-border-default);
+  //  border-radius: 4px;
+  //  background-color: var(--color-background-default);
+  //  padding: 8px 40px 8px 16px;
+  //  width: 100%;
+  //
+  //  [dir='rtl'] & {
+  //    padding: 8px 16px 8px 40px;
+  //  }
+  //}
+  //
+  //&__icon-caret-down {
+  //  position: absolute;
+  //  right: 16px;
+  //  top: 50%;
+  //  transform: translateY(-50%);
+  //  pointer-events: none;
+  //
+  //  [dir='rtl'] & {
+  //    left: 16px;
+  //  }
+  //}
+}

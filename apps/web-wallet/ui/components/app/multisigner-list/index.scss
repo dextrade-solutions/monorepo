@@ -1,0 +1,122 @@
+.multisig-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  &.empty {
+    padding: 24px 0;
+  }
+
+  &__item {
+    padding: 6px 20px 10px !important; //TODO: refactor important
+
+    @include screen-sm-min {
+      &.process {
+        .list-item__icon,
+        .list-item__heading {
+          padding-top: 12px;
+        }
+      }
+    }
+
+    &__heading {
+      display: flex;
+      gap: 10px;
+
+      & h2 span:first-of-type {
+        margin-right: 4px;
+      }
+    }
+
+    &__subtitle {
+      display: flex;
+      gap: 8px;
+      color: var(--color-typography-secondary);
+    }
+
+    &__script {
+      @include H7;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      width: 100%;
+      align-items: flex-end;
+      justify-content: space-between;
+      color: var(--color-typography-alternative);
+
+      &__wrapper {
+        padding-right: 10px;
+        max-width: 300px;
+      }
+
+      &__desc {
+        gap: 8px;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        &__added {
+          & .signed {
+            color: var(--color-typography-primary);
+          }
+        }
+
+        &__badge {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          color: var(--color-typography-light);
+          background-color: var(--color-typography-primary);
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      @include screen-sm-max {
+        &__process {
+          display: none;
+        }
+      }
+
+      @include screen-sm-min {
+        &__wrapper {
+          min-width: fit-content;
+          margin-left: auto;
+        }
+      }
+    }
+
+    & .list-item__actions {
+      color: var(--color-typography-alternative);
+    }
+
+    &__actions {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      align-items: flex-end;
+      padding-right: 10px;
+
+      &__wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+      }
+
+      &__process {
+        @include H7;
+      }
+      @include screen-sm-min {
+        &__process {
+          display: none;
+        }
+        &__wrapper {
+          gap: 26px;
+        }
+      }
+    }
+  }
+}

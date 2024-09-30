@@ -1,0 +1,84 @@
+import {
+  Box,
+  Fade,
+  Grow,
+  InputAdornment,
+  TextField,
+  Zoom,
+} from '@mui/material';
+import { useState } from 'react';
+
+import { InputMessageAttachments } from './input-message-attachments';
+import P2PService from '../../../../app/services/p2p-service';
+import { ButtonIcon } from '../../ui/button-icon';
+
+export const InputMessage = ({
+  onSend,
+}: {
+  onSend: ({ type, value }: { type: string; value: string }) => void;
+}) => {
+  const [text, setText] = useState('');
+  const [attachmentUpoading, setAttachmentUpoading] = useState(false);
+
+  const messageIsNotEmpty = Boolean(text && text.trim());
+
+  const sendMessage = () => {
+    if (messageIsNotEmpty) {
+      onSend({ type: 'text', value: text });
+      setText('');
+    }
+  };
+
+  const sendImage = async (v: string) => {
+    if (v) {
+      setAttachmentUpoading(true);
+      try {
+        const result = await P2PService.saveImage(v);
+        onSend({ type: 'image', value: result.data });
+      } finally {
+        setAttachmentUpoading(false);
+      }
+    }
+  };
+
+  return (
+    <Box paddingTop={2}>
+      <TextField
+        value={text}
+        placeholder="Write a message..."
+        fullWidth
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            sendMessage();
+          }
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <InputMessageAttachments
+                loading={attachmentUpoading}
+                onChange={sendImage}
+              />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <Box>
+                <Zoom in={messageIsNotEmpty}>
+                  <div>
+                    <ButtonIcon
+                      iconName="send-1"
+                      color="secondary"
+                      onClick={() => sendMessage()}
+                    />
+                  </div>
+                </Zoom>
+              </Box>
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Box>
+  );
+};

@@ -1,0 +1,40 @@
+.p2p-exchange {
+  width: 100%;
+  padding: 0 15px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+
+  &__content {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__row {
+    &:not(:first-of-type) {
+      margin: 15px 0;
+    }
+  }
+
+  .row-label {
+    align-self: center;
+    margin-bottom: 5px;
+    pointer-events: none;
+  }
+
+  .row-summary {
+    width: 100%;
+    padding: 10px;
+    flex: 1;
+    color: var(--brand-colors-grey-grey500);
+
+
+    &__value {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding-left: 30px;
+    }
+  }
+}

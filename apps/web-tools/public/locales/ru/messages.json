@@ -1,0 +1,226 @@
+{
+  "ADDITIONAL_INFO": {
+    "message": "Additional info"
+  },
+  "CARD_NUMBER": {
+    "message": "Card number"
+  },
+  "IBAN": {
+    "message": "IBAN"
+  },
+  "IBAN_OR_CARD_NUMBER": {
+    "message": "IBAN or card number"
+  },
+  "IMAGE_QR": {
+    "message": "Image QR"
+  },
+  "IMAGE": {
+    "message": "Image"
+  },
+  "EMAIL": {
+    "message": "Email"
+  },
+  "NUMBER_ONLY": {
+    "message": "Number only"
+  },
+  "LAST_4_DIGITS": {
+    "message": "Last 4 digits"
+  },
+  "PHONE": {
+    "message": "Phone"
+  },
+  "USER_NAME": {
+    "message": "User name"
+  },
+  "FULL_NAME": {
+    "message": "Full name"
+  },
+  "BANK_NAME": {
+    "message": "Bank name"
+  },
+  "ACCOUNT_OPENING_DEPARTMENT": {
+    "message": "Bank account opening department"
+  },
+  "BAN": {
+    "message": "Bank account"
+  },
+  "BANK_TRANSFER": {
+    "message": "Bank transfer"
+  },
+  "WIRE_TRANSFER": {
+    "message": "Wire transfer"
+  },
+  "approvalTimerP2PLabel": {
+    "message": "Время подтверждения $1"
+  },
+  "approvalTimerP2PInfo": {
+    "message": "If you do not confirm the exchange in the time, it will be automatically cancelled"
+  },
+  "Search name or contract address": {
+    "message": "Search name or contract address"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "No tokens available matching $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapSwapSwitch": {
+    "message": "Switch from and to tokens"
+  },
+  "close": {
+    "message": "Закрыть"
+  },
+  "Select Coin": {
+    "message": "Выбор монеты"
+  },
+  "provider": {
+    "message": "Обменник"
+  },
+  "rating": {
+    "message": "Рейтинг"
+  },
+  "status": {
+    "message": "Статус"
+  },
+  "offline": {
+    "message": "Оффлайн"
+  },
+  "online": {
+    "message": "Онлайн"
+  },
+  "reserve": {
+    "message": "Баланс"
+  },
+  "min": {
+    "message": "Мин"
+  },
+  "max": {
+    "message": "Макс"
+  },
+  "myPaymentMethods": {
+    "message": "Мои платженые методы"
+  },
+  "selectPaymentMehtodPlaceholder": {
+    "message": "Выборать платежный метод"
+  },
+  "selectBankAccount": {
+    "message": "Выбор платежного метода"
+  },
+  "add": {
+    "message": "Добавить"
+  },
+  "addNew": {
+    "message": "Добавить новый"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "cancel": {
+    "message": "Отменить"
+  },
+  "cancelTrade": {
+    "message": "Отмена трейда"
+  },
+  "viewOnBlockExplorer": {
+    "message": "Смотреть в обозревателе"
+  },
+  "transactionFee": {
+    "message": "Комиссия за транзакцию"
+  },
+  "auto": {
+    "message": "Авто"
+  },
+  "quantity": {
+    "message": "Количество"
+  },
+  "price": {
+    "message": "Цена"
+  },
+  "limits": {
+    "message": "Лимиты"
+  },
+  "reset": {
+    "message": "Сброс"
+  },
+  "bankAccountPickerTitle": {
+    "message": "Мои платежные методы"
+  },
+  "Swap Processing": {
+    "message": "В процессе"
+  },
+  "Swap Canceled": {
+    "message": "Транзакция отменена"
+  },
+  "Reservation": {
+    "message": "Резервирование"
+  },
+  "Completed": {
+    "message": "Завершено"
+  },
+  "Expired": {
+    "message": "Время вышло"
+  },
+  "Client transaction sending": {
+    "message": "Отправка транзацкии клиента"
+  },
+  "sortBy": {
+    "message": "Сортировка"
+  },
+  "BY_RESERVE": {
+    "message": "Баланс"
+  },
+  "BY_ONLINE": {
+    "message": "Онлайн"
+  },
+  "BY_PRICE": {
+    "message": "Цена"
+  },
+  "BY_RATING": {
+    "message": "Рейтинг"
+  },
+  "WAIT_EXCHANGER_VERIFY": {
+		"message": "Ожидание обменника"
+	},
+  "NEW": {
+		"message": "Новый"
+	},
+  "CANCELED": {
+		"message": "Отменено"
+	},
+  "CLIENT_TRANSACTION_VERIFY": {
+		"message": "Проверка транзакции"
+	},
+  "CLIENT_TRANSACTION_FAILED": {
+		"message": "Ошибка транзакции"
+	},
+  "WAIT_EXCHANGER_TRANSFER": {
+		"message": "Обмен"
+	},
+  "EXCHANGER_TRANSACTION_VERIFY": {
+		"message": "Проверка транзакции"
+	},
+  "EXCHANGER_TRANSACTION_FAILED": {
+		"message": "Ошибка транзакции"
+	},
+  "VERIFIED": {
+		"message": "Верифицировано"
+	},
+  "COMPLETED": {
+		"message": "Завершено"
+	},
+  "EXPIRED": {
+		"message": "Время вышло"
+	},
+  "DISPUTE": {
+		"message": "Спор"
+	},
+  "kyc": { "message": "KYC" },
+  "settings": { "message": "Настройки" },
+  "payment-methods": { "message": "Платежные методы" },
+  "general": { "message": "Основные" },
+  "language": { "message": "Язык" },
+  "activity": { "message": "История" },
+  "back": { "message": "Назад" },
+  "youGive": { "message": "Потратите" },
+  "youGet": { "message": "Получите" },
+  "approveRefundAfterTimeLock": { "message": "Approve refund in after time lock" }
+}

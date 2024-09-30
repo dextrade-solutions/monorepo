@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" href="./images/logo/dextrade-logo.svg" sizes="180x180">
+    <title>DexTrade</title>
+  </head>
+  <body>
+    <div id="root">
+      <style>
+        body {
+          padding: 0;
+          margin: 0;
+        }
+        #root {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          overflow: hidden;
+          position: relative;
+        }
+        #root .init {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          flex-grow: 1;
+          height: 100%;
+          width: 100%;
+        }
+
+        #root .init__content {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          align-items: center;
+          flex-grow: 1;
+        }
+
+        #root .dex-logo {
+          width: 7rem;
+          margin-top: 100px;
+        }
+
+        /* LOADER */
+        #root .init-loader {
+          position: relative;
+          overflow: hidden;
+          border: 1px solid #fff;
+          background-color: #ddeef6;
+          border-radius: 10px;
+          width: 100px;
+          height: 4px;
+        }
+
+        #root .init-loader:before,
+        #root .init-loader:after {
+          content: '';
+          position: absolute;
+          height: 100px;
+          background-color: #03A9F4;
+          animation: loader_first 1.5s infinite ease-out;
+        }
+        #root .init-loader:after {
+          background-color: #4FC3F7;
+          animation: loader_second 2s infinite ease-in;
+        }
+
+        #root .version {
+          font-family: arial;
+          text-align: center;
+          opacity: .5;
+          font-size: .7rem;
+          margin-bottom: 40px;
+        }
+
+        @keyframes loader_first {
+          0% {left: -100%; width: 100%;}
+          100% {left: 100%; width: 10%;}
+        }
+        @keyframes loader_second {
+          0% {left: -150%; width: 100%;}
+          100% {left: 100%; width: 10%;}
+        }
+
+      </style>
+      <div class="init">
+        <div class="init__content">
+          <img class="dex-logo" src="./images/logo/dextrade-logo.svg" alt="dextrade-logo" />
+          <div>
+            <p class="version">Version %APP_VERSION%</p>
+            <div class="init-loader"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div id="popover-content"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+<script>
+  global = window;
+</script>

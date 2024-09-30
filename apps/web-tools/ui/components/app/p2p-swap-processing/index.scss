@@ -1,0 +1,9 @@
+.swap-processing {
+  min-height: 80vh;
+
+  &__asset-info {
+    // margin: 0 10px;
+    overflow: hidden;
+    text-wrap: nowrap;
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "0x38": {
+    "localId": "0x38",
+    "name": "BNB",
+    "uid": "binancecoin",
+    "symbol": "BNB",
+    "decimals": 18,
+    "network": "binance_smart_chain",
+    "standard": "binance_smart_chain"
+  },
+  "bitcoin": {
+    "localId": "bitcoin",
+    "name": "Bitcoin",
+    "uid": "bitcoin",
+    "symbol": "BTC",
+    "decimals": 8,
+    "network": "bitcoin",
+    "standard": "bip49"
+  },
+  "0x1": {
+    "localId": "0x1",
+    "name": "Ethereum",
+    "uid": "ethereum",
+    "symbol": "ETH",
+    "decimals": 18,
+    "network": "ethereum",
+    "standard": "ethereum"
+  },
+  "0x1472": {
+    "localId": "0x1472",
+    "name": "Humanode EVM token",
+    "uid": "humanode",
+    "symbol": "eHMND",
+    "decimals": 18,
+    "network": "humanode",
+    "standard": "erc20"
+  },
+  "tron": {
+    "localId": "tron",
+    "name": "Tron",
+    "uid": "tron",
+    "symbol": "TRX",
+    "decimals": 6,
+    "network": "tron",
+    "standard": "tron"
+  },
+  "tron:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t": {
+    "localId": "tron:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    "uid": "tether",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 6,
+    "network": "tron",
+    "standard": "trc20"
+  }
+}

@@ -1,0 +1,17 @@
+export enum PaymentContentTypes {
+  additionalInfo = 'ADDITIONAL_INFO',
+  cardNumber = 'CARD_NUMBER',
+  iban = 'IBAN',
+  ban = 'BAN',
+  ibanOrCardNumber = 'IBAN_OR_CARD_NUMBER',
+  image = 'IMAGE',
+  imageQR = 'IMAGE_QR',
+  email = 'EMAIL',
+  numberOnly = 'NUMBER_ONLY',
+  last4digits = 'LAST_4_DIGITS',
+  phone = 'PHONE',
+  username = 'USERNAME',
+  fullName = 'FULL_NAME',
+  bankName = 'BANK_NAME',
+  accountOpeningDepartment = 'ACCOUNT_OPENING_DEPARTMENT',
+}

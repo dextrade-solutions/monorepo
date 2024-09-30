@@ -1,0 +1,18 @@
+.transaction-icon-p2p {
+  position: relative;
+  width: 28px;
+
+  &__coin1 {
+    position: absolute;
+    top: -20px;
+    left: -2px;
+    border: 1px solid var(--color-background-alternative);
+  }
+
+  &__coin2 {
+    position: absolute;
+    left: 5px;
+    top: -10px;
+    border: 1px solid var(--color-background-alternative);
+  }
+}

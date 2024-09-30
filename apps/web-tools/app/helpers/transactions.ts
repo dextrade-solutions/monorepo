@@ -1,0 +1,59 @@
+import { addHexPrefix } from 'ethereumjs-util';
+import { encodeFunctionData, parseEther, parseUnits } from 'viem';
+
+import { genKeyPair, generateAtomicSwapParams } from './atomic-swaps';
+import { generateERC20TransferData } from './send.utils';
+import { AssetModel } from '../types/p2p-swaps';
+
+type Params = {
+  asset: AssetModel;
+  amount: number | string;
+  from?: string;
+  to: string;
+  isAtomicSwap?: boolean;
+};
+
+export function generateTxParams({
+  asset,
+  amount,
+  from,
+  to: destinationAddress,
+  isAtomicSwap,
+}: Params) {
+  let data;
+
+  let value = parseUnits(String(amount), asset.decimals);
+  if (isAtomicSwap) {
+    const callContractData = generateAtomicSwapParams(
+      asset.network,
+      destinationAddress,
+      genKeyPair().hashLock,
+      999999999n,
+      value,
+      asset.contract,
+    );
+    return {
+      from,
+      to: destinationAddress,
+      data: encodeFunctionData(callContractData),
+      value: callContractData.value,
+    };
+  }
+
+  let to = destinationAddress;
+  if (asset.contract) {
+    data = generateERC20TransferData({
+      toAddress: destinationAddress,
+      amount: addHexPrefix(value.toString(16)),
+    });
+    to = asset.contract;
+  } else {
+    value = parseEther(String(amount));
+  }
+  return {
+    from,
+    to,
+    value,
+    data,
+  };
+}

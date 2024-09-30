@@ -1,0 +1,47 @@
+{
+  "name": "dex-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "tsc": "tsc -b",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.1.2",
+    "bowser": "^2.11.0",
+    "currency-formatter": "^1.5.9",
+    "dex-helpers": "workspace:^",
+    "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
+    "punycode": "^2.3.1",
+    "react": "^18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/currency-formatter": "^1",
+    "@types/lodash": "^4.17.4",
+    "@types/luxon": "^3",
+    "@types/punycode": "^2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "globals": "^15.9.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/dex-ui.umd.cjs",
+  "module": "./dist/dex-ui.js",
+  "exports": {
+    ".": {
+      "import": "./dist/dex-ui.js",
+      "require": "./dist/dex-ui.umd.cjs"
+    }
+  }
+}

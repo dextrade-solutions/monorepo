@@ -1,0 +1,20 @@
+.fab-with-label {
+  min-width: 68px;
+  min-height: 68px;
+  text-align: center;
+
+  .MuiFab-root{
+    margin-top: 7px;
+    background-color: var(--color-primary-default);
+    width: 36px;
+    height: 36px;
+  }
+
+  &__label {
+    font-size: 13px;
+    white-space: nowrap;
+    text-transform: none;
+    position: absolute;
+    top: 38px;
+  }
+}

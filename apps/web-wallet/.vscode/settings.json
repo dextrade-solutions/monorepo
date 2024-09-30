@@ -1,0 +1,9 @@
+{
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
+}

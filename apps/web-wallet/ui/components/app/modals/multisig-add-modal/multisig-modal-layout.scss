@@ -1,0 +1,33 @@
+.multisig-modal-layout {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background-default);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 16px 0;
+    @include H4;
+    font-weight: 500;
+  }
+
+  &__content {
+    padding: 42px 16px 38px 16px;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--color-border-muted);
+    padding: 20px 16px ;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+
+    & .button.btn--inline {
+      color: var(--color-typography-error)
+    }
+  }
+}

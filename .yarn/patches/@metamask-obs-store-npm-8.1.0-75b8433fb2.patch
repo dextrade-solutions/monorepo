@@ -1,0 +1,15 @@
+diff --git a/dist/index.js b/dist/index.js
+index a1f544c23e2231fd22b359adc08ac229308c3311..3ed11ca42b53310938fa2ea2aea6b7804f609f70 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -10,7 +10,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+-__exportStar(require("./asStream"), exports);
++if (!process.env.IS_PWA) {
++    __exportStar(require("./asStream"), exports);
++}
+ __exportStar(require("./ComposedStore"), exports);
+ __exportStar(require("./MergedStore"), exports);
+ __exportStar(require("./ObservableStore"), exports);

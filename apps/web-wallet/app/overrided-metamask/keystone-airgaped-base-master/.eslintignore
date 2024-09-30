@@ -1,0 +1,13 @@
+build
+docs
+coverage
+dist
+*.e2e-bundle.*
+tmp
+*.min.js
+*.bundle.*
+node_modules
+.eslintrc.js
+**/*.config.js
+packages/sdk/demo.js
+packages/**/dist

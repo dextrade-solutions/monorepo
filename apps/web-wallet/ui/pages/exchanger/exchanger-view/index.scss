@@ -1,0 +1,67 @@
+@import 'exchange-stats-card/index';
+
+.exchanger-view-history {
+  .btn-link {
+    font-size: 12px;
+    line-height: 100%;
+    padding: 0;
+    justify-content: end;
+  }
+}
+
+.exchanger-view-header {
+  &__avatar {
+    margin-right: 10px;
+  }
+
+  &__menu-btn {
+    height: 50px;
+    font-size: 17px;
+    background: none;
+  }
+
+  &__name {
+    overflow-x: hidden;
+    flex: 1;
+    text-overflow: ellipsis;
+  }
+
+
+  &__toggle {
+    padding: 20px;
+  }
+}
+
+.exchanger-view-content {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: auto;
+
+  &__not-configured {
+    font-size: 12px;
+    color: var(--color-text-alternative);
+  }
+
+  &__create-btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  & .tabs {
+    overflow: visible;
+    &__content {
+      overflow: visible;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.exchanger-status-list {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,38 @@
+{
+  "0x5:0xdAC17F958D2ee523a2206206994597C13D831ec7": {
+    "localId": "0x5:0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "uid": "tether",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 6,
+    "network": "ethereum",
+    "standard": "erc20"
+  },
+  "tron_testnet:TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs": {
+    "localId": "tron_testnet:TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
+    "uid": "tether",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 6,
+    "network": "tron",
+    "standard": "trc20"
+  },
+  "0x61:0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee": {
+    "localId": "0x61:0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee",
+    "name": "Binance USD",
+    "uid": "binance-usd",
+    "symbol": "BUSD",
+    "decimals": 18,
+    "network": "binance",
+    "standard": "bep20"
+  },
+  "0xaa36a7:0x779877a7b0d9e8603169ddbd7836e478b4624789": {
+    "localId": "0xaa36a7:0x779877a7b0d9e8603169ddbd7836e478b4624789",
+    "name": "Link Token",
+    "uid": "link",
+    "symbol": "LINK",
+    "decimals": 18,
+    "network": "sepolia",
+    "standard": "erc20"
+  }
+}

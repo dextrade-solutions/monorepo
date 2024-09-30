@@ -1,0 +1,32 @@
+.countdown-timer {
+  display: flex;
+
+
+  &__timer-container {
+    display: flex;
+    padding-right: 12px;
+
+    > span {
+      display: flex;
+      padding-left: 4px;
+    }
+
+    &--warning {
+      .countdown-timer__time {
+        color: var(--color-error-default);
+      }
+    }
+  }
+
+  &__time {
+    font-weight: bold;
+    width: 24px;
+    margin-left: 10px;
+    margin-right: 2px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+}

@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  webwallet-dev:
+    container_name: webwallet-dev
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - '3001:80'
+    restart: always
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    networks:
+      - dex
+
+networks:
+  dex:
+    driver: bridge
