@@ -71,6 +71,8 @@ export default function StageDirectTransfer({
       trade?.status === ExchangeP2PStatus.new
     ) {
       initiateNewTx();
+    } else if (trade.clientTransactionHash) {
+      onChange(StageStatuses.success);
     }
   }, [trade]);
 
