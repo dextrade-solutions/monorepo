@@ -47,9 +47,10 @@ export function generateTxParams({
       amount: addHexPrefix(value.toString(16)),
     });
     to = asset.contract;
-  } else {
-    value = parseEther(String(amount));
+    return { from, to, data };
   }
+  value = parseEther(String(amount));
+
   return {
     from,
     to,

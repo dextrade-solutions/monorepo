@@ -141,7 +141,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
-      return 0;
+      if (ad.isAtomicSwap) {
+        return 0;
+      }
       let incomingFeeCalculated = 0;
       if (nativeTo?.isFiat) {
         return 0;
@@ -181,8 +183,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           incomingFeeCalculated *= normalizeRate;
         }
       }
-      // setIncomingFee(incomingFeeCalculated);
-      return 0;
+      setIncomingFee(incomingFeeCalculated);
+      return incomingFeeCalculated;
     },
     [nativeTo],
   );
