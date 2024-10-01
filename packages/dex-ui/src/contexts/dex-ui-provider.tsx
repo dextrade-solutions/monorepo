@@ -38,6 +38,7 @@ export const DexUiProvider = ({
       }),
     [paletteMode],
   );
+  debugger;
 
   return (
     <ThemeProvider theme={muiTheme}>
