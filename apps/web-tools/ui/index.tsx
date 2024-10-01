@@ -1,6 +1,12 @@
-import { Box, Container } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import { DexUiProvider } from 'dex-ui';
+import {
+  Box,
+  Container,
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
+  useMediaQuery,
+} from '@mui/material';
+import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
 import { Provider, useSelector } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
@@ -20,18 +26,21 @@ log.setLevel(log.levels.DEBUG);
 export function ContentUi() {
   const theme = useSelector(getCurrentTheme);
   const t = useI18nContext();
+  const { muiTheme } = useDexUI({ theme });
   return (
-    <DexUiProvider theme={theme} t={t}>
-      <Web3ModalProvider>
-        <CssBaseline />
-        <AppHeader />
-        <Container maxWidth="sm">
-          <Box paddingY={3}>
-            <Pages />
-          </Box>
-        </Container>
-      </Web3ModalProvider>
-    </DexUiProvider>
+    <ThemeProvider theme={muiTheme}>
+      <DexUiProvider theme={muiTheme}>
+        <Web3ModalProvider>
+          <CssBaseline />
+          <AppHeader />
+          <Container maxWidth="sm">
+            <Box paddingY={3}>
+              <Pages />
+            </Box>
+          </Container>
+        </Web3ModalProvider>
+      </DexUiProvider>
+    </ThemeProvider>
   );
 }
 

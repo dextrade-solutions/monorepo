@@ -14,7 +14,6 @@ import {
 import { DextradeTypes } from 'dex-services';
 
 import { RatingOutput } from './rating-output';
-import { useDexUi } from '../../../hooks/useDexUi';
 import AssetItem from '../../ui/asset-item';
 import Icon from '../../ui/icon';
 import UrlIcon from '../../ui/url-icon';
@@ -28,6 +27,7 @@ interface IProps {
   getAvatarLink?: (url: string) => string;
 }
 
+const t = (k: string) => k;
 const AdPreview = ({
   ad,
   fromTokenAmount = 0,
@@ -35,7 +35,6 @@ const AdPreview = ({
   getAvatarLink = (url) => getUserAvatarUrl(url),
   onClick,
 }: IProps) => {
-  const { t } = useDexUi();
   return (
     <Card
       variant="outlined"
