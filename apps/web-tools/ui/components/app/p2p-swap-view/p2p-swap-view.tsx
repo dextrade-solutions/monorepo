@@ -178,7 +178,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         );
 
         if (!isEqual(nativeTo, assetTo)) {
-          const normalizeRate = nativeTo.priceInUsdt / assetFrom.priceInUsdt;
+          const normalizeRate = nativeTo.priceInUsdt / assetTo.priceInUsdt;
           incomingFeeCalculated *= normalizeRate;
         }
       }
