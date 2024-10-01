@@ -1,7 +1,7 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { encodeFunctionData, parseEther, parseUnits } from 'viem';
 
-import { genKeyPair, generateAtomicSwapParams } from './atomic-swaps';
+import { NULLISH_TOKEN_ADDRESS, genKeyPair, generateAtomicSwapParams } from './atomic-swaps';
 import { generateERC20TransferData } from './send.utils';
 import { AssetModel } from '../types/p2p-swaps';
 

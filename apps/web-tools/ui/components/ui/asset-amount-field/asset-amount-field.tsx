@@ -33,6 +33,7 @@ interface IProps {
   value: AssetInputValue;
   onChange: (_v: AssetInputValue) => void;
   reserve?: number;
+  disabled: boolean;
 }
 
 export const AssetAmountField: React.FC<IProps> = ({
@@ -44,6 +45,7 @@ export const AssetAmountField: React.FC<IProps> = ({
     recepientAddress: null,
     loading: false,
   },
+  disabled,
   onChange,
   reserve,
 }) => {
@@ -114,7 +116,7 @@ export const AssetAmountField: React.FC<IProps> = ({
         <NumericFormat
           value={value.amount}
           customInput={TextField}
-          disabled={value.loading}
+          disabled={value.loading || disabled}
           decimalSeparator=","
           placeholder="0"
           fullWidth

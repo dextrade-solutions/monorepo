@@ -57,9 +57,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const [nativeFrom, setNativeFrom] = useState<AssetModel>();
   const [nativeTo, setNativeTo] = useState<AssetModel>();
   const [paymentMethodShow, setPaymentMethodShow] = useState(false);
+  // const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(0);
+
+  const loadingCurrencies = !nativeTo && !nativeFrom;
 
   const [fromInput, setFromInput] = useState<AssetInputValue>({
     amount: '',
@@ -82,27 +85,28 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const to =
       assetTo.isNative || assetTo.isFiat ? assetTo : getNative(assetTo.network);
 
-    setNativeFrom(from);
-    setNativeTo(to);
-
     const toConvert = [];
-    if (assetFrom !== from) {
+    if (assetFrom === from) {
+      setNativeFrom(assetFrom);
+    } else {
       toConvert.push(from.symbol);
     }
-    if (assetTo !== to) {
+    if (assetTo === to) {
+      setNativeTo(assetTo);
+    } else {
       toConvert.push(to.symbol);
     }
 
     if (toConvert.length) {
       fetchRates('USDT', toConvert).then((result) => {
-        if (from) {
+        if (!from.priceInUsdt) {
           const rate = result.data.USDT[from.symbol];
           setNativeFrom({
             ...from,
             priceInUsdt: rate ? 1 / rate : undefined,
           });
         }
-        if (to) {
+        if (!to.priceInUsdt) {
           const rate = result.data.USDT[to.symbol];
           setNativeTo({
             ...to,
@@ -156,11 +160,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           'calcIncomingFee - nativeTo must be contain priceInUsdt',
         );
       }
-      if (!assetFrom?.priceInUsdt) {
-        throw new Error(
-          'calcIncomingFee - assetFrom must be contain priceInUsdt',
-        );
-      }
       if (toAmount > 0 && nativeTo) {
         const txParams = generateTxParams({
           asset: assetTo,
@@ -171,7 +170,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         });
         const { data } = await P2PService.estimateFee({
           ...txParams,
-          value: txParams.value ? String(txParams.value) : null,
+          value: txParams.value ? Number(txParams.value) : 0,
           network: assetTo.network,
         });
         incomingFeeCalculated = Number(
@@ -186,7 +185,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       setIncomingFee(incomingFeeCalculated);
       return incomingFeeCalculated;
     },
-    [nativeTo],
+    [nativeTo, nativeFrom],
   );
 
   const recalculateTo = useCallback(
@@ -316,6 +315,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             asset={assetFrom}
             balance={balanceFrom}
             value={fromInput}
+            disabled={loadingCurrencies}
             onChange={updateFrom}
           />
         ) : (
@@ -344,6 +344,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             balance={balanceTo}
             value={toInput}
             onChange={updateTo}
+            disabled={loadingCurrencies}
             reserve={ad.reserveInCoin2}
           />
         ) : (

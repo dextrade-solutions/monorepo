@@ -17,10 +17,6 @@ const AssetItem = ({ coin, alignReverse, loading, iconSize }: IProps) => {
     flexDirection: 'row-reverse',
   };
 
-  if (coin?.uuid) {
-    console.info(coin.uuid);
-    console.info(getCoinIconByUid(coin.uuid));
-  }
   return (
     <Box display="flex" alignItems="center" {...(reverseProps || {})}>
       {loading && (

@@ -45,7 +45,7 @@ export default function Swap() {
 
   let content = <Typography>Ad not found...</Typography>;
 
-  const [ad] = data || [];
+  const [ad] = (data || []).filter((i) => !i.provider);
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
