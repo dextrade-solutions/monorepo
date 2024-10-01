@@ -38,13 +38,12 @@ export const DexUiProvider = ({
       }),
     [paletteMode],
   );
-  debugger;
 
   return (
     <ThemeProvider theme={muiTheme}>
-      <DexUiContext.Provider value={{ paletteMode, t }}>
-        {children}
-      </DexUiContext.Provider>
+      {/* <DexUiContext.Provider value={{ paletteMode, t }}> */}
+      {children}
+      {/* </DexUiContext.Provider> */}
     </ThemeProvider>
   );
 };
