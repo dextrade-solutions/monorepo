@@ -1,29 +1,27 @@
 import * as Sentry from '@sentry/browser';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DexUiProvider } from 'dex-ui';
+import { DexUiProvider, useDexUI } from 'dex-ui';
 import PropTypes from 'prop-types';
-import React, { PureComponent, useContext } from 'react';
-import { Provider } from 'react-redux';
+import React, { PureComponent } from 'react';
+import { Provider, useSelector } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 
 import ErrorPage from './error';
 import Routes from './routes';
 import ToastContainer from './toast';
-import {
-  I18nContext,
-  I18nProvider,
-  LegacyI18nProvider,
-} from '../contexts/i18n';
+import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
   MetaMetricsProvider,
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
+import { getCurrentLocale } from '../ducks/locale/locale';
 
 const queryClient = new QueryClient();
 
 const DexUiWrappedProvider = ({ children }) => {
-  const t = useContext(I18nContext);
-  return <DexUiProvider t={t} theme="light" children={children} />;
+  const locale = useSelector(getCurrentLocale);
+  const { muiTheme } = useDexUI({ theme: 'light' });
+  return <DexUiProvider locale={locale} theme={muiTheme} children={children} />;
 };
 
 class Index extends PureComponent {

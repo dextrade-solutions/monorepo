@@ -12,6 +12,7 @@ import {
   getUserAvatarUrl,
 } from 'dex-helpers';
 import { DextradeTypes } from 'dex-services';
+import { useTranslation } from 'react-i18next';
 
 import { RatingOutput } from './rating-output';
 import AssetItem from '../../ui/asset-item';
@@ -27,7 +28,6 @@ interface IProps {
   getAvatarLink?: (url: string) => string;
 }
 
-const t = (k: string) => k;
 const AdPreview = ({
   ad,
   fromTokenAmount = 0,
@@ -35,6 +35,7 @@ const AdPreview = ({
   getAvatarLink = (url) => getUserAvatarUrl(url),
   onClick,
 }: IProps) => {
+  const { t } = useTranslation();
   return (
     <Card
       variant="outlined"

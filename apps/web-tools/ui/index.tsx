@@ -17,7 +17,7 @@ import Web3ModalProvider from './components/app/web3-modal-provider';
 import './css/index.scss';
 import { I18nProvider } from './contexts/i18n';
 import { getCurrentTheme } from './ducks/app/app';
-import { useI18nContext } from './hooks/useI18nContext';
+import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
 import { persistor, store } from './store/store';
 
@@ -25,11 +25,11 @@ log.setLevel(log.levels.DEBUG);
 
 export function ContentUi() {
   const theme = useSelector(getCurrentTheme);
-  const t = useI18nContext();
+  const locale = useSelector(getCurrentLocale);
   const { muiTheme } = useDexUI({ theme });
   return (
     <ThemeProvider theme={muiTheme}>
-      <DexUiProvider theme={muiTheme}>
+      <DexUiProvider theme={muiTheme} locale={locale}>
         <Web3ModalProvider>
           <CssBaseline />
           <AppHeader />

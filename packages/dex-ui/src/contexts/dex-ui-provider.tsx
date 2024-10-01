@@ -1,24 +1,28 @@
 import { ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
-import React, { createContext } from 'react';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
-export const DexUiContext = createContext({
-  t: (key: string) => key,
-});
+import '../i18n';
 
 export const DexUiProvider = ({
   children,
   theme,
-  t,
+  locale = 'en',
 }: {
   children: React.ReactNode;
   theme: string;
-  t: () => void;
+  locale: string;
 }) => {
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    i18n.changeLanguage(locale);
+  }, [i18n, locale]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DexUiContext.Provider value={{ t }}>{children}</DexUiContext.Provider>
+      {children}
     </ThemeProvider>
   );
 };
