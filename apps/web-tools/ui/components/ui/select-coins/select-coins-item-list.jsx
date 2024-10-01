@@ -1,11 +1,11 @@
 import { Box, Button, Collapse, Typography } from '@mui/material';
 import classnames from 'classnames';
+import { getCoinIconByUid } from 'dex-helpers';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
 
-import { getCoinIconByUid } from '../../../helpers/utils/tokens';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getUseCurrencyRateCheck } from '../../../selectors';
 import UrlIcon from '../url-icon';

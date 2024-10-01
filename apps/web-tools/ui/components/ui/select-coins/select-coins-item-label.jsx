@@ -1,8 +1,8 @@
 import classnames from 'classnames';
+import { getCoinIconByUid } from 'dex-helpers';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import { getCoinIconByUid } from '../../../helpers/utils/tokens';
 import UrlIcon from '../url-icon';
 
 const ICON_URL_DEFAULT = './images/coins/default.svg';

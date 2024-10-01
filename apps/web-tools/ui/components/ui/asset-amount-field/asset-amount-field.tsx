@@ -9,13 +9,16 @@ import {
   Skeleton,
   CardActionArea,
 } from '@mui/material';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  getCoinIconByUid,
+} from 'dex-helpers';
 import React from 'react';
 import { NumericFormat } from 'react-number-format';
 import { useAccount } from 'wagmi';
 
 import { AssetInputValue, AssetModel } from '../../../../app/types/p2p-swaps';
-import { getCoinIconByUid } from '../../../helpers/utils/tokens';
 import { ButtonIcon } from '../button-icon';
 import UrlIcon from '../url-icon';
 

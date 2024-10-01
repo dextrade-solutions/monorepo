@@ -1,8 +1,8 @@
 import { Box, Skeleton, Typography } from '@mui/material';
+import { getCoinIconByUid } from 'dex-helpers';
 import React from 'react';
 
 import { CoinModel } from '../../../../app/types/p2p-swaps';
-import { getCoinIconByUid } from '../../../helpers/utils/tokens';
 import UrlIcon from '../url-icon';
 
 interface IProps {

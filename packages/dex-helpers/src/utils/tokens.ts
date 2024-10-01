@@ -27,7 +27,7 @@ const LOCAL_COINS_URLS = {
   uah: './images/coins/uah.svg',
   binance: './images/coins/binancecoin.png',
   humanode: './images/coins/humanode.svg',
-  phil: './images/coins/phil.svg',
+  philtoken: './images/coins/phil.svg',
   default: './images/coins/default.svg',
 };
 
