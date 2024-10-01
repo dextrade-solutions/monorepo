@@ -1,4 +1,4 @@
-import { Fade } from '@material-ui/core';
+import { Fade } from '@mui/material';
 import classnames from 'classnames';
 import React, { useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

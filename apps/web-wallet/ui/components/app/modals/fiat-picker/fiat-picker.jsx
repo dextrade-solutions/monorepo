@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment } from '@mui/material';
 import Fuse from 'fuse.js';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';

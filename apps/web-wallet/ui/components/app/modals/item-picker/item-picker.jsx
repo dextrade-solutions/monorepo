@@ -5,7 +5,7 @@ import {
   Radio,
   FormControlLabel,
   FormControl,
-} from '@material-ui/core';
+} from '@mui/material';
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
 

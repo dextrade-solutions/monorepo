@@ -1,4 +1,4 @@
-import InputAdornment from '@material-ui/core/InputAdornment';
+import { InputAdornment } from '@mui/material';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { Icon, ICON_NAMES } from '../../../components/component-library';

@@ -1,8 +1,9 @@
-import React, { useMemo, useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+import { Collapse } from '@mui/material';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { useMemo, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Collapse from '@material-ui/core/Collapse';
+
 import Button from '../../../components/ui/button';
 import { PRIMARY } from '../../../helpers/constants/common';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';

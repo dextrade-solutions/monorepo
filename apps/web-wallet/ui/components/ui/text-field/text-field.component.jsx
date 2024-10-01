@@ -1,7 +1,6 @@
-import React from 'react';
+import { TextField as MTextField } from '@mui/material';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import MaterialTextField from '@material-ui/core/TextField';
+import React from 'react';
 
 const inputLabelBase = {
   transform: 'none',
@@ -221,7 +220,7 @@ const TextField = ({
   onPaste,
   ...textFieldProps
 }) => {
-  const inputProps = themeToInputProps[theme]({
+  const inputProps = {
     classes,
     startAdornment,
     endAdornment,
@@ -230,7 +229,7 @@ const TextField = ({
     min,
     max,
     autoComplete,
-  });
+  };
 
   if (onPaste || dataTestId) {
     if (!inputProps.InputProps) {
@@ -244,7 +243,7 @@ const TextField = ({
   }
 
   return (
-    <MaterialTextField
+    <MTextField
       error={Boolean(error)}
       helperText={error}
       {...inputProps}
@@ -298,4 +297,4 @@ TextField.propTypes = {
   onPaste: PropTypes.func,
 };
 
-export default withStyles(styles)(TextField);
+export default TextField;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Fab } from '@material-ui/core';
+import { Fab } from '@mui/material';
 import { Color, TextColor } from '../../../helpers/constants/design-system';
 import { Text } from '../text';
 import { Icon } from '../icon';

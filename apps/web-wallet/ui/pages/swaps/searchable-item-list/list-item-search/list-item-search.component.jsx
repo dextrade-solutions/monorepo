@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import log from 'loglevel';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import { InputAdornment } from '@mui/material';
 import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';

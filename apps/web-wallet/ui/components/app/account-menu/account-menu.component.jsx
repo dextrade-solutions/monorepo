@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { debounce } from 'lodash';
-import Fuse from 'fuse.js';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import { InputAdornment } from '@mui/material';
 import classnames from 'classnames';
+import Fuse from 'fuse.js';
+import { debounce } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import KeyRingLabel from './keyring-label';
 import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import Identicon from '../../ui/identicon';
-import SiteIcon from '../../ui/site-icon';
+import { IconColor } from '../../../helpers/constants/design-system';
 import {
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
@@ -18,21 +19,14 @@ import {
   EXCHANGER_ROUTE,
   IMPORT_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
-import TextField from '../../ui/text-field';
-
+import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { Icon, ICON_NAMES, ICON_SIZES, Text } from '../../component-library';
+import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import SearchIcon from '../../ui/icon/search-icon';
-import {
-  AlignItems,
-  DISPLAY,
-  IconColor,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { Icon, ICON_NAMES, ICON_SIZES, Text } from '../../component-library';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import Box from '../../ui/box/box';
-import KeyRingLabel from './keyring-label';
+import Identicon from '../../ui/identicon';
+import SiteIcon from '../../ui/site-icon';
+import TextField from '../../ui/text-field';
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;

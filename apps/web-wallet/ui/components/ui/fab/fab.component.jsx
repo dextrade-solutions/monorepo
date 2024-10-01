@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Fab as FabCore } from '@material-ui/core';
+import { Fab as FabCore } from '@mui/material';
 
 const Fab = ({ children, className, ...fabProps }) => {
   return (

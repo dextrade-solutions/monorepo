@@ -5,7 +5,7 @@ import {
   Radio,
   FormControlLabel,
   FormControl,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Popover from '../../../ui/popover';
 import { ICON_NAMES, Icon, Text } from '../../../component-library';

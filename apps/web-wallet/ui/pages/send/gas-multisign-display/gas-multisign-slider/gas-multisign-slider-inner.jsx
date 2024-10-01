@@ -1,21 +1,20 @@
+import { Slider } from '@mui/material';
 import React, { useCallback, useState, useMemo } from 'react';
-import Slider from '@material-ui/core/Slider';
 import { useSelector } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 
-const SliderStyled = withStyles({
-  root: {
-    color: 'var(--color-primary-default);',
-  },
-  markLabel: {
-    fontFamily: '"Rubik", Helvetica, Arial, sans-serif',
-    textTransform: 'uppercase',
-    fontSize: '0.49rem',
-  },
-  markLabelActive: {
-    color: 'var(--color-text-default);',
-  },
-})(Slider);
+// const SliderStyled = withStyles({
+//   root: {
+//     color: 'var(--color-primary-default);',
+//   },
+//   markLabel: {
+//     fontFamily: '"Rubik", Helvetica, Arial, sans-serif',
+//     textTransform: 'uppercase',
+//     fontSize: '0.49rem',
+//   },
+//   markLabelActive: {
+//     color: 'var(--color-text-default);',
+//   },
+// })(Slider);
 
 const MIN_SATOSHI = 1000;
 
@@ -53,7 +52,7 @@ export const GasMultisignSliderInner = ({ value: incomeValue, onChange }) => {
   );
 
   return (
-    <SliderStyled
+    <Slider
       onChange={handleChange}
       defaultValue={value || low}
       value={value || low}

@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useMemo, useRef } from 'react';
-import { Select as MuiSelect } from '@material-ui/core';
+import { Select as MuiSelect } from '@mui/material';
 import Fuse from 'fuse.js';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';

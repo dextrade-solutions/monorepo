@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { InputAdornment } from '@material-ui/core';
+import { InputAdornment } from '@mui/material';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import Box from '../../../components/ui/box';
