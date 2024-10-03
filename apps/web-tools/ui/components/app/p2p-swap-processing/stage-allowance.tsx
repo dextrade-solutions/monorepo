@@ -1,17 +1,13 @@
-import { Alert, Box, Button, Typography } from '@mui/material';
-import { formatFundsAmount } from 'dex-helpers';
-import { useEffect, useRef, useState } from 'react';
+import { Typography } from '@mui/material';
+import { formatFundsAmount, BUILT_IN_NETWORKS, TradeStatus } from 'dex-helpers';
+import { AssetModel, Trade } from 'dex-helpers/types';
+import { useEffect, useState } from 'react';
 import { formatUnits, parseEther } from 'viem';
 import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { ERC20 } from '../../../../app/constants/abi';
-import {
-  BUILT_IN_NETWORKS,
-  ExchangeP2PStatus,
-} from '../../../../app/constants/p2p';
-import { AssetModel, Trade } from '../../../../app/types/p2p-swaps';
 
 export default function AllowanceStage({
   trade,
@@ -70,7 +66,7 @@ export default function AllowanceStage({
       value !== StageStatuses.requested &&
       walletClient &&
       from.contract &&
-      trade?.status === ExchangeP2PStatus.new &&
+      trade?.status === TradeStatus.new &&
       !tokenApproval.isLoading &&
       tokenApproval?.data < toSpendAmount
     ) {

@@ -1,5 +1,9 @@
 {
   "name": "dex-helpers",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
   "packageManager": "yarn@4.4.1",
   "files": [
     "lib"
@@ -7,9 +11,20 @@
   "packages": {
     "dex-services": "workspace:^"
   },
-  "main": "./lib/main.ts",
+  "main": "./dist/dex-helpers.umd.cjs",
   "module": "./lib/main.ts",
   "exports": {
-    ".": "./lib/main.ts"
+    ".": {
+      "import": "./lib/main.ts",
+      "require": "./dist/dex-helpers.umd.cjs"
+    },
+    "./assets-list": "./assets-list.json",
+    "./types": "./types/index.ts"
+  },
+  "devDependencies": {
+    "vite": "^5.4.8"
+  },
+  "dependencies": {
+    "viem": "^2.21.17"
   }
 }

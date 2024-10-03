@@ -7,12 +7,15 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
-import { formatFundsAmount, relativeFromCurrentDate } from 'dex-helpers';
+import {
+  formatFundsAmount,
+  relativeFromCurrentDate,
+  TRADE_ACTIVE_STATUSES,
+} from 'dex-helpers';
+import { Trade } from 'dex-helpers/types';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { EXCHANGE_P2P_ACTIVE_STATUSES } from '../../../../app/constants/p2p';
-import { Trade } from '../../../../app/types/p2p-swaps';
 import { showModal } from '../../../ducks/app/app';
 import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import AssetItem from '../../ui/asset-item';
@@ -24,7 +27,7 @@ export function TradePreview({ trade }: { trade: Trade }) {
   const dispatch = useDispatch();
 
   const openTradeHistory = () => {
-    if (EXCHANGE_P2P_ACTIVE_STATUSES.includes(trade.status)) {
+    if (TRADE_ACTIVE_STATUSES.includes(trade.status)) {
       navigate(`${AWAITING_SWAP_ROUTE}/${trade.id}`);
     } else {
       dispatch(

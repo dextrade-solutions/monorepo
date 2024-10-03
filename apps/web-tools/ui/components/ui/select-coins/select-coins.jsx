@@ -1,3 +1,4 @@
+import allTokens from 'dex-helpers/assets-list';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
@@ -5,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { SelectCoinsItem } from './select-coins-item';
 import { SelectCoinsSwap } from './select-coins-swap';
-import allTokens from '../../../../src/assets-list.json';
 import {
   getFromToken,
   getToToken,

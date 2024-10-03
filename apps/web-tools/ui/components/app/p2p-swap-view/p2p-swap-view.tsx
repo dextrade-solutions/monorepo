@@ -6,25 +6,24 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { formatCurrency, formatFundsAmount, NetworkNames } from 'dex-helpers';
+import {
+  UserPaymentMethod,
+  AdItem,
+  AssetInputValue,
+  AssetModel,
+} from 'dex-helpers/types';
 import { debounce, isEqual } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 
-import { NetworkNames } from '../../../../app/constants/p2p';
 import { getNative } from '../../../../app/helpers/p2p';
 import { fetchRates } from '../../../../app/helpers/rates';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
-import { UserPaymentMethod } from '../../../../app/types/dextrade';
-import {
-  AdItem,
-  AssetInputValue,
-  AssetModel,
-} from '../../../../app/types/p2p-swaps';
 import {
   createSwapP2P,
   getFromTokenInputValue,
@@ -145,6 +144,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
+      return 0;
       if (ad.isAtomicSwap) {
         return 0;
       }
@@ -285,7 +285,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   };
 
   return (
-    <div>
+    <Box>
       {paymentMethodShow && (
         <PaymentMethodPicker
           currency={
@@ -413,6 +413,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           {submitBtnError || 'Start swap'}
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 };

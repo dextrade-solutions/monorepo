@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
+import { TRADE_ACTIVE_STATUSES } from 'dex-helpers';
+import { Trade, TradeFilterModel } from 'dex-helpers/types';
 
-import { EXCHANGE_P2P_ACTIVE_STATUSES } from '../../app/constants/p2p';
 import P2PService from '../../app/services/p2p-service';
-import { Trade, TradeFilterModel } from '../../app/types/p2p-swaps';
 
 const filters: TradeFilterModel = {
-  includedStatuses: EXCHANGE_P2P_ACTIVE_STATUSES,
+  includedStatuses: TRADE_ACTIVE_STATUSES,
   isExchanger: false,
   orderBy: 'BY_DATE',
   sort: 'DESC',

@@ -1,9 +1,59 @@
-import { PaymentMethod, UserPaymentMethod } from './dextrade';
 import {
-  ExchangeP2PStatus,
   ExchangerRateSources,
   NetworkNames,
-} from '../constants/p2p';
+  TradeStatus,
+} from '../src/constants';
+
+export type Country = {
+  id: number;
+  iso: string;
+  name: string;
+};
+
+export type Currency = {
+  id: number;
+  iso: string;
+  name: string;
+};
+
+export type ConstructorField = {
+  id: number;
+  required: boolean;
+  // no need to validate if it false
+  validate: boolean;
+  contentType: {
+    description: string;
+    value: string;
+  };
+  fieldType: {
+    description: string;
+    value: string;
+  };
+};
+
+export type PaymentMethod = {
+  paymentMethodId: string;
+  name: string;
+  fields: ConstructorField[];
+};
+
+export type UserPaymentMethod = {
+  userPaymentMethodId?: number;
+  data: string;
+  country: Country;
+  currency: Currency;
+  paymentMethod: PaymentMethod;
+};
+
+export type AuthParams = {
+  mnemonicHash: string;
+  publicKey: string;
+  masterPublicKey: string;
+  signature: string;
+
+  deviceId?: string;
+  deviceToken?: string;
+};
 
 export type ExchangerHistoryRow = {
   id: string;
@@ -26,8 +76,8 @@ export type AdFilterModel = {
 };
 
 export type TradeFilterModel = {
-  includedStatuses?: ExchangeP2PStatus[];
-  excludedStatuses?: ExchangeP2PStatus[];
+  includedStatuses?: TradeStatus[];
+  excludedStatuses?: TradeStatus[];
   isExchanger: boolean;
   orderBy: string;
   sort: string;
@@ -156,7 +206,7 @@ export type Exchanger = {
 export type TradeHistoryRow = {
   id: number;
   exchangeId: string;
-  status: ExchangeP2PStatus;
+  status: TradeStatus;
   cdt: number;
 };
 
@@ -191,7 +241,7 @@ export type Trade = {
   amount2: number;
   exchangerConfirmedAmount: number;
   priceAdjustment: number;
-  status: ExchangeP2PStatus;
+  status: TradeStatus;
   exchangerSettings: AdSetting;
   statusHistory: TradeHistoryRow[];
   cdt: number;

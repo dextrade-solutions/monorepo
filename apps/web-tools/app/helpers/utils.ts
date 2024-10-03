@@ -1,9 +1,7 @@
-import { addHexPrefix } from 'ethereumjs-util';
+import { NetworkNames, TradeType } from 'dex-helpers';
 import * as allChains from 'viem/chains';
 
-import { hashPassword } from './atomic-swaps';
-import { TradeType, NetworkNames } from '../constants/p2p';
-import { AdItem, CoinModel, Trade } from '../types/p2p-swaps';
+import { AdItem, Trade } from '../types/p2p-swaps';
 
 const { ...chains } = allChains;
 

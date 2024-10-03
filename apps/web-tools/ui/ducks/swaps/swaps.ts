@@ -1,18 +1,10 @@
 import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
+import { BUILT_IN_NETWORKS, NetworkNames } from 'dex-helpers';
 
-import {
-  BUILT_IN_NETWORKS,
-  NetworkNames,
-  TradeType,
-} from '../../../app/constants/p2p';
 import engine from '../../../app/engine';
 import { genKeyPair } from '../../../app/helpers/atomic-swaps';
-import {
-  getKeysAndRedeemScript,
-  getRedeemKeypair,
-} from '../../../app/helpers/btc-scripts/get-keys-and-redeem-script';
-import { hash160 } from '../../../app/helpers/btc-scripts/utils';
+import { getWalletAddress } from '../../../app/helpers/chain-helpers/get-asset-wallet-address';
 import { determineTradeTypeByAd } from '../../../app/helpers/utils';
 import P2PService from '../../../app/services/p2p-service';
 import { UserPaymentMethod } from '../../../app/types/dextrade';
@@ -25,7 +17,6 @@ import {
 import { handleRequest } from '../../helpers/utils/requests';
 import { QUERY_KEY } from '../../queries/useTradesActive';
 import { AppDispatch, RootState } from '../../store/store';
-import { getWalletAddress } from '../../../app/helpers/chain-helpers/get-asset-wallet-address';
 
 type SliceState = {
   fromToken: AssetModel | null;

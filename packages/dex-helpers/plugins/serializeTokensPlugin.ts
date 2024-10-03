@@ -7,9 +7,7 @@ import {
   BUILT_IN_NETWORKS,
   NETWORK_INFO_BY_TOKEN_TYPE,
   NetworkNames,
-  NetworkTypes,
-} from '../../app/constants/p2p';
-import { AssetModel } from '../../app/types/p2p-swaps';
+} from '../src/constants/dextrade/networks';
 
 const REGISTRIES = [
   { filename: 'fiats', serializer: transformFiats },
@@ -17,26 +15,26 @@ const REGISTRIES = [
   {
     filename: 'natives',
     serializer: () => {
-      return Object.values(NetworkNames).reduce(
-        (acc: AssetModel[], network: string) => {
-          const netConfig = BUILT_IN_NETWORKS[network];
-          if (netConfig) {
-            acc.push({
-              chainId: netConfig.id,
-              contract: null,
-              name: netConfig.name,
-              decimals: netConfig.nativeCurrency.decimals,
-              symbol: netConfig.nativeCurrency.symbol,
-              uid: netConfig.uid,
-              network,
-              isFiat: false,
-              isNative: true,
-            });
-          }
-          return acc;
-        },
-        [],
-      );
+      return Object.entries(BUILT_IN_NETWORKS).map(([network, netConfig]) => {
+        return {
+          chainId: netConfig.id,
+          contract: null,
+          name: netConfig.name,
+          decimals: netConfig.nativeCurrency.decimals,
+          symbol: netConfig.nativeCurrency.symbol,
+          uid: netConfig.uid,
+          network,
+          isFiat: false,
+          isNative: true,
+          weight: [
+            NetworkNames.bitcoin,
+            NetworkNames.ethereum,
+            NetworkNames.binance,
+          ].includes(network)
+            ? 3
+            : 1,
+        };
+      }, []);
     },
   },
 ];
@@ -64,6 +62,7 @@ function transformTokens(filename: string) {
             standard: type,
             isFiat: false,
             isNative: false,
+            weight: ['usdt'].includes(token.code) ? 2 : 1,
           },
         ];
       },
@@ -82,10 +81,11 @@ function transformFiats(filename: string) {
     name: fiatTicker,
     symbol: fiatTicker.toUpperCase(),
     uid: fiatTicker.toLowerCase(),
-    network: NetworkNames.fiat,
-    standard: NetworkTypes.fiat,
+    network: 'fiat',
+    standard: 'fiat',
     isFiat: true,
     isNative: false,
+    weight: 0,
   }));
 }
 
@@ -95,8 +95,12 @@ const serializeTokensPlugin = () => ({
     const result = REGISTRIES.map((registry) => {
       return registry.serializer(registry.filename);
     });
-    const assetList = JSON.stringify(_.flatMap(result));
-    fsPromises.writeFile(`./src/assets-list.json`, assetList);
+    const assetList = JSON.stringify(
+      _.flatMap(result)
+        .sort((a, b) => a.weight - b.weight)
+        .reverse(),
+    );
+    fsPromises.writeFile(`./assets-list.json`, assetList);
   },
 });
 

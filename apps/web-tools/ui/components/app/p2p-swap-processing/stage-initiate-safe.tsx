@@ -1,11 +1,11 @@
+import { TradeStatus } from 'dex-helpers';
+import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
 import { useSwitchChain, useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
-import { ExchangeP2PStatus } from '../../../../app/constants/p2p';
-import { AssetModel, Trade } from '../../../../app/types/p2p-swaps';
 
 export default function StageInitiateSafe({
   trade,
@@ -64,7 +64,7 @@ export default function StageInitiateSafe({
     if (
       value !== StageStatuses.requested &&
       walletClient &&
-      trade?.status === ExchangeP2PStatus.new
+      trade?.status === TradeStatus.new
     ) {
       initiateNewTx();
     } else if (trade.clientSafe || trade.exchangerSafe) {

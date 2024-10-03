@@ -8,18 +8,19 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { NetworkNames } from 'dex-helpers';
+import { AdItem } from 'dex-helpers/types';
+import React, { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
-import { AdItem } from '../../../app/types/p2p-swaps';
 import P2PSwapView from '../../components/app/p2p-swap-view';
 import Icon from '../../components/ui/icon';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-export default function Swap() {
+export default function AdView() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -46,11 +47,20 @@ export default function Swap() {
   let content = <Typography>Ad not found...</Typography>;
 
   const [ad] = (data || []).filter((i) => !i.provider);
+  const supportedNonEvmChains = [NetworkNames.solana];
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
 
-    if ((assetFrom?.isFiat || assetFrom?.chainId) && assetTo) {
+    const fromIsSupported =
+      assetFrom &&
+      (supportedNonEvmChains.includes(assetFrom.network) ||
+        assetFrom.chainId ||
+        assetFrom.isFiat);
+
+    const toIsSupported = Boolean(assetTo);
+
+    if (fromIsSupported && toIsSupported) {
       content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
     } else {
       content = (

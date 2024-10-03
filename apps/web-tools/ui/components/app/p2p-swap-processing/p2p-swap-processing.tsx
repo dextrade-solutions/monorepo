@@ -7,7 +7,14 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  TRADE_ACTIVE_STATUSES,
+  TradeStatus,
+  TradeType,
+} from 'dex-helpers';
+import { AssetModel, Trade } from 'dex-helpers/types';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,15 +25,9 @@ import StageInitiateSafe from './stage-initiate-safe';
 import SwapFailtureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import SwapTimeoutIcon from './swap-timeout-icon';
-import {
-  EXCHANGE_P2P_ACTIVE_STATUSES,
-  ExchangeP2PStatus,
-  TradeType,
-} from '../../../../app/constants/p2p';
 import { MINUTE } from '../../../../app/constants/time';
 import { determineTradeType } from '../../../../app/helpers/utils';
 import P2PService from '../../../../app/services/p2p-service';
-import { AssetModel, Trade } from '../../../../app/types/p2p-swaps';
 import { SWAPS_HISTORY_ROUTE } from '../../../helpers/constants/routes';
 import { useAtomicSwap } from '../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -65,7 +66,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const [cancelLoading, setCancelLoading] = useState(false);
 
   const pairType = determineTradeType(exchange);
-  const inProgress = EXCHANGE_P2P_ACTIVE_STATUSES.includes(exchange.status);
+  const inProgress = TRADE_ACTIVE_STATUSES.includes(exchange.status);
 
   const stages: { component: React.ReactNode; key: string }[] = [];
   let content;
@@ -73,7 +74,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   let statusImage;
   let submitText;
 
-  if (inProgress && exchange.status !== ExchangeP2PStatus.waitExchangerVerify) {
+  if (inProgress && exchange.status !== TradeStatus.waitExchangerVerify) {
     if (pairType === TradeType.atomicSwap) {
       if (!from.isNative) {
         stages.push({
@@ -148,18 +149,18 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   }
   submitText = 'View all trades';
 
-  if (exchange.status === ExchangeP2PStatus.canceled) {
+  if (exchange.status === TradeStatus.canceled) {
     statusImage = <SwapFailtureIcon />;
     headerText = t('Swap Canceled');
     content = (
       <Alert severity="error">The swap was canceled by the exchanger</Alert>
     );
-  } else if (exchange.status === ExchangeP2PStatus.new && from.isFiat) {
+  } else if (exchange.status === TradeStatus.new && from.isFiat) {
     statusImage = <PulseLoader />;
     headerText = t('Swap Processing');
     let approveDeadline = 15 * MINUTE;
     const historyRow = exchange.statusHistory.find(
-      ({ status }) => status === ExchangeP2PStatus.new,
+      ({ status }) => status === TradeStatus.new,
     );
     if (historyRow && exchange.exchangerSettings.timeToPay) {
       approveDeadline = exchange.exchangerSettings.timeToPay;
@@ -218,7 +219,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         )}
       </Box>
     );
-  } else if (exchange.status === ExchangeP2PStatus.waitExchangerVerify) {
+  } else if (exchange.status === TradeStatus.waitExchangerVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Reservation');
     content = (
@@ -227,10 +228,10 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       </Alert>
     );
     submitText = t('cancel');
-  } else if (exchange.status === ExchangeP2PStatus.clientTransactionVerify) {
+  } else if (exchange.status === TradeStatus.clientTransactionVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Client transaction sending');
-  } else if (exchange.status === ExchangeP2PStatus.exchangerTransactionVerify) {
+  } else if (exchange.status === TradeStatus.exchangerTransactionVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Swap Processing');
     if (to.isFiat) {
@@ -275,10 +276,10 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         </Box>
       );
     }
-  } else if (exchange.status === ExchangeP2PStatus.completed) {
+  } else if (exchange.status === TradeStatus.completed) {
     statusImage = <SwapSuccessIcon />;
     headerText = t('Completed');
-  } else if (exchange.status === ExchangeP2PStatus.expired) {
+  } else if (exchange.status === TradeStatus.expired) {
     statusImage = <SwapTimeoutIcon />;
     headerText = t('Expired');
   } else {
@@ -287,7 +288,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   }
 
   const onSubmit = async () => {
-    if (exchange.status === ExchangeP2PStatus.waitExchangerVerify) {
+    if (exchange.status === TradeStatus.waitExchangerVerify) {
       try {
         setCancelLoading(true);
         await P2PService.cancelExchange(exchange.id);
@@ -400,15 +401,13 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             .map(({ component }) => component)}
         </Box>
       </Box>
-      {!isCrypto && (
-        <Box width="100%" marginY={2}>
-          <P2PChat
-            variant="outlined"
-            trade={exchange}
-            sx={{ bgcolor: 'transparent' }}
-          />
-        </Box>
-      )}
+      <Box width="100%" marginY={2}>
+        <P2PChat
+          variant="outlined"
+          trade={exchange}
+          sx={{ bgcolor: 'transparent' }}
+        />
+      </Box>
       <div className="flex-grow" />
       <Button fullWidth onClick={onSubmit} disabled={cancelLoading}>
         {submitText}

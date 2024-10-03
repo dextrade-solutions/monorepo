@@ -1,6 +1,5 @@
 import {
   Card,
-  CardContent,
   TextField,
   CardHeader,
   Typography,
@@ -8,18 +7,24 @@ import {
   InputAdornment,
   Skeleton,
   CardActionArea,
+  Button,
 } from '@mui/material';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
+  NetworkNames,
   formatCurrency,
   formatFundsAmount,
   getCoinIconByUid,
+  shortenAddress,
 } from 'dex-helpers';
+import { AssetInputValue, AssetModel } from 'dex-helpers/types';
 import React from 'react';
 import { NumericFormat } from 'react-number-format';
 import { useAccount } from 'wagmi';
 
-import { AssetInputValue, AssetModel } from '../../../../app/types/p2p-swaps';
 import { ButtonIcon } from '../button-icon';
+import PulseLoader from '../pulse-loader';
 import UrlIcon from '../url-icon';
 
 interface IProps {
@@ -36,7 +41,7 @@ interface IProps {
   disabled: boolean;
 }
 
-export const AssetAmountField: React.FC<IProps> = ({
+export const AssetAmountField = ({
   asset,
   balance,
   value = {
@@ -48,14 +53,25 @@ export const AssetAmountField: React.FC<IProps> = ({
   disabled,
   onChange,
   reserve,
-}) => {
-  const { isConnected } = useAccount();
+}: IProps) => {
   const updateValue = (field: string, v: any) => {
     onChange({
       ...value,
       [field]: v,
     });
   };
+  const isSolanaInput = asset.network === NetworkNames.solana;
+  const {
+    connected: isSolanaWalletConnected,
+    connecting: isSolanaWalletConnecting,
+    wallet,
+    disconnect,
+    sendTransaction,
+  } = useWallet();
+  const { setVisible: setModalVisible } = useWalletModal();
+  const displayBalance =
+    (isSolanaInput && isSolanaWalletConnected) ||
+    (asset.chainId && !asset.isFiat);
   return (
     <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
       <CardHeader
@@ -71,44 +87,73 @@ export const AssetAmountField: React.FC<IProps> = ({
               )}
             </Box>
             <Box className="flex-grow"></Box>
-            {isConnected && asset.chainId && !asset.isFiat && (
-              <Box textAlign="right" onClick={() => {}}>
-                <Typography color="text.secondary" variant="body2">
-                  Balance:
-                </Typography>
-                {balance ? (
-                  <Card
-                    sx={{
-                      bgcolor: 'transparent',
-                      border: 'none',
-                    }}
+            <Box display="flex" flexDirection="column" justifyContent="center">
+              {isSolanaInput && (
+                <Box marginBottom={2}>
+                  <Button
                     variant="outlined"
+                    onClick={() =>
+                      isSolanaWalletConnected
+                        ? disconnect()
+                        : setModalVisible(true)
+                    }
                   >
-                    <CardActionArea
-                      disabled={Boolean(reserve)}
-                      onClick={() => updateValue('amount', balance.value)}
+                    {isSolanaWalletConnected && (
+                      <Box display="flex">
+                        {shortenAddress(wallet.adapter.publicKey?.toBase58())}
+                        <Box marginLeft={2}>
+                          <UrlIcon url={wallet.adapter.icon} />
+                        </Box>
+                      </Box>
+                    )}
+                    {!isSolanaWalletConnected && 'Connect wallet'}
+                    {isSolanaWalletConnecting && (
+                      <Box marginX={1}>
+                        <PulseLoader />
+                      </Box>
+                    )}
+                  </Button>
+                </Box>
+              )}
+              {displayBalance && (
+                <Box textAlign="right" onClick={() => {}}>
+                  <Typography color="text.secondary" variant="body2">
+                    Balance:
+                  </Typography>
+                  {balance ? (
+                    <Card
+                      sx={{
+                        bgcolor: 'transparent',
+                        border: 'none',
+                      }}
+                      variant="outlined"
                     >
-                      <Typography
-                        as="span"
-                        color="text.secondary"
-                        marginRight={1}
+                      <CardActionArea
+                        disabled={Boolean(reserve)}
+                        onClick={() => updateValue('amount', balance.value)}
                       >
-                        {balance.formattedValue}
-                      </Typography>
-                      <Typography
-                        as="span"
-                        color="text.secondary"
-                        fontWeight="bold"
-                      >
-                        {formatCurrency(balance.inUsdt, 'usd')}
-                      </Typography>
-                    </CardActionArea>
-                  </Card>
-                ) : (
-                  <Skeleton width={100} />
-                )}
-              </Box>
-            )}
+                        <Typography
+                          as="span"
+                          color="text.secondary"
+                          marginRight={1}
+                        >
+                          {balance.formattedValue}
+                        </Typography>
+                        <Typography
+                          as="span"
+                          color="text.secondary"
+                          fontWeight="bold"
+                        >
+                          {formatCurrency(balance.inUsdt, 'usd')}
+                        </Typography>
+                      </CardActionArea>
+                    </Card>
+                  ) : (
+                    <Skeleton width={100} />
+                  )}
+                </Box>
+              )}
+            </Box>
           </Box>
         }
       />
@@ -172,7 +217,7 @@ export const AssetAmountField: React.FC<IProps> = ({
             </Card>
           </Box>
         )}
-        {!asset.chainId && !asset.isFiat && (
+        {!isSolanaInput && !asset.chainId && !asset.isFiat && (
           <Box marginBottom={2}>
             <TextField
               placeholder="Recepient address"

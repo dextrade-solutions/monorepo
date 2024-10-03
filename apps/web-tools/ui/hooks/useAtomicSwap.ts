@@ -1,10 +1,11 @@
 import { remove0x } from '@metamask/utils';
+import { BUILT_IN_NETWORKS } from 'dex-helpers';
+import { AssetModel, Trade } from 'dex-helpers/types';
 import { useCallback } from 'react';
 import { parseEther, parseUnits } from 'viem';
 import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
 
 import { ATOMIC_SWAP_ABI } from '../../app/constants/abi';
-import { BUILT_IN_NETWORKS, NetworkNames } from '../../app/constants/p2p';
 import { SECOND } from '../../app/constants/time';
 import {
   NULLISH_TOKEN_ADDRESS,
@@ -13,7 +14,6 @@ import {
 } from '../../app/helpers/atomic-swaps';
 import { unlockSafe } from '../../app/helpers/btc-scripts/unlock-safe';
 import { isBtcTypeAsset } from '../../app/helpers/chain-helpers/is-btc-type-asset';
-import { AssetModel, Trade } from '../../app/types/p2p-swaps';
 
 const getParsedExchangerParams = (trade: Trade) => {
   if (trade.exchangerParams) {

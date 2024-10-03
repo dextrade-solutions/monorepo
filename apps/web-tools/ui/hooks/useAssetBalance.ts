@@ -1,8 +1,11 @@
-import { formatFundsAmount } from 'dex-helpers';
+import { NetworkNames, formatFundsAmount } from 'dex-helpers';
 import { erc20Abi, formatUnits, hexToNumber } from 'viem';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
 import { AssetModel } from '../../app/types/p2p-swaps';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useEffect, useState } from 'react';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 function useAccountBalance(chainId: number | null) {
   const { address } = useAccount();
@@ -46,7 +49,47 @@ function useErc20Balance(chainId: number | null, contract: string | null) {
   return null;
 }
 
+function useSolanaBalance() {
+  const [balance, setBalance] = useState(0n);
+  const { connection } = useConnection();
+  const { publicKey } = useWallet();
+
+  useEffect(() => {
+    const updateBalance = async () => {
+      if (!connection || !publicKey) {
+        console.error('Wallet not connected or connection unavailable');
+        return;
+      }
+
+      try {
+        connection.onAccountChange(
+          publicKey,
+          (updatedAccountInfo) => {
+            setBalance(BigInt(updatedAccountInfo.lamports));
+          },
+          'confirmed',
+        );
+        const accountInfo = await connection.getAccountInfo(publicKey);
+
+        if (accountInfo) {
+          setBalance(BigInt(accountInfo.lamports));
+        } else {
+          throw new Error('Account info not found');
+        }
+      } catch (error) {
+        console.error('Failed to retrieve account info:', error);
+      }
+    };
+
+    updateBalance();
+  }, [connection, publicKey]);
+  return balance;
+}
+
 export function getBalanceHook(asset: AssetModel) {
+  if (asset.network === NetworkNames.solana) {
+    return useSolanaBalance;
+  }
   if (asset.contract) {
     return useErc20Balance;
   } else if (!asset.isFiat) {

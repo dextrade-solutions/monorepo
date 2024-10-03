@@ -1,9 +1,10 @@
-import assetList from '../../src/assets-list.json';
 import {
   NetworkNames,
   PaymentContentTypes,
   PaymentMethodTypes,
-} from '../constants/p2p';
+} from 'dex-helpers';
+import assetList from 'dex-helpers/assets-list';
+
 import { UserPaymentMethod } from '../types/dextrade';
 import { AssetModel, CoinModel } from '../types/p2p-swaps';
 

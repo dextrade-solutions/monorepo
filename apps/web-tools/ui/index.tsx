@@ -1,25 +1,21 @@
-import {
-  Box,
-  Container,
-  CssBaseline,
-  ThemeProvider,
-  createTheme,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
+import React from 'react';
 import { Provider, useSelector } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import AppHeader from './components/app/app-header';
 import Web3ModalProvider from './components/app/web3-modal-provider';
-import './css/index.scss';
+import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solana-provider';
 import { I18nProvider } from './contexts/i18n';
 import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
 import { persistor, store } from './store/store';
+
+import './css/index.scss';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -31,13 +27,15 @@ export function ContentUi() {
     <ThemeProvider theme={muiTheme}>
       <DexUiProvider theme={muiTheme} locale={locale}>
         <Web3ModalProvider>
-          <CssBaseline />
-          <AppHeader />
-          <Container maxWidth="sm">
-            <Box paddingY={3}>
-              <Pages />
-            </Box>
-          </Container>
+          <Web3SolanaProvider>
+            <CssBaseline />
+            <AppHeader />
+            <Container maxWidth="sm">
+              <Box paddingY={3}>
+                <Pages />
+              </Box>
+            </Container>
+          </Web3SolanaProvider>
         </Web3ModalProvider>
       </DexUiProvider>
     </ThemeProvider>

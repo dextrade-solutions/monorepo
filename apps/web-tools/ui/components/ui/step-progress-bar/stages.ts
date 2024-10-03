@@ -1,5 +1,5 @@
-import { ExchangeP2PStatus, TradeType } from '../../../../app/constants/p2p';
-import { Trade } from '../../../../app/types/p2p-swaps';
+import { TradeStatus, TradeType } from 'dex-helpers';
+import { Trade } from 'dex-helpers/types';
 
 // Crypto --> Fiat
 // Reserving funds --> Sending coins --> Pending trader transfer --> Awaiting confirmation --> Completed|Dispute
@@ -20,7 +20,7 @@ export const P2P_STAGES = [
       TradeType.fiatFiat,
     ],
     checkStatus: (trade: Trade) => {
-      const statuses = [ExchangeP2PStatus.waitExchangerVerify];
+      const statuses = [TradeStatus.waitExchangerVerify];
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
   },
@@ -28,7 +28,7 @@ export const P2P_STAGES = [
     label: 'Transfer confirmation',
     pairTypes: [TradeType.fiatCrypto, TradeType.fiatFiat],
     checkStatus: (trade: Trade) => {
-      const statuses = [ExchangeP2PStatus.new];
+      const statuses = [TradeStatus.new];
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
   },
@@ -41,8 +41,8 @@ export const P2P_STAGES = [
     ],
     checkStatus: (trade: Trade) => {
       const statuses = [
-        ExchangeP2PStatus.new,
-        ExchangeP2PStatus.clientTransactionVerify,
+        TradeStatus.new,
+        TradeStatus.clientTransactionVerify,
       ];
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
@@ -57,7 +57,7 @@ export const P2P_STAGES = [
       TradeType.fiatFiat,
     ],
     checkStatus: (trade: Trade) => {
-      const statuses = [ExchangeP2PStatus.waitExchangerTransfer];
+      const statuses = [TradeStatus.waitExchangerTransfer];
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
   },
@@ -66,8 +66,8 @@ export const P2P_STAGES = [
     pairTypes: [TradeType.cryptoFiat, TradeType.fiatFiat],
     checkStatus: (trade: Trade) => {
       const statuses = [
-        ExchangeP2PStatus.verified,
-        ExchangeP2PStatus.exchangerTransactionVerify,
+        TradeStatus.verified,
+        TradeStatus.exchangerTransactionVerify,
       ];
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
@@ -83,7 +83,7 @@ export const P2P_STAGES = [
     ],
     checkStatus: (trade: Trade) => {
       return trade.statusHistory.find(
-        (v) => v.status === ExchangeP2PStatus.completed,
+        (v) => v.status === TradeStatus.completed,
       );
     },
   },

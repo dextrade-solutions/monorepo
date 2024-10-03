@@ -1,12 +1,13 @@
+import { TradeStatus } from 'dex-helpers';
+import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
-import { useSendTransaction, useSwitchChain, useWalletClient } from 'wagmi';
+import { useSwitchChain, useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
-import { ExchangeP2PStatus } from '../../../../app/constants/p2p';
 import { generateTxParams } from '../../../../app/helpers/transactions';
-import { AssetModel, Trade } from '../../../../app/types/p2p-swaps';
+import { useSendTransaction } from '../../../hooks/useSendTransaction';
 
 export default function StageDirectTransfer({
   value,
@@ -19,12 +20,9 @@ export default function StageDirectTransfer({
   value: StageStatuses | null;
   onChange: (status: StageStatuses) => void;
 }) {
-  const { switchChain } = useSwitchChain();
-  const { data: walletClient } = useWalletClient();
-  const { sendTransaction } = useSendTransaction();
-
+  const amount = Number(trade.amount1);
+  const recepient = trade.exchangerWalletAddress;
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
-
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
       onChange(StageStatuses.success);
@@ -39,36 +37,25 @@ export default function StageDirectTransfer({
     },
   };
 
-  const makeDirectTransfer = () => {
-    const txParams = generateTxParams({
-      asset: from,
-      amount: trade.amount1,
-      to: trade.exchangerWalletAddress,
-    });
-    sendTransaction({ ...txParams, chainId: from.chainId }, txSentHandlers);
-  };
+  const { data: walletClient } = useWalletClient();
+  const { sendTransaction } = useSendTransaction({
+    asset: from,
+    amount,
+    recepient,
+    txSentHandlers,
+  });
 
   const initiateNewTx = () => {
     onChange(StageStatuses.requested);
     setSendTransactionFailure('');
-    switchChain(
-      { chainId: from.chainId },
-      {
-        onSuccess: makeDirectTransfer,
-        onError: (e) => {
-          console.error(e);
-          // try execute makeTransaction without switching
-          makeDirectTransfer();
-        },
-      },
-    );
+    sendTransaction();
   };
 
   useEffect(() => {
     if (
       value !== StageStatuses.requested &&
       walletClient &&
-      trade?.status === ExchangeP2PStatus.new
+      trade?.status === TradeStatus.new
     ) {
       initiateNewTx();
     } else if (trade.clientTransactionHash) {

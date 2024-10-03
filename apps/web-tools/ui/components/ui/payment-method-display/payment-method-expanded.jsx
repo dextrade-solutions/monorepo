@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
+import { PaymentContentTypes } from 'dex-helpers';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { PaymentContentTypes } from '../../../../app/constants/p2p';
 import { humanizePaymentMethodName } from '../../../../app/helpers/p2p';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CopyData from '../copy-data';
@@ -32,7 +32,7 @@ export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
       case PaymentContentTypes.fullName:
       case PaymentContentTypes.ban:
         return (
-          <Box key={fieldKey} display="flex" alignItems='center'>
+          <Box key={fieldKey} display="flex" alignItems="center">
             <Typography className="flex-grow" textAlign="left">
               {fieldName}
             </Typography>

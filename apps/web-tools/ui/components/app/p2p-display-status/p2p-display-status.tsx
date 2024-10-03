@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 import { Box, Typography } from '@mui/material';
+import { TradeStatus } from 'dex-helpers';
 import React from 'react';
 
-import { ExchangeP2PStatus } from '../../../../app/constants/p2p';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Icon from '../../ui/icon';
 import PulseLoader from '../../ui/pulse-loader';
@@ -22,7 +22,7 @@ const ICON_BY_STATUS = {
   DISPUTE: <Icon color="warning.light" name="info" />,
 };
 
-export const P2PDisplayStatus: React.FC<{ status: ExchangeP2PStatus }> = ({
+export const P2PDisplayStatus: React.FC<{ status: TradeStatus }> = ({
   status,
 }) => {
   const t = useI18nContext();

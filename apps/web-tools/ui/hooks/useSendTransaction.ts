@@ -1,39 +1,81 @@
-import { useSendTransaction as useWcSendTransaction } from 'wagmi';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { Transaction } from '@solana/web3.js';
+import { NetworkNames } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
+import { parseUnits } from 'viem';
+import {
+  useSwitchChain,
+  useSendTransaction as useWcSendTransaction,
+} from 'wagmi';
 
 import { isEthTypeAsset } from '../../app/helpers/chain-helpers/is-eth-type-asset';
+import { buildTxSol } from '../../app/helpers/sol-scripts/send-sol';
 import { generateTxParams } from '../../app/helpers/transactions';
-import { AssetModel } from '../../app/types/p2p-swaps';
-import { NetworkNames } from 'dex-helpers';
-import { solfareWalletClient } from '../../app/helpers/wallets/solfare';
 
-export function useSendTransactions({
+export function useSendTransaction({
   asset,
   amount,
   recepient,
   txSentHandlers,
 }: {
   asset: AssetModel;
-  amount: string;
+  amount: number;
   recepient: string;
-  txSentHandlers: { onSuccess: () => void; onError: () => void };
+  txSentHandlers: {
+    onSuccess: (txHash: string) => void;
+    onError: (e: unknown) => void;
+  };
 }) {
-  const { sendTransaction } = useWcSendTransaction();
+  if (!asset.decimals) {
+    throw new Error('useSendTransaction - asset.decimals not specified');
+  }
+  let txSend;
+  const value = parseUnits(String(amount), asset.decimals);
 
-  let wrappedSendTransaction;
+  const { sendTransaction: sendTxEvm } = useWcSendTransaction();
+  const { switchChain } = useSwitchChain();
+
+  const { publicKey, sendTransaction: sendTxSol } = useWallet();
+  const { connection } = useConnection();
 
   if (isEthTypeAsset(asset)) {
-    wrappedSendTransaction = () => {
+    const evmTxSend = () => {
       const txParams = generateTxParams({
         asset,
         amount,
         to: recepient,
       });
-      sendTransaction({ ...txParams, chainId: asset.chainId }, txSentHandlers);
+      sendTxEvm({ ...txParams, chainId: asset.chainId }, txSentHandlers);
     };
+
+    txSend = () =>
+      switchChain(
+        { chainId: asset.chainId },
+        {
+          onSuccess: evmTxSend,
+          onError: (e) => {
+            console.error(e);
+            // try execute makeTransaction without switching
+            evmTxSend();
+          },
+        },
+      );
   }
 
   if (asset.network === NetworkNames.solana) {
-    const tx = new Trasaction
-    const txSignature: string = solfareWalletClient.signAndSendTransaction();
+    txSend = () => {
+      if (!publicKey) {
+        throw new Error('sendTxSol - wallet is not connected');
+      }
+      const tx = buildTxSol({
+        fromPubkey: publicKey,
+        recepientAddress: recepient,
+        value: Number(value),
+      });
+      return sendTxSol(tx, connection)
+        .then(txSentHandlers.onSuccess)
+        .catch(txSentHandlers.onError);
+    };
   }
+  return { sendTransaction: txSend };
 }

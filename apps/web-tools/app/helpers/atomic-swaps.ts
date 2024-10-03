@@ -1,8 +1,8 @@
+import { BUILT_IN_NETWORKS, NetworkNames } from 'dex-helpers';
 import { addHexPrefix } from 'ethereumjs-util';
 import { encodePacked, sha256 } from 'viem';
 
 import { ATOMIC_SWAP_ABI } from '../constants/abi';
-import { BUILT_IN_NETWORKS, NetworkNames } from '../constants/p2p';
 import { AssetModel } from '../types/p2p-swaps';
 
 export const NULLISH_TOKEN_ADDRESS =

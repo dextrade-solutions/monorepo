@@ -6,15 +6,19 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatCurrency, formatDate, formatFundsAmount } from 'dex-helpers';
+import {
+  TradeType,
+  formatCurrency,
+  formatDate,
+  formatFundsAmount,
+} from 'dex-helpers';
+import { CoinModel, Trade } from 'dex-helpers/types';
 import { useMemo } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import { TradeType } from '../../../../../app/constants/p2p';
 import { SECOND } from '../../../../../app/constants/time';
 import { parseCoin } from '../../../../../app/helpers/p2p';
 import { determineTradeType } from '../../../../../app/helpers/utils';
-import { CoinModel, Trade } from '../../../../../app/types/p2p-swaps';
 import { EXCHANGE_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAtomicSwap } from '../../../../hooks/useAtomicSwap';

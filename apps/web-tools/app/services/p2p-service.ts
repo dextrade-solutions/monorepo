@@ -1,9 +1,9 @@
 import axios, { Axios, InternalAxiosRequestConfig } from 'axios';
 
-import { TradeType } from '../constants/p2p';
 import { DEXTRADE_BASE_URL } from '../helpers/constants';
 import { AuthParams } from '../types/dextrade';
 import { AdFilterModel, TradeFilterModel } from '../types/p2p-swaps';
+import { TradeType } from 'dex-helpers';
 
 class P2PService {
   axios: Axios;
