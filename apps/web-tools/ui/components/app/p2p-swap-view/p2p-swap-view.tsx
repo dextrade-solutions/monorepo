@@ -144,7 +144,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
-      return 0;
       if (ad.isAtomicSwap) {
         return 0;
       }

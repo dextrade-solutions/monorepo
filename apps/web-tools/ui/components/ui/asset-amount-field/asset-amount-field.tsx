@@ -21,7 +21,6 @@ import {
 import { AssetInputValue, AssetModel } from 'dex-helpers/types';
 import React from 'react';
 import { NumericFormat } from 'react-number-format';
-import { useAccount } from 'wagmi';
 
 import { ButtonIcon } from '../button-icon';
 import PulseLoader from '../pulse-loader';
@@ -66,7 +65,6 @@ export const AssetAmountField = ({
     connecting: isSolanaWalletConnecting,
     wallet,
     disconnect,
-    sendTransaction,
   } = useWallet();
   const { setVisible: setModalVisible } = useWalletModal();
   const displayBalance =
@@ -77,48 +75,26 @@ export const AssetAmountField = ({
       <CardHeader
         title={
           <Box display="flex" alignItems="center">
-            <UrlIcon size={40} url={getCoinIconByUid(asset.uid)} />
+            <UrlIcon size={60} url={getCoinIconByUid(asset.uid)} />
             <Box marginLeft={2}>
-              <Typography>{asset.symbol}</Typography>
-              {!asset.isNative && (
-                <Typography color="text.secondary" variant="body2">
-                  {asset.standard.toUpperCase()}
+              <Box display="flex" alignItems="flex-end">
+                <Typography variant="h5" fontWeight="bold">
+                  {asset.symbol}
                 </Typography>
-              )}
-            </Box>
-            <Box className="flex-grow"></Box>
-            <Box display="flex" flexDirection="column" justifyContent="center">
-              {isSolanaInput && (
-                <Box marginBottom={2}>
-                  <Button
-                    variant="outlined"
-                    onClick={() =>
-                      isSolanaWalletConnected
-                        ? disconnect()
-                        : setModalVisible(true)
-                    }
+                {!asset.isNative && (
+                  <Typography
+                    variant="h5"
+                    marginLeft={1}
+                    color="text.secondary"
                   >
-                    {isSolanaWalletConnected && (
-                      <Box display="flex">
-                        {shortenAddress(wallet.adapter.publicKey?.toBase58())}
-                        <Box marginLeft={2}>
-                          <UrlIcon url={wallet.adapter.icon} />
-                        </Box>
-                      </Box>
-                    )}
-                    {!isSolanaWalletConnected && 'Connect wallet'}
-                    {isSolanaWalletConnecting && (
-                      <Box marginX={1}>
-                        <PulseLoader />
-                      </Box>
-                    )}
-                  </Button>
-                </Box>
-              )}
+                    {asset.standard.toUpperCase()}
+                  </Typography>
+                )}
+              </Box>
               {displayBalance && (
-                <Box textAlign="right" onClick={() => {}}>
-                  <Typography color="text.secondary" variant="body2">
-                    Balance:
+                <Box marginTop={0.5}>
+                  <Typography variant="body2" color="text.secondary">
+                    Balance
                   </Typography>
                   {balance ? (
                     <Card
@@ -139,12 +115,8 @@ export const AssetAmountField = ({
                         >
                           {balance.formattedValue}
                         </Typography>
-                        <Typography
-                          as="span"
-                          color="text.secondary"
-                          fontWeight="bold"
-                        >
-                          {formatCurrency(balance.inUsdt, 'usd')}
+                        <Typography as="span" color="text.secondary">
+                          {`(${formatCurrency(balance.inUsdt, 'usd')})`}
                         </Typography>
                       </CardActionArea>
                     </Card>
@@ -152,6 +124,34 @@ export const AssetAmountField = ({
                     <Skeleton width={100} />
                   )}
                 </Box>
+              )}
+            </Box>
+            <Box className="flex-grow"></Box>
+            <Box>
+              {isSolanaInput && (
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    isSolanaWalletConnected
+                      ? disconnect()
+                      : setModalVisible(true)
+                  }
+                >
+                  {isSolanaWalletConnected && (
+                    <Box display="flex">
+                      {shortenAddress(wallet.adapter.publicKey?.toBase58())}
+                      <Box marginLeft={2}>
+                        <UrlIcon url={wallet.adapter.icon} />
+                      </Box>
+                    </Box>
+                  )}
+                  {!isSolanaWalletConnected && 'Connect wallet'}
+                  {isSolanaWalletConnecting && (
+                    <Box marginX={1}>
+                      <PulseLoader />
+                    </Box>
+                  )}
+                </Button>
               )}
             </Box>
           </Box>
