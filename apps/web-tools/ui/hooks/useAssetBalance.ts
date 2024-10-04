@@ -1,11 +1,12 @@
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 import { NetworkNames, formatFundsAmount } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
+import { useEffect, useState } from 'react';
 import { erc20Abi, formatUnits, hexToNumber } from 'viem';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
-import { AssetModel } from '../../app/types/p2p-swaps';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useEffect, useState } from 'react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { getAssociatedTokenAccount } from '../../app/helpers/sol-scripts/get-associated-token-account';
 
 function useAccountBalance(chainId: number | null) {
   const { address } = useAccount();
@@ -49,7 +50,7 @@ function useErc20Balance(chainId: number | null, contract: string | null) {
   return null;
 }
 
-function useSolanaBalance() {
+function useSolanaBalance(asset: AssetModel) {
   const [balance, setBalance] = useState(0n);
   const { connection } = useConnection();
   const { publicKey } = useWallet();
@@ -62,19 +63,23 @@ function useSolanaBalance() {
       }
 
       try {
-        connection.onAccountChange(
-          publicKey,
-          (updatedAccountInfo) => {
-            setBalance(BigInt(updatedAccountInfo.lamports));
-          },
-          'confirmed',
-        );
-        const accountInfo = await connection.getAccountInfo(publicKey);
-
-        if (accountInfo) {
-          setBalance(BigInt(accountInfo.lamports));
+        // connection.onAccountChange(
+        //   account,
+        //   (updatedAccountInfo) => {
+        //     setBalance(BigInt(updatedAccountInfo.lamports));
+        //   },
+        //   'confirmed',
+        // );
+        if (asset.contract) {
+          const associatedAccount = await getAssociatedTokenAccount(
+            connection,
+            new PublicKey(asset.contract),
+            publicKey,
+          );
+          setBalance(associatedAccount.amount);
         } else {
-          throw new Error('Account info not found');
+          const accountInfo = await connection.getAccountInfo(account);
+          setBalance(BigInt(accountInfo?.lamports || 0));
         }
       } catch (error) {
         console.error('Failed to retrieve account info:', error);
@@ -88,7 +93,7 @@ function useSolanaBalance() {
 
 export function getBalanceHook(asset: AssetModel) {
   if (asset.network === NetworkNames.solana) {
-    return useSolanaBalance;
+    return () => useSolanaBalance(asset);
   }
   if (asset.contract) {
     return useErc20Balance;

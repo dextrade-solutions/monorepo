@@ -150,13 +150,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
-      if (ad.isAtomicSwap) {
+      if (ad.isAtomicSwap || !assetTo.chainId || nativeTo?.isFiat) {
         return 0;
       }
       let incomingFeeCalculated = 0;
-      if (nativeTo?.isFiat) {
-        return 0;
-      }
       if (!nativeTo?.decimals) {
         throw new Error('calcIncomingFee - nativeTo must be contain decimals');
       }

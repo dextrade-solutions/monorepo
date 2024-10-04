@@ -28,6 +28,7 @@ const LOCAL_COINS_URLS = {
   binance: './images/coins/binancecoin.png',
   humanode: './images/coins/humanode.svg',
   philtoken: './images/coins/phil.svg',
+  'cat-in-a-dogs-world': './images/coins/mew.png',
   default: './images/coins/default.svg',
 };
 

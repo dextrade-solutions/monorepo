@@ -1,8 +1,9 @@
+import { NetworkNames } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
 import { hexToNumber, formatUnits } from 'viem';
 import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
 
 import { generateTxParams } from '../../app/helpers/transactions';
-import { AssetModel } from '../../app/types/p2p-swaps';
 
 type FeeParams = {
   asset: AssetModel;
@@ -11,7 +12,7 @@ type FeeParams = {
   to: string;
 };
 
-export const useFee = ({ asset, amount, from, to }: FeeParams) => {
+const useWCFee = ({ asset, amount, from, to }: FeeParams) => {
   const chainId = asset.chainId ? hexToNumber(asset.chainId) : null;
   const estimateFee = useEstimateFeesPerGas({ chainId });
 
@@ -41,7 +42,27 @@ export const useFee = ({ asset, amount, from, to }: FeeParams) => {
       loading: false,
     };
   }
+
   return {
-    loading: true,
+    loading: false,
+  };
+};
+
+const useSolFee = (params: FeeParams) => {
+  return {
+    fee: 1,
+    loading: false,
+  };
+};
+
+export const useFee = (params: FeeParams) => {
+  if (params.asset.chainId) {
+    return useWCFee;
+  } else if (params.asset.network === NetworkNames.solana) {
+    return useSolFee;
+  }
+  return {
+    fee: 0,
+    loading: false,
   };
 };

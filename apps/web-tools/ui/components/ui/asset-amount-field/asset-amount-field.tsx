@@ -20,7 +20,7 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { AssetInputValue, AssetModel } from 'dex-helpers/types';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NumericFormat } from 'react-number-format';
 
 import { ButtonIcon } from '../button-icon';
@@ -60,6 +60,7 @@ export const AssetAmountField = ({
       [field]: v,
     });
   };
+  const inputRef = useRef(null);
   const isSolanaInput = asset.network === NetworkNames.solana;
   const {
     connected: isSolanaWalletConnected,
@@ -71,6 +72,11 @@ export const AssetAmountField = ({
   const displayBalance =
     (isSolanaInput && isSolanaWalletConnected) ||
     (asset.chainId && !asset.isFiat);
+  useEffect(() => {
+    if (!disabled && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [disabled]);
   return (
     <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
       <CardHeader
@@ -171,6 +177,7 @@ export const AssetAmountField = ({
           variant="standard"
           valueIsNumericString
           InputProps={{
+            inputRef,
             disableUnderline: true,
             style: {
               fontSize: 25,

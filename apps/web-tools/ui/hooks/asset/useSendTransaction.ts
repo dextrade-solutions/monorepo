@@ -62,11 +62,11 @@ export function useSendTransaction({
   }
 
   if (asset.network === NetworkNames.solana) {
-    txSend = () => {
+    txSend = async () => {
       if (!publicKey) {
         throw new Error('sendTxSol - wallet is not connected');
       }
-      const tx = buildTxSol({
+      const tx = await buildTxSol({
         asset,
         connection,
         fromPubkey: publicKey,

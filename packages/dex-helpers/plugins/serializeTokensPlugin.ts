@@ -45,7 +45,7 @@ function transformTokens(filename: string) {
     const { platforms } = token;
     const tokens = platforms.reduce(
       (platformsAcc, { address, decimals, type }) => {
-        const networkInfo = NETWORK_INFO_BY_TOKEN_TYPE[type.toLowerCase()];
+        const networkInfo = NETWORK_INFO_BY_TOKEN_TYPE[type.toUpperCase()];
         if (!networkInfo) {
           return platformsAcc;
         }

@@ -44,7 +44,7 @@ const createSendTokenInstruction = async ({
   );
 };
 
-export const buildTxSol = ({
+export const buildTxSol = async ({
   asset,
   connection,
   fromPubkey,
@@ -62,7 +62,7 @@ export const buildTxSol = ({
   const transaction = new Transaction();
   let sendInstruction;
   if (asset.contract) {
-    sendInstruction = createSendTokenInstruction({
+    sendInstruction = await createSendTokenInstruction({
       connection,
       fromWallet: fromPubkey,
       toWallet: toPubkey,

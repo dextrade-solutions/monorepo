@@ -10,11 +10,12 @@ import {
 import { MINUTE } from '../time';
 
 export enum NetworkTypes {
-  fiat = 'fiat',
-  bep20 = 'bep20',
-  erc20 = 'erc20',
-  bip49 = 'bip49',
-  trc20 = 'trc20',
+  fiat = 'FIAT',
+  bep20 = 'BEP20',
+  erc20 = 'ERC20',
+  bip49 = 'BIP49',
+  trc20 = 'TRC20',
+  solana = 'SOLANA',
 }
 
 export enum NetworkNames {
@@ -122,5 +123,9 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
   [NetworkTypes.trc20]: {
     network: NetworkNames.tron,
     info: BUILT_IN_NETWORKS[NetworkNames.tron],
+  },
+  [NetworkTypes.solana]: {
+    network: NetworkNames.solana,
+    info: BUILT_IN_NETWORKS[NetworkNames.solana],
   },
 };

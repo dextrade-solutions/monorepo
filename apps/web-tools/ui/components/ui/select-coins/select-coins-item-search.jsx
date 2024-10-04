@@ -1,6 +1,6 @@
 import { InputAdornment, TextField } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 // import { Icon, ICON_NAMES } from '../../../components/component-library';
 // import TextField from '../../../components/ui/text-field';
@@ -52,14 +52,18 @@ export const SelectCoinsItemSearch = ({
     },
     [onChange],
   );
+  const inputRef = useRef();
 
-  const handleClear = useCallback(() => {
-    onChange('');
-  }, [onChange]);
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current.focus();
+    }, 1000);
+  }, []);
 
   return (
     <div className="select-coins__search">
       <TextField
+        inputRef={inputRef}
         className="select-coins__search__input"
         placeholder={placeholder}
         type="text"
