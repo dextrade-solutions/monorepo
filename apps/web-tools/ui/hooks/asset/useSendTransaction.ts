@@ -1,5 +1,4 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Transaction } from '@solana/web3.js';
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { parseUnits } from 'viem';
@@ -8,9 +7,9 @@ import {
   useSendTransaction as useWcSendTransaction,
 } from 'wagmi';
 
-import { isEthTypeAsset } from '../../app/helpers/chain-helpers/is-eth-type-asset';
-import { buildTxSol } from '../../app/helpers/sol-scripts/send-sol';
-import { generateTxParams } from '../../app/helpers/transactions';
+import { isEthTypeAsset } from '../../../app/helpers/chain-helpers/is-eth-type-asset';
+import { buildTxSol } from '../../../app/helpers/sol-scripts/send-sol';
+import { generateTxParams } from '../../../app/helpers/transactions';
 
 export function useSendTransaction({
   asset,

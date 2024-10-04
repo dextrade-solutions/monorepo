@@ -37,7 +37,7 @@ export function useAdValidation({ from, to, ad }: AdParams) {
     submitBtnError = `Ad limit in ${to.asset.symbol} exceeded`;
     disabledBtn = true;
   }
-  if (!to.asset.isFiat && !to.asset.chainId && !to.input.recepientAddress) {
+  if (!to.asset.isFiat && !to.account.address && !to.input.recepientAddress) {
     submitBtnError = 'Recepient address not specified';
     disabledBtn = true;
   }

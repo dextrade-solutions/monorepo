@@ -47,7 +47,6 @@ interface IProps {
 }
 
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
-  const isCrypto = !from.isFiat && !to.isFiat;
   const t = useI18nContext();
   const navigate = useNavigate();
   const [stagesStatuses, setStagesStatuses] = useState({

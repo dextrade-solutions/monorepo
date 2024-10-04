@@ -2,12 +2,11 @@ import { TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
-import { useSwitchChain, useWalletClient } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
-import { generateTxParams } from '../../../../app/helpers/transactions';
-import { useSendTransaction } from '../../../hooks/useSendTransaction';
+import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
 
 export default function StageDirectTransfer({
   value,

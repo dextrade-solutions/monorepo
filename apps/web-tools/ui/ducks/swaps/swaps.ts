@@ -114,32 +114,31 @@ export {
 
 export default reducer;
 
+type AssetPack = {
+  asset: AssetModel;
+  input: AssetInputValue;
+  balance: number;
+  account: {
+    address: string;
+    reedeemAddress?: string | null;
+    refundAddress?: string | null;
+  };
+};
+
 export const createSwapP2P = (props: {
-  fromInput: AssetInputValue;
-  toInput: AssetInputValue;
+  from: AssetPack;
+  to: AssetPack;
   exchange: AdItem;
   slippage: number;
-  assetFrom: AssetModel;
-  assetTo: AssetModel;
   paymentMethod?: UserPaymentMethod;
 }) => {
   return async (dispatch: AppDispatch) => {
-    const {
-      fromInput,
-      toInput,
-      exchange,
-      assetFrom,
-      assetTo,
-      paymentMethod,
-      slippage,
-    } = props;
-    const fromAddress = await getWalletAddress(assetFrom);
-    const toAddress = await getWalletAddress(assetTo);
+    const { from, to, exchange, paymentMethod, slippage } = props;
 
-    if (!fromInput.amount) {
+    if (!from.input.amount) {
       throw new Error('From amount is not specified');
     }
-    if (!toInput.amount) {
+    if (!to.input.amount) {
       throw new Error('To amount is not specified');
     }
     const keypair = genKeyPair();
@@ -147,11 +146,11 @@ export const createSwapP2P = (props: {
       return [
         `${exchange.fromCoin.ticker}_${exchange.fromCoin.networkType || 'NATIVE'}`,
         `${exchange.toCoin.ticker}_${exchange.toCoin.networkType || 'NATIVE'}`,
-        fromInput.amount,
-        toInput.amount,
+        from.input.amount,
+        to.input.amount,
         remove0x(keypair.hashLock),
-        toAddress.reedeemAddress,
-        fromAddress.refundAddress,
+        to.account.reedeemAddress,
+        from.account.refundAddress,
         BUILT_IN_NETWORKS[exchange.fromCoin.networkName].atomicSwapExpiration /
           1000n,
       ].join('|');
@@ -162,13 +161,13 @@ export const createSwapP2P = (props: {
       dispatch,
       P2PService.clientExchangeStart(exchangePairType, {
         exchangerSettingsId: exchange.id,
-        amount1: Number(fromInput.amount),
-        amount2: Number(toInput.amount),
+        amount1: Number(from.input.amount),
+        amount2: Number(to.input.amount),
         paymentMethodId: paymentMethod?.userPaymentMethodId,
         clientWalletAddress:
           exchange.toCoin.networkName === NetworkNames.fiat
             ? undefined
-            : toInput.recepientAddress || toAddress.address,
+            : to.input.recepientAddress || to.account.address,
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),

@@ -18,7 +18,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
 
 import { getNative } from '../../../../app/helpers/p2p';
 import { fetchRates } from '../../../../app/helpers/rates';
@@ -29,6 +28,7 @@ import {
   getFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
 import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
+import { useAccount } from '../../../hooks/asset/useAccount';
 import { useAdValidation } from '../../../hooks/useAdValidation';
 import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
@@ -52,11 +52,11 @@ const RECALCULATE_DELAY = 1000;
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { address } = useAccount();
+  const accountFrom = useAccount(assetFrom);
+  const accountTo = useAccount(assetTo);
   const [nativeFrom, setNativeFrom] = useState<AssetModel>();
   const [nativeTo, setNativeTo] = useState<AssetModel>();
   const [paymentMethodShow, setPaymentMethodShow] = useState(false);
-  // const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(0);
@@ -73,8 +73,22 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     recepientAddress: null,
     loading: false,
   });
+
   const balanceFrom = useAssetBalance(assetFrom);
   const balanceTo = useAssetBalance(assetTo);
+
+  const from = {
+    account: accountFrom,
+    asset: assetFrom,
+    input: fromInput,
+    balance: balanceFrom,
+  };
+  const to = {
+    account: accountTo,
+    asset: assetTo,
+    input: toInput,
+    balance: balanceTo,
+  };
 
   useEffect(() => {
     const from =
@@ -118,21 +132,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const { submitBtnError, disabledBtn } = useAdValidation({
     ad,
-    from: {
-      asset: assetFrom,
-      input: fromInput,
-      balance: balanceFrom,
-    },
-    to: {
-      asset: assetTo,
-      input: toInput,
-      balance: balanceTo,
-    },
+    from,
+    to,
   });
   const { fee: outgoingFee } = useFee({
     asset: assetFrom,
     amount: fromInput.amount,
-    from: address,
+    from: accountFrom.address,
     to: ad.walletAddress,
   });
 
@@ -164,12 +170,16 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           asset: assetTo,
           amount: toAmount,
           from: ad.walletAddressInNetwork2,
-          to: toInput.recepientAddress || address,
+          to: toInput.recepientAddress || accountTo.address,
           isAtomicSwap: ad.isAtomicSwap,
         });
+        if (assetTo.contract) {
+          txParams.contractAddress = txParams.to;
+          delete txParams.to;
+        }
         const { data } = await P2PService.estimateFee({
           ...txParams,
-          value: txParams.value ? Number(txParams.value) : 0,
+          value: txParams.value ? Number(txParams.value) : undefined,
           network: assetTo.network,
         });
         incomingFeeCalculated = Number(
@@ -259,10 +269,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       const result = await auth(() =>
         dispatch(
           createSwapP2P({
-            assetFrom,
-            assetTo,
-            fromInput,
-            toInput,
+            from,
+            to,
             exchange: ad,
             paymentMethod,
             slippage: 0.5,

@@ -1,0 +1,4 @@
+[submodule "web-tools"]
+path = ./apps/web-tools/
+url = git@gitlab.cronrate.com:dextrade/monorepo.git
+
