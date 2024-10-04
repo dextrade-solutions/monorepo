@@ -68,6 +68,8 @@ export function useSendTransaction({
         throw new Error('sendTxSol - wallet is not connected');
       }
       const tx = buildTxSol({
+        asset,
+        connection,
         fromPubkey: publicKey,
         recepientAddress: recepient,
         value: Number(value),

@@ -4,25 +4,13 @@ import wasm from 'vite-plugin-wasm';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    // inject({
-    //   include: ['./app/**/*.js', './ui/**/*.js'],
-    //   modules: { Buffer: ['buffer', 'Buffer'], crypto: ['crypto', 'crypto'] },
-    // }),
-    wasm(),
-  ],
+  plugins: [react(), wasm()],
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
         global: 'globalThis',
       },
-      // plugins: [
-      //   NodeGlobalsPolyfillPlugin({
-      //     buffer: true,
-      //   }),
-      // ],
     },
   },
   build: {

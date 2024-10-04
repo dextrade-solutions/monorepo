@@ -8,6 +8,7 @@ import {
   Skeleton,
   CardActionArea,
   Button,
+  Divider,
 } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
@@ -75,7 +76,7 @@ export const AssetAmountField = ({
       <CardHeader
         title={
           <Box display="flex" alignItems="center">
-            <UrlIcon size={60} url={getCoinIconByUid(asset.uid)} />
+            <UrlIcon size={40} url={getCoinIconByUid(asset.uid)} />
             <Box marginLeft={2}>
               <Box display="flex" alignItems="flex-end">
                 <Typography variant="h5" fontWeight="bold">
@@ -157,7 +158,9 @@ export const AssetAmountField = ({
           </Box>
         }
       />
-      <Box paddingX={2} marginBottom={1}>
+      <Divider />
+
+      <Box paddingX={2} marginY={1}>
         <NumericFormat
           value={value.amount}
           customInput={TextField}
