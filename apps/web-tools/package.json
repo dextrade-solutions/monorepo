@@ -73,6 +73,7 @@
     "remote-redux-devtools": "^0.5.16",
     "uint8array-tools": "^0.0.9",
     "viem": "^2.9.29",
+    "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-wasm": "^3.3.0",
     "wagmi": "^2.12.11",
     "web3": "^4.8.0"
