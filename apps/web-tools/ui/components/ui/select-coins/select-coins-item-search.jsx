@@ -41,6 +41,7 @@ const EndIcon = ({ onClick }) => {
 };
 
 export const SelectCoinsItemSearch = ({
+  inputRef,
   value,
   placeholder,
   onChange,
@@ -52,13 +53,6 @@ export const SelectCoinsItemSearch = ({
     },
     [onChange],
   );
-  const inputRef = useRef();
-
-  useEffect(() => {
-    setTimeout(() => {
-      inputRef.current.focus();
-    }, 1000);
-  }, []);
 
   return (
     <div className="select-coins__search">
@@ -80,6 +74,7 @@ export const SelectCoinsItemSearch = ({
 };
 
 SelectCoinsItemSearch.propTypes = {
+  inputRef: PropTypes.node,
   placeholder: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,

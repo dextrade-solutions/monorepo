@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 
 import { SelectCoinsItemDropdown } from './select-coins-item-dropdown';
 import { SelectCoinsItemDropdownCollapse } from './select-coins-item-dropdown-collapse';
@@ -21,8 +21,15 @@ export const SelectCoinsItem = memo(
     fuseSearchKeys,
     shouldSearchForImports,
   }) => {
+    const inputRef = useRef(null);
     const t = useI18nContext();
     const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+      if (open) {
+        inputRef.current.focus();
+      }
+    }, [open]);
 
     const onClose = useCallback(() => {
       setOpen(false);
@@ -45,6 +52,7 @@ export const SelectCoinsItem = memo(
           reversed={reversed}
         >
           <SelectCoinsItemDropdown
+            inputRef={inputRef}
             placeholderInput={
               searchPlaceholder || t('Search name or contract address')
             }

@@ -6,6 +6,7 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
+import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount, NetworkNames } from 'dex-helpers';
 import {
   UserPaymentMethod,
@@ -40,6 +41,7 @@ import AssetItem from '../../ui/asset-item';
 import { ButtonIcon } from '../../ui/button-icon';
 import PaymentMethodPicker from '../modals/payment-method-picker';
 import P2PSwapSummary from '../p2p-swap-summary';
+import './index.scss';
 
 interface IProps {
   ad: AdItem;
@@ -404,6 +406,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       </Box>
       <Box marginTop={2}>
         <Button
+          className={classNames({ 'btn-error': Boolean(submitBtnError) })}
           fullWidth
           disabled={loadingStartExchange || disabledBtn}
           variant="contained"

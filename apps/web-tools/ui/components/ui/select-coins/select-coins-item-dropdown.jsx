@@ -42,6 +42,7 @@ const Placeholder = ({ loading, searchQuery }) => {
 };
 
 export const SelectCoinsItemDropdown = ({
+  inputRef,
   coin,
   items,
   showRateLabel,
@@ -140,6 +141,7 @@ export const SelectCoinsItemDropdown = ({
         onClose={handleClose}
       />
       <SelectCoinsItemSearch
+        inputRef={inputRef}
         value={searchQuery}
         onChange={handleChangeSearchValue}
         placeholder={placeholderInput}
@@ -175,6 +177,7 @@ Placeholder.propTypes = {
 };
 
 SelectCoinsItemDropdown.propTypes = {
+  inputRef: PropTypes.node,
   maxListItem: PropTypes.number.isRequired,
   coin: PropTypes.object,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
