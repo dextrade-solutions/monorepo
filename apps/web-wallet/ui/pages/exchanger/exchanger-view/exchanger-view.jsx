@@ -1,38 +1,32 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
 import { compose } from 'redux';
-import { EXCHANGER_AD_EDIT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
-  Size,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box/box';
 
+import AccountOptionsMenu from './account-options-menu';
+import ExchangerStatsCard from './exchange-stats-card';
+import { ExchangerWrap } from './exchanger-wrap';
+import { RatingOutput } from '../../../components/app/rating-output';
 import {
   AVATAR_ICON_SIZES,
   AvatarIcon,
   BUTTON_PRIMARY_SIZES,
   ButtonSecondary,
-  ICON_NAMES,
-  Icon,
   Text,
 } from '../../../components/component-library';
-import { Tab, Tabs } from '../../../components/ui/tabs';
-
-import ToggleButton from '../../../components/ui/toggle-button';
+import Box from '../../../components/ui/box/box';
 import Popover from '../../../components/ui/popover';
+import { Tab, Tabs } from '../../../components/ui/tabs';
+import ToggleButton from '../../../components/ui/toggle-button';
+import {
+  AlignItems,
+  DISPLAY,
+  FLEX_DIRECTION,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { EXCHANGER_AD_EDIT_ROUTE } from '../../../helpers/constants/routes';
 import ExchangerHistory from '../../p2p-orders/components/p2p-history';
-import { ExchangerType } from '../../../../shared/constants/exchanger';
-import { RatingOutput } from '../../../components/app/rating-output';
-import AccountOptionsMenu from './account-options-menu';
-import ExchangerStatsCard from './exchange-stats-card';
-import { ExchangerWrap } from './exchanger-wrap';
 
 const TABS = {
   EXCHANGES: 'exchanges',
@@ -190,18 +184,16 @@ class ExchangerView extends Component {
                     <span className="exchanger-view-content__not-configured">
                       {t('exchangerNotConfigured')}
                     </span>
-                    <ButtonSecondary
-                      size={BUTTON_PRIMARY_SIZES.LG}
-                      className="exchanger-view-content__create-btn"
-                      onClick={() =>
-                        this.props.history.push(EXCHANGER_AD_EDIT_ROUTE)
-                      }
-                    >
-                      {t('create')}
-                    </ButtonSecondary>
                   </>
                 )}
               </Box>
+              <ButtonSecondary
+                size={BUTTON_PRIMARY_SIZES.LG}
+                className="exchanger-view-content__create-btn"
+                onClick={() => this.props.history.push(EXCHANGER_AD_EDIT_ROUTE)}
+              >
+                {t('addNewAd')}
+              </ButtonSecondary>
             </>
           )}
         </ExchangerWrap>

@@ -46,7 +46,7 @@ export default function AdView() {
 
   let content = <Typography>Ad not found...</Typography>;
 
-  const [ad] = (data || []).filter((i) => !i.provider);
+  const [ad] = data || [];
   const supportedNonEvmChains = [NetworkNames.solana];
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);

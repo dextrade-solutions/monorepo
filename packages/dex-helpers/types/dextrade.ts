@@ -162,6 +162,7 @@ export type AdItem = {
   paymentMethod?: UserPaymentMethod;
   isKycVerified: boolean;
   timeToRefund: number;
+  provider: string;
 };
 
 export type AdSetting = {

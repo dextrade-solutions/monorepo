@@ -5,6 +5,7 @@ import {
   polygon as polygonConfig,
   gnosis as gnosisConfig,
   base as baseConfig,
+  xdc as xdcConfig,
 } from 'viem/chains';
 
 import { MINUTE } from '../time';
@@ -36,12 +37,14 @@ export enum NetworkNames {
   polygon = 'polygon',
   litecoin = 'litecoin',
   solana = 'solana',
+  xdc = 'xdc-network',
 
   // testnets
   sepolia = 'sepolia',
 }
 
 export const BUILT_IN_NETWORKS = {
+  // EVM
   [NetworkNames.ethereum]: {
     ...mainnetConfig,
     uid: 'ethereum',
@@ -74,6 +77,12 @@ export const BUILT_IN_NETWORKS = {
     name: 'Humanode',
     nativeCurrency: { name: 'Humanode', symbol: 'eHMND', decimals: 18 },
   },
+  [NetworkNames.xdc]: {
+    ...xdcConfig,
+    uid: 'xdce-crowd-sale',
+  },
+
+  // Non-EVM
   [NetworkNames.ton]: {
     id: null,
     uid: 'ton',

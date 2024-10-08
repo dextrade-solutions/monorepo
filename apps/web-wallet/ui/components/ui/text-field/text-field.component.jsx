@@ -248,10 +248,19 @@ const TextField = ({
       helperText={error}
       {...inputProps}
       {...textFieldProps}
+      slotProps={{
+        input: {
+          startAdornment,
+          endAdornment,
+        },
+      }}
+      sx={{
+        backgroundColor: 'var(--color-background-default)',
+        color: 'var(--color-text-alternative)',
+      }}
     />
   );
 };
-
 TextField.defaultProps = {
   error: null,
   dir: 'auto',

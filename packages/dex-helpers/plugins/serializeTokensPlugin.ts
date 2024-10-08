@@ -11,6 +11,7 @@ import {
 
 const REGISTRIES = [
   { filename: 'fiats', serializer: transformFiats },
+  { filename: 'tokens-custom', serializer: transformTokens },
   { filename: 'tokens', serializer: transformTokens },
   {
     filename: 'natives',
@@ -23,7 +24,8 @@ const REGISTRIES = [
           decimals: netConfig.nativeCurrency.decimals,
           symbol: netConfig.nativeCurrency.symbol,
           uid: netConfig.uid,
-          network,
+          network:
+            network === NetworkNames.xdc ? NetworkNames.binance : network,
           isFiat: false,
           isNative: true,
           weight: [

@@ -26,7 +26,7 @@ export default combineReducers({
   ),
   swaps: swapsReducer,
   localeMessages: persistReducer(
-    { key: 'localeMessages', storage },
+    { key: 'localeMessages', storage, blacklist: ['current'] },
     localeMessagesReducer,
   ),
 });

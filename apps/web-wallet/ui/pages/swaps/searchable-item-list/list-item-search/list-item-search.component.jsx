@@ -129,6 +129,7 @@ export default function ListItemSearch({
       startAdornment={renderAdornment()}
       autoComplete="off"
       autoFocus
+      variant="outlined"
     />
   );
 }

@@ -65,7 +65,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const [cancelLoading, setCancelLoading] = useState(false);
 
   const pairType = determineTradeType(exchange);
-  const inProgress = TRADE_ACTIVE_STATUSES.includes(exchange.status);
+  const isTradeStarted =
+    TRADE_ACTIVE_STATUSES.includes(exchange.status) &&
+    exchange.status !== TradeStatus.waitExchangerVerify;
 
   const stages: { component: React.ReactNode; key: string }[] = [];
   let content;
@@ -73,7 +75,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   let statusImage;
   let submitText;
 
-  if (inProgress && exchange.status !== TradeStatus.waitExchangerVerify) {
+  if (isTradeStarted) {
     if (pairType === TradeType.atomicSwap) {
       if (!from.isNative) {
         stages.push({
@@ -146,7 +148,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       </Typography>
     );
   }
-  submitText = 'View all trades';
+  submitText = t('viewAllTrades');
 
   if (exchange.status === TradeStatus.canceled) {
     statusImage = <SwapFailtureIcon />;
@@ -408,7 +410,11 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         />
       </Box>
       <div className="flex-grow" />
-      <Button fullWidth onClick={onSubmit} disabled={cancelLoading}>
+      <Button
+        fullWidth
+        onClick={onSubmit}
+        disabled={isTradeStarted || cancelLoading}
+      >
         {submitText}
       </Button>
     </Box>

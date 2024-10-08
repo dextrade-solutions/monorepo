@@ -152,7 +152,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
-      if (ad.isAtomicSwap || !assetTo.chainId || nativeTo?.isFiat) {
+      if (
+        ad.isAtomicSwap ||
+        !assetTo.chainId ||
+        nativeTo?.isFiat ||
+        ad.provider
+      ) {
         return 0;
       }
       let incomingFeeCalculated = 0;
@@ -373,7 +378,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">0.5%</Typography>
         </Box>
-        {outgoingFee && outgoingFee > 0 && nativeFrom?.isNative && (
+        {Boolean(outgoingFee && outgoingFee > 0 && nativeFrom?.isNative) && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">

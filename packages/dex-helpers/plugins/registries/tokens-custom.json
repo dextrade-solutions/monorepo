@@ -1,0 +1,47 @@
+[
+  {
+    "uid": "cat-in-a-dogs-world",
+    "name": "cat in a dogs world",
+    "code": "mew",
+    "market_cap_rank": null,
+    "coingecko_id": "phil",
+    "platforms": [
+      {
+        "type": "SOLANA",
+        "decimals": 5,
+        "address": "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
+        "symbol": "MEW"
+      }
+    ]
+  },
+  {
+    "uid": "philtoken",
+    "name": "PHIL",
+    "code": "phil",
+    "market_cap_rank": null,
+    "coingecko_id": "phil",
+    "platforms": [
+      {
+        "type": "erc20",
+        "decimals": 18,
+        "address": "0xc328a59E7321747aEBBc49FD28d1b32C1af8d3b2",
+        "symbol": "PHIL"
+      }
+    ]
+  },
+  {
+    "uid": "sqr",
+    "name": "SQR Token",
+    "code": "sqr",
+    "market_cap_rank": null,
+    "coingecko_id": "sqr",
+    "platforms": [
+      {
+        "type": "bep20",
+        "decimals": 8,
+        "address": "0x2B72867c32CF673F7b02d208B26889fEd353B1f8",
+        "symbol": null
+      }
+    ]
+  }
+]
