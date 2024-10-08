@@ -11,7 +11,6 @@ import {
   Divider,
 } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
   NetworkNames,
   formatCurrency,
@@ -20,11 +19,11 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { AssetInputValue, AssetModel } from 'dex-helpers/types';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 
+import SetWallet from '../../app/modals/set-wallet';
 import { ButtonIcon } from '../button-icon';
-import PulseLoader from '../pulse-loader';
 import UrlIcon from '../url-icon';
 
 interface IProps {
@@ -47,13 +46,14 @@ export const AssetAmountField = ({
   value = {
     amount: '',
     paymentMethod: null,
-    recepientAddress: null,
+    configuredWallet: null,
     loading: false,
   },
   disabled,
   onChange,
   reserve,
 }: IProps) => {
+  const [openSetWallet, setOpenSetWallet] = useState(false);
   const updateValue = (field: string, v: any) => {
     onChange({
       ...value,
@@ -62,13 +62,8 @@ export const AssetAmountField = ({
   };
   const inputRef = useRef(null);
   const isSolanaInput = asset.network === NetworkNames.solana;
-  const {
-    connected: isSolanaWalletConnected,
-    connecting: isSolanaWalletConnecting,
-    wallet,
-    disconnect,
-  } = useWallet();
-  const { setVisible: setModalVisible } = useWalletModal();
+  const showSetWallet = !asset.chainId && !asset.isFiat;
+  const { connected: isSolanaWalletConnected } = useWallet();
   const displayBalance =
     (isSolanaInput && isSolanaWalletConnected) ||
     (asset.chainId && !asset.isFiat);
@@ -79,6 +74,13 @@ export const AssetAmountField = ({
   }, [disabled]);
   return (
     <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
+      <SetWallet
+        asset={asset}
+        value={value.configuredWallet}
+        open={openSetWallet}
+        onChange={(v) => updateValue('configuredWallet', v)}
+        onClose={() => setOpenSetWallet(false)}
+      />
       <CardHeader
         title={
           <Box display="flex" alignItems="center">
@@ -135,29 +137,20 @@ export const AssetAmountField = ({
             </Box>
             <Box className="flex-grow"></Box>
             <Box>
-              {isSolanaInput && (
+              {showSetWallet && (
                 <Button
                   variant="outlined"
-                  onClick={() =>
-                    isSolanaWalletConnected
-                      ? disconnect()
-                      : setModalVisible(true)
-                  }
+                  onClick={() => setOpenSetWallet(true)}
                 >
-                  {isSolanaWalletConnected && (
+                  {value.configuredWallet && (
                     <Box display="flex">
-                      {shortenAddress(wallet.adapter.publicKey?.toBase58())}
+                      {shortenAddress(value.configuredWallet.address)}
                       <Box marginLeft={2}>
-                        <UrlIcon url={wallet.adapter.icon} />
+                        <UrlIcon url={value.configuredWallet.icon} />
                       </Box>
                     </Box>
                   )}
-                  {!isSolanaWalletConnected && 'Connect wallet'}
-                  {isSolanaWalletConnecting && (
-                    <Box marginX={1}>
-                      <PulseLoader />
-                    </Box>
-                  )}
+                  {!value.configuredWallet && 'Set wallet'}
                 </Button>
               )}
             </Box>
@@ -225,15 +218,6 @@ export const AssetAmountField = ({
                 </Typography>
               </CardActionArea>
             </Card>
-          </Box>
-        )}
-        {!isSolanaInput && !asset.chainId && !asset.isFiat && (
-          <Box marginBottom={2}>
-            <TextField
-              placeholder="Recepient address"
-              fullWidth
-              onChange={(e) => updateValue('recepientAddress', e.target.value)}
-            />
           </Box>
         )}
       </Box>

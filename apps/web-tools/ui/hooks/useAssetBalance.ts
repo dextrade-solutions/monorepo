@@ -92,6 +92,9 @@ function useSolanaBalance(asset: AssetModel) {
 }
 
 export function getBalanceHook(asset: AssetModel) {
+  if (asset.network === NetworkNames.tron) {
+    return () => null;
+  }
   if (asset.network === NetworkNames.solana) {
     return () => useSolanaBalance(asset);
   }

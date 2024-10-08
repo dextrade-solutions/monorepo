@@ -1,5 +1,6 @@
 import { Box, Button, Fade, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { SECOND } from 'dex-helpers';
 import { AdPreview, AdPreviewSkeleton } from 'dex-ui';
 import { debounce } from 'lodash';
 import { useMemo, useState } from 'react';
@@ -67,6 +68,7 @@ export default function P2PAds() {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : null;
     },
+    refetchInterval: 10 * SECOND,
   });
 
   const handleSearchByProviderName = debounce((v: string) => {

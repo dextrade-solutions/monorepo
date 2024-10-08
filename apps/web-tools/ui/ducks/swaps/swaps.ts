@@ -167,7 +167,7 @@ export const createSwapP2P = (props: {
         clientWalletAddress:
           exchange.toCoin.networkName === NetworkNames.fiat
             ? undefined
-            : to.input.recepientAddress || to.account.address,
+            : to.input.configuredWallet?.address || to.account.address,
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),

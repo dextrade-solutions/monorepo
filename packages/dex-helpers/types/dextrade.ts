@@ -129,7 +129,10 @@ export type AssetBalance = {
 export type AssetInputValue = {
   amount: number | string;
   loading: boolean;
-  recepientAddress: null | string;
+  configuredWallet: {
+    address: string;
+    icon: string;
+  } | null;
 };
 
 export type AdItem = {
@@ -162,7 +165,7 @@ export type AdItem = {
   paymentMethod?: UserPaymentMethod;
   isKycVerified: boolean;
   timeToRefund: number;
-  provider: string;
+  provider?: string;
 };
 
 export type AdSetting = {

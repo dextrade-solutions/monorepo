@@ -1,5 +1,19 @@
 [
   {
+    "uid": "tether",
+    "name": "Tether",
+    "code": "USDT",
+    "market_cap_rank": null,
+    "platforms": [
+      {
+        "type": "TRC20",
+        "decimals": 18,
+        "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+        "symbol": "USDT"
+      }
+    ]
+  },
+  {
     "uid": "cat-in-a-dogs-world",
     "name": "cat in a dogs world",
     "code": "mew",

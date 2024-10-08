@@ -67,12 +67,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const [fromInput, setFromInput] = useState<AssetInputValue>({
     amount: '',
-    recepientAddress: null,
+    configuredWallet: null,
     loading: false,
   });
   const [toInput, setToInput] = useState<AssetInputValue>({
     amount: '',
-    recepientAddress: null,
+    configuredWallet: null,
     loading: false,
   });
 
@@ -174,7 +174,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           asset: assetTo,
           amount: toAmount,
           from: ad.walletAddressInNetwork2,
-          to: toInput.recepientAddress || accountTo.address,
+          to: toInput.configuredWallet?.address || accountTo.address,
           isAtomicSwap: ad.isAtomicSwap,
         });
         if (assetTo.contract) {
@@ -261,7 +261,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   useEffect(() => {
     updateFrom({
       amount: fromTokenInputValue,
-      recepientAddress: null,
+      configuredWallet: null,
       loading: false,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
