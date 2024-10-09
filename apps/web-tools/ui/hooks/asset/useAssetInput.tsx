@@ -30,7 +30,7 @@ export const useAssetInput = ({
   const dispatch = useDispatch();
   const balance = useAssetBalance(asset);
 
-  const onChangeWalletConfigure = () => {};
+  // const onChangeWalletConfigure = () => {};
 
   const showConfigureWallet = () => {
     dispatch(

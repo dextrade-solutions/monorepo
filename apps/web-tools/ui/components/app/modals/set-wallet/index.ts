@@ -1,1 +1,1 @@
-export { SetWallet as default } from './set-wallet';
+export { default } from './set-wallet';

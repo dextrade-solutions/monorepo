@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import AlertModalComponent from './alert-modal';
 import ImageModalComponent from './image-modal';
+import SetWallet from './set-wallet';
 import TradeHistoryRow from './trade-history-row-modal';
 import { ModalData } from './types';
 import { hideModal } from '../../../ducks/app/app';
@@ -15,6 +16,7 @@ const MODALS = {
   ALERT_MODAL: <AlertModalComponent />,
   TRADE_HISTORY_ROW: <TradeHistoryRow />,
   IMAGE_MODAL: <ImageModalComponent />,
+  SET_WALLET: <SetWallet />,
   DEFAULT: null,
 };
 
@@ -43,7 +45,9 @@ class Modal extends Component<ModalState> {
 
     return (
       <ModalMui open={this.props.modal.open} onClose={this.props.hideModal}>
-        <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">{modal}</Box>
+        <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">
+          {modal}
+        </Box>
       </ModalMui>
     );
   }

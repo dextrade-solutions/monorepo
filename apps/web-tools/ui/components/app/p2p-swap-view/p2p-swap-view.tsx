@@ -243,11 +243,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           {t('youGive')}
         </Typography>
         <AssetAmountField
-          asset={assetInputFrom.asset}
-          balance={assetInputFrom.balance}
-          amount={assetInputFrom.amount}
-          disabled={assetInputFrom.loading}
+          assetInput={assetInputFrom}
           onChange={onInputAmountFrom}
+          onSetWalletClick={() => assetInputFrom.showConfigureWallet()}
         />
       </Box>
       <Box marginBottom={2}>
@@ -260,12 +258,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           {t('youGet')}
         </Typography>
         <AssetAmountField
-          asset={assetInputTo.asset}
-          balance={assetInputTo.balance}
-          amount={assetInputTo.amount}
-          disabled={assetInputTo.loading}
+          assetInput={assetInputTo}
           reserve={ad.reserveInCoin2}
           onChange={onInputAmountTo}
+          onSetWalletClick={() => assetInputTo.showConfigureWallet()}
         />
       </Box>
       <Box padding={2}>

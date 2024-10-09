@@ -26,27 +26,20 @@ import { ButtonIcon } from '../button-icon';
 import UrlIcon from '../url-icon';
 
 interface IProps {
-  asset: AssetModel;
+  assetInput: any;
   balance: {
     amount: bigint;
     value: string;
     formattedValue: string;
     inUsdt: number | null;
   } | null;
-  amount: string | number;
-  disabled: boolean;
-  configuredWallet: { address: string; icon?: string } | null;
   onChange: (_v: AssetInputValue) => void;
   onSetWalletClick: () => void;
   reserve?: number;
 }
 
 export const AssetAmountField = ({
-  asset,
-  balance,
-  amount,
-  disabled,
-  configuredWallet,
+  assetInput: { asset, balance, amount, configuredWallet, loading: disabled },
   onChange,
   onSetWalletClick,
   reserve,
