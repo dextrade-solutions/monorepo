@@ -37,7 +37,7 @@ export enum NetworkNames {
   polygon = 'polygon',
   litecoin = 'litecoin',
   solana = 'solana',
-  xdc = 'xdc-network',
+  xdc = 'xdc_network',
 
   // testnets
   sepolia = 'sepolia',

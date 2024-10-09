@@ -19,10 +19,9 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { AssetInputValue, AssetModel } from 'dex-helpers/types';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NumericFormat } from 'react-number-format';
 
-import SetWallet from '../../app/modals/set-wallet';
 import { ButtonIcon } from '../button-icon';
 import UrlIcon from '../url-icon';
 
@@ -34,53 +33,32 @@ interface IProps {
     formattedValue: string;
     inUsdt: number | null;
   } | null;
-  value: AssetInputValue;
-  onChange: (_v: AssetInputValue) => void;
-  reserve?: number;
+  amount: string | number;
   disabled: boolean;
+  configuredWallet: { address: string; icon?: string } | null;
+  onChange: (_v: AssetInputValue) => void;
+  onSetWalletClick: () => void;
+  reserve?: number;
 }
 
 export const AssetAmountField = ({
   asset,
   balance,
-  value = {
-    amount: '',
-    paymentMethod: null,
-    configuredWallet: null,
-    loading: false,
-  },
+  amount,
   disabled,
+  configuredWallet,
   onChange,
+  onSetWalletClick,
   reserve,
 }: IProps) => {
-  const [openSetWallet, setOpenSetWallet] = useState(false);
-  const updateValue = (field: string, v: any) => {
-    onChange({
-      ...value,
-      [field]: v,
-    });
-  };
-  const inputRef = useRef(null);
   const isSolanaInput = asset.network === NetworkNames.solana;
   const showSetWallet = !asset.chainId && !asset.isFiat;
   const { connected: isSolanaWalletConnected } = useWallet();
   const displayBalance =
     (isSolanaInput && isSolanaWalletConnected) ||
     (asset.chainId && !asset.isFiat);
-  useEffect(() => {
-    if (!disabled && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [disabled]);
   return (
     <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-      <SetWallet
-        asset={asset}
-        value={value.configuredWallet}
-        open={openSetWallet}
-        onChange={(v) => updateValue('configuredWallet', v)}
-        onClose={() => setOpenSetWallet(false)}
-      />
       <CardHeader
         title={
           <Box display="flex" alignItems="center">
@@ -115,7 +93,7 @@ export const AssetAmountField = ({
                     >
                       <CardActionArea
                         disabled={Boolean(reserve)}
-                        onClick={() => updateValue('amount', balance.value)}
+                        onClick={() => onChange(balance.value)}
                       >
                         <Typography
                           as="span"
@@ -138,19 +116,16 @@ export const AssetAmountField = ({
             <Box className="flex-grow"></Box>
             <Box>
               {showSetWallet && (
-                <Button
-                  variant="outlined"
-                  onClick={() => setOpenSetWallet(true)}
-                >
-                  {value.configuredWallet && (
+                <Button variant="outlined" onClick={() => onSetWalletClick()}>
+                  {configuredWallet && (
                     <Box display="flex">
-                      {shortenAddress(value.configuredWallet.address)}
+                      {shortenAddress(configuredWallet.address)}
                       <Box marginLeft={2}>
-                        <UrlIcon url={value.configuredWallet.icon} />
+                        <UrlIcon url={configuredWallet.icon} />
                       </Box>
                     </Box>
                   )}
-                  {!value.configuredWallet && 'Set wallet'}
+                  {!configuredWallet && 'Set wallet'}
                 </Button>
               )}
             </Box>
@@ -161,45 +136,42 @@ export const AssetAmountField = ({
 
       <Box paddingX={2} marginY={1}>
         <NumericFormat
-          value={value.amount}
+          value={amount}
           customInput={TextField}
-          disabled={value.loading || disabled}
+          disabled={disabled}
           decimalSeparator=","
           placeholder="0"
           fullWidth
           variant="standard"
           valueIsNumericString
           InputProps={{
-            inputRef,
             disableUnderline: true,
             style: {
               fontSize: 25,
             },
             endAdornment: (
               <InputAdornment position="end">
-                {Number(value.amount) > 0 && !value.loading && (
+                {Number(amount) > 0 && !disabled && (
                   <ButtonIcon
                     iconName="close"
                     color="secondary"
                     size="sm"
-                    onClick={() => updateValue('amount', '')}
+                    onClick={() => onChange('')}
                   />
                 )}
               </InputAdornment>
             ),
           }}
-          onChange={(e) =>
-            updateValue('amount', e.target.value.replace(',', '.'))
-          }
+          onChange={(e) => onChange(e.target.value.replace(',', '.'))}
         />
-        {Boolean(value.amount) && asset.priceInUsdt && (
+        {Boolean(amount) && asset.priceInUsdt && (
           <Typography
             variant="body2"
             color="text.secondary"
             marginTop={-1}
             marginBottom={2}
           >
-            {formatCurrency(Number(value.amount) * asset.priceInUsdt, 'usd')}
+            {formatCurrency(Number(amount) * asset.priceInUsdt, 'usd')}
           </Typography>
         )}
         {reserve !== undefined && (
@@ -210,7 +182,7 @@ export const AssetAmountField = ({
                 border: 'none',
               }}
               variant="outlined"
-              onClick={() => updateValue('amount', reserve)}
+              onClick={() => onChange(reserve)}
             >
               <CardActionArea>
                 <Typography variant="body2">

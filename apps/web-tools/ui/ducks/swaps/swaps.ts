@@ -135,10 +135,10 @@ export const createSwapP2P = (props: {
   return async (dispatch: AppDispatch) => {
     const { from, to, exchange, paymentMethod, slippage } = props;
 
-    if (!from.input.amount) {
+    if (!from.amount) {
       throw new Error('From amount is not specified');
     }
-    if (!to.input.amount) {
+    if (!to.amount) {
       throw new Error('To amount is not specified');
     }
     const keypair = genKeyPair();
@@ -146,8 +146,8 @@ export const createSwapP2P = (props: {
       return [
         `${exchange.fromCoin.ticker}_${exchange.fromCoin.networkType || 'NATIVE'}`,
         `${exchange.toCoin.ticker}_${exchange.toCoin.networkType || 'NATIVE'}`,
-        from.input.amount,
-        to.input.amount,
+        from.amount,
+        to.amount,
         remove0x(keypair.hashLock),
         to.account.reedeemAddress,
         from.account.refundAddress,
@@ -161,13 +161,13 @@ export const createSwapP2P = (props: {
       dispatch,
       P2PService.clientExchangeStart(exchangePairType, {
         exchangerSettingsId: exchange.id,
-        amount1: Number(from.input.amount),
-        amount2: Number(to.input.amount),
+        amount1: Number(from.amount),
+        amount2: Number(to.amount),
         paymentMethodId: paymentMethod?.userPaymentMethodId,
         clientWalletAddress:
           exchange.toCoin.networkName === NetworkNames.fiat
             ? undefined
-            : to.input.configuredWallet?.address || to.account.address,
+            : to.account.address,
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),

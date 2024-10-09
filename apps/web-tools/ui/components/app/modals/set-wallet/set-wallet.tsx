@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Button,
-  Menu,
   MenuItem,
   MenuList,
   ListItemIcon,
@@ -37,6 +36,10 @@ export const SetWallet = ({
   onChange: (v: { address: string; icon: string } | null) => void;
   onClose: () => void;
 }) => {
+  const isSolNetwork = asset.network === NetworkNames.solana;
+  const canConnectExternalWallet = isSolNetwork;
+  const canPasteAddress = true;
+
   const t = useI18nContext();
   const { wallets, select } = useWallet();
   // const wallets = [];
@@ -63,7 +66,7 @@ export const SetWallet = ({
     }
   };
   useEffect(() => {
-    if (connected) {
+    if (connected && isSolNetwork) {
       onChange({
         address: wallet?.adapter.publicKey?.toBase58(),
         icon: wallet?.adapter.icon,
@@ -71,9 +74,6 @@ export const SetWallet = ({
       onClose();
     }
   }, [connected]);
-
-  const canConnectExternalWallet = asset.network === NetworkNames.solana;
-  const canPasteAddress = true;
 
   return (
     <Modal open={open} onClose={onClose}>

@@ -42,6 +42,7 @@ import { ButtonIcon } from '../../ui/button-icon';
 import PaymentMethodPicker from '../modals/payment-method-picker';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
+import { useAssetInput } from '../../../hooks/asset/useAssetInput';
 
 interface IProps {
   ad: AdItem;
@@ -54,127 +55,48 @@ const RECALCULATE_DELAY = 1000;
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const accountFrom = useAccount(assetFrom);
-  const accountTo = useAccount(assetTo);
-  const [nativeFrom, setNativeFrom] = useState<AssetModel>();
-  const [nativeTo, setNativeTo] = useState<AssetModel>();
   const [paymentMethodShow, setPaymentMethodShow] = useState(false);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(0);
+  const [amountsWithFee, setAmountsWithFee] = useState();
+  const [fromAmountWithFee, setFromAmountWithFee] = useState('');
+  const [toAmountWithFee, setToAmountWithFee] = useState('');
 
-  const loadingCurrencies = !nativeTo && !nativeFrom;
+  // const [fromInputAmountWithFee, setFromInputAmountWithFee] = useState(0);
+  // const [toInputAmountWithFee, setToInputAmountWithFee] = useState(0);
 
-  const [fromInput, setFromInput] = useState<AssetInputValue>({
-    amount: '',
-    configuredWallet: null,
-    loading: false,
-  });
-  const [toInput, setToInput] = useState<AssetInputValue>({
-    amount: '',
-    configuredWallet: null,
-    loading: false,
-  });
-
-  const balanceFrom = useAssetBalance(assetFrom);
-  const balanceTo = useAssetBalance(assetTo);
-
-  const from = {
-    account: accountFrom,
-    asset: assetFrom,
-    input: fromInput,
-    balance: balanceFrom,
-  };
-  const to = {
-    account: accountTo,
-    asset: assetTo,
-    input: toInput,
-    balance: balanceTo,
-  };
-
-  useEffect(() => {
-    const from =
-      assetFrom.isNative || assetFrom.isFiat
-        ? assetFrom
-        : getNative(assetFrom.network);
-    const to =
-      assetTo.isNative || assetTo.isFiat ? assetTo : getNative(assetTo.network);
-
-    const toConvert = [];
-    if (assetFrom === from) {
-      setNativeFrom(assetFrom);
-    } else {
-      toConvert.push(from.symbol);
-    }
-    if (assetTo === to) {
-      setNativeTo(assetTo);
-    } else {
-      toConvert.push(to.symbol);
-    }
-
-    if (toConvert.length) {
-      fetchRates('USDT', toConvert).then((result) => {
-        if (!from.priceInUsdt) {
-          const rate = result.data.USDT[from.symbol];
-          setNativeFrom({
-            ...from,
-            priceInUsdt: rate ? 1 / rate : undefined,
-          });
-        }
-        if (!to.priceInUsdt) {
-          const rate = result.data.USDT[to.symbol];
-          setNativeTo({
-            ...to,
-            priceInUsdt: rate ? 1 / rate : undefined,
-          });
-        }
-      });
-    }
-  }, [assetFrom, assetTo]);
-
-  const { submitBtnError, disabledBtn } = useAdValidation({
-    ad,
-    from,
-    to,
-  });
-  const { fee: outgoingFee } = useFee({
-    asset: assetFrom,
-    amount: fromInput.amount,
-    from: accountFrom.address,
-    to: ad.walletAddress,
-  });
-
-  // const [totalFee, setTotalFee] = useState<number | null>(null);
   const auth = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
   const exchangeRate = ad.coinPair.price;
   const needPickupPaymentMethod = ad.toCoin.networkName === NetworkNames.fiat;
 
+  const assetInputFrom = useAssetInput({
+    asset: assetFrom,
+    exchangeRate,
+  });
+  const assetInputTo = useAssetInput({
+    asset: assetTo,
+    exchangeRate: 1 / exchangeRate,
+    reserve: ad.reserveInCoin2,
+  });
+
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
-      if (
-        ad.isAtomicSwap ||
-        !assetTo.chainId ||
-        nativeTo?.isFiat ||
-        ad.provider
-      ) {
+      const { native, account } = assetInputTo;
+      if (ad.isAtomicSwap || ad.provider || !native?.chainId) {
         return 0;
       }
       let incomingFeeCalculated = 0;
-      if (!nativeTo?.decimals) {
-        throw new Error('calcIncomingFee - nativeTo must be contain decimals');
+      if (!native) {
+        throw new Error('calcIncomingFee - no native asset');
       }
-      if (!nativeTo?.priceInUsdt) {
-        throw new Error(
-          'calcIncomingFee - nativeTo must be contain priceInUsdt',
-        );
-      }
-      if (toAmount > 0 && nativeTo) {
+      if (toAmount > 0 && native) {
         const txParams = generateTxParams({
           asset: assetTo,
-          amount: toAmount,
+          amount: toAmount.toFixed(8),
           from: ad.walletAddressInNetwork2,
-          to: toInput.configuredWallet?.address || accountTo.address,
+          to: account.address,
           isAtomicSwap: ad.isAtomicSwap,
         });
         if (assetTo.contract) {
@@ -187,38 +109,32 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           network: assetTo.network,
         });
         incomingFeeCalculated = Number(
-          formatUnits(BigInt(data), nativeTo.decimals),
+          formatUnits(BigInt(data), native.decimals),
         );
 
-        if (!isEqual(nativeTo, assetTo)) {
-          const normalizeRate = nativeTo.priceInUsdt / assetTo.priceInUsdt;
+        if (!isEqual(native, assetTo)) {
+          const normalizeRate = native.priceInUsdt / assetTo.priceInUsdt;
           incomingFeeCalculated *= normalizeRate;
         }
       }
       setIncomingFee(incomingFeeCalculated);
       return incomingFeeCalculated;
     },
-    [nativeTo, nativeFrom],
+    [assetInputTo, assetTo, ad],
   );
-
   const recalculateTo = useCallback(
     debounce(async (fromAmount) => {
       let sumInCoin2 = Number(fromAmount) * exchangeRate;
       if (sumInCoin2 > 0) {
         const fee = await calcIncomingFee(sumInCoin2);
         sumInCoin2 -= fee;
-        setToInput((prevVal) => ({
-          ...prevVal,
-          amount: sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
-          loading: false,
-        }));
+        assetInputTo.setInputAmount(
+          sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+        );
       } else {
-        setToInput((prevVal) => ({
-          ...prevVal,
-          amount: 0,
-          loading: false,
-        }));
+        assetInputTo.setInputAmount(0);
       }
+      assetInputTo.setLoading(false);
     }, RECALCULATE_DELAY),
     [calcIncomingFee],
   );
@@ -230,40 +146,45 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       if (sumInCoin1 > 0) {
         const fee = await calcIncomingFee(sumInCoin2);
         sumInCoin1 += fee / exchangeRate;
-        setFromInput({
-          ...fromInput,
-          amount: sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
-          loading: false,
-        });
+        assetInputFrom.setInputAmount(
+          sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+        );
       } else {
-        setFromInput({
-          ...fromInput,
-          amount: 0,
-          loading: false,
-        });
+        assetInputFrom.setInputAmount(0);
       }
+      assetInputFrom.setLoading(false);
     }, RECALCULATE_DELAY),
     [calcIncomingFee],
   );
 
-  const updateFrom = (v: AssetInputValue) => {
-    setFromInput(v);
-    setToInput((prev) => ({ ...prev, loading: true }));
-    recalculateTo(v.amount);
+  const { submitBtnError, disabledBtn } = useAdValidation({
+    ad,
+    assetInputFrom,
+    assetInputTo,
+  });
+  const { fee: outgoingFee } = useFee({
+    asset: assetFrom,
+    amount: assetInputFrom.amount,
+    from: assetInputFrom.account.address,
+    to: ad.walletAddress,
+  });
+
+  const onInputAmountFrom = (v) => {
+    assetInputFrom.setInputAmount(v);
+
+    assetInputTo.setLoading(true);
+    recalculateTo(v);
   };
 
-  const updateTo = (v: AssetInputValue) => {
-    setToInput(v);
-    setFromInput((prev) => ({ ...prev, loading: true }));
-    recalculateFrom(v.amount);
+  const onInputAmountTo = (v) => {
+    assetInputTo.setInputAmount(v);
+
+    assetInputFrom.setLoading(true);
+    recalculateFrom(v);
   };
 
   useEffect(() => {
-    updateFrom({
-      amount: fromTokenInputValue,
-      configuredWallet: null,
-      loading: false,
-    });
+    assetInputFrom.setInputAmount(fromTokenInputValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTokenInputValue]);
 
@@ -273,8 +194,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       const result = await auth(() =>
         dispatch(
           createSwapP2P({
-            from,
-            to,
+            from: assetInputFrom,
+            to: assetInputTo,
             exchange: ad,
             paymentMethod,
             slippage: 0.5,
@@ -321,24 +242,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         >
           {t('youGive')}
         </Typography>
-        {assetFrom ? (
-          <AssetAmountField
-            asset={assetFrom}
-            balance={balanceFrom}
-            value={fromInput}
-            disabled={loadingCurrencies}
-            onChange={updateFrom}
-          />
-        ) : (
-          <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-            <CardContent>
-              <AssetItem iconSize={40} coin={ad.fromCoin} />
-              <Box marginTop={2}>
-                <Alert severity="warning">Unsupported asset</Alert>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
+        <AssetAmountField
+          asset={assetInputFrom.asset}
+          balance={assetInputFrom.balance}
+          amount={assetInputFrom.amount}
+          disabled={assetInputFrom.loading}
+          onChange={onInputAmountFrom}
+        />
       </Box>
       <Box marginBottom={2}>
         <Typography
@@ -349,25 +259,14 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         >
           {t('youGet')}
         </Typography>
-        {assetTo ? (
-          <AssetAmountField
-            asset={assetTo}
-            balance={balanceTo}
-            value={toInput}
-            onChange={updateTo}
-            disabled={loadingCurrencies}
-            reserve={ad.reserveInCoin2}
-          />
-        ) : (
-          <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-            <CardContent>
-              <AssetItem iconSize={40} coin={ad.toCoin} />
-              <Box marginTop={2}>
-                <Alert severity="warning">Unsupported asset</Alert>
-              </Box>
-            </CardContent>
-          </Card>
-        )}
+        <AssetAmountField
+          asset={assetInputTo.asset}
+          balance={assetInputTo.balance}
+          amount={assetInputTo.amount}
+          disabled={assetInputTo.loading}
+          reserve={ad.reserveInCoin2}
+          onChange={onInputAmountTo}
+        />
       </Box>
       <Box padding={2}>
         <P2PSwapSummary exchange={ad} />
@@ -378,22 +277,25 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">0.5%</Typography>
         </Box>
-        {Boolean(outgoingFee && outgoingFee > 0 && nativeFrom?.isNative) && (
+        {Boolean(outgoingFee && outgoingFee > 0 && assetInputFrom.native) && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">
               <Typography>
-                {formatFundsAmount(outgoingFee, nativeFrom.symbol)}
+                {formatFundsAmount(outgoingFee, assetInputFrom.native.symbol)}
               </Typography>
-              {nativeFrom.priceInUsdt && (
+              {assetInputFrom.native.priceInUsdt && (
                 <Typography color="text.secondary" marginLeft={1}>
-                  {formatCurrency(outgoingFee * nativeFrom.priceInUsdt, 'usd')}
+                  {formatCurrency(
+                    outgoingFee * assetInputFrom.native.priceInUsdt,
+                    'usd',
+                  )}
                 </Typography>
               )}
             </Box>
           </Box>
         )}
-        {incomingFee > 0 && nativeTo?.isNative && (
+        {incomingFee > 0 && assetInputFrom.native && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Incoming transaction fee</Typography>
             <Box display="flex">

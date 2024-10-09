@@ -24,8 +24,7 @@ const REGISTRIES = [
           decimals: netConfig.nativeCurrency.decimals,
           symbol: netConfig.nativeCurrency.symbol,
           uid: netConfig.uid,
-          network:
-            network === NetworkNames.xdc ? NetworkNames.binance : network,
+          network,
           isFiat: false,
           isNative: true,
           weight: [
