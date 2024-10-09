@@ -1,27 +1,13 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount, NetworkNames } from 'dex-helpers';
-import {
-  UserPaymentMethod,
-  AdItem,
-  AssetInputValue,
-  AssetModel,
-} from 'dex-helpers/types';
+import { UserPaymentMethod, AdItem, AssetModel } from 'dex-helpers/types';
 import { debounce, isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 
-import { getNative } from '../../../../app/helpers/p2p';
-import { fetchRates } from '../../../../app/helpers/rates';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
 import {
@@ -29,20 +15,17 @@ import {
   getFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
 import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
-import { useAccount } from '../../../hooks/asset/useAccount';
+import { useAssetInput } from '../../../hooks/asset/useAssetInput';
 import { useAdValidation } from '../../../hooks/useAdValidation';
-import { useAssetBalance } from '../../../hooks/useAssetBalance';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useFee } from '../../../hooks/useFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
-import AssetItem from '../../ui/asset-item';
 import { ButtonIcon } from '../../ui/button-icon';
 import PaymentMethodPicker from '../modals/payment-method-picker';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
-import { useAssetInput } from '../../../hooks/asset/useAssetInput';
 
 interface IProps {
   ad: AdItem;
@@ -59,12 +42,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(0);
-  const [amountsWithFee, setAmountsWithFee] = useState();
-  const [fromAmountWithFee, setFromAmountWithFee] = useState('');
-  const [toAmountWithFee, setToAmountWithFee] = useState('');
-
-  // const [fromInputAmountWithFee, setFromInputAmountWithFee] = useState(0);
-  // const [toInputAmountWithFee, setToInputAmountWithFee] = useState(0);
 
   const auth = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
@@ -73,18 +50,16 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const assetInputFrom = useAssetInput({
     asset: assetFrom,
-    exchangeRate,
   });
   const assetInputTo = useAssetInput({
     asset: assetTo,
-    exchangeRate: 1 / exchangeRate,
     reserve: ad.reserveInCoin2,
   });
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
       const { native, account } = assetInputTo;
-      if (ad.isAtomicSwap || ad.provider || !native?.chainId) {
+      if (ad.isAtomicSwap || !native?.chainId) {
         return 0;
       }
       let incomingFeeCalculated = 0;
@@ -105,7 +80,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }
         const { data } = await P2PService.estimateFee({
           ...txParams,
-          value: txParams.value ? Number(txParams.value) : undefined,
+          value: undefined,
+          // value: txParams.value ? Number(txParams.value) : undefined,
           network: assetTo.network,
         });
         incomingFeeCalculated = Number(
@@ -278,9 +254,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">
               <Typography>
-                {formatFundsAmount(outgoingFee, assetInputFrom.native.symbol)}
+                {formatFundsAmount(outgoingFee, assetInputFrom.native?.symbol)}
               </Typography>
-              {assetInputFrom.native.priceInUsdt && (
+              {assetInputFrom.native?.priceInUsdt && (
                 <Typography color="text.secondary" marginLeft={1}>
                   {formatCurrency(
                     outgoingFee * assetInputFrom.native.priceInUsdt,

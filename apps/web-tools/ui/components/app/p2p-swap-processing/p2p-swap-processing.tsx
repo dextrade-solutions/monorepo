@@ -402,13 +402,15 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             .map(({ component }) => component)}
         </Box>
       </Box>
-      <Box width="100%" marginY={2}>
-        <P2PChat
-          variant="outlined"
-          trade={exchange}
-          sx={{ bgcolor: 'transparent' }}
-        />
-      </Box>
+      {!exchange.exchangerSettings.provider && (
+        <Box width="100%" marginY={2}>
+          <P2PChat
+            variant="outlined"
+            trade={exchange}
+            sx={{ bgcolor: 'transparent' }}
+          />
+        </Box>
+      )}
       <div className="flex-grow" />
       <Button
         fullWidth

@@ -1,20 +1,19 @@
 import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { BUILT_IN_NETWORKS, NetworkNames } from 'dex-helpers';
-
-import engine from '../../../app/engine';
-import { genKeyPair } from '../../../app/helpers/atomic-swaps';
-import { getWalletAddress } from '../../../app/helpers/chain-helpers/get-asset-wallet-address';
-import { determineTradeTypeByAd } from '../../../app/helpers/utils';
-import P2PService from '../../../app/services/p2p-service';
-import { UserPaymentMethod } from '../../../app/types/dextrade';
 import {
   Trade,
   AdItem,
   AssetModel,
-  AssetInputValue,
-} from '../../../app/types/p2p-swaps';
+  UserPaymentMethod,
+} from 'dex-helpers/types';
+
+import engine from '../../../app/engine';
+import { genKeyPair } from '../../../app/helpers/atomic-swaps';
+import { determineTradeTypeByAd } from '../../../app/helpers/utils';
+import P2PService from '../../../app/services/p2p-service';
 import { handleRequest } from '../../helpers/utils/requests';
+import type { useAssetInput } from '../../hooks/asset/useAssetInput';
 import { QUERY_KEY } from '../../queries/useTradesActive';
 import { AppDispatch, RootState } from '../../store/store';
 
@@ -114,20 +113,9 @@ export {
 
 export default reducer;
 
-type AssetPack = {
-  asset: AssetModel;
-  input: AssetInputValue;
-  balance: number;
-  account: {
-    address: string;
-    reedeemAddress?: string | null;
-    refundAddress?: string | null;
-  };
-};
-
 export const createSwapP2P = (props: {
-  from: AssetPack;
-  to: AssetPack;
+  from: ReturnType<typeof useAssetInput>;
+  to: ReturnType<typeof useAssetInput>;
   exchange: AdItem;
   slippage: number;
   paymentMethod?: UserPaymentMethod;

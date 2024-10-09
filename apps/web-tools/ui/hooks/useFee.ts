@@ -7,12 +7,12 @@ import { generateTxParams } from '../../app/helpers/transactions';
 
 type FeeParams = {
   asset: AssetModel;
-  amount: string | number;
-  from: string;
+  amount?: string | number;
+  from?: string | null;
   to: string;
 };
 
-const useWCFee = ({ asset, amount, from, to }: FeeParams) => {
+const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const chainId = asset.chainId ? hexToNumber(asset.chainId) : null;
   const estimateFee = useEstimateFeesPerGas({ chainId });
 
@@ -55,14 +55,17 @@ const useSolFee = (params: FeeParams) => {
   };
 };
 
-export const useFee = (params: FeeParams) => {
+const getFeeHook = (params: FeeParams) => {
   if (params.asset.chainId) {
     return useWCFee;
   } else if (params.asset.network === NetworkNames.solana) {
     return useSolFee;
   }
-  return {
-    fee: 0,
-    loading: false,
-  };
+  return () => ({ fee: 0 });
+};
+
+export const useFee = (params: FeeParams) => {
+  const useFeeHook = getFeeHook(params);
+  const result = useFeeHook(params);
+  return result;
 };

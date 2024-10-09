@@ -196,8 +196,9 @@ export type AdSetting = {
 
   minimumExchangeAmountCoin1?: number;
   minimumExchangeAmountCoin2?: number;
-  timeToPay?: number;
   slippage: number;
+  timeToPay?: number;
+  provider?: string;
 };
 
 export type Exchanger = {

@@ -18,22 +18,15 @@ import {
   getCoinIconByUid,
   shortenAddress,
 } from 'dex-helpers';
-import { AssetInputValue, AssetModel } from 'dex-helpers/types';
-import React, { useEffect, useRef } from 'react';
 import { NumericFormat } from 'react-number-format';
 
+import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
 import { ButtonIcon } from '../button-icon';
 import UrlIcon from '../url-icon';
 
 interface IProps {
-  assetInput: any;
-  balance: {
-    amount: bigint;
-    value: string;
-    formattedValue: string;
-    inUsdt: number | null;
-  } | null;
-  onChange: (_v: AssetInputValue) => void;
+  assetInput: ReturnType<typeof useAssetInput>;
+  onChange: (v: string | number) => void;
   onSetWalletClick: () => void;
   reserve?: number;
 }

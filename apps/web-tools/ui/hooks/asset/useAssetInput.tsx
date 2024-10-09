@@ -72,7 +72,7 @@ export const useAssetInput = ({
 
     // calc props
     native,
-    account: configuredWallet ? { address: configuredWallet } : account,
+    account: configuredWallet ? { address: configuredWallet.address } : account,
     balance,
     setLoading,
     showPaymentMethod,
