@@ -33,7 +33,8 @@ export const useAssetInput = ({
   const canChooseWallet = asset.network === NetworkNames.solana;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
-  const currentAccount = configuredWallet || account;
+  const currentAccount =
+    asset.network === NetworkNames.bitcoin ? null : configuredWallet || account;
 
   const showConfigureWallet = () => {
     dispatch(

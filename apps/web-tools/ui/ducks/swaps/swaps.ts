@@ -121,7 +121,7 @@ export const createSwapP2P = (props: {
   paymentMethod?: UserPaymentMethod;
 }) => {
   return async (dispatch: AppDispatch) => {
-    const { from, to, exchange, paymentMethod, slippage } = props;
+    const { from, to, exchange, slippage } = props;
 
     if (!from.amount) {
       throw new Error('From amount is not specified');
