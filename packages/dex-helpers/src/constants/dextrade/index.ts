@@ -3,3 +3,4 @@ export * from './kyc';
 export * from './networks';
 export * from './payment-methods';
 export * from './trades';
+export * from './stages';

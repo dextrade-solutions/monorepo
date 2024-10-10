@@ -10,6 +10,7 @@ import {
 import {
   formatCurrency,
   formatFundsAmount,
+  P2P_STAGES,
   TRADE_ACTIVE_STATUSES,
   TradeStatus,
   TradeType,
@@ -32,13 +33,9 @@ import { SWAPS_HISTORY_ROUTE } from '../../../helpers/constants/routes';
 import { useAtomicSwap } from '../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import AssetItem from '../../ui/asset-item';
-import CountdownTimer from '../../ui/countdown-timer';
-import Icon from '../../ui/icon';
-import PaymentMethodDisplay from '../../ui/payment-method-display';
-import PulseLoader from '../../ui/pulse-loader';
-import StepProgressBar, { P2P_STAGES } from '../../ui/step-progress-bar';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
+import { CountdownTimer, Icon, PaymentMethodDisplay, PulseLoader, StepProgressBar } from 'dex-ui';
 
 interface IProps {
   exchange: Trade;

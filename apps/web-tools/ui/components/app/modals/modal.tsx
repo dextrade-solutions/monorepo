@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import AlertModalComponent from './alert-modal';
 import ImageModalComponent from './image-modal';
+import SetPaymentMethod from './set-payment-method';
 import SetWallet from './set-wallet';
 import TradeHistoryRow from './trade-history-row-modal';
 import { ModalData } from './types';
@@ -17,6 +18,7 @@ const MODALS = {
   TRADE_HISTORY_ROW: <TradeHistoryRow />,
   IMAGE_MODAL: <ImageModalComponent />,
   SET_WALLET: <SetWallet />,
+  SET_PAYMENT_METHOD: <SetPaymentMethod />,
   DEFAULT: null,
 };
 

@@ -13,6 +13,7 @@
   "dependencies": {
     "bignumber.js": "^9.1.2",
     "bowser": "^2.11.0",
+    "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.5.9",
     "dex-helpers": "workspace:^",
     "i18next": "^23.15.1",
@@ -42,7 +43,7 @@
   "module": "./dist/dex-ui.js",
   "exports": {
     ".": {
-      "import": "./dist/dex-ui.js",
+      "import": "./lib/main.tsx",
       "require": "./dist/dex-ui.umd.cjs"
     }
   }

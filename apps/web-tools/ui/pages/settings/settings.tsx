@@ -8,9 +8,9 @@ import {
   MenuList,
   Typography,
 } from '@mui/material';
+import { Icon } from 'dex-ui';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import Icon from '../../components/ui/icon';
 import {
   HOME_ROUTE,
   KYC_ROUTE,

@@ -14,42 +14,53 @@ export function useAdValidation({
   assetInputTo,
   ad,
 }: AdParams) {
-  let submitBtnError;
-  let disabledBtn = false;
+  const params = {
+    submitBtnText: 'Start Swap',
+    hasValidationErrors: false,
+    disabledBtn: false,
+  };
   if (
     assetInputFrom.amount &&
     Number(assetInputFrom.balance?.value) < Number(assetInputFrom.amount)
   ) {
-    submitBtnError = `Insufficient ${assetInputFrom.asset.symbol} balance`;
-    disabledBtn = true;
+    params.submitBtnText = `Insufficient ${assetInputFrom.asset.symbol} balance`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
   }
   if (!assetInputFrom.amount || !assetInputTo.amount) {
-    disabledBtn = true;
+    params.disabledBtn = true;
+    return params;
   }
   if (
     assetInputTo.amount &&
     Number(ad.reserveInCoin2) < Number(assetInputTo.amount)
   ) {
-    submitBtnError = `Ad limit in ${assetInputTo.asset.symbol} exceeded`;
-    disabledBtn = true;
+    params.submitBtnText = `Ad limit in ${assetInputTo.asset.symbol} exceeded`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
   }
   if (
     !assetInputTo.asset.isFiat &&
     !assetInputTo.account.address &&
     !assetInputTo.configuredWallet?.address
   ) {
-    submitBtnError = 'Recepient address is not specified';
-    disabledBtn = true;
+    params.submitBtnText = 'Set recepient wallet';
+    return params;
   }
   if (
     assetInputTo.configuredWallet &&
     !validateAddress(assetInputTo.asset, assetInputTo.configuredWallet.address)
   ) {
-    submitBtnError = 'Recepient address is not valid';
-    disabledBtn = true;
+    params.submitBtnText = 'Recepient address is not valid';
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
   }
-  return {
-    disabledBtn,
-    submitBtnError,
-  };
+  if (assetInputTo.asset.isFiat && !assetInputTo.paymentMethod) {
+    params.submitBtnText = 'Set payment method';
+    return params;
+  }
+  return params;
 }

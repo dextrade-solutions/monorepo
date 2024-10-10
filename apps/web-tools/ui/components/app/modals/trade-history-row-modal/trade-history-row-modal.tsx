@@ -7,12 +7,14 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  P2P_STAGES,
   TradeType,
   formatCurrency,
   formatDate,
   formatFundsAmount,
 } from 'dex-helpers';
 import { CoinModel, Trade } from 'dex-helpers/types';
+import { CopyData, StepProgressBar, CountdownTimer } from 'dex-ui';
 import { useMemo } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
@@ -23,9 +25,6 @@ import { EXCHANGE_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAtomicSwap } from '../../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CopyData from '../../../ui/copy-data';
-import CountdownTimer from '../../../ui/countdown-timer';
-import StepProgressBar, { P2P_STAGES } from '../../../ui/step-progress-bar';
 import P2PDisplayStatus from '../../p2p-display-status';
 import { ModalProps } from '../types';
 

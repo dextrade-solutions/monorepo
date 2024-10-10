@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material';
+import { ButtonIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React, { useMemo, useCallback, useState } from 'react';
 
@@ -16,7 +17,6 @@ import { SelectCoinsItemSearch } from './select-coins-item-search';
 //   TextVariant,
 // } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonIcon } from '../button-icon';
 
 const Placeholder = ({ loading, searchQuery }) => {
   const t = useI18nContext();

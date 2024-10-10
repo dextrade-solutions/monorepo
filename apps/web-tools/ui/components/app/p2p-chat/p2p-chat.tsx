@@ -19,7 +19,7 @@ import { UserMessage } from './user-message';
 import { DEXTRADE_HOST } from '../../../../app/helpers/constants';
 import { Trade } from '../../../../app/types/p2p-swaps';
 import { getSessionPublicKey } from '../../../ducks/auth';
-import Icon from '../../ui/icon';
+import { Icon } from 'dex-ui';
 
 export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
   const [wsChat, setWsChat] = useState<WebSocket | null>(null);

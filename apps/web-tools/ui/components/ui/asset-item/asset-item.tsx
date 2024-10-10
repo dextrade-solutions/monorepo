@@ -1,9 +1,8 @@
 import { Box, Skeleton, Typography } from '@mui/material';
 import { getCoinIconByUid } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
+import { UrlIcon } from 'dex-ui';
 import React from 'react';
-
-import UrlIcon from '../url-icon';
 
 interface IProps {
   coin?: CoinModel;

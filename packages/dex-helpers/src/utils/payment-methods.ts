@@ -1,5 +1,4 @@
-import { DextradeTypes } from 'dex-services';
-
+import { UserPaymentMethod } from '../../types';
 import { PaymentContentTypes, PaymentMethodTypes } from '../constants';
 
 const MASKS = {
@@ -30,7 +29,7 @@ const CONFIG = {
 };
 
 export const getStrPaymentMethodInstance = (
-  paymentMethod: DextradeTypes.PaymentMethodsModel,
+  paymentMethod: UserPaymentMethod,
 ) => {
   const fieldsData = JSON.parse(paymentMethod.data);
   const priorityContentType = CONFIG.priorityContentFields.find(

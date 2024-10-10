@@ -22623,6 +22623,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.3.1"
     bignumber.js: "npm:^9.1.2"
     bowser: "npm:^2.11.0"
+    copy-to-clipboard: "npm:^3.3.3"
     currency-formatter: "npm:^1.5.9"
     dex-helpers: "workspace:^"
     globals: "npm:^15.9.0"

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { AuthStatus } from '../../../../../app/constants/auth';
 import { getAuthStatus } from '../../../../ducks/auth';
-import PulseLoader from '../../../ui/pulse-loader';
+import { PulseLoader } from 'dex-ui';
 
 export const SigningModal = () => {
   const authStatus = useSelector(getAuthStatus);

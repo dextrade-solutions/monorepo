@@ -8,11 +8,11 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { humanizePaymentMethodName } from 'dex-helpers';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { humanizePaymentMethodName } from '../../../../app/helpers/p2p';
 import P2PService from '../../../../app/services/p2p-service';
 import {
   isRequired,

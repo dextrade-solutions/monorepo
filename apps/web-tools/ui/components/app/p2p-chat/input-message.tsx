@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import { InputMessageAttachments } from './input-message-attachments';
 import P2PService from '../../../../app/services/p2p-service';
-import { ButtonIcon } from '../../ui/button-icon';
+import { ButtonIcon } from 'dex-ui';
 
 export const InputMessage = ({
   onSend,

@@ -3,7 +3,12 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // dts({
+    //   entryRoot: './',
+    // }),
+  ],
   build: {
     // minify: false, // for develop purposes, DISABLE IT IN PRODUCTION
     lib: {

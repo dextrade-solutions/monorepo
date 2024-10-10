@@ -1,4 +1,4 @@
-import { AssetModel } from 'dex-helpers/types';
+import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -7,17 +7,15 @@ import { useAssetBalance } from '../useAssetBalance';
 import { useAccount } from './useAccount';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import AssetAmountField from '../../components/ui/asset-amount-field';
 
 export const useAssetInput = ({
   asset,
-  reserve,
 }: {
   asset: AssetModel;
   reserve?: number;
 }) => {
-  const isToCoin = reserve !== undefined;
   const [native, setNative] = useState<AssetModel>();
+  const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
   const [inputAmount, setInputAmount] = useState<number | string>();
   const [configuredWallet, setConfiguredWallet] = useState<{
     address: string;
@@ -30,8 +28,6 @@ export const useAssetInput = ({
   const dispatch = useDispatch();
   const balance = useAssetBalance(asset);
 
-  // const onChangeWalletConfigure = () => {};
-
   const showConfigureWallet = () => {
     dispatch(
       showModal({
@@ -43,7 +39,16 @@ export const useAssetInput = ({
     );
   };
 
-  const showPaymentMethod = () => {};
+  const showPaymentMethod = () => {
+    dispatch(
+      showModal({
+        name: 'SET_PAYMENT_METHOD',
+        asset,
+        value: paymentMethod,
+        onChange: (v) => setPaymentMethod(v),
+      }),
+    );
+  };
 
   // initialize native
   useEffect(() => {
@@ -74,9 +79,10 @@ export const useAssetInput = ({
     native,
     account: configuredWallet ? { address: configuredWallet.address } : account,
     balance,
+    paymentMethod,
     setLoading,
+    setInputAmount,
     showPaymentMethod,
     showConfigureWallet,
-    setInputAmount,
   };
 };

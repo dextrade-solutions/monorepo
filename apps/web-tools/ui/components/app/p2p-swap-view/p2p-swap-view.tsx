@@ -22,7 +22,7 @@ import { useFee } from '../../../hooks/useFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
-import { ButtonIcon } from '../../ui/button-icon';
+import { ButtonIcon } from 'dex-ui';
 import PaymentMethodPicker from '../modals/payment-method-picker';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
@@ -38,15 +38,12 @@ const RECALCULATE_DELAY = 1000;
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const [paymentMethodShow, setPaymentMethodShow] = useState(false);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(0);
 
   const auth = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
-  const exchangeRate = ad.coinPair.price;
-  const needPickupPaymentMethod = ad.toCoin.networkName === NetworkNames.fiat;
 
   const assetInputFrom = useAssetInput({
     asset: assetFrom,
@@ -55,6 +52,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     asset: assetTo,
     reserve: ad.reserveInCoin2,
   });
+
+  const exchangeRate = ad.coinPair.price;
+  const needPickupPaymentMethod =
+    assetInputTo.asset.isFiat && !assetInputTo.paymentMethod;
+  const needPickupRecepientAddress =
+    !assetInputTo.asset.isFiat && !assetInputTo.account.address;
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
@@ -133,7 +136,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     [calcIncomingFee],
   );
 
-  const { submitBtnError, disabledBtn } = useAdValidation({
+  const { submitBtnText, hasValidationErrors, disabledBtn } = useAdValidation({
     ad,
     assetInputFrom,
     assetInputTo,
@@ -164,7 +167,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTokenInputValue]);
 
-  const startExchange = async (paymentMethod?: UserPaymentMethod) => {
+  const startExchange = async () => {
     try {
       setLoadingStartExchange(true);
       const result = await auth(() =>
@@ -173,7 +176,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             from: assetInputFrom,
             to: assetInputTo,
             exchange: ad,
-            paymentMethod,
             slippage: 0.5,
           }),
         ),
@@ -188,27 +190,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     }
   };
 
-  const openPaymentMethodPicker = () => {
-    setPaymentMethodShow(true);
-  };
-
   return (
     <Box>
-      {paymentMethodShow && (
-        <PaymentMethodPicker
-          currency={
-            ad.fromCoin.networkName === NetworkNames.fiat
-              ? ad.fromCoin.ticker
-              : ad.toCoin.ticker
-          }
-          onSelect={(v) => {
-            startExchange(v);
-          }}
-          onClose={() => {
-            setPaymentMethodShow(false);
-          }}
-        />
-      )}
       <Box marginBottom={2}>
         <Typography
           variant="body2"
@@ -221,7 +204,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <AssetAmountField
           assetInput={assetInputFrom}
           onChange={onInputAmountFrom}
-          onSetWalletClick={() => assetInputFrom.showConfigureWallet()}
         />
       </Box>
       <Box marginBottom={2}>
@@ -237,7 +219,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           assetInput={assetInputTo}
           reserve={ad.reserveInCoin2}
           onChange={onInputAmountTo}
-          onSetWalletClick={() => assetInputTo.showConfigureWallet()}
         />
       </Box>
       <Box padding={2}>
@@ -285,18 +266,21 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       </Box>
       <Box marginTop={2}>
         <Button
-          className={classNames({ 'btn-error': Boolean(submitBtnError) })}
+          className={classNames({ 'btn-error': hasValidationErrors })}
           fullWidth
           disabled={loadingStartExchange || disabledBtn}
           variant="contained"
           size="large"
-          onClick={
-            needPickupPaymentMethod
-              ? () => auth(openPaymentMethodPicker)
-              : () => startExchange()
-          }
+          onClick={() => {
+            if (needPickupPaymentMethod) {
+              return assetInputTo.showPaymentMethod();
+            } else if (needPickupRecepientAddress) {
+              return assetInputTo.showConfigureWallet();
+            }
+            return startExchange();
+          }}
         >
-          {submitBtnError || 'Start swap'}
+          {submitBtnText}
         </Button>
       </Box>
     </Box>

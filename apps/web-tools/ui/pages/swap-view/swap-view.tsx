@@ -10,13 +10,13 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { NetworkNames } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
-import React, { useMemo } from 'react';
+import { Icon } from 'dex-ui';
+import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
 import P2PSwapView from '../../components/app/p2p-swap-view';
-import Icon from '../../components/ui/icon';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 

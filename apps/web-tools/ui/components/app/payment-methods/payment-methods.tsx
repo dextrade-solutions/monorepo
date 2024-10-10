@@ -9,23 +9,23 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-
 import {
   getStrPaymentMethodInstance,
   humanizePaymentMethodName,
-} from '../../../../app/helpers/p2p';
+} from 'dex-helpers';
+import { UserPaymentMethod } from 'dex-helpers/types';
+import { Icon } from 'dex-ui';
+import { useState } from 'react';
+
 import P2PService from '../../../../app/services/p2p-service';
-import { UserPaymentMethod } from '../../../../app/types/dextrade';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Icon from '../../ui/icon';
 import PaymentMethodForm from '../p2p-payment-method-form';
 
 interface IProps {
   value?: UserPaymentMethod;
   currency: string;
   onSelect: (paymentMethod: UserPaymentMethod) => void;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export const PaymentMethods = ({
@@ -68,7 +68,7 @@ export const PaymentMethods = ({
     );
     if (item) {
       onSelect(item);
-      onClose();
+      onClose && onClose();
     }
   };
   return (

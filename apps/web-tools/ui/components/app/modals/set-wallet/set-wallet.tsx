@@ -14,22 +14,19 @@ import {
 import { Wallet, useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { useEffect, useState } from 'react';
+import { CopyData, UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
+import { useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AssetItem from '../../../ui/asset-item';
-import { ButtonIcon } from '../../../ui/button-icon';
-import PulseLoader from '../../../ui/pulse-loader';
-import UrlIcon from '../../../ui/url-icon';
 import { ModalProps } from '../types';
 
 const SetWallet = ({
   asset,
   value,
-  open,
   onChange,
-  hideModal: onClose,
+  hideModal,
 }: {
   asset: AssetModel;
   value: { address: string; icon: string } | null;
@@ -41,40 +38,25 @@ const SetWallet = ({
   const canPasteAddress = true;
 
   const t = useI18nContext();
-  const { wallets, select } = useWallet();
-  // const wallets = [];
+  const { wallets, connecting, select } = useWallet();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
-
-  const { connected, connecting, wallet, disconnect } = useWallet();
-
-  const onDisconnectWallet = () => {
-    disconnect();
-    onChange(null);
-    onClose();
-  };
 
   const onSetInputWallet = () => {
     onChange({ address: inputWalletAddress, icon: '' });
-    onClose();
+    hideModal();
   };
 
-  const onSelectWallet = (item: Wallet) => {
-    if (item.adapter.connected) {
-      onDisconnectWallet();
-    } else {
-      select(item.adapter.name);
-    }
+  const onSelectWallet = async (item: Wallet) => {
+    select(item.adapter.name);
+    await item.adapter.connect();
+    const address = item.adapter.publicKey?.toBase58();
+    const { icon } = item.adapter;
+    onChange({
+      address,
+      icon,
+    });
+    hideModal();
   };
-  useEffect(() => {
-    if (connected && isSolNetwork) {
-      onChange({
-        address: wallet?.adapter.publicKey?.toBase58(),
-        icon: wallet?.adapter.icon,
-      });
-      onClose();
-    }
-  }, [connected]);
-
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -84,7 +66,7 @@ const SetWallet = ({
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={onClose}
+          onClick={hideModal}
           ariaLabel={t('close')}
         />
       </Box>
@@ -96,14 +78,14 @@ const SetWallet = ({
         <Box>
           <Typography marginBottom={1}>My wallet address</Typography>
           <Box marginBottom={3}>
-            <Button>{value?.address}</Button>
+            <CopyData data={value.address} />
           </Box>
           <Button
             variant="outlined"
             fullWidth
             onClick={() => {
               onChange(null);
-              onClose();
+              hideModal();
             }}
           >
             Detach address
@@ -118,8 +100,8 @@ const SetWallet = ({
                 <PulseLoader />
               ) : (
                 <MenuList>
-                  {wallets.map((item) => (
-                    <MenuItem onClick={() => onSelectWallet(item)}>
+                  {wallets.map((item, idx) => (
+                    <MenuItem key={idx} onClick={() => onSelectWallet(item)}>
                       <ListItemIcon>
                         <UrlIcon url={item.adapter.icon} fontSize="small" />
                       </ListItemIcon>
@@ -145,7 +127,7 @@ const SetWallet = ({
           )}
           <Box>
             <Typography marginBottom={1} variant="h6">
-              Paste your own address
+              Paste your wallet address
             </Typography>
             <Box>
               <TextField

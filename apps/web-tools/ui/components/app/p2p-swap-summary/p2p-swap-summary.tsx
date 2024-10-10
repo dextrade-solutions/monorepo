@@ -1,21 +1,17 @@
 import { Alert, Box, Card, CardContent, Typography } from '@mui/material';
-import { formatFundsAmount } from 'dex-helpers';
+import { formatFundsAmount, humanizePaymentMethodName } from 'dex-helpers';
+import { AdItem } from 'dex-helpers/types';
+import { Icon } from 'dex-ui';
 import React from 'react';
 
-import { humanizePaymentMethodName } from '../../../../app/helpers/p2p';
-import { AdItem } from '../../../../app/types/p2p-swaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Icon from '../../ui/icon';
 
 interface IProps {
   exchange: AdItem;
   totalFee?: number;
 }
 
-export const P2PSwapSummary: React.FC<IProps> = ({
-  exchange,
-  totalFee = 0,
-}) => {
+export const P2PSwapSummary = ({ exchange, totalFee = 0 }: IProps) => {
   const t = useI18nContext();
 
   const { fromCoin, toCoin } = exchange;

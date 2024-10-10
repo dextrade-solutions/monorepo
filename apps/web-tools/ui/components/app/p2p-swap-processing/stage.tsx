@@ -1,15 +1,14 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
+import { PulseLoader } from 'dex-ui';
 import { ReactNode } from 'react';
 
 import { StageStatuses } from './stage-statuses';
-import PulseLoader from '../../ui/pulse-loader';
 
 export default function Stage({
   onRequest,
   status,
   title = 'Send transaction',
   subtitle,
-  sendTransactionFailure,
 }: {
   title: string;
   subtitle: ReactNode;

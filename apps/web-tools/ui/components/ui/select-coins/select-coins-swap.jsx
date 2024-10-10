@@ -1,10 +1,10 @@
+import { Tooltip } from '@mui/material';
 import classnames from 'classnames';
+import { UrlIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React, { memo, useState, useCallback } from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Tooltip from '../tooltip';
-import UrlIcon from '../url-icon';
 
 // TODO: refactor to IconButton or ButtonIcon or Icon without mask-image styles
 const ICON_URL = './images/icons/swap-circle-arrow.svg';
@@ -24,7 +24,7 @@ export const SelectCoinsSwap = memo(({ onClick, disabled }) => {
 
   return (
     <Tooltip
-      title={t('swapSwapSwitch')}
+      text={t('swapSwapSwitch')}
       position="top"
       arrow
       disabled={disabled}

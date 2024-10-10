@@ -8,7 +8,7 @@ import {
   getToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
-import { ButtonIcon } from '../../ui/button-icon';
+import { ButtonIcon } from 'dex-ui';
 
 export default function InputAmount() {
   const fromToken = useSelector(getFromToken);

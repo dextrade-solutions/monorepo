@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
+import { ButtonIcon } from 'dex-ui';
 import { useRef } from 'react';
-
-import { ButtonIcon } from '../../ui/button-icon';
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {

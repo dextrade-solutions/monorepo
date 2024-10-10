@@ -1,7 +1,7 @@
 import { Box, Button, Fade, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
-import { AdPreview, AdPreviewSkeleton } from 'dex-ui';
+import { AdPreview, AdPreviewSkeleton, ButtonIcon } from 'dex-ui';
 import { debounce } from 'lodash';
 import { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
@@ -20,7 +20,6 @@ import {
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonIcon } from '../../ui/button-icon';
 import ItemPicker from '../modals/item-picker';
 
 export default function P2PAds() {

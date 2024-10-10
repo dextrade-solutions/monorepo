@@ -151,7 +151,7 @@ export const createSwapP2P = (props: {
         exchangerSettingsId: exchange.id,
         amount1: Number(from.amount),
         amount2: Number(to.amount),
-        paymentMethodId: paymentMethod?.userPaymentMethodId,
+        paymentMethodId: to.paymentMethod?.userPaymentMethodId,
         clientWalletAddress:
           exchange.toCoin.networkName === NetworkNames.fiat
             ? undefined

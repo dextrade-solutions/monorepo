@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 import { Box, Typography } from '@mui/material';
 import { TradeStatus } from 'dex-helpers';
+import { Icon, PulseLoader } from 'dex-ui';
 import React from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Icon from '../../ui/icon';
-import PulseLoader from '../../ui/pulse-loader';
 
 const ICON_BY_STATUS = {
   WAIT_EXCHANGER_VERIFY: <PulseLoader />,

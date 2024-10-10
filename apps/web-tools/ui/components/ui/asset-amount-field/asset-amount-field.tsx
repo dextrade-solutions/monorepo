@@ -16,29 +16,23 @@ import {
   formatCurrency,
   formatFundsAmount,
   getCoinIconByUid,
+  getStrPaymentMethodInstance,
   shortenAddress,
 } from 'dex-helpers';
+import { ButtonIcon, UrlIcon } from 'dex-ui';
 import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
-import { ButtonIcon } from '../button-icon';
-import UrlIcon from '../url-icon';
 
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
   onChange: (v: string | number) => void;
-  onSetWalletClick: () => void;
   reserve?: number;
 }
 
-export const AssetAmountField = ({
-  assetInput: { asset, balance, amount, configuredWallet, loading: disabled },
-  onChange,
-  onSetWalletClick,
-  reserve,
-}: IProps) => {
+export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
+  const { asset } = assetInput;
   const isSolanaInput = asset.network === NetworkNames.solana;
-  const showSetWallet = !asset.chainId && !asset.isFiat;
   const { connected: isSolanaWalletConnected } = useWallet();
   const displayBalance =
     (isSolanaInput && isSolanaWalletConnected) ||
@@ -69,7 +63,7 @@ export const AssetAmountField = ({
                   <Typography variant="body2" color="text.secondary">
                     Balance
                   </Typography>
-                  {balance ? (
+                  {assetInput.balance ? (
                     <Card
                       sx={{
                         bgcolor: 'transparent',
@@ -79,17 +73,17 @@ export const AssetAmountField = ({
                     >
                       <CardActionArea
                         disabled={Boolean(reserve)}
-                        onClick={() => onChange(balance.value)}
+                        onClick={() => onChange(assetInput.balance.value)}
                       >
                         <Typography
                           as="span"
                           color="text.secondary"
                           marginRight={1}
                         >
-                          {balance.formattedValue}
+                          {assetInput.balance.formattedValue}
                         </Typography>
                         <Typography as="span" color="text.secondary">
-                          {`(${formatCurrency(balance.inUsdt, 'usd')})`}
+                          {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
                         </Typography>
                       </CardActionArea>
                     </Card>
@@ -100,21 +94,42 @@ export const AssetAmountField = ({
               )}
             </Box>
             <Box className="flex-grow"></Box>
-            <Box>
-              {showSetWallet && (
-                <Button variant="outlined" onClick={() => onSetWalletClick()}>
-                  {configuredWallet && (
-                    <Box display="flex">
-                      {shortenAddress(configuredWallet.address)}
-                      <Box marginLeft={2}>
-                        <UrlIcon url={configuredWallet.icon} />
+            {Boolean(reserve) && (
+              <Box>
+                {asset.isFiat ? (
+                  <Button
+                    variant="outlined"
+                    onClick={() => assetInput.showPaymentMethod()}
+                  >
+                    {assetInput.paymentMethod && (
+                      <Box display="flex">
+                        <Box>
+                          {getStrPaymentMethodInstance(
+                            assetInput.paymentMethod,
+                          )}
+                        </Box>
                       </Box>
-                    </Box>
-                  )}
-                  {!configuredWallet && 'Set wallet'}
-                </Button>
-              )}
-            </Box>
+                    )}
+                    {!assetInput.paymentMethod && 'Payment method'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={() => assetInput.showConfigureWallet()}
+                  >
+                    {assetInput.configuredWallet && (
+                      <Box display="flex">
+                        {shortenAddress(assetInput.configuredWallet.address)}
+                        <Box marginLeft={2}>
+                          <UrlIcon url={assetInput.configuredWallet.icon} />
+                        </Box>
+                      </Box>
+                    )}
+                    {!assetInput.configuredWallet && 'Set Holder'}
+                  </Button>
+                )}
+              </Box>
+            )}
           </Box>
         }
       />
@@ -122,9 +137,9 @@ export const AssetAmountField = ({
 
       <Box paddingX={2} marginY={1}>
         <NumericFormat
-          value={amount}
+          value={assetInput.amount}
           customInput={TextField}
-          disabled={disabled}
+          disabled={assetInput.loading}
           decimalSeparator=","
           placeholder="0"
           fullWidth
@@ -137,7 +152,7 @@ export const AssetAmountField = ({
             },
             endAdornment: (
               <InputAdornment position="end">
-                {Number(amount) > 0 && !disabled && (
+                {Number(assetInput.amount) > 0 && !assetInput.loading && (
                   <ButtonIcon
                     iconName="close"
                     color="secondary"
@@ -150,14 +165,17 @@ export const AssetAmountField = ({
           }}
           onChange={(e) => onChange(e.target.value.replace(',', '.'))}
         />
-        {Boolean(amount) && asset.priceInUsdt && (
+        {Boolean(assetInput.amount) && asset.priceInUsdt && (
           <Typography
             variant="body2"
             color="text.secondary"
             marginTop={-1}
             marginBottom={2}
           >
-            {formatCurrency(Number(amount) * asset.priceInUsdt, 'usd')}
+            {formatCurrency(
+              Number(assetInput.amount) * asset.priceInUsdt,
+              'usd',
+            )}
           </Typography>
         )}
         {reserve !== undefined && (
