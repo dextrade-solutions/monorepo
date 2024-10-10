@@ -152,10 +152,7 @@ export const createSwapP2P = (props: {
         amount1: Number(from.amount),
         amount2: Number(to.amount),
         paymentMethodId: to.paymentMethod?.userPaymentMethodId,
-        clientWalletAddress:
-          exchange.toCoin.networkName === NetworkNames.fiat
-            ? undefined
-            : to.account.address,
+        clientWalletAddress: to.account?.address,
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),

@@ -144,7 +144,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const { fee: outgoingFee } = useFee({
     asset: assetFrom,
     amount: assetInputFrom.amount,
-    from: assetInputFrom.account.address,
+    from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
     to: ad.walletAddress,
   });
 

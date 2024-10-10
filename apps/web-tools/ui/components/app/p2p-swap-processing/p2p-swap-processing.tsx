@@ -399,7 +399,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             .map(({ component }) => component)}
         </Box>
       </Box>
-      {!exchange.provider && (
+      {exchange.provider !== 'DexPay' && (
         <Box width="100%" marginY={2}>
           <P2PChat
             variant="outlined"
