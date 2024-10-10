@@ -9,9 +9,10 @@ export default function Stage({
   status,
   title = 'Send transaction',
   subtitle,
+  sendTransactionFailure,
 }: {
   title: string;
-  subtitle: ReactNode;
+  subtitle?: ReactNode;
   status: StageStatuses | null;
   sendTransactionFailure?: string;
   onRequest: () => void;
@@ -38,7 +39,7 @@ export default function Stage({
           Try again
         </Button>
       );
-      message = 'Wallet transfer transaction failed';
+      message = sendTransactionFailure || 'Wallet transfer transaction failed';
       break;
     case StageStatuses.success:
       severity = 'success';
