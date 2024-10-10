@@ -3,9 +3,8 @@ import { Tooltip } from '@mui/material';
 import classnames from 'classnames';
 import { SECOND } from 'dex-helpers';
 import { Duration } from 'luxon';
-
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import TimerIcon from './timer-icon';
 
@@ -48,7 +47,7 @@ export default function CountdownTimer({
    * Boolean indicating whether to display only the time (`true`) or to also
    * display a label (`false`), given by the `labelKey` parameter.
    */
-  timeOnly: boolean;
+  timeOnly?: boolean;
 
   /**
    * The duration of this timer in milliseconds.
@@ -59,7 +58,7 @@ export default function CountdownTimer({
    * The time at which this timer should turn red, indicating it has almost run
    * out of time. Given in the format `mm:ss`.
    */
-  warningTime: string;
+  warningTime?: string;
 
   /**
    * The key of the label to display next to the timer, defined in
@@ -120,11 +119,14 @@ export default function CountdownTimer({
   if (timeOnly) {
     time = <div className="countdown-timer__time">{formattedTimer}</div>;
   } else if (labelKey) {
-    time = t(labelKey, [
-      <div key="countdown-time-1" className="countdown-timer__time">
-        {formattedTimer}
-      </div>,
-    ]);
+    time = (
+      <div>
+        {t(labelKey)}{' '}
+        <div key="countdown-time-1" className="countdown-timer__time">
+          {formattedTimer}
+        </div>
+      </div>
+    );
   }
 
   return (

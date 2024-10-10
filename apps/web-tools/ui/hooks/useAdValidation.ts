@@ -43,7 +43,7 @@ export function useAdValidation({
   }
   if (
     !assetInputTo.asset.isFiat &&
-    !assetInputTo.account.address &&
+    !assetInputTo.account?.address &&
     !assetInputTo.configuredWallet?.address
   ) {
     params.submitBtnText = 'Set recepient wallet';

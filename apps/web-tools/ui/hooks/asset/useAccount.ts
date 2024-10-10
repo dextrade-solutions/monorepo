@@ -1,5 +1,6 @@
 import { remove0x } from '@metamask/utils';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletInfo } from '@web3modal/wagmi/react';
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { useAccount as useWCAccount } from 'wagmi';
@@ -13,20 +14,23 @@ import {
 import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
 
 export function useAccount(asset: AssetModel) {
-  const { address } = useWCAccount();
-  const { publicKey } = useWallet();
-  if (asset.chainId && address) {
+  const { walletInfo: walletWCInfo } = useWalletInfo();
+  const walletWC = useWCAccount();
+  const walletSOLANA = useWallet();
+  if (asset.chainId && walletWC.address) {
     return {
-      address,
-      reedeemAddress: remove0x(address),
-      refundAddress: remove0x(address),
+      address: walletWC.address,
+      reedeemAddress: remove0x(walletWC.address),
+      refundAddress: remove0x(walletWC.address),
+      icon: walletWCInfo?.icon,
     };
   }
   if (asset.network === NetworkNames.solana) {
     return {
-      address: publicKey?.toBase58(),
+      address: walletSOLANA.publicKey?.toBase58(),
       reedeemAddress: null,
       refundAddress: null,
+      icon: walletSOLANA.wallet?.adapter.icon,
     };
   }
   if (isBtcTypeAsset(asset)) {
@@ -37,7 +41,5 @@ export function useAccount(asset: AssetModel) {
       refundAddress: null,
     };
   }
-  return {
-    address: null,
-  };
+  return null;
 }

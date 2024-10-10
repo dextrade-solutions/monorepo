@@ -1,13 +1,15 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { formatCurrency, formatFundsAmount, NetworkNames } from 'dex-helpers';
-import { UserPaymentMethod, AdItem, AssetModel } from 'dex-helpers/types';
+import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { AdItem, AssetModel } from 'dex-helpers/types';
+import { ButtonIcon } from 'dex-ui';
 import { debounce, isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatUnits } from 'viem';
 
+import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
 import {
@@ -22,8 +24,6 @@ import { useFee } from '../../../hooks/useFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
-import { ButtonIcon } from 'dex-ui';
-import PaymentMethodPicker from '../modals/payment-method-picker';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
 
@@ -57,7 +57,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const needPickupPaymentMethod =
     assetInputTo.asset.isFiat && !assetInputTo.paymentMethod;
   const needPickupRecepientAddress =
-    !assetInputTo.asset.isFiat && !assetInputTo.account.address;
+    !assetInputTo.asset.isFiat && !assetInputTo.account?.address;
 
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
@@ -73,7 +73,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         const txParams = generateTxParams({
           asset: assetTo,
           amount: toAmount.toFixed(8),
-          from: ad.walletAddressInNetwork2,
+          from: NULLISH_TOKEN_ADDRESS,
           to: account.address,
           isAtomicSwap: ad.isAtomicSwap,
         });

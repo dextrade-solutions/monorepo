@@ -1,3 +1,4 @@
+import { NetworkNames } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,6 +11,7 @@ import { fetchRates } from '../../../app/helpers/rates';
 
 export const useAssetInput = ({
   asset,
+  reserve: isToAsset,
 }: {
   asset: AssetModel;
   reserve?: number;
@@ -28,12 +30,18 @@ export const useAssetInput = ({
   const dispatch = useDispatch();
   const balance = useAssetBalance(asset);
 
+  const canChooseWallet = asset.network === NetworkNames.solana;
+  const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
+  const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
+  const currentAccount = configuredWallet || account;
+
   const showConfigureWallet = () => {
     dispatch(
       showModal({
         name: 'SET_WALLET',
         asset,
-        value: configuredWallet,
+        isToAsset,
+        value: currentAccount,
         onChange: (v) => setConfiguredWallet(v),
       }),
     );
@@ -50,7 +58,7 @@ export const useAssetInput = ({
     );
   };
 
-  // initialize native
+  // initialize
   useEffect(() => {
     if (asset.isNative || asset.isFiat) {
       setNative(asset);
@@ -68,16 +76,24 @@ export const useAssetInput = ({
     });
   }, [asset]);
 
+  // useEffect(() => {
+  //   setConfiguredWallet(account);
+  // }, [account]);
+
   return {
     asset,
     // input parameters
     amount: inputAmount,
     loading: loading || loadingNative,
     configuredWallet,
-
+    permissions: {
+      canChooseWallet,
+      canChoosePaymentMethod,
+      canPasteWallet,
+    },
     // calc props
     native,
-    account: configuredWallet ? { address: configuredWallet.address } : account,
+    account: currentAccount,
     balance,
     paymentMethod,
     setLoading,

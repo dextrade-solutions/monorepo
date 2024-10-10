@@ -94,9 +94,11 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
               )}
             </Box>
             <Box className="flex-grow"></Box>
-            {Boolean(reserve) && (
+            {(assetInput.permissions.canChoosePaymentMethod ||
+              assetInput.permissions.canChooseWallet ||
+              assetInput.permissions.canPasteWallet) && (
               <Box>
-                {asset.isFiat ? (
+                {assetInput.permissions.canChoosePaymentMethod && (
                   <Button
                     variant="outlined"
                     onClick={() => assetInput.showPaymentMethod()}
@@ -112,20 +114,22 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                     )}
                     {!assetInput.paymentMethod && 'Payment method'}
                   </Button>
-                ) : (
+                )}
+                {(assetInput.permissions.canPasteWallet ||
+                  assetInput.permissions.canChooseWallet) && (
                   <Button
                     variant="outlined"
                     onClick={() => assetInput.showConfigureWallet()}
                   >
-                    {assetInput.configuredWallet && (
+                    {assetInput.account && (
                       <Box display="flex">
-                        {shortenAddress(assetInput.configuredWallet.address)}
+                        {shortenAddress(assetInput.account.address)}
                         <Box marginLeft={2}>
-                          <UrlIcon url={assetInput.configuredWallet.icon} />
+                          <UrlIcon url={assetInput.account.icon} />
                         </Box>
                       </Box>
                     )}
-                    {!assetInput.configuredWallet && 'Set Holder'}
+                    {!assetInput.account && 'Set Wallet'}
                   </Button>
                 )}
               </Box>

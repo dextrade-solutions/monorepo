@@ -63,22 +63,19 @@ function useSolanaBalance(asset: AssetModel) {
       }
 
       try {
-        // connection.onAccountChange(
-        //   account,
-        //   (updatedAccountInfo) => {
-        //     setBalance(BigInt(updatedAccountInfo.lamports));
-        //   },
-        //   'confirmed',
-        // );
         if (asset.contract) {
-          const associatedAccount = await getAssociatedTokenAccount(
-            connection,
-            new PublicKey(asset.contract),
-            publicKey,
-          );
-          setBalance(associatedAccount.amount);
+          try {
+            const associatedAccount = await getAssociatedTokenAccount(
+              connection,
+              new PublicKey(asset.contract),
+              publicKey,
+            );
+            setBalance(associatedAccount.amount);
+          } catch {
+            setBalance(0n);
+          }
         } else {
-          const accountInfo = await connection.getAccountInfo(account);
+          const accountInfo = await connection.getAccountInfo(publicKey);
           setBalance(BigInt(accountInfo?.lamports || 0));
         }
       } catch (error) {

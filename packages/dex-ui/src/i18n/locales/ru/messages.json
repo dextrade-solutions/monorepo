@@ -1,4 +1,8 @@
 {
   "quantity": "Количество",
-  "limits": "Лимиты"
+  "limits": "Лимиты",
+  "copiedExclamation": "Скопировано",
+  "approvalTimerP2PLabel": "Время подтверждения",
+  "approvalTimerP2PInfo": "Если вы не подтвердите, то обмен будет автоматически отменен",
+  "approveRefundAfterTimeLock": "Время блокировки"
 }

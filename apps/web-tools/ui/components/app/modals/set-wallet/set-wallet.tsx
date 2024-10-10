@@ -22,24 +22,29 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import AssetItem from '../../../ui/asset-item';
 import { ModalProps } from '../types';
 
+type ConfiguredWallet = { address: string; icon: string };
+
 const SetWallet = ({
   asset,
-  value,
+  value: savedValue,
+  isToAsset,
   onChange,
   hideModal,
 }: {
   asset: AssetModel;
-  value: { address: string; icon: string } | null;
+  value: ConfiguredWallet | null;
   open: boolean;
-  onChange: (v: { address: string; icon: string } | null) => void;
+  isToAsset?: boolean;
+  onChange: (v: ConfiguredWallet | null) => void;
 } & ModalProps) => {
   const isSolNetwork = asset.network === NetworkNames.solana;
   const canConnectExternalWallet = isSolNetwork;
-  const canPasteAddress = true;
+  const canPasteAddress = isToAsset;
 
   const t = useI18nContext();
   const { wallets, connecting, select } = useWallet();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
+  const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
 
   const onSetInputWallet = () => {
     onChange({ address: inputWalletAddress, icon: '' });
@@ -76,19 +81,22 @@ const SetWallet = ({
       </Box>
       {value?.address ? (
         <Box>
-          <Typography marginBottom={1}>My wallet address</Typography>
+          <Typography>My current address:</Typography>
+          <Typography color="text.secondary" variant="body2" marginBottom={1}>
+            This address using for {isToAsset ? 'recieving' : 'sending'}{' '}
+            {asset.symbol}
+          </Typography>
           <Box marginBottom={3}>
-            <CopyData data={value.address} />
+            <CopyData tooltipPosition="top" width="100%" data={value.address} />
           </Box>
           <Button
             variant="outlined"
             fullWidth
             onClick={() => {
-              onChange(null);
-              hideModal();
+              setValue(null);
             }}
           >
-            Detach address
+            Change address
           </Button>
         </Box>
       ) : (
@@ -116,6 +124,11 @@ const SetWallet = ({
                       )}
                     </MenuItem>
                   ))}
+                  {!wallets.length && (
+                    <Typography color="text.secondary">
+                      No solana wallets detected...
+                    </Typography>
+                  )}
                 </MenuList>
               )}
             </>
@@ -125,30 +138,32 @@ const SetWallet = ({
               OR
             </Typography>
           )}
-          <Box>
-            <Typography marginBottom={1} variant="h6">
-              Paste your wallet address
-            </Typography>
+          {canPasteAddress && (
             <Box>
-              <TextField
-                placeholder="Recepient address"
-                fullWidth
-                size="medium"
-                onChange={(v) => setInputWalletAddress(v.target.value)}
-              />
-              {inputWalletAddress && (
-                <Box marginTop={1}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={onSetInputWallet}
-                  >
-                    Attach address
-                  </Button>
-                </Box>
-              )}
+              <Typography marginBottom={1} variant="h6">
+                Paste your wallet address
+              </Typography>
+              <Box>
+                <TextField
+                  placeholder="Recepient address"
+                  fullWidth
+                  size="medium"
+                  onChange={(v) => setInputWalletAddress(v.target.value)}
+                />
+                {inputWalletAddress && (
+                  <Box marginTop={1}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      onClick={onSetInputWallet}
+                    >
+                      Attach address
+                    </Button>
+                  </Box>
+                )}
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
       )}
     </Box>

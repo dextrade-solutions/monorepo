@@ -1,5 +1,8 @@
 {
   "quantity": "Quantity",
   "limits": "Limits",
-  "copiedExclamation": "Copied"
+  "copiedExclamation": "Copied",
+  "approvalTimerP2PLabel": "Approval time",
+  "approvalTimerP2PInfo": "If you do not confirm the exchange in the time, it will be automatically cancelled",
+  "approveRefundAfterTimeLock": "Time lock"
 }

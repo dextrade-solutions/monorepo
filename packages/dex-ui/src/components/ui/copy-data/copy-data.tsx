@@ -15,8 +15,8 @@ const CopyData = ({
   ...args
 }: {
   data: string;
-  tooltipPosition: 'top' | 'left' | 'bottom' | 'right';
-  className: string;
+  tooltipPosition?: 'top' | 'left' | 'bottom' | 'right';
+  className?: string;
 } & BoxProps) => {
   const { t } = useTranslation();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -24,7 +24,7 @@ const CopyData = ({
   return (
     <Box className={classnames('copy-data', className)} {...args}>
       <Tooltip
-        position={tooltipPosition}
+        placement={tooltipPosition}
         title={copied ? t('copiedExclamation') : data}
       >
         <Button

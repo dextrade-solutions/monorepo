@@ -1,7 +1,7 @@
 import { AppBar, Box, Button, Container, Toolbar } from '@mui/material';
 import { useWalletInfo, useWeb3Modal } from '@web3modal/wagmi/react';
 import { shortenAddress } from 'dex-helpers';
-import { PulseLoader, UrlIcon } from 'dex-ui';
+import { CountdownTimer, PulseLoader, UrlIcon } from 'dex-ui';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
@@ -14,6 +14,7 @@ export default function AppHeader() {
   const { walletInfo } = useWalletInfo();
   const { address } = useAccount();
   const isConnected = Boolean(walletInfo?.name);
+
   return (
     <AppBar
       position="static"

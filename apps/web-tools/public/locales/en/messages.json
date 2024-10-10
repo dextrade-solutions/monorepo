@@ -223,6 +223,5 @@
   "activity": { "message": "Activity" },
   "back": { "message": "Back" },
   "youGive": { "message": "You give" },
-  "youGet": { "message": "You get" },
-  "approveRefundAfterTimeLock": { "message": "Time lock $1" }
+  "youGet": { "message": "You get" }
 }
