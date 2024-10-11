@@ -1,8 +1,8 @@
-import { Box, Button, Fade, TextField } from '@mui/material';
+import { Alert, Box, Button, Fade, TextField, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdPreview, AdPreviewSkeleton, ButtonIcon } from 'dex-ui';
-import { debounce } from 'lodash';
+import { debounce, flatMap } from 'lodash';
 import { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useSelector } from 'react-redux';
@@ -89,6 +89,9 @@ export default function P2PAds() {
     );
   };
 
+  const isEmptyResult =
+    data && !isLoading && !isFetching && !flatMap(data?.pages || []).length;
+
   return (
     <Box className="p2p-ads">
       {showSortPicker && (
@@ -128,6 +131,11 @@ export default function P2PAds() {
         </Box>
       </Box>
       <Box className="p2p-ads__list">
+        {isEmptyResult && (
+          <Alert variant="outlined" severity="info">
+            There are no ads with the selected coin(s).
+          </Alert>
+        )}
         <TransitionGroup>
           {(data?.pages || []).map((group, idx) => (
             <Fade key={idx}>

@@ -83,7 +83,7 @@ const SetWallet = ({
         <Box>
           <Typography>My current address:</Typography>
           <Typography color="text.secondary" variant="body2" marginBottom={1}>
-            This address using for {isToAsset ? 'recieving' : 'sending'}{' '}
+            This address using for {isToAsset ? 'receiving' : 'sending'}{' '}
             {asset.symbol}
           </Typography>
           <Box marginBottom={3}>

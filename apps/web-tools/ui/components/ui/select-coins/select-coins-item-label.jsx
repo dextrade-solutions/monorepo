@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import classnames from 'classnames';
 import { getCoinIconByUid } from 'dex-helpers';
 import { UrlIcon } from 'dex-ui';
@@ -13,8 +14,8 @@ export const SelectCoinsItemLabel = ({
   placeholder,
 }) => {
   const url = coin?.uid ? getCoinIconByUid(coin.uid) : ICON_URL_DEFAULT;
-  const name = coin?.name || '';
-  const type = coin?.networkType || '';
+  const name = coin?.symbol || '';
+  const type = coin?.standard || '';
 
   const handleClick = useCallback(
     (e) => {
@@ -50,9 +51,12 @@ export const SelectCoinsItemLabel = ({
       {coin ? (
         <div className="select-coins__item__label__title">
           <div className="select-coins__item__label__title__symbol">{name}</div>
-          <div className="select-coins__item__label__title__type">
+          <Typography
+            color="text.secondary"
+            className="select-coins__item__label__title__type"
+          >
             {type.toUpperCase()}
-          </div>
+          </Typography>
         </div>
       ) : (
         <div className="select-coins__item__label__title__placeholder">

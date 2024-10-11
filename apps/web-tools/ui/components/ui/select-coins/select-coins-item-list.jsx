@@ -68,6 +68,7 @@ export const SelectCoinsItemList = ({
               name,
               standard,
               uid,
+              symbol,
               IconComponent,
               notImported,
             } = item;
@@ -109,7 +110,7 @@ export const SelectCoinsItemList = ({
                     <div className="select-coins__list__item__label__block">
                       {name && (
                         <span className="searchable-item-list__primary-label">
-                          {name}
+                          {`${symbol} (${name})`}
                         </span>
                       )}
                       {standard && (
