@@ -21,6 +21,7 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { ButtonIcon, UrlIcon } from 'dex-ui';
+import _ from 'lodash';
 import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
@@ -115,6 +116,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
             style: {
               fontSize: 25,
             },
+            autoComplete: 'off',
             endAdornment: (
               <InputAdornment position="end">
                 {Number(assetInput.amount) > 0 && !assetInput.loading && (

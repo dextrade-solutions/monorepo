@@ -1,5 +1,6 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
+import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -79,9 +80,9 @@ export const useAssetInput = ({
     });
   }, [asset]);
 
-  // useEffect(() => {
-  //   setConfiguredWallet(account);
-  // }, [account]);
+  const onSetAmount = (v: string | number | null) => {
+    return v ? setInputAmount(_.floor(Number(v), 8)) : setInputAmount('');
+  };
 
   return {
     asset,
@@ -102,7 +103,7 @@ export const useAssetInput = ({
     balance,
     paymentMethod,
     setLoading,
-    setInputAmount,
+    setInputAmount: onSetAmount,
     showPaymentMethod,
     showConfigureWallet,
   };
