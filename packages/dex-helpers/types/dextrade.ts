@@ -255,5 +255,4 @@ export type Trade = {
   unread: number;
   clientSafe?: TradeSafe;
   exchangerSafe?: TradeSafe;
-  provider?: string;
 };
