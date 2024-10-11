@@ -1,3 +1,4 @@
+import './index.scss';
 import {
   Card,
   TextField,
@@ -38,99 +39,59 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
     (isSolanaInput && isSolanaWalletConnected) ||
     (asset.chainId && !asset.isFiat);
   return (
-    <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
+    <Card
+      className="asset-amount-field"
+      variant="outlined"
+      sx={{ bgcolor: 'primary.light' }}
+    >
       <CardHeader
         title={
           <Box display="flex" alignItems="center">
             <UrlIcon size={40} url={getCoinIconByUid(asset.uid)} />
             <Box marginLeft={2}>
-              <Box display="flex" alignItems="flex-end">
+              <Box alignItems="flex-end">
                 <Typography variant="h5" fontWeight="bold">
                   {asset.symbol}
                 </Typography>
                 {!asset.isNative && (
-                  <Typography
-                    variant="h5"
-                    marginLeft={1}
-                    color="text.secondary"
-                  >
+                  <Typography color="text.secondary">
                     {asset.standard.toUpperCase()}
                   </Typography>
                 )}
               </Box>
-              {displayBalance && (
-                <Box marginTop={0.5}>
-                  <Typography variant="body2" color="text.secondary">
-                    Balance
-                  </Typography>
-                  {assetInput.balance ? (
-                    <Card
-                      sx={{
-                        bgcolor: 'transparent',
-                        border: 'none',
-                      }}
-                      variant="outlined"
-                    >
-                      <CardActionArea
-                        disabled={Boolean(reserve)}
-                        onClick={() => onChange(assetInput.balance.value)}
-                      >
-                        <Typography
-                          as="span"
-                          color="text.secondary"
-                          marginRight={1}
-                        >
-                          {assetInput.balance.formattedValue}
-                        </Typography>
-                        <Typography as="span" color="text.secondary">
-                          {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
-                        </Typography>
-                      </CardActionArea>
-                    </Card>
-                  ) : (
-                    <Skeleton width={100} />
-                  )}
-                </Box>
-              )}
             </Box>
-            <Box className="flex-grow"></Box>
-            {(assetInput.permissions.canChoosePaymentMethod ||
-              assetInput.permissions.canChooseWallet ||
-              assetInput.permissions.canPasteWallet) && (
-              <Box>
-                {assetInput.permissions.canChoosePaymentMethod && (
-                  <Button
+            <div className="flex-grow" />
+            {displayBalance && (
+              <Box textAlign="right">
+                <Typography variant="body2" color="text.secondary">
+                  Balance
+                </Typography>
+                {assetInput.balance ? (
+                  <Card
+                    sx={{
+                      bgcolor: 'transparent',
+                      border: 'none',
+                    }}
                     variant="outlined"
-                    onClick={() => assetInput.showPaymentMethod()}
                   >
-                    {assetInput.paymentMethod && (
-                      <Box display="flex">
-                        <Box>
-                          {getStrPaymentMethodInstance(
-                            assetInput.paymentMethod,
-                          )}
-                        </Box>
-                      </Box>
-                    )}
-                    {!assetInput.paymentMethod && 'Payment method'}
-                  </Button>
-                )}
-                {(assetInput.permissions.canPasteWallet ||
-                  assetInput.permissions.canChooseWallet) && (
-                  <Button
-                    variant="outlined"
-                    onClick={() => assetInput.showConfigureWallet()}
-                  >
-                    {assetInput.account && (
-                      <Box display="flex">
-                        {shortenAddress(assetInput.account.address)}
-                        <Box marginLeft={2}>
-                          <UrlIcon url={assetInput.account.icon} />
-                        </Box>
-                      </Box>
-                    )}
-                    {!assetInput.account && 'Set Wallet'}
-                  </Button>
+                    <CardActionArea
+                      disabled={Boolean(reserve)}
+                      onClick={() => onChange(assetInput.balance.value)}
+                    >
+                      <Typography
+                        as="span"
+                        color="text.secondary"
+                        marginRight={1}
+                      >
+                        {assetInput.balance.formattedValue}
+                      </Typography>
+                      <Typography as="span" color="text.secondary">
+                        {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
+                      </Typography>
+                    </CardActionArea>
+                  </Card>
+                ) : (
+                  <Skeleton width={100} />
                 )}
               </Box>
             )}
@@ -201,6 +162,56 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           </Box>
         )}
       </Box>
+      {(assetInput.permissions.canChoosePaymentMethod ||
+        assetInput.permissions.canChooseWallet ||
+        assetInput.permissions.canPasteWallet) && (
+        <Box>
+          {assetInput.permissions.canChoosePaymentMethod && (
+            <Button
+              className="configure-holder-btn"
+              variant="contained"
+              color="tertiary"
+              size="large"
+              fullWidth
+              disableElevation
+              onClick={() => assetInput.showPaymentMethod()}
+            >
+              {assetInput.paymentMethod && (
+                <Box display="flex">
+                  <Box>
+                    {getStrPaymentMethodInstance(assetInput.paymentMethod)}
+                  </Box>
+                </Box>
+              )}
+              {!assetInput.paymentMethod && 'Payment method'}
+            </Button>
+          )}
+          {(assetInput.permissions.canPasteWallet ||
+            assetInput.permissions.canChooseWallet) && (
+            <Button
+              className="configure-holder-btn"
+              size="large"
+              variant="contained"
+              color="tertiary"
+              disableElevation
+              fullWidth
+              onClick={() => assetInput.showConfigureWallet()}
+            >
+              {assetInput.account && (
+                <Box display="flex">
+                  <Typography textTransform="none">
+                    {shortenAddress(assetInput.account.address)}
+                  </Typography>
+                  <Box marginLeft={2}>
+                    <UrlIcon url={assetInput.account.icon} />
+                  </Box>
+                </Box>
+              )}
+              {!assetInput.account && 'Set Wallet'}
+            </Button>
+          )}
+        </Box>
+      )}
     </Card>
   );
 };

@@ -138,6 +138,16 @@ const AdPreview = ({
               {formatFundsAmount(ad.priceInCoin2, ad.toCoin.ticker)}
             </Typography>
           </Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignContent="center"
+          >
+            <Typography>Per 1 {ad.toCoin.ticker}</Typography>
+            <Typography component="strong">
+              {formatFundsAmount(1 / ad.priceInCoin2, ad.fromCoin.ticker)}
+            </Typography>
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>

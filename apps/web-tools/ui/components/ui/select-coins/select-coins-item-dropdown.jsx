@@ -177,7 +177,7 @@ Placeholder.propTypes = {
 };
 
 SelectCoinsItemDropdown.propTypes = {
-  inputRef: PropTypes.node,
+  inputRef: PropTypes.any,
   maxListItem: PropTypes.number.isRequired,
   coin: PropTypes.object,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,

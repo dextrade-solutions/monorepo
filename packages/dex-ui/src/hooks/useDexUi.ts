@@ -22,6 +22,15 @@ export function useDexUI({ theme }) {
         shape: {
           borderRadius: 17,
         },
+        components: {
+          MuiCard: {
+            styleOverrides: {
+              root: {
+                border: 'none',
+              },
+            },
+          },
+        },
       }),
     [paletteMode],
   );

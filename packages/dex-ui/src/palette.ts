@@ -15,6 +15,10 @@ const Palette = {
       dark: '#f0f1f7',
       contrastText: '#000',
     },
+    tertiary: {
+      main: '#f7f8fa',
+      dark: '#e0e3e9',
+    },
     text: {
       primary: '#26282D',
       secondary: '#9DA0A8',
@@ -32,6 +36,10 @@ const Palette = {
     secondary: {
       main: '#C3CFF6',
       dark: '#181D31',
+    },
+    tertiary: {
+      main: '#121b2f',
+      dark: '#0c1323',
     },
     success: {
       main: '#4caf50',

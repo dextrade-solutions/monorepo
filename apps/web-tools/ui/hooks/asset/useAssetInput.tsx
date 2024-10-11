@@ -34,7 +34,9 @@ export const useAssetInput = ({
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
   const currentAccount =
-    asset.network === NetworkNames.bitcoin ? null : configuredWallet || account;
+    asset.network === NetworkNames.bitcoin
+      ? configuredWallet
+      : configuredWallet || account;
 
   const showConfigureWallet = () => {
     dispatch(
@@ -83,6 +85,7 @@ export const useAssetInput = ({
 
   return {
     asset,
+    isToAsset,
     // input parameters
     amount: inputAmount,
     loading: loading || loadingNative,
@@ -94,6 +97,7 @@ export const useAssetInput = ({
     },
     // calc props
     native,
+    accountConnected: account,
     account: currentAccount,
     balance,
     paymentMethod,

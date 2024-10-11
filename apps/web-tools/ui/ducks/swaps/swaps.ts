@@ -137,8 +137,8 @@ export const createSwapP2P = (props: {
         from.amount,
         to.amount,
         remove0x(keypair.hashLock),
-        to.account.reedeemAddress,
-        from.account.refundAddress,
+        to.accountConnected?.reedeemAddress,
+        from.accountConnected?.refundAddress,
         BUILT_IN_NETWORKS[exchange.fromCoin.networkName].atomicSwapExpiration /
           1000n,
       ].join('|');

@@ -74,7 +74,7 @@ export const SelectCoinsItemSearch = ({
 };
 
 SelectCoinsItemSearch.propTypes = {
-  inputRef: PropTypes.node,
+  inputRef: PropTypes.any,
   placeholder: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,

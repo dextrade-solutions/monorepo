@@ -25,7 +25,7 @@ export function useAccount(asset: AssetModel) {
       icon: walletWCInfo?.icon,
     };
   }
-  if (asset.network === NetworkNames.solana) {
+  if (asset.network === NetworkNames.solana && walletSOLANA.publicKey) {
     return {
       address: walletSOLANA.publicKey?.toBase58(),
       reedeemAddress: null,
