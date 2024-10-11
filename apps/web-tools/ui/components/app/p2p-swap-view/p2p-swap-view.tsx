@@ -73,7 +73,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         const txParams = generateTxParams({
           asset: assetTo,
           amount: toAmount.toFixed(8),
-          from: NULLISH_TOKEN_ADDRESS,
+          from: ad.walletAddressInNetwork2,
           to: account.address,
           isAtomicSwap: ad.isAtomicSwap,
         });
