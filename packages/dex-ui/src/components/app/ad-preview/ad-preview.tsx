@@ -11,7 +11,7 @@ import {
   relativeFromCurrentDate,
   getUserAvatarUrl,
 } from 'dex-helpers';
-import { DextradeTypes } from 'dex-services';
+import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
 import { RatingOutput } from './rating-output';
@@ -20,9 +20,9 @@ import Icon from '../../ui/icon';
 import UrlIcon from '../../ui/url-icon';
 
 interface IProps {
-  ad: DextradeTypes.ExchangerModel;
+  ad: AdItem;
   fromTokenAmount?: number;
-  exchanger: DextradeTypes.UserModel;
+  exchanger: UserModel;
   isSelfAd?: boolean;
   onClick?: () => void;
   getAvatarLink?: (url: string) => string;
@@ -135,7 +135,7 @@ const AdPreview = ({
           >
             <Typography>Per 1 {ad.fromCoin.ticker}</Typography>
             <Typography component="strong">
-              {formatFundsAmount(ad.priceInCoin2, ad.toCoin.ticker)}
+              {formatFundsAmount(ad.coinPair.price, ad.toCoin.ticker)}
             </Typography>
           </Box>
           <Box
@@ -145,7 +145,7 @@ const AdPreview = ({
           >
             <Typography>Per 1 {ad.toCoin.ticker}</Typography>
             <Typography component="strong">
-              {formatFundsAmount(1 / ad.priceInCoin2, ad.fromCoin.ticker)}
+              {formatFundsAmount(1 / ad.coinPair.price, ad.fromCoin.ticker)}
             </Typography>
           </Box>
         </CardContent>

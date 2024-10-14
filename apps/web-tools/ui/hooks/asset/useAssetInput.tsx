@@ -9,6 +9,7 @@ import { useAssetBalance } from '../useAssetBalance';
 import { useAccount } from './useAccount';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
+import { AssetAccount } from '../../types';
 
 export const useAssetInput = ({
   asset,
@@ -20,18 +21,14 @@ export const useAssetInput = ({
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
   const [inputAmount, setInputAmount] = useState<number | string>();
-  const [configuredWallet, setConfiguredWallet] = useState<{
-    address: string;
-    icon: string | null;
-  } | null>(null);
+  const [configuredWallet, setConfiguredWallet] = useState<AssetAccount>();
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
-
   const account = useAccount(asset);
   const dispatch = useDispatch();
   const balance = useAssetBalance(asset);
 
-  const canChooseWallet = asset.network === NetworkNames.solana;
+  const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
   const currentAccount =

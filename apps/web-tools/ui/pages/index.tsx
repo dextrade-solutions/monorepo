@@ -28,7 +28,7 @@ import {
 } from '../helpers/constants/routes';
 
 export default function RoutesRoot() {
-  const { isConnected } = useAccount();
+  // const { isConnected } = useAccount();
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
   const queryClient = useQueryClient();
@@ -37,14 +37,14 @@ export default function RoutesRoot() {
   useEffect(() => {
     const { keyringController } = engine;
     keyringController.init({ sessionSeed });
-    if (!isConnected) {
-      dispatch(clearAuthState());
-      queryClient.removeQueries({ queryKey: ['p2pTrades'], exact: true });
-      queryClient.removeQueries({ queryKey: ['p2pTradesActive'], exact: true });
-      queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
-      navigate('/');
-    }
-  }, [dispatch, isConnected, sessionSeed, queryClient, navigate]);
+    // if (!isConnected) {
+      // clear cache on disconnect
+      // dispatch(clearAuthState());
+      // queryClient.removeQueries({ queryKey: ['p2pTrades'], exact: true });
+      // queryClient.removeQueries({ queryKey: ['p2pTradesActive'], exact: true });
+      // queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
+    // }
+  }, [dispatch, sessionSeed, queryClient, navigate]);
 
   return (
     <>

@@ -11,9 +11,7 @@ import {
   Button,
   Divider,
 } from '@mui/material';
-import { useWallet } from '@solana/wallet-adapter-react';
 import {
-  NetworkNames,
   formatCurrency,
   formatFundsAmount,
   getCoinIconByUid,
@@ -21,7 +19,7 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { ButtonIcon, UrlIcon } from 'dex-ui';
-import _ from 'lodash';
+import React from 'react';
 import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
@@ -33,12 +31,8 @@ interface IProps {
 }
 
 export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
-  const { asset } = assetInput;
-  const isSolanaInput = asset.network === NetworkNames.solana;
-  const { connected: isSolanaWalletConnected } = useWallet();
-  const displayBalance =
-    (isSolanaInput && isSolanaWalletConnected) ||
-    (asset.chainId && !asset.isFiat);
+  const { asset, account } = assetInput;
+  const displayBalance = Boolean(account?.connectedWallet);
   return (
     <Card
       className="asset-amount-field"
@@ -54,7 +48,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                 <Typography variant="h5" fontWeight="bold">
                   {asset.symbol}
                 </Typography>
-                {!asset.isNative && (
+                {asset.standard && (
                   <Typography color="text.secondary">
                     {asset.standard.toUpperCase()}
                   </Typography>

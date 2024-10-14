@@ -74,7 +74,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           asset: assetTo,
           amount: toAmount.toFixed(8),
           from: ad.walletAddressInNetwork2,
-          to: account.address,
+          to: account?.address || NULLISH_TOKEN_ADDRESS,
           isAtomicSwap: ad.isAtomicSwap,
         });
         if (assetTo.contract) {

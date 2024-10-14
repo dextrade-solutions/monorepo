@@ -40,13 +40,13 @@ export const P2PSwapSummary = ({ exchange, totalFee = 0 }: IProps) => {
         <Typography display="flex">
           <span className="flex-grow">Price per 1 {fromCoin.ticker}</span>
           <span className="row-summary__value">
-            {formatFundsAmount(exchange.priceInCoin2, toCoin.ticker)}
+            {formatFundsAmount(exchange.coinPair.price, toCoin.ticker)}
           </span>
         </Typography>
         <Typography display="flex">
           <span className="flex-grow">Price per 1 {toCoin.ticker}</span>
           <span className="row-summary__value">
-            {formatFundsAmount(1 / exchange.priceInCoin2, fromCoin.ticker)}
+            {formatFundsAmount(1 / exchange.coinPair.price, fromCoin.ticker)}
           </span>
         </Typography>
         {exchange.minimumExchangeAmountCoin1 > 0 && (

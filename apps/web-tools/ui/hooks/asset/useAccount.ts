@@ -12,33 +12,34 @@ import {
   hash160,
 } from '../../../app/helpers/btc-scripts/utils';
 import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
+import { AssetAccount } from '../../types';
 
-export function useAccount(asset: AssetModel) {
+export function useAccount(asset: AssetModel): AssetAccount | null {
   const { walletInfo: walletWCInfo } = useWalletInfo();
   const walletWC = useWCAccount();
   const walletSOLANA = useWallet();
   if (asset.chainId && walletWC.address) {
     return {
       address: walletWC.address,
-      reedeemAddress: remove0x(walletWC.address),
+      redeemAddress: remove0x(walletWC.address),
       refundAddress: remove0x(walletWC.address),
       icon: walletWCInfo?.icon,
+      connectedWallet: walletWCInfo?.name,
     };
   }
   if (asset.network === NetworkNames.solana && walletSOLANA.publicKey) {
     return {
       address: walletSOLANA.publicKey?.toBase58(),
-      reedeemAddress: null,
-      refundAddress: null,
       icon: walletSOLANA.wallet?.adapter.icon,
+      connectedWallet: walletSOLANA.wallet?.adapter.name,
     };
   }
   if (isBtcTypeAsset(asset)) {
     const redeemPKH = getRedeemKeypair();
     return {
       address: getKeypairAddress(redeemPKH, btcNetworksConfig[asset.network]),
-      reedeemAddress: hash160(redeemPKH.publicKey).toString('hex'),
-      refundAddress: null,
+      redeemAddress: hash160(redeemPKH.publicKey).toString('hex'),
+      // refundAddress: null, TODO: define refund
     };
   }
   return null;

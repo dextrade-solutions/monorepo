@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Fade, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Fade, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
+import { AdItem } from 'dex-helpers/types';
 import { AdPreview, AdPreviewSkeleton, ButtonIcon } from 'dex-ui';
 import { debounce, flatMap } from 'lodash';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
@@ -11,20 +12,17 @@ import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
-import { AdItem } from '../../../../app/types/p2p-swaps';
 import {
   getFromToken,
   getFromTokenInputValue,
   getToToken,
 } from '../../../ducks/swaps/swaps';
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
-import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ItemPicker from '../modals/item-picker';
 
 export default function P2PAds() {
   const t = useI18nContext();
-  const auth = useAuthP2P();
   const navigate = useNavigate();
   const [providerName, setProviderName] = useState('');
   const toToken = useSelector(getToToken);
@@ -75,18 +73,16 @@ export default function P2PAds() {
   }, 500);
 
   const handleAdPreviewClick = (ad: AdItem) => {
-    auth(() =>
-      navigate({
-        pathname: EXCHANGE_VIEW_ROUTE,
-        search: `?${createSearchParams({
-          fromNetworkName: ad.fromCoin.networkName,
-          fromTicker: ad.fromCoin.ticker,
-          toNetworkName: ad.toCoin.networkName,
-          toTicker: ad.toCoin.ticker,
-          name: ad.name,
-        })}`,
-      }),
-    );
+    navigate({
+      pathname: EXCHANGE_VIEW_ROUTE,
+      search: `?${createSearchParams({
+        fromNetworkName: ad.fromCoin.networkName,
+        fromTicker: ad.fromCoin.ticker,
+        toNetworkName: ad.toCoin.networkName,
+        toTicker: ad.toCoin.ticker,
+        name: ad.name,
+      })}`,
+    });
   };
 
   const isEmptyResult =
