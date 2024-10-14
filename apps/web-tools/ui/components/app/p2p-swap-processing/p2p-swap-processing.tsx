@@ -155,7 +155,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
 
   if (exchange.status === TradeStatus.canceled) {
     statusImage = <SwapFailtureIcon />;
-    headerText = t('Swap Canceled');
+    headerText = t('Trade Canceled');
     content = (
       <Alert severity="error">The swap was canceled by the exchanger</Alert>
     );
@@ -166,11 +166,11 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     ].includes(exchange.status)
   ) {
     statusImage = <SwapFailtureIcon />;
-    headerText = t('Swap Failed');
+    headerText = t('Trade Failed');
     content = <Alert severity="error">The swap failed</Alert>;
   } else if (exchange.status === TradeStatus.new && from.isFiat) {
     statusImage = <PulseLoader />;
-    headerText = t('Swap Processing');
+    headerText = t('Trade Processing');
     let approveDeadline = 15 * MINUTE;
     const historyRow = exchange.statusHistory.find(
       ({ status }) => status === TradeStatus.new,
@@ -246,7 +246,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     headerText = t('Client transaction sending');
   } else if (exchange.status === TradeStatus.exchangerTransactionVerify) {
     statusImage = <PulseLoader />;
-    headerText = t('Swap Processing');
+    headerText = t('Trade Processing');
     if (to.isFiat) {
       content = (
         <Box>
@@ -297,7 +297,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     headerText = t('Expired');
   } else {
     statusImage = <PulseLoader />;
-    headerText = t('Swap Processing');
+    headerText = t('Trade Processing');
   }
 
   const onSubmit = async () => {

@@ -145,14 +145,14 @@
   "bankAccountPickerTitle": {
     "message": "Мои платежные методы"
   },
-  "Swap Processing": {
+  "Trade Processing": {
     "message": "В процессе"
   },
-  "Swap Canceled": {
-    "message": "Транзакция отменена"
+  "Trade Canceled": {
+    "message": "Обмен отменен"
   },
-  "Reservation": {
-    "message": "Резервирование"
+  "Trade Failed": {
+    "message": "Ошибка обмена"
   },
   "Completed": {
     "message": "Завершено"
