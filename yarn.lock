@@ -46100,6 +46100,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-debounce@npm:^10.0.4":
+  version: 10.0.4
+  resolution: "use-debounce@npm:10.0.4"
+  peerDependencies:
+    react: "*"
+  checksum: 10/e193bbed307204b655abab545704ca608b23db10680f299f4b9b48b935a9fd68b68827c79de3bf5517010524bfa15709bf6b0ab1f915d6305b5d2ce27bf11ad7
+  languageName: node
+  linkType: hard
+
 "use-sync-external-store@npm:1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
@@ -47220,6 +47229,7 @@ __metadata:
     sass: "npm:^1.75.0"
     typescript: "npm:^5.2.2"
     uint8array-tools: "npm:^0.0.9"
+    use-debounce: "npm:^10.0.4"
     viem: "npm:^2.21.18"
     vite: "npm:^5.2.0"
     vite-plugin-node-polyfills: "npm:^0.22.0"

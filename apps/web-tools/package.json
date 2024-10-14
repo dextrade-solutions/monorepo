@@ -74,6 +74,7 @@
     "redux-persist": "^6.0.0",
     "remote-redux-devtools": "^0.5.16",
     "uint8array-tools": "^0.0.9",
+    "use-debounce": "^10.0.4",
     "viem": "^2.21.18",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-wasm": "^3.3.0",

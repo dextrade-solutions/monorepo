@@ -3,10 +3,11 @@ import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { ButtonIcon } from 'dex-ui';
-import { debounce, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useDebouncedCallback } from 'use-debounce';
 import { formatUnits } from 'viem';
 
 import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
@@ -101,40 +102,34 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     },
     [assetInputTo, assetTo, ad],
   );
-  const recalculateTo = useCallback(
-    debounce(async (fromAmount) => {
-      let sumInCoin2 = Number(fromAmount) * exchangeRate;
-      if (sumInCoin2 > 0) {
-        const fee = await calcIncomingFee(sumInCoin2);
-        sumInCoin2 -= fee;
-        assetInputTo.setInputAmount(
-          sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
-        );
-      } else {
-        assetInputTo.setInputAmount(0);
-      }
-      assetInputTo.setLoading(false);
-    }, RECALCULATE_DELAY),
-    [calcIncomingFee],
-  );
+  const recalculateTo = useDebouncedCallback(async (fromAmount) => {
+    let sumInCoin2 = Number(fromAmount) * exchangeRate;
+    if (sumInCoin2 > 0) {
+      const fee = await calcIncomingFee(sumInCoin2);
+      sumInCoin2 -= fee;
+      assetInputTo.setInputAmount(
+        sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+      );
+    } else {
+      assetInputTo.setInputAmount(0);
+    }
+    assetInputTo.setLoading(false);
+  }, RECALCULATE_DELAY);
 
-  const recalculateFrom = useCallback(
-    debounce(async (toAmount) => {
-      const sumInCoin2 = Number(toAmount);
-      let sumInCoin1 = sumInCoin2 / exchangeRate;
-      if (sumInCoin1 > 0) {
-        const fee = await calcIncomingFee(sumInCoin2);
-        sumInCoin1 += fee / exchangeRate;
-        assetInputFrom.setInputAmount(
-          sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
-        );
-      } else {
-        assetInputFrom.setInputAmount(0);
-      }
-      assetInputFrom.setLoading(false);
-    }, RECALCULATE_DELAY),
-    [calcIncomingFee],
-  );
+  const recalculateFrom = useDebouncedCallback(async (toAmount) => {
+    const sumInCoin2 = Number(toAmount);
+    let sumInCoin1 = sumInCoin2 / exchangeRate;
+    if (sumInCoin1 > 0) {
+      const fee = await calcIncomingFee(sumInCoin2);
+      sumInCoin1 += fee / exchangeRate;
+      assetInputFrom.setInputAmount(
+        sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+      );
+    } else {
+      assetInputFrom.setInputAmount(0);
+    }
+    assetInputFrom.setLoading(false);
+  }, RECALCULATE_DELAY);
 
   const { submitBtnText, hasValidationErrors, disabledBtn } = useAdValidation({
     ad,
