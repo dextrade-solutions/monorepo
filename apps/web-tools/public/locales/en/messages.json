@@ -147,16 +147,16 @@
     "message": "My payment methods"
   },
   "Trade Processing": {
-    "message": "Trade Processing"
+    "message": "Swap Processing"
   },
   "Trade Canceled": {
-    "message": "Trade Canceled"
+    "message": "Swap Canceled"
   },
   "Trade Failed": {
-    "message": "Trade Failed"
+    "message": "Swap Failed"
   },
   "Reservation": {
-    "message": "Starting trade"
+    "message": "Starting swap"
   },
   "Completed": {
     "message": "Completed"
