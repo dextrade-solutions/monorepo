@@ -16,6 +16,13 @@ import {
   TradeType,
 } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
+import {
+  CountdownTimer,
+  Icon,
+  PaymentMethodDisplay,
+  PulseLoader,
+  StepProgressBar,
+} from 'dex-ui';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,7 +42,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import AssetItem from '../../ui/asset-item';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
-import { CountdownTimer, Icon, PaymentMethodDisplay, PulseLoader, StepProgressBar } from 'dex-ui';
 
 interface IProps {
   exchange: Trade;
@@ -153,6 +159,15 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     content = (
       <Alert severity="error">The swap was canceled by the exchanger</Alert>
     );
+  } else if (
+    [
+      TradeStatus.exchangerTransactionFailed,
+      TradeStatus.exchangerTransactionFailed,
+    ].includes(exchange.status)
+  ) {
+    statusImage = <SwapFailtureIcon />;
+    headerText = t('Swap Failed');
+    content = <Alert severity="error">The swap failed</Alert>;
   } else if (exchange.status === TradeStatus.new && from.isFiat) {
     statusImage = <PulseLoader />;
     headerText = t('Swap Processing');
