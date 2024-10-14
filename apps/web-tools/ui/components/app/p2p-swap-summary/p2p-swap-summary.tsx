@@ -50,15 +50,38 @@ export const P2PSwapSummary = ({ exchange, totalFee = 0 }: IProps) => {
           </span>
         </Typography>
         {exchange.minimumExchangeAmountCoin1 > 0 && (
-          <Typography display="flex">
-            <span className="flex-grow">{t('min')}</span>
-            <span className="row-summary__value">
-              {formatFundsAmount(
-                exchange.minimumExchangeAmountCoin1,
-                fromCoin.ticker,
-              )}
-            </span>
-          </Typography>
+          <>
+            <Typography display="flex">
+              <span className="flex-grow">{t('min')}</span>
+              <span className="row-summary__value">
+                {formatFundsAmount(
+                  exchange.minimumExchangeAmountCoin1,
+                  fromCoin.ticker,
+                )}
+                {` (${formatFundsAmount(
+                  exchange.minimumExchangeAmountCoin2,
+                  toCoin.ticker,
+                )})`}
+              </span>
+            </Typography>
+          </>
+        )}
+        {exchange.maximumExchangeAmountCoin1 > 0 && (
+          <>
+            <Typography display="flex">
+              <span className="flex-grow">{t('max')}</span>
+              <span className="row-summary__value">
+                {formatFundsAmount(
+                  exchange.maximumExchangeAmountCoin1,
+                  fromCoin.ticker,
+                )}
+                {` (${formatFundsAmount(
+                  exchange.maximumExchangeAmountCoin2,
+                  toCoin.ticker,
+                )})`}
+              </span>
+            </Typography>
+          </>
         )}
         {/* Should we display user exchangerFee?
               {exchangerFeeCalulated > 0 && (
