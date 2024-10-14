@@ -20,16 +20,22 @@ export const RatingOutput = ({
   );
   return (
     <Box display="flex" alignItems="center">
-      <Typography marginRight={1} variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary">
         Trades {exchangeCount}
       </Typography>
-      <Typography marginRight={1} variant="body2" color="text.secondary">
+      <Typography color="text.secondary" marginX={1}>
+        |
+      </Typography>
+      <Typography color="text.secondary" variant="body2">
         Completion {exchangeCompletionRatePercent}%
+      </Typography>
+      <Typography color="text.secondary" marginX={1}>
+        |
       </Typography>
       <Icon
         size="xs"
-        name="thumbs-up-down"
-        marginRight={1}
+        name="thumb-up"
+        marginRight={0.5}
         color="text.secondary"
       />
       <Typography marginRight={1} variant="body2" color="text.secondary">

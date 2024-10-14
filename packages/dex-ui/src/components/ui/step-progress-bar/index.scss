@@ -83,6 +83,8 @@ ul.two-steps {
 
 .progressbar li.active::before {
   border-color: var(--color-primary-default);
+  background-color: var(--color-primary-default);
+  color: var(--color-primary-inverse);
   z-index: 1;
 
   [dir='rtl'] & {
