@@ -25,14 +25,14 @@ export function ContentUi() {
   const theme = useSelector(getCurrentTheme);
   const locale = useSelector(getCurrentLocale);
   const { muiTheme } = useDexUI({ theme });
-  const hideHeader = location.pathname.includes(AWAITING_SWAP_ROUTE);
+  // const hideHeader = location.pathname.includes(AWAITING_SWAP_ROUTE);
   return (
     <ThemeProvider theme={muiTheme}>
       <DexUiProvider theme={muiTheme} locale={locale}>
         <Web3ModalProvider>
           <Web3SolanaProvider>
             <CssBaseline />
-            {!hideHeader && <AppHeader />}
+            {/* {!hideHeader && <AppHeader />} */}
             <Container maxWidth="sm">
               <Box paddingY={3}>
                 <Pages />

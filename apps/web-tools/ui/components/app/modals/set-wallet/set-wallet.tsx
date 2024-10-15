@@ -15,7 +15,7 @@ import { Wallet, useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -37,8 +37,9 @@ const SetWallet = ({
   isToAsset?: boolean;
   onChange: (v: ConfiguredWallet | null) => void;
 } & ModalProps) => {
-  const isSolNetwork = asset.network === NetworkNames.solana;
-  const canConnectExternalWallet = isSolNetwork;
+  const supportSolanaConnect = asset.network === NetworkNames.solana;
+  const supportWalletConnect = Boolean(asset.chainId);
+  const canConnectExternalWallet = supportSolanaConnect || supportWalletConnect;
   const canPasteAddress = isToAsset;
 
   const t = useI18nContext();
@@ -104,6 +105,7 @@ const SetWallet = ({
           {canConnectExternalWallet && (
             <>
               <Typography variant="h6">Connect wallet</Typography>
+              <w3m-button />
               {connecting ? (
                 <PulseLoader />
               ) : (
