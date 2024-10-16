@@ -10,7 +10,7 @@ import {
 
 import engine from '../../../app/engine';
 import { genKeyPair } from '../../../app/helpers/atomic-swaps';
-import { determineTradeTypeByAd } from '../../../app/helpers/utils';
+import { determineTradeTypeByAd, getSerializedAddressFromInput, serializeAddressBeforeP2PSend } from '../../../app/helpers/utils';
 import P2PService from '../../../app/services/p2p-service';
 import { handleRequest } from '../../helpers/utils/requests';
 import type { useAssetInput } from '../../hooks/asset/useAssetInput';
@@ -152,8 +152,8 @@ export const createSwapP2P = (props: {
         amount1: Number(from.amount),
         amount2: Number(to.amount),
         paymentMethodId: to.paymentMethod?.userPaymentMethodId,
-        clientWalletAddress: from.account?.address,
-        clientWalletAddressInNetwork2: to.account?.address,
+        clientWalletAddress: getSerializedAddressFromInput(from),
+        clientWalletAddressInNetwork2: getSerializedAddressFromInput(to),
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),

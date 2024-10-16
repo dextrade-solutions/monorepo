@@ -1,7 +1,8 @@
 import { NetworkNames, TradeType } from 'dex-helpers';
+import { AdItem, Trade } from 'dex-helpers/types';
 import * as allChains from 'viem/chains';
 
-import { AdItem, Trade } from '../types/p2p-swaps';
+import type { useAssetInput } from '../../ui/hooks/asset/useAssetInput';
 
 const { ...chains } = allChains;
 
@@ -57,4 +58,15 @@ export function determineTradeTypeByAd(ad: AdItem) {
     exchangePairType = TradeType.cryptoFiat;
   }
   return exchangePairType;
+}
+
+export function getSerializedAddressFromInput(
+  input: ReturnType<typeof useAssetInput>,
+): string {
+  const address = input.account?.address || '';
+  if (input.asset.network === NetworkNames.xdc && address.startsWith('0x')) {
+    // Replace "0x" with "xdc" and return the modified address
+    return address.replace('0x', 'xdc');
+  }
+  return address;
 }
