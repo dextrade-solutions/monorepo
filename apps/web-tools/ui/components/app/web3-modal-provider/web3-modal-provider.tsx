@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import { WagmiProvider } from 'wagmi';
 
 import engine from '../../../../app/engine';
-import { wagmiAdapter } from '../../../../app/helpers/web3-client-configuration';
+import { config } from '../../../../app/helpers/web3-client-configuration';
 
 interface IProps {
   children: ReactNode;
@@ -16,7 +16,7 @@ const persister = createSyncStoragePersister({
 
 export const Web3ModalProvider: React.FC<IProps> = ({ children }) => {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={config}>
       <PersistQueryClientProvider
         persistOptions={{ persister }}
         client={engine.queryClient}

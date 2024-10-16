@@ -23,8 +23,8 @@ export function useAccount(asset: AssetModel): AssetAccount | null {
       address: walletWC.address,
       redeemAddress: remove0x(walletWC.address),
       refundAddress: remove0x(walletWC.address),
-      // icon: walletWCInfo?.icon,
-      // connectedWallet: walletWCInfo?.name,
+      icon: walletWC.connector?.icon,
+      connectedWallet: walletWC.connector?.name,
     };
   }
   if (asset.network === NetworkNames.solana && walletSOLANA.publicKey) {

@@ -10,6 +10,7 @@ import { getAssociatedTokenAccount } from '../../app/helpers/sol-scripts/get-ass
 
 function useAccountBalance(chainId: number | null) {
   const { address } = useAccount();
+
   const result = useBalance({
     chainId,
     address,
@@ -105,8 +106,10 @@ export function getBalanceHook(asset: AssetModel) {
 
 export function useAssetBalance(asset: AssetModel) {
   const useBalanceHook = getBalanceHook(asset);
+
   const chainId = asset.chainId ? hexToNumber(asset.chainId) : null;
   const result = useBalanceHook(chainId, asset.contract);
+
   if (typeof result === 'bigint') {
     if (!asset.decimals) {
       throw new Error('useAssetBalance - no decimals provided');

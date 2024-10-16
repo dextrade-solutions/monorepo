@@ -10,6 +10,8 @@ import {
   TextField,
   ListItemSecondaryAction,
   Divider,
+  ListItemButton,
+  ListItemAvatar,
 } from '@mui/material';
 import { Wallet, useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
@@ -17,8 +19,11 @@ import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
 import React, { useState } from 'react';
 
+import { config } from '../../../../../app/helpers/web3-client-configuration';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
+import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { AssetAccount } from '../../../../types';
 import AssetItem from '../../../ui/asset-item';
 import { ModalProps } from '../types';
 
@@ -32,10 +37,10 @@ const SetWallet = ({
   hideModal,
 }: {
   asset: AssetModel;
-  value: ConfiguredWallet | null;
+  value: AssetAccount | null;
   open: boolean;
   isToAsset?: boolean;
-  onChange: (v: ConfiguredWallet | null) => void;
+  onChange: (v: AssetAccount | null) => void;
 } & ModalProps) => {
   const supportSolanaConnect = asset.network === NetworkNames.solana;
   const supportWalletConnect = Boolean(asset.chainId);
@@ -43,7 +48,7 @@ const SetWallet = ({
   const canPasteAddress = isToAsset;
 
   const t = useI18nContext();
-  const { wallets, connecting, select } = useWallet();
+  const wallets = useWallets({ asset });
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
 
@@ -52,15 +57,9 @@ const SetWallet = ({
     hideModal();
   };
 
-  const onSelectWallet = async (item: Wallet) => {
-    select(item.adapter.name);
-    await item.adapter.connect();
-    const address = item.adapter.publicKey?.toBase58();
-    const { icon } = item.adapter;
-    onChange({
-      address,
-      icon,
-    });
+  const onSelectWallet = async (item: (typeof wallets)[number]) => {
+    const result = await item.connect();
+    onChange(result);
     hideModal();
   };
   return (
@@ -97,7 +96,7 @@ const SetWallet = ({
               setValue(null);
             }}
           >
-            Change address
+            Change
           </Button>
         </Box>
       ) : (
@@ -105,34 +104,31 @@ const SetWallet = ({
           {canConnectExternalWallet && (
             <>
               <Typography variant="h6">Connect wallet</Typography>
-              <w3m-button />
-              {connecting ? (
-                <PulseLoader />
-              ) : (
-                <MenuList>
-                  {wallets.map((item, idx) => (
-                    <MenuItem key={idx} onClick={() => onSelectWallet(item)}>
-                      <ListItemIcon>
-                        <UrlIcon url={item.adapter.icon} fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText>{item.adapter.name}</ListItemText>
-                      {item.adapter.connected && (
-                        <ListItemSecondaryAction>
-                          <Typography color="text.secondary">
-                            {' '}
-                            Connected
-                          </Typography>
-                        </ListItemSecondaryAction>
-                      )}
-                    </MenuItem>
-                  ))}
-                  {!wallets.length && (
-                    <Typography color="text.secondary">
-                      No solana wallets detected...
-                    </Typography>
-                  )}
-                </MenuList>
-              )}
+              <MenuList>
+                {wallets.map((item, idx) => (
+                  <Box key={idx} marginTop={1}>
+                    <ListItemButton
+                      sx={{ backgroundColor: 'secondary.dark' }}
+                      className="bordered"
+                      onClick={() => onSelectWallet(item)}
+                    >
+                      <ListItemAvatar>
+                        <UrlIcon size={40} url={item.icon} />
+                      </ListItemAvatar>
+
+                      <ListItemText
+                        primary={item.name}
+                        secondary={item.connected ? 'Connected' : ''}
+                      />
+                    </ListItemButton>
+                  </Box>
+                ))}
+                {!wallets.length && (
+                  <Typography color="text.secondary">
+                    No solana wallets detected...
+                  </Typography>
+                )}
+              </MenuList>
             </>
           )}
           {canPasteAddress && canConnectExternalWallet && (
