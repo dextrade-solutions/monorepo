@@ -45,28 +45,39 @@ const createSendTokenInstruction = async ({
 };
 
 export const buildTxSol = async ({
-  asset,
+  from,
+  to,
   connection,
   fromPubkey,
   recepientAddress,
   value,
 }: {
-  asset: AssetModel;
+  from: AssetModel;
+  to: AssetModel;
   connection: Connection;
   fromPubkey: PublicKey;
   value: number;
   recepientAddress: string;
 }) => {
-  const toPubkey = new PublicKey(recepientAddress);
+  let toPubkey = new PublicKey(recepientAddress);
+  if (to.contract) {
+    const mint = new PublicKey(to.contract);
+    const toTokenAccount = await getAssociatedTokenAccount(
+      connection,
+      mint,
+      toPubkey,
+    );
+    toPubkey = toTokenAccount.address;
+  }
 
   const transaction = new Transaction();
   let sendInstruction;
-  if (asset.contract) {
+  if (from.contract) {
     sendInstruction = await createSendTokenInstruction({
       connection,
       fromWallet: fromPubkey,
       toWallet: toPubkey,
-      tokenAddress: asset.contract,
+      tokenAddress: from.contract,
       value,
     });
   } else {
