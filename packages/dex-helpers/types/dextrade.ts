@@ -154,7 +154,13 @@ export type AdItem = {
   name: string;
   walletAddress: string;
   walletAddressInNetwork2: string;
-  rating: number;
+  rating: {
+    positive: number;
+    negative: number;
+    totalRating: number;
+  };
+  exchangeCompletionRate: number;
+  exchangeCount: number;
   fromCoin: CoinModel;
   toCoin: CoinModel;
   isExchangerActive: boolean;

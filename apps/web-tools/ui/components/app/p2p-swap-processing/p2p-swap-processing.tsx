@@ -406,11 +406,11 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         {content && <Box marginY={4}>{content}</Box>}
         <Box marginTop={3}>
           {stages
-            // .filter(
-            //   (_, idx, arr) =>
-            //     idx === 0 ||
-            //     stagesStatuses[arr[idx - 1].key] === StageStatuses.success,
-            // )
+            .filter(
+              (_, idx, arr) =>
+                idx === 0 ||
+                stagesStatuses[arr[idx - 1].key] === StageStatuses.success,
+            )
             .map(({ component }) => component)}
         </Box>
       </Box>

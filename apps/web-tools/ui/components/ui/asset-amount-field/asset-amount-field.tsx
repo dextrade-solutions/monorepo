@@ -21,7 +21,6 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { ButtonIcon, UrlIcon } from 'dex-ui';
-import _ from 'lodash';
 import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
