@@ -15,7 +15,7 @@ export default function ExchangerUserPreview({
   ...boxProps
 }: {
   name: string;
-  avatarUrl: string;
+  avatarUrl: string | null;
   isActive: boolean;
   lastActive?: number;
   isSelfAd?: boolean;
