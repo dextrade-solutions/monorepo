@@ -10,7 +10,10 @@ import {
 
 import engine from '../../../app/engine';
 import { genKeyPair } from '../../../app/helpers/atomic-swaps';
-import { determineTradeTypeByAd, getSerializedAddressFromInput, serializeAddressBeforeP2PSend } from '../../../app/helpers/utils';
+import {
+  determineTradeTypeByAd,
+  getSerializedAddressFromInput,
+} from '../../../app/helpers/utils';
 import P2PService from '../../../app/services/p2p-service';
 import { handleRequest } from '../../helpers/utils/requests';
 import type { useAssetInput } from '../../hooks/asset/useAssetInput';

@@ -65,8 +65,14 @@ export function getSerializedAddressFromInput(
 ): string {
   const address = input.account?.address || '';
   if (input.asset.network === NetworkNames.xdc && address.startsWith('0x')) {
-    // Replace "0x" with "xdc" and return the modified address
     return address.replace('0x', 'xdc');
+  }
+  return address;
+}
+
+export function parseAddress(network: NetworkNames, address: string): string {
+  if (network === NetworkNames.xdc && address.startsWith('xdc')) {
+    return address.replace('xdc', '0x');
   }
   return address;
 }

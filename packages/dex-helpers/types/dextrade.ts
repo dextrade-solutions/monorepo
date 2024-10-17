@@ -1,6 +1,7 @@
 import {
   ExchangerRateSources,
   NetworkNames,
+  NetworkTypes,
   TradeStatus,
 } from '../src/constants';
 
@@ -101,8 +102,8 @@ export type CoinModel = {
   ticker: string;
   tokenName?: string;
   uuid: string;
-  networkName: string;
-  networkType: string;
+  networkName: NetworkNames;
+  networkType: NetworkTypes;
 };
 
 export type AssetModel = {

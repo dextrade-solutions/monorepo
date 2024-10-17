@@ -6,6 +6,7 @@ import { useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
+import { parseAddress } from '../../../../app/helpers/utils';
 import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
 
 export default function StageDirectTransfer({
@@ -20,7 +21,7 @@ export default function StageDirectTransfer({
   onChange: (status: StageStatuses) => void;
 }) {
   const amount = Number(trade.amount1);
-  const recepient = trade.exchangerWalletAddress;
+  const recepient = parseAddress(from.network, trade.exchangerWalletAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
