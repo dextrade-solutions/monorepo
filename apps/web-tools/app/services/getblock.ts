@@ -1,7 +1,7 @@
 import { NetworkNames } from 'dex-helpers';
 
 const ACCESS_TOKEN = {
-  [NetworkNames.litecon]: '1307584ed67e4c35963ad2a173d43367',
+  [NetworkNames.litecoin]: '1307584ed67e4c35963ad2a173d43367',
 };
 
 export default class GetblockServiceApi {
