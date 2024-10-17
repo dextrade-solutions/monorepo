@@ -12,14 +12,12 @@ import { buildTxSol } from '../../../app/helpers/sol-scripts/send-sol';
 import { generateTxParams } from '../../../app/helpers/transactions';
 
 export function useSendTransaction({
-  from,
-  to,
+  asset,
   amount,
   recepient,
   txSentHandlers,
 }: {
-  from: AssetModel;
-  to: AssetModel;
+  asset: AssetModel;
   amount: number;
   recepient: string;
   txSentHandlers: {
@@ -27,11 +25,11 @@ export function useSendTransaction({
     onError: (e: unknown) => void;
   };
 }) {
-  if (!from.decimals) {
+  if (!asset.decimals) {
     throw new Error('useSendTransaction - asset.decimals not specified');
   }
   let txSend;
-  const value = parseUnits(String(amount), from.decimals);
+  const value = parseUnits(String(amount), asset.decimals);
 
   const { sendTransaction: sendTxEvm } = useWcSendTransaction();
   const { switchChain } = useSwitchChain();
@@ -39,10 +37,10 @@ export function useSendTransaction({
   const { publicKey, sendTransaction: sendTxSol } = useWallet();
   const { connection } = useConnection();
 
-  if (isEthTypeAsset(from)) {
+  if (isEthTypeAsset(asset)) {
     const evmTxSend = () => {
       const txParams = generateTxParams({
-        asset: from,
+        asset,
         amount,
         to: recepient,
       });
@@ -51,7 +49,7 @@ export function useSendTransaction({
 
     txSend = () =>
       switchChain(
-        { chainId: from.chainId },
+        { chainId: asset.chainId },
         {
           onSuccess: evmTxSend,
           onError: (e) => {
@@ -63,14 +61,13 @@ export function useSendTransaction({
       );
   }
 
-  if (from.network === NetworkNames.solana) {
+  if (asset.network === NetworkNames.solana) {
     txSend = async () => {
       if (!publicKey) {
         throw new Error('sendTxSol - wallet is not connected');
       }
       const tx = await buildTxSol({
-        from,
-        to,
+        asset,
         connection,
         fromPubkey: publicKey,
         recepientAddress: recepient,

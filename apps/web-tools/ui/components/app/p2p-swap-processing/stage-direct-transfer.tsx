@@ -14,11 +14,9 @@ export default function StageDirectTransfer({
   onChange,
   trade,
   from,
-  to,
 }: {
   trade: Trade;
   from: AssetModel;
-  to: AssetModel;
   value: StageStatuses | null;
   onChange: (status: StageStatuses) => void;
 }) {
@@ -41,8 +39,7 @@ export default function StageDirectTransfer({
 
   const { data: walletClient } = useWalletClient();
   const { sendTransaction } = useSendTransaction({
-    from,
-    to,
+    asset: from,
     amount,
     recepient,
     txSentHandlers,

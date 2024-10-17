@@ -143,21 +143,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       });
     }
   }
-  stages.push({
-    component: (
-      <StageDirectTransfer
-        key="directTransfer"
-        from={from}
-        to={to}
-        trade={exchange}
-        value={stagesStatuses.directTransfer}
-        onChange={(newStatus: StageStatuses) =>
-          setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }))
-        }
-      />
-    ),
-    key: 'directTransfer',
-  });
 
   if (!exchange) {
     return (
