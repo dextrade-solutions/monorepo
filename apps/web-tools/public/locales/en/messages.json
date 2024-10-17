@@ -146,14 +146,17 @@
   "bankAccountPickerTitle": {
     "message": "My payment methods"
   },
-  "Swap Processing": {
+  "Trade Processing": {
     "message": "Swap Processing"
   },
-  "Swap Canceled": {
+  "Trade Canceled": {
     "message": "Swap Canceled"
   },
+  "Trade Failed": {
+    "message": "Swap Failed"
+  },
   "Reservation": {
-    "message": "Starting trade"
+    "message": "Starting swap"
   },
   "Completed": {
     "message": "Completed"

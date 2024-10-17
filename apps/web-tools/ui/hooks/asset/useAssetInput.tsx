@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { showModal } from '../../ducks/app/app';
 import { useAssetBalance } from '../useAssetBalance';
 import { useAccount } from './useAccount';
+import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
 import { AssetAccount } from '../../types';
@@ -31,10 +32,9 @@ export const useAssetInput = ({
   const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
-  const currentAccount =
-    asset.network === NetworkNames.bitcoin
-      ? configuredWallet
-      : configuredWallet || account;
+  const currentAccount = isBtcTypeAsset(asset)
+    ? configuredWallet
+    : configuredWallet || account;
 
   const showConfigureWallet = () => {
     dispatch(

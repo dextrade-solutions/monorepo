@@ -102,6 +102,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           disabled={assetInput.loading}
           decimalSeparator=","
           placeholder="0"
+          allowNegative={false}
           fullWidth
           variant="standard"
           valueIsNumericString

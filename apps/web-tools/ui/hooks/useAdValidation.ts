@@ -21,6 +21,43 @@ export function useAdValidation({
   };
   if (
     assetInputFrom.amount &&
+    Number(assetInputFrom.amount) < Number(ad.minimumExchangeAmountCoin1)
+  ) {
+    params.submitBtnText = `Min amount is ${ad.minimumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
+  }
+  if (
+    assetInputFrom.amount &&
+    Number(assetInputFrom.amount) > Number(ad.maximumExchangeAmountCoin1)
+  ) {
+    params.submitBtnText = `Max amount is ${ad.maximumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
+  }
+  if (
+    assetInputTo.amount &&
+    Number(assetInputTo.amount) < Number(ad.minimumExchangeAmountCoin2)
+  ) {
+    params.submitBtnText = `Min amount is ${ad.minimumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
+  }
+
+  if (
+    assetInputTo.amount &&
+    Number(assetInputTo.amount) > Number(ad.maximumExchangeAmountCoin2)
+  ) {
+    params.submitBtnText = `Max amount is ${ad.maximumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`;
+    params.hasValidationErrors = true;
+    params.disabledBtn = true;
+    return params;
+  }
+  if (
+    assetInputFrom.amount &&
     Number(assetInputFrom.balance?.value) < Number(assetInputFrom.amount)
   ) {
     params.submitBtnText = `Insufficient ${assetInputFrom.asset.symbol} balance`;

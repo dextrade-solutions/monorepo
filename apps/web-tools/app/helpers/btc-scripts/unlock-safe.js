@@ -31,7 +31,7 @@ export const unlockSafe = async ({
   tx.version = 2;
   tx.addInput(idToHash(utxo.txId), 0, 0xfffffffe);
   const alicePayment = bitcoin.payments.p2pkh({
-    address: recepientAddress,
+    address: 'LU53hQLz2XEK74ZeBjkDYctnXFEjKZ4gUA' || recepientAddress,
     network,
   });
 

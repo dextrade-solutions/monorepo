@@ -11,7 +11,7 @@ import { Trade } from '../../../types';
 // Reserving funds --> Sending coins —> Pending trader transfer --> Completed|Dispute
 export const P2P_STAGES = [
   {
-    label: 'Reserving funds',
+    label: 'Starting swap',
     pairTypes: [
       TradeType.atomicSwap,
       TradeType.cryptoCrypto,

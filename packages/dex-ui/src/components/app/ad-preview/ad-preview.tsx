@@ -6,18 +6,13 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
-import {
-  formatFundsAmount,
-  relativeFromCurrentDate,
-  getUserAvatarUrl,
-} from 'dex-helpers';
+import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
-import { RatingOutput } from './rating-output';
 import AssetItem from '../../ui/asset-item';
 import Icon from '../../ui/icon';
-import UrlIcon from '../../ui/url-icon';
+import ExchangerUserPreview from '../exchanger-user-preview';
 
 interface IProps {
   ad: AdItem;
@@ -45,39 +40,19 @@ const AdPreview = ({
       <CardActionArea>
         <CardContent>
           <Box display="flex" justifyContent="space-between">
-            <Box display="flex" alignItems="center">
-              <UrlIcon size={40} url={getAvatarLink(ad.avatar)} />
-              <Box marginLeft={2} textAlign="left">
-                <Box display="flex" alignContent="center">
-                  <Typography fontWeight="bold">{ad.name}</Typography>
-                  {ad.isKycVerified && (
-                    <Icon marginLeft={2} name="verified" color="primary" />
-                  )}
-                </Box>
-                <Box display="flex" alignItems="center">
-                  {isSelfAd && (
-                    <Typography color="primary.main" variant="caption">
-                      My ad
-                    </Typography>
-                  )}
-                  {!isSelfAd && ad.isExchangerActive && (
-                    <Typography variant="body2" color="success.main">
-                      Online
-                    </Typography>
-                  )}
-                  {!ad.isExchangerActive && ad.lastActive && (
-                    <Typography variant="body2">
-                      Active {relativeFromCurrentDate(ad.lastActive)}
-                    </Typography>
-                  )}
-                </Box>
-                <RatingOutput
-                  exchangeCount={ad.exchangeCount}
-                  exchangeCompletionRate={ad.exchangeCompletionRate}
-                  {...ad.rating}
-                />
-              </Box>
-            </Box>
+            <ExchangerUserPreview
+              avatarUrl={getAvatarLink(ad.avatar)}
+              name={ad.name}
+              isActive={ad.isExchangerActive}
+              lastActive={ad.lastActive}
+              isKycVerified={ad.isKycVerified}
+              isSelfAd={isSelfAd}
+              rating={{
+                exchangeCount: ad.exchangeCount,
+                сompletionRate: ad.exchangeCompletionRate,
+                totalRating: ad.rating.totalRating,
+              }}
+            />
             {Boolean(Number(fromTokenAmount)) && (
               <Typography color="success.main">
                 ~{' '}

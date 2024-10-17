@@ -138,3 +138,13 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
     info: BUILT_IN_NETWORKS[NetworkNames.solana],
   },
 };
+
+export const getBlockExplorerLink = ({
+  network,
+  hash,
+}: {
+  network: NetworkNames;
+  hash: string;
+}) => {
+  return `${BUILT_IN_NETWORKS[network].blockExplorers?.default.url}/tx/${hash}`;
+};

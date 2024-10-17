@@ -4,20 +4,16 @@ import React from 'react';
 import Icon from '../../ui/icon';
 
 export const RatingOutput = ({
-  exchangeCompletionRate,
+  сompletionRate,
   exchangeCount,
   totalRating,
 }: {
-  exchangeCompletionRate: number;
+  сompletionRate: number;
   exchangeCount: number;
-  positive: number;
-  negative: number;
   totalRating: number;
 }) => {
   const totalRatingPercent = (totalRating * 100).toFixed(0);
-  const exchangeCompletionRatePercent = (exchangeCompletionRate * 100).toFixed(
-    0,
-  );
+  const exchangeCompletionRatePercent = (сompletionRate * 100).toFixed(0);
   return (
     <Box display="flex" alignItems="center">
       <Typography variant="body2" color="text.secondary">

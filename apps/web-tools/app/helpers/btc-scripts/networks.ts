@@ -2,7 +2,7 @@ import { networks } from 'bitcoinjs-lib';
 import { NetworkNames } from 'dex-helpers';
 
 export const btcNetworksConfig = {
-  [NetworkNames.litecon]: {
+  [NetworkNames.litecoin]: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
     bech32: 'ltc',
     bip32: {
