@@ -7,11 +7,13 @@ import {
   Typography,
 } from '@mui/material';
 import {
+  NetworkNames,
   P2P_STAGES,
   TradeType,
   formatCurrency,
   formatDate,
   formatFundsAmount,
+  getBlockExplorerLink,
 } from 'dex-helpers';
 import { CoinModel, Trade } from 'dex-helpers/types';
 import { CopyData, StepProgressBar, CountdownTimer } from 'dex-ui';
@@ -21,7 +23,10 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 import { SECOND } from '../../../../../app/constants/time';
 import { parseCoin } from '../../../../../app/helpers/p2p';
 import { determineTradeType } from '../../../../../app/helpers/utils';
-import { EXCHANGE_VIEW_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  AWAITING_SWAP_ROUTE,
+  EXCHANGE_VIEW_ROUTE,
+} from '../../../../helpers/constants/routes';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAtomicSwap } from '../../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -75,10 +80,10 @@ const TradeHistoryRowModal = ({
     !safe1.refunded &&
     !safe2?.claimed;
 
-  const handleBlockExplorerClick = (hash: string, coin: CoinModel) => {
+  const handleBlockExplorerClick = (hash: string, network: NetworkNames) => {
     const blockExplorerLink = getBlockExplorerLink({
       hash,
-      network: coin.networkName,
+      network,
     });
     window.open(blockExplorerLink);
   };
@@ -94,6 +99,11 @@ const TradeHistoryRowModal = ({
         name: trade.exchangerName,
       })}`,
     });
+    hideModal();
+  };
+
+  const openTrade = () => {
+    navigate(`${AWAITING_SWAP_ROUTE}/${trade.id}`);
     hideModal();
   };
 
@@ -186,7 +196,7 @@ const TradeHistoryRowModal = ({
                     onClick={() =>
                       handleBlockExplorerClick(
                         trade.clientTransactionHash,
-                        trade.exchangerSettings.from,
+                        trade.exchangerSettings.from.networkName,
                       )
                     }
                   >
@@ -287,7 +297,7 @@ const TradeHistoryRowModal = ({
                     onClick={() =>
                       handleBlockExplorerClick(
                         trade.exchangerTransactionHash,
-                        trade.exchangerSettings.to,
+                        trade.exchangerSettings.to.networkName,
                       )
                     }
                   >
@@ -327,6 +337,11 @@ const TradeHistoryRowModal = ({
       <Box marginTop={2}>
         <Button onClick={openAd} variant="outlined" fullWidth>
           Try again
+        </Button>
+      </Box>
+      <Box marginTop={1}>
+        <Button fullWidth onClick={openTrade}>
+          View swap
         </Button>
       </Box>
     </Box>
