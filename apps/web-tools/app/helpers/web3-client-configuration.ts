@@ -1,11 +1,3 @@
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks';
-import { createAppKit } from '@reown/appkit/react';
-import { SolanaAdapter } from '@reown/appkit-adapter-solana/react';
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
 import { createClient } from 'viem';
 import { createConfig, http } from 'wagmi';
 import {
@@ -17,6 +9,7 @@ import {
   sepolia,
   xdc,
 } from 'wagmi/chains';
+import { walletConnect } from 'wagmi/connectors';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
@@ -31,10 +24,24 @@ const metadata = {
 
 const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
 
+const WC_PARAMS = {
+  projectId,
+  qrModalOptions: {
+    themeVariables: {
+      '--wcm-font-family': '"Rubik", sans-serif',
+      '--wcm-z-index': '10000',
+    },
+  },
+};
+
 export const config = createConfig({
   chains,
-  projectId,
   metadata,
+  connectors: [
+    walletConnect({
+      ...WC_PARAMS,
+    }),
+  ],
   client({ chain }) {
     return createClient({ chain, transport: http() });
   },
@@ -75,14 +82,14 @@ export const config = createConfig({
 
 // // 4. Create Wagmi Adapter
 // export const wagmiAdapter = new WagmiAdapter({
-//   networks,
+//   networks: chains,
 //   projectId,
 // });
 
 // // 5. Create modal
 // createAppKit({
 //   adapters: [wagmiAdapter],
-//   networks,
+//   networks: chains,
 //   projectId,
 //   metadata,
 //   features: {

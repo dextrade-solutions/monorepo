@@ -1,16 +1,18 @@
-import { NetworkNames } from 'dex-helpers';
+import { NetworkNames, getAssetKey } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { showModal } from '../../ducks/app/app';
-import { useAssetBalance } from '../useAssetBalance';
-import { useAccount } from './useAccount';
-import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
+import { useAssetBalance } from './useAssetBalance';
+import { useSendTransaction } from './useSendTransaction';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import { AssetAccount } from '../../types';
+import {
+  getAssetAccount,
+  setAssetAccount,
+  showModal,
+} from '../../ducks/app/app';
 
 export const useAssetInput = ({
   asset,
@@ -19,22 +21,22 @@ export const useAssetInput = ({
   asset: AssetModel;
   reserve?: number;
 }) => {
+  const configuredWallet = useSelector((state) =>
+    getAssetAccount(state, asset),
+  );
+
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
   const [inputAmount, setInputAmount] = useState<number | string>();
-  const [configuredWallet, setConfiguredWallet] = useState<AssetAccount>();
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
-  const account = useAccount(asset);
   const dispatch = useDispatch();
-  const balance = useAssetBalance(asset);
 
   const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
-  const currentAccount = isBtcTypeAsset(asset)
-    ? configuredWallet
-    : configuredWallet || account;
+  const balance = useAssetBalance(asset, configuredWallet?.address);
+  const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
     dispatch(
@@ -42,8 +44,15 @@ export const useAssetInput = ({
         name: 'SET_WALLET',
         asset,
         isToAsset,
-        value: currentAccount,
-        onChange: (v) => setConfiguredWallet(v),
+        value: configuredWallet,
+        onChange: (v) => {
+          dispatch(
+            setAssetAccount({
+              asset,
+              assetAccount: v,
+            }),
+          );
+        },
       }),
     );
   };
@@ -57,6 +66,13 @@ export const useAssetInput = ({
         onChange: (v) => setPaymentMethod(v),
       }),
     );
+  };
+
+  const makeTransfer = (recepient: string) => {
+    sendTransaction(recepient, Number(inputAmount), {
+      onSuccess: () => {},
+      onError: (err) => { },
+    });
   };
 
   // initialize
@@ -93,15 +109,15 @@ export const useAssetInput = ({
       canChoosePaymentMethod,
       canPasteWallet,
     },
-    // calc props
+
     native,
-    accountConnected: account,
-    account: currentAccount,
+    account: configuredWallet,
     balance,
     paymentMethod,
     setLoading,
     setInputAmount: onSetAmount,
     showPaymentMethod,
     showConfigureWallet,
+    makeTransfer,
   };
 };

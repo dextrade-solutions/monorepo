@@ -165,13 +165,14 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const startExchange = async () => {
     try {
       setLoadingStartExchange(true);
-      const result = await auth(() =>
+      const result = await auth((on401?: () => void) =>
         dispatch(
           createSwapP2P({
             from: assetInputFrom,
             to: assetInputTo,
             exchange: ad,
             slippage: 0.5,
+            on401,
           }),
         ),
       );

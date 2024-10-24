@@ -3,7 +3,7 @@ import { NetworkNames } from 'dex-helpers';
 
 import { isBtcTypeAsset } from './is-btc-type-asset';
 import { AssetModel } from '../../types/p2p-swaps';
-import { btcNetworksConfig } from '../btc-scripts/networks';
+import { btcNetworksConfig } from '../bitcoin/networks';
 
 export function validateAddress(asset: AssetModel, address: string): boolean {
   if (isBtcTypeAsset(asset)) {

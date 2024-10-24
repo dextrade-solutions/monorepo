@@ -3,9 +3,7 @@ import {
   Box,
   Typography,
   Button,
-  MenuItem,
   MenuList,
-  ListItemIcon,
   ListItemText,
   TextField,
   ListItemSecondaryAction,
@@ -13,15 +11,13 @@ import {
   ListItemButton,
   ListItemAvatar,
 } from '@mui/material';
-import { Wallet, useWallet } from '@solana/wallet-adapter-react';
-import { NetworkNames } from 'dex-helpers';
+import { NetworkNames, shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
-import React, { useState } from 'react';
+import { CopyData, UrlIcon, ButtonIcon } from 'dex-ui';
+import { useState } from 'react';
 
-import { config } from '../../../../../app/helpers/web3-client-configuration';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
-import { useWallets } from '../../../../hooks/asset/useWallets';
+import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetAccount } from '../../../../types';
 import AssetItem from '../../../ui/asset-item';
@@ -42,9 +38,7 @@ const SetWallet = ({
   isToAsset?: boolean;
   onChange: (v: AssetAccount | null) => void;
 } & ModalProps) => {
-  const supportSolanaConnect = asset.network === NetworkNames.solana;
-  const supportWalletConnect = Boolean(asset.chainId);
-  const canConnectExternalWallet = supportSolanaConnect || supportWalletConnect;
+  const canConnectExternalWallet = !asset.isFiat;
   const canPasteAddress = isToAsset;
 
   const t = useI18nContext();
@@ -58,9 +52,21 @@ const SetWallet = ({
   };
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
-    const result = await item.connect();
+    let result: AssetAccount;
+    if (item.connected) {
+      result = item.connected;
+    } else {
+      result = await item.connect();
+    }
     onChange(result);
     hideModal();
+  };
+  const onDisconnect = (item: WalletItem) => {
+    item.disconnect();
+    if (item.connected === value) {
+      onChange(null);
+      hideModal();
+    }
   };
   return (
     <Box padding={5}>
@@ -118,8 +124,24 @@ const SetWallet = ({
 
                       <ListItemText
                         primary={item.name}
-                        secondary={item.connected ? 'Connected' : ''}
+                        secondary={
+                          item.connected
+                            ? shortenAddress(item.connected.address)
+                            : ''
+                        }
                       />
+                      {item.connected && (
+                        <ListItemSecondaryAction>
+                          <ButtonIcon
+                            size="lg"
+                            iconName="disconnect"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDisconnect(item);
+                            }}
+                          />
+                        </ListItemSecondaryAction>
+                      )}
                     </ListItemButton>
                   </Box>
                 ))}
@@ -139,7 +161,7 @@ const SetWallet = ({
           {canPasteAddress && (
             <Box>
               <Typography marginBottom={1} variant="h6">
-                Paste your wallet address
+                Paste recepient wallet address
               </Typography>
               <Box>
                 <TextField

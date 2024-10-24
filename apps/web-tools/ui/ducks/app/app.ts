@@ -1,4 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getAssetKey } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
+
+import { AssetAccount } from '../../types';
 
 interface AppState {
   modal: {
@@ -9,6 +13,7 @@ interface AppState {
     };
   };
   theme: string;
+  assetAccounts: Record<string, AssetAccount | null>;
 }
 
 const initialState: AppState = {
@@ -20,6 +25,7 @@ const initialState: AppState = {
     },
   },
   theme: 'system',
+  assetAccounts: {},
 };
 
 const slice = createSlice({
@@ -53,15 +59,27 @@ const slice = createSlice({
     setTheme: (state, action) => {
       state.theme = action.payload;
     },
+    setAssetAccount: (state, action) => {
+      const { asset, assetAccount } = action.payload;
+      state.assetAccounts[getAssetKey(asset)] = assetAccount;
+    },
   }),
 });
 
 const { actions, reducer } = slice;
 
-const { showModal, hideModal, setTheme } = actions;
+const { showModal, hideModal, setTheme, setAssetAccount } = actions;
 
-export { showModal, hideModal, setTheme };
+export { showModal, hideModal, setTheme, setAssetAccount };
 
 export const getCurrentTheme = (state: { app: AppState }) => state.app.theme;
+
+export const getAssetAccount = (
+  state: { app: AppState },
+  asset: AssetModel,
+) => {
+  const key = getAssetKey(asset);
+  return state.app.assetAccounts[key] || null;
+};
 
 export default reducer;

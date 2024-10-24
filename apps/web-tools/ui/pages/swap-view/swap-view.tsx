@@ -47,20 +47,11 @@ export default function AdView() {
   let content = <Typography>Ad not found...</Typography>;
 
   const [ad] = data || [];
-  const supportedNonEvmChains = [NetworkNames.solana];
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
 
-    const fromIsSupported =
-      assetFrom &&
-      (supportedNonEvmChains.includes(assetFrom.network) ||
-        assetFrom.chainId ||
-        assetFrom.isFiat);
-
-    const toIsSupported = Boolean(assetTo);
-
-    if (fromIsSupported && toIsSupported) {
+    if (assetFrom && assetTo) {
       content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
     } else {
       content = (

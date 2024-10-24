@@ -122,9 +122,10 @@ export const createSwapP2P = (props: {
   exchange: AdItem;
   slippage: number;
   paymentMethod?: UserPaymentMethod;
+  on401?: () => void;
 }) => {
   return async (dispatch: AppDispatch) => {
-    const { from, to, exchange, slippage } = props;
+    const { from, to, exchange, slippage, on401 } = props;
 
     if (!from.amount) {
       throw new Error('From amount is not specified');
@@ -160,6 +161,7 @@ export const createSwapP2P = (props: {
         clientSlippage: slippage,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),
+      { on401 },
     );
     window.localStorage.setItem(response.data.id, JSON.stringify(keypair));
     const activeTrades = (engine.queryClient.getQueryData(QUERY_KEY) ||

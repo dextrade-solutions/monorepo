@@ -12,7 +12,7 @@ import {
   buildAtomicSwap,
   getTradeKeyPair,
 } from '../../app/helpers/atomic-swaps';
-import { unlockSafe } from '../../app/helpers/btc-scripts/unlock-safe';
+import { unlockSafe } from '../../app/helpers/bitcoin/unlock-safe';
 import { isBtcTypeAsset } from '../../app/helpers/chain-helpers/is-btc-type-asset';
 
 const getParsedExchangerParams = (trade: Trade) => {
