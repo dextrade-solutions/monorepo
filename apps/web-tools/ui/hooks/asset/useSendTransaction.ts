@@ -23,9 +23,6 @@ function getSendTxHook(asset: AssetModel) {
 }
 
 export function useSendTransaction(asset: AssetModel) {
-  if (!asset.decimals) {
-    throw new Error('useSendTransaction - asset.decimals not specified');
-  }
   const useSendTx = getSendTxHook(asset);
   const txSend = useSendTx();
 
