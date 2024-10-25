@@ -129,9 +129,10 @@ export default function AdView() {
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
           color="secondary"
+          variant="contained"
           onClick={() => navigate(HOME_ROUTE)}
         >
-          Back
+          {t('back')}
         </Button>
       </Box>
       {content}

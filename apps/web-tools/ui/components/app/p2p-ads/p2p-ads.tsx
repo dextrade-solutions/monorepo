@@ -1,7 +1,7 @@
-import { Alert, Box, Button, Fade, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Fade, InputAdornment, TextField, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
-import { AdPreview, AdPreviewSkeleton, ButtonIcon } from 'dex-ui';
+import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
 import { debounce, flatMap } from 'lodash';
 import { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
@@ -115,19 +115,19 @@ export default function P2PAds() {
         <TextField
           className="flex-grow"
           size="small"
-          label="Provider name"
-          placeholder="Start typing..."
+          placeholder="Search by exchanger name"
           fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon name="search" />
+              </InputAdornment>
+            ),
+          }}
           onChange={(e) => handleSearchByProviderName(e.target.value)}
         />
         <Box marginLeft={2}>
-          <Button color="secondary" onClick={toggleSortPicker}>
-            {t(sortBy)}
-          </Button>
-          <ButtonIcon
-            iconName={`arrow-${sortDesc ? 'up' : 'down'}-dex`}
-            onClick={() => setSortDesc(!sortDesc)}
-          />
+          <ButtonIcon size="xl" iconName="sort" onClick={toggleSortPicker} />
         </Box>
       </Box>
       <Box className="p2p-ads__list">

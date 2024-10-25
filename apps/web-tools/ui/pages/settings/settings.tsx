@@ -32,6 +32,7 @@ export default function P2PSettings() {
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
           color="secondary"
+          variant="contained"
           onClick={() => navigate(HOME_ROUTE)}
         >
           {t('back')}
@@ -106,7 +107,7 @@ export default function P2PSettings() {
           )}
         </Box>
         {pathnames.length > 1 && (
-          <Box margin={3} marginTop={0}>
+          <Box padding={3} paddingTop={0} marginTop={0}>
             <Outlet />
           </Box>
         )}

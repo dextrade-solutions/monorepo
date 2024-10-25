@@ -263,6 +263,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <Button
           className={classNames({ 'btn-error': hasValidationErrors })}
           fullWidth
+          sx={{
+            backgroundImage:
+              loadingStartExchange || disabledBtn
+                ? undefined
+                : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
+          }}
           disabled={loadingStartExchange || disabledBtn}
           variant="contained"
           size="large"

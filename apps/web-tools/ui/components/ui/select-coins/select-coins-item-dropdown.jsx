@@ -125,7 +125,6 @@ export const SelectCoinsItemDropdown = ({
         <Typography>{t('Select Coin')}</Typography>
         <ButtonIcon
           iconName="close"
-          color="secondary"
           size="sm"
           onClick={handleClose}
           ariaLabel={t('close')}

@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ButtonIcon } from 'dex-ui';
 import SelectCoins from '../../ui/select-coins';
 import P2PExchangers from '../p2p-ads';
+import WalletConnectButton from '../wallet-connect-button';
 
 export default function P2PSwap() {
   const t = useI18nContext();
@@ -30,11 +31,13 @@ export default function P2PSwap() {
         <Typography fontWeight="bold" variant="h4">
           P2P
         </Typography>
+        <div className="flex-grow" />
+        <WalletConnectButton />
         {isConnected && (
-          <Box display="flex" alignItems="center">
+          <Box display="flex" marginLeft={1} alignItems="center">
             <Button
               color="secondary"
-              variant="outlined"
+              variant="contained"
               onClick={() => {
                 auth(() => navigate(SWAPS_HISTORY_ROUTE));
               }}

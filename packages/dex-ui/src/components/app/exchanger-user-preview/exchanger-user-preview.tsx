@@ -1,8 +1,9 @@
 import { BoxProps, Box, Typography } from '@mui/material';
 import { relativeFromCurrentDate } from 'dex-helpers';
 
-import { Icon, UrlIcon } from '../../ui';
-import { RatingOutput } from '../ad-preview/rating-output';
+import UserAvatar from '../../ui/user-avatar';
+import { RatingOutput } from '../rating-output';
+import VerifiedIcon from './verified-icon';
 
 export default function ExchangerUserPreview({
   name,
@@ -27,34 +28,31 @@ export default function ExchangerUserPreview({
   };
 } & BoxProps) {
   return (
-    <Box display="flex" alignItems="center" {...boxProps}>
-      <UrlIcon size={40} url={avatarUrl} />
-      <Box marginLeft={2} textAlign="left">
-        <Box display="flex" alignContent="center">
-          <Typography fontWeight="bold">{name}</Typography>
-          {isKycVerified && (
-            <Icon marginLeft={2} name="verified" color="primary" />
-          )}
+    <Box {...boxProps}>
+      <Box marginBottom={1} display="flex" alignItems="center">
+        <UserAvatar name={name} icon={avatarUrl} online={isActive} />
+        <Box marginLeft={2} textAlign="left">
+          <Box display="flex" alignItems="center">
+            <Typography marginRight={1} fontWeight="bold">
+              {name}
+            </Typography>
+            {isKycVerified && <VerifiedIcon />}
+          </Box>
+          <Box display="flex" alignItems="center">
+            {isSelfAd && (
+              <Typography color="primary.main" variant="caption">
+                My ad
+              </Typography>
+            )}
+            {!isActive && lastActive && (
+              <Typography variant="body2">
+                Active {relativeFromCurrentDate(lastActive)}
+              </Typography>
+            )}
+          </Box>
         </Box>
-        <Box display="flex" alignItems="center">
-          {isSelfAd && (
-            <Typography color="primary.main" variant="caption">
-              My ad
-            </Typography>
-          )}
-          {!isSelfAd && isActive && (
-            <Typography variant="body2" color="success.main">
-              Online
-            </Typography>
-          )}
-          {!isActive && lastActive && (
-            <Typography variant="body2">
-              Active {relativeFromCurrentDate(lastActive)}
-            </Typography>
-          )}
-        </Box>
-        {rating && <RatingOutput {...rating} />}
       </Box>
+      {rating && <RatingOutput {...rating} />}
     </Box>
   );
 }

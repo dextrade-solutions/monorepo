@@ -122,7 +122,6 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                 {Number(assetInput.amount) > 0 && !assetInput.loading && (
                   <ButtonIcon
                     iconName="close"
-                    color="secondary"
                     size="sm"
                     onClick={() => onChange('')}
                   />

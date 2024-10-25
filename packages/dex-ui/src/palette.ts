@@ -29,16 +29,16 @@ const Palette = {
       // light: '#C3CFF6',
       main: '#3662CF',
       dark: '#091122',
-      light: '#091122',
+      light: '#2D2338',
       // contrastText: '#3662CF',
       // #050715
     },
     secondary: {
-      main: '#C3CFF6',
-      dark: '#181D31',
+      main: '#33366D',
+      dark: '#252527',
     },
     tertiary: {
-      main: '#121b2f',
+      main: '#3d2f4c',
       dark: '#0c1323',
     },
     success: {
@@ -46,12 +46,14 @@ const Palette = {
       dark: '#2e7d32',
     },
     background: {
-      default: '#050715',
+      default: '#1D1D1D',
     },
     text: {
-      primary: '#C3CFF6',
-      secondary: '#7a8db5',
+      primary: '#FFFFFF',
+      secondary: '#7C7C7C',
     },
+    gradient:
+      'linear-gradient(to left, var(--mui-palette-primary-light), var(--mui-palette-primary-main))',
   },
 };
 

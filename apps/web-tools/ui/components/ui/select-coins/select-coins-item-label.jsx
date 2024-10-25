@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import classnames from 'classnames';
 import { getCoinIconByUid } from 'dex-helpers';
-import { UrlIcon } from 'dex-ui';
+import { Icon, UrlIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -43,11 +43,13 @@ export const SelectCoinsItemLabel = ({
         'select-coins__item__label-reversed': reversed,
       })}
     >
-      <UrlIcon
-        url={url}
-        className="select-coins__item__label__icon"
-        name={name}
-      />
+      {coin && (
+        <UrlIcon
+          url={url}
+          className="select-coins__item__label__icon"
+          name={name}
+        />
+      )}
       {coin ? (
         <div className="select-coins__item__label__title">
           <div className="select-coins__item__label__title__symbol">{name}</div>
@@ -63,6 +65,7 @@ export const SelectCoinsItemLabel = ({
           {placeholder}
         </div>
       )}
+      <Icon size="sm" name="chevron-down" />
     </div>
   );
 };

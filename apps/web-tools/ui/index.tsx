@@ -32,8 +32,8 @@ export function ContentUi() {
         <Web3ModalProvider>
           <Web3SolanaProvider>
             <CssBaseline />
-            {!hideHeader && <AppHeader />}
             <Container maxWidth="sm">
+              {/* {!hideHeader && <AppHeader />} */}
               <Box paddingY={3}>
                 <Pages />
               </Box>

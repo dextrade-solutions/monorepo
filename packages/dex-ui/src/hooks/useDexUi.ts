@@ -17,7 +17,7 @@ export function useDexUI({ theme }) {
           ...Palette[paletteMode],
         },
         typography: {
-          fontFamily: ['Rubik', '-apple-system', 'sans-serif'].join(','),
+          fontFamily: ['OpenSans', '-apple-system', 'sans-serif'].join(','),
         },
         shape: {
           borderRadius: 17,
@@ -27,6 +27,21 @@ export function useDexUI({ theme }) {
             styleOverrides: {
               root: {
                 border: 'none',
+              },
+            },
+          },
+          MuiButton: {
+            defaultProps: {
+              disableElevation: true,
+            },
+          },
+          MuiCssBaseline: {
+            styleOverrides: {
+              body: {
+                background: '#1D1D1D',
+                'background-repeat': 'no-repeat',
+                backgroundAttachment: 'fixed !important',
+                backgroundImage: `linear-gradient(0deg, #1D1D1D 0%, #1D1D1D 90%, #3F265F 130%)`,
               },
             },
           },

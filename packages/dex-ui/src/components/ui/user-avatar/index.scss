@@ -1,0 +1,62 @@
+.user-avatar {
+  position: relative;
+  background-position: center;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  flex: 0 0 auto;
+  -moz-animation: fadein 1s;
+
+  /* Firefox */
+  -webkit-animation: fadein 1s;
+
+  /* Safari and Chrome */
+  -o-animation: fadein 1s;
+
+  img {
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+  }
+
+  &::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background-color: #CDCDCD;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    border-radius: 50px;
+    border: 1px solid #2D2338;
+  }
+
+  &--online {
+
+    &::after {
+      background-color: #00D509;
+    }
+  }
+
+  &__fallback {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-background-alternative);
+    color: #2D2338;
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2px;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

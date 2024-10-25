@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import P2PTradeHistory from '../../components/app/p2p-trade-history';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
 export const SwapHistory = () => {
+  const t = useI18nContext();
   const navigate = useNavigate();
   return (
     <Box>
@@ -13,9 +15,10 @@ export const SwapHistory = () => {
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
           color="secondary"
+          variant="contained"
           onClick={() => navigate(HOME_ROUTE)}
         >
-          Back
+          {t('back')}
         </Button>
       </Box>
       <P2PTradeHistory />
