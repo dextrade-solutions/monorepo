@@ -1,4 +1,12 @@
-import { Alert, Box, Button, Fade, InputAdornment, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Fade,
+  InputAdornment,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
@@ -120,14 +128,21 @@ export default function P2PAds() {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Icon name="search" />
+                <Icon color="text.secondary" name="search" />
               </InputAdornment>
             ),
           }}
           onChange={(e) => handleSearchByProviderName(e.target.value)}
         />
         <Box marginLeft={2}>
-          <ButtonIcon size="xl" iconName="sort" onClick={toggleSortPicker} />
+          <ButtonIcon
+            iconProps={{
+              color: 'text.secondary',
+            }}
+            size="xl"
+            iconName="sort"
+            onClick={toggleSortPicker}
+          />
         </Box>
       </Box>
       <Box className="p2p-ads__list">

@@ -32,6 +32,11 @@ export default function UserAvatar({
       className={classnames('user-avatar', {
         'user-avatar--online': online,
       })}
+      sx={{
+        '&::after': {
+          borderColor: 'primary.light',
+        },
+      }}
     >
       {!iconError && icon ? (
         <img

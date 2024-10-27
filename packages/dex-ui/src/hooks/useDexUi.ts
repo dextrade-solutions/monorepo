@@ -37,12 +37,16 @@ export function useDexUI({ theme }) {
           },
           MuiCssBaseline: {
             styleOverrides: {
-              body: {
-                background: '#1D1D1D',
-                'background-repeat': 'no-repeat',
-                backgroundAttachment: 'fixed !important',
-                backgroundImage: `linear-gradient(0deg, #1D1D1D 0%, #1D1D1D 90%, #3F265F 130%)`,
-              },
+              body:
+                paletteMode === 'dark'
+                  ? {
+                      background: '#1D1D1D',
+                      'background-repeat': 'no-repeat',
+                      backgroundAttachment: 'fixed !important',
+                      backgroundImage:
+                        'linear-gradient(0deg, #1D1D1D 0%, #1D1D1D 90%, #3F265F 130%)',
+                    }
+                  : {},
             },
           },
         },

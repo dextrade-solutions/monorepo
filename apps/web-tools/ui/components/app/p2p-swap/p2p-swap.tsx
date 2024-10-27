@@ -44,10 +44,10 @@ export default function P2PSwap() {
             >
               {t('activity')}
             </Button>
-            <Box marginLeft={2}>
+            <Box marginLeft={1}>
               <ButtonIcon
                 iconName="setting-dex"
-                size="xl"
+                size="lg"
                 onClick={() => navigate(SETTINGS_ROUTE)}
               />
             </Box>

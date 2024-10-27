@@ -45,7 +45,7 @@ export default function ExchangerUserPreview({
               </Typography>
             )}
             {!isActive && lastActive && (
-              <Typography variant="body2">
+              <Typography variant="body2" color="text.secondary">
                 Active {relativeFromCurrentDate(lastActive)}
               </Typography>
             )}

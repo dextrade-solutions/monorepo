@@ -1,14 +1,4 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  Skeleton,
-  Typography,
-} from '@mui/material';
-
-import AssetItem from '../../ui/asset-item';
-import Icon from '../../ui/icon';
+import { Box, Card, CardContent, Skeleton } from '@mui/material';
 
 export default function AdPreviewSkeleton() {
   return (
@@ -20,44 +10,33 @@ export default function AdPreviewSkeleton() {
             <Skeleton width={150} />
           </Box>
         </Box>
-        <Box marginY={1}>
-          <Divider />
+        <Box display="flex" alignItems="flex-end">
+          <Skeleton width={160} />
         </Box>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <AssetItem loading />
-          <Icon name="exchange-direction" size="xl" />
-          <AssetItem loading alignReverse />
-        </Box>
-        <Box marginY={1}>
-          <Divider />
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignContent="center"
+        >
+          <Skeleton width={70} height={40} />
+          <Skeleton width={160} height={40} />
         </Box>
         <Box
           display="flex"
           justifyContent="space-between"
-          alignItems="flex-end"
+          alignContent="center"
         >
-          <Skeleton height={50} width={60} />
-          <Skeleton width={150} />
+          <Skeleton width={70} height={40} />
+          <Skeleton width={140} height={40} />
         </Box>
         <Box
-          marginTop={1}
           display="flex"
           justifyContent="space-between"
-          alignItems="flex-end"
+          alignContent="center"
         >
-          <Box>
-            <Typography color="text.secondary">Price</Typography>
-            <Skeleton width={150} />
-          </Box>
-          <Box>
-            <Typography color="text.secondary">Reserve</Typography>
-            <Box display="flex" alignItems="center">
-              <Skeleton width={150} />
-            </Box>
-          </Box>
-          <Box display="flex" alignItems="center">
-            <Skeleton width={50} />
-          </Box>
+          <Skeleton width={70} height={40} />
+          <Skeleton width={160} height={40} />
         </Box>
       </CardContent>
     </Card>
