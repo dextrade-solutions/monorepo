@@ -59,7 +59,7 @@ export default function P2PAds() {
       toNetworkName: toToken?.network,
       toTicker: toToken?.symbol,
       name: providerName,
-      size: 4,
+      size: 8,
     }),
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
