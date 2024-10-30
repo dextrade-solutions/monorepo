@@ -4,4 +4,8 @@
     border-top-right-radius: 0;
     height: 50px;
   }
+
+  &__error {
+    color: var(--color-error-default) !important;
+  }
 }

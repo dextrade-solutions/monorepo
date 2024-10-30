@@ -3,10 +3,8 @@ import {
   CardActionArea,
   Box,
   CardContent,
-  Divider,
   Typography,
 } from '@mui/material';
-
 import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { DextradeTypes } from 'dex-services';
