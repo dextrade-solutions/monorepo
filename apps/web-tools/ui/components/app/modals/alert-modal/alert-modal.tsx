@@ -12,7 +12,7 @@ class AlertModal extends Component<
 > {
   render(): ReactNode {
     return (
-      <Box>
+      <Box padding={3}>
         <Alert severity={this.props.severity}>
           <Typography fontWeight="bold">Error</Typography>
           {this.props.text}

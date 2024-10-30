@@ -144,11 +144,9 @@ export type AdItem = {
   coinFromId: number;
   priceInCoin2: number;
   feeInCoin1: number;
-  reserveInCoin1: number;
   minimumExchangeAmountCoin1?: number;
   maximumExchangeAmountCoin1?: number;
   priceAdjustment: number;
-  reserveInCoin2: number;
   minimumExchangeAmountCoin2?: number;
   maximumExchangeAmountCoin2?: number;
   name: string;
@@ -159,6 +157,13 @@ export type AdItem = {
     negative: number;
     totalRating: number;
   };
+  reserve: {
+    id: number;
+    coin: CoinModel;
+    walletAddress?: string; // secure
+    reserveInCoin1: number;
+    reserveInCoin2: number;
+  }[];
   exchangeCompletionRate: number;
   exchangeCount: number;
   fromCoin: CoinModel;
@@ -169,7 +174,7 @@ export type AdItem = {
   coinPair: CoinPair;
   exchangersPolicy?: string;
   lastActive?: number;
-  paymentMethod?: UserPaymentMethod;
+  paymentMethods: UserPaymentMethod[];
   isKycVerified: boolean;
   timeToRefund: number;
   provider?: string;

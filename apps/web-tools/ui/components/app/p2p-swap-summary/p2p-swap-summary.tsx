@@ -1,7 +1,15 @@
-import { Alert, Box, Card, CardContent, Divider, Typography } from '@mui/material';
-import { formatFundsAmount, getUserAvatarUrl, humanizePaymentMethodName } from 'dex-helpers';
+import {
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  Typography,
+} from '@mui/material';
+import { NetworkNames, formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
-import { ExchangerUserPreview, Icon } from 'dex-ui';
+import { ExchangerUserPreview } from 'dex-ui';
 import React from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -16,6 +24,10 @@ export const P2PSwapSummary = ({ exchange: ad, totalFee = 0 }: IProps) => {
 
   const { fromCoin, toCoin } = ad;
   const exchangeRate = ad.coinPair.price;
+
+  const showPaymentMethods =
+    ad.fromCoin.networkName === NetworkNames.fiat ||
+    ad.toCoin.networkName === NetworkNames.fiat;
 
   return (
     <Box className="p2p-swap-summary">
@@ -97,18 +109,19 @@ export const P2PSwapSummary = ({ exchange: ad, totalFee = 0 }: IProps) => {
             </span>
           </Typography>
         )}
-        {ad.paymentMethod && (
-          <Typography display="flex" marginTop={4}>
-            <span className="flex-grow">Payment method</span>
-            <span className="row-summary__value">
-              {humanizePaymentMethodName(
-                ad.paymentMethod.paymentMethod.name,
-                t,
-              )}
-            </span>
-          </Typography>
-        )}
       </div>
+      {showPaymentMethods && (
+        <Box display="flex" marginTop={2}>
+          <Typography className="flex-grow">Payment methods</Typography>
+          {ad.paymentMethods
+            .filter((paymentMethod) => !paymentMethod.data)
+            .map((paymentMethod) => (
+              <Box marginLeft={1}>
+                <Chip size="small" label={paymentMethod.paymentMethod.name} />
+              </Box>
+            ))}
+        </Box>
+      )}
       {ad.exchangersPolicy && (
         <Box marginY={3}>
           <Card variant="outlined" sx={{ bgcolor: 'transparent' }}>

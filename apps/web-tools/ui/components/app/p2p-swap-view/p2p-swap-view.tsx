@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
-import { AdItem, AssetModel } from 'dex-helpers/types';
+import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { ButtonIcon } from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -27,6 +27,7 @@ import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
+import { showModal } from '../../../ducks/app/app';
 
 interface IProps {
   ad: AdItem;
@@ -51,11 +52,14 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   });
   const assetInputTo = useAssetInput({
     asset: assetTo,
-    reserve: ad.reserveInCoin2,
+    isToAsset: true,
   });
-
   const exchangeRate = ad.coinPair.price;
-  const needPickupPaymentMethod =
+  const availablePaymentMethods = ad.paymentMethods.filter(
+    (paymentMethod) => !paymentMethod.data,
+  );
+  const needPickupExchangerPaymentMethod = assetInputFrom.asset.isFiat;
+  const needPickupClientPaymentMethod =
     assetInputTo.asset.isFiat && !assetInputTo.paymentMethod;
   const needPickupRecipientAddress =
     !assetInputTo.asset.isFiat && !assetInputTo.account?.address;
@@ -162,7 +166,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTokenInputValue]);
 
-  const startExchange = async () => {
+  const startExchange = async ({
+    exchangerPaymentMethodId,
+  }: {
+    exchangerPaymentMethodId?: number;
+  } = {}) => {
     try {
       setLoadingStartExchange(true);
       const result = await auth(() =>
@@ -172,6 +180,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             to: assetInputTo,
             exchange: ad,
             slippage: 0.5,
+            exchangerPaymentMethodId,
           }),
         ),
       );
@@ -183,6 +192,21 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       // show swap error popup
       throw new Error(e.message);
     }
+  };
+
+  const pickupExchangerPaymentMethod = () => {
+    dispatch(
+      showModal({
+        name: 'ITEM_PICKER',
+        options: availablePaymentMethods,
+        title: 'Choose payment method',
+        getOptionLabel: (paymentMethod: UserPaymentMethod) =>
+          paymentMethod.paymentMethod.name,
+        getOptionKey: (paymentMethod: UserPaymentMethod) =>
+          paymentMethod.userPaymentMethodId,
+        onSelect: (v: number) => startExchange({ exchangerPaymentMethodId: v }),
+      }),
+    );
   };
 
   return (
@@ -273,8 +297,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
-            if (needPickupPaymentMethod) {
+            if (needPickupClientPaymentMethod) {
               return assetInputTo.showPaymentMethod();
+            } else if (needPickupExchangerPaymentMethod) {
+              return pickupExchangerPaymentMethod();
             } else if (needPickupRecipientAddress) {
               return assetInputTo.showConfigureWallet();
             }

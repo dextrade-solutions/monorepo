@@ -13,13 +13,14 @@ import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
 import { debounce, flatMap } from 'lodash';
 import { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
 import { AdItem } from '../../../../app/types/p2p-swaps';
+import { showModal } from '../../../ducks/app/app';
 import {
   getFromToken,
   getFromTokenInputValue,
@@ -28,10 +29,10 @@ import {
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ItemPicker from '../modals/item-picker';
 
 export default function P2PAds() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const auth = useAuthP2P();
   const navigate = useNavigate();
   const [providerName, setProviderName] = useState('');
@@ -39,12 +40,22 @@ export default function P2PAds() {
   const fromToken = useSelector(getFromToken);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
 
-  const [showSortPicker, setShowSortPicker] = useState(false);
   const [sortBy, setSortBy] = useState(SortTypes.byPrice);
   const [sortDesc, setSortDesc] = useState(false);
 
   const toggleSortPicker = () => {
-    setShowSortPicker(!showSortPicker);
+    dispatch(
+      showModal({
+        name: 'ITEM_PICKER',
+        title: 'Sort by',
+        value: sortBy,
+        options: Object.values(SortTypes).map((value) => ({
+          text: t(value),
+          value,
+        })),
+        onSelect: (v) => setSortBy(v),
+      }),
+    );
   };
 
   const filterModel = useMemo(
@@ -102,17 +113,6 @@ export default function P2PAds() {
 
   return (
     <Box className="p2p-ads">
-      {showSortPicker && (
-        <ItemPicker
-          value={sortBy}
-          items={Object.values(SortTypes).map((value) => ({
-            text: t(value),
-            value,
-          }))}
-          onClose={toggleSortPicker}
-          onSelect={(v) => setSortBy(v)}
-        />
-      )}
       <Box
         className="p2p-ads__search-options"
         display="flex"

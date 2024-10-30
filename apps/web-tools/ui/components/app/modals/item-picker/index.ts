@@ -1,1 +1,1 @@
-export { ItemPicker as default } from './item-picker';
+export { default } from './item-picker';

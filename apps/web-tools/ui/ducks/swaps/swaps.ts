@@ -122,9 +122,10 @@ export const createSwapP2P = (props: {
   exchange: AdItem;
   slippage: number;
   paymentMethod?: UserPaymentMethod;
+  exchangerPaymentMethodId?: number;
 }) => {
   return async (dispatch: AppDispatch) => {
-    const { from, to, exchange, slippage } = props;
+    const { from, to, exchange, slippage, exchangerPaymentMethodId } = props;
 
     if (!from.amount) {
       throw new Error('From amount is not specified');
@@ -154,7 +155,8 @@ export const createSwapP2P = (props: {
         exchangerSettingsId: exchange.id,
         amount1: Number(from.amount),
         amount2: Number(to.amount),
-        paymentMethodId: to.paymentMethod?.userPaymentMethodId,
+        exchangerPaymentMethodId,
+        clientPaymentMethodId: to.paymentMethod?.userPaymentMethodId,
         clientWalletAddress: getSerializedAddressFromInput(from),
         clientWalletAddressInNetwork2: getSerializedAddressFromInput(to),
         clientSlippage: slippage,

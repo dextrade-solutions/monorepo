@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import AlertModalComponent from './alert-modal';
 import ImageModalComponent from './image-modal';
+import ItemPicker from './item-picker';
 import SetPaymentMethod from './set-payment-method';
 import SetWallet from './set-wallet';
 import TradeHistoryRow from './trade-history-row-modal';
@@ -19,6 +20,7 @@ const MODALS = {
   IMAGE_MODAL: <ImageModalComponent />,
   SET_WALLET: <SetWallet />,
   SET_PAYMENT_METHOD: <SetPaymentMethod />,
+  ITEM_PICKER: <ItemPicker />,
   DEFAULT: null,
 };
 

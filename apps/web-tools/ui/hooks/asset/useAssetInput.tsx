@@ -13,10 +13,10 @@ import { fetchRates } from '../../../app/helpers/rates';
 
 export const useAssetInput = ({
   asset,
-  reserve: isToAsset,
+  isToAsset,
 }: {
   asset: AssetModel;
-  reserve?: number;
+  isToAsset?: boolean;
 }) => {
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();

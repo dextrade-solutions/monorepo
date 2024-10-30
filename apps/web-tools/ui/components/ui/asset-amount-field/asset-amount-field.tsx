@@ -129,7 +129,14 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
               </InputAdornment>
             ),
           }}
-          onChange={(e) => onChange(e.target.value.replace(',', '.'))}
+          onChange={(e) => {
+            let { value } = e.target;
+            value = value.replace(',', '.');
+            if (value.startsWith('.')) {
+              value = value.replace('.', '0.');
+            }
+            onChange(value);
+          }}
         />
         {Boolean(assetInput.amount) && asset.priceInUsdt && (
           <Typography
