@@ -12,7 +12,6 @@ import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import SelectCoins from '../../ui/select-coins';
 import P2PExchangers from '../p2p-ads';
-import WalletConnectButton from '../wallet-connect-button';
 
 export default function P2PSwap() {
   const t = useI18nContext();
@@ -32,7 +31,7 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        <WalletConnectButton />
+        {/* <WalletConnectButton /> */}
         {isConnected && (
           <Box display="flex" marginLeft={1} alignItems="center">
             <Button

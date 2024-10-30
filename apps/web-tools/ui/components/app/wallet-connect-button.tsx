@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material';
-import { useWalletInfo, useWeb3Modal } from '@web3modal/wagmi/react';
+// import { useWalletInfo, useWeb3Modal } from '@web3modal/wagmi/react';
 import { shortenAddress } from 'dex-helpers';
 import { PulseLoader, UrlIcon } from 'dex-ui';
 import { useAccount } from 'wagmi';

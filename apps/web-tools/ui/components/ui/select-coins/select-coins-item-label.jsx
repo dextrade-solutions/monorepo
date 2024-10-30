@@ -5,7 +5,7 @@ import { Icon, UrlIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-const ICON_URL_DEFAULT = './images/coins/default.svg';
+const ICON_URL_DEFAULT = '/images/coins/default.svg';
 
 export const SelectCoinsItemLabel = ({
   coin,

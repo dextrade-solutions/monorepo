@@ -10,6 +10,7 @@ import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
+import { AssetItem, Icon } from '../../ui';
 import ExchangerUserPreview from '../exchanger-user-preview';
 
 interface IProps {
@@ -17,6 +18,7 @@ interface IProps {
   fromTokenAmount?: number;
   exchanger: UserModel;
   isSelfAd?: boolean;
+  hideTickers?: boolean;
   onClick?: () => void;
   getAvatarLink?: (url: string) => string;
 }
@@ -25,6 +27,7 @@ const AdPreview = ({
   ad,
   fromTokenAmount = 0,
   isSelfAd,
+  hideTickers,
   getAvatarLink = (url) => getUserAvatarUrl(url),
   onClick,
 }: IProps) => {
@@ -61,6 +64,26 @@ const AdPreview = ({
               </Typography>
             )}
           </Box>
+          {!hideTickers && (
+            <>
+              <Box marginTop={1} marginBottom={1}>
+                <Divider />
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <AssetItem iconSize={30} coin={ad.fromCoin} />
+                <Icon name="exchange-direction" size="xl" />
+                <AssetItem iconSize={30} coin={ad.toCoin} alignReverse />
+              </Box>
+              <Box marginTop={1} marginBottom={1}>
+                <Divider />
+              </Box>
+            </>
+          )}
+
           <Box
             display="flex"
             justifyContent="space-between"
@@ -87,9 +110,9 @@ const AdPreview = ({
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>Per 1 {ad.fromCoin.ticker}</Typography>
-            <Typography component="strong">
-              {formatFundsAmount(ad.coinPair.price, ad.toCoin.ticker)}
+            <Typography>{t('quantity')}</Typography>
+            <Typography fontWeight="bold">
+              {formatFundsAmount(ad.reserveInCoin2, ad.toCoin.ticker)}
             </Typography>
           </Box>
           <Box
@@ -97,9 +120,13 @@ const AdPreview = ({
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>Per 1 {ad.toCoin.ticker}</Typography>
-            <Typography component="strong">
-              {formatFundsAmount(1 / ad.coinPair.price, ad.fromCoin.ticker)}
+            <Typography>{t('limits')}</Typography>
+            <Typography fontWeight="bold">
+              {formatFundsAmount(ad.minimumExchangeAmountCoin2 || 0)} —{' '}
+              {formatFundsAmount(
+                ad.maximumExchangeAmountCoin2 || ad.reserveInCoin2,
+                ad.toCoin.ticker,
+              )}
             </Typography>
           </Box>
         </CardContent>

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import IconWithFallback from '../icon-with-fallback';
 import './index.scss';
 
-const ICON_URL_DEFAULT = './images/coins/default.svg';
+const ICON_URL_DEFAULT = '/images/coins/default.svg';
 
 export default function UrlIcon({
   url,

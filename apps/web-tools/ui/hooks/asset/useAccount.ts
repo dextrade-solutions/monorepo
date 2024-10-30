@@ -7,10 +7,7 @@ import { useAccount as useWCAccount } from 'wagmi';
 
 import { getRedeemKeypair } from '../../../app/helpers/bitcoin/get-keys-and-redeem-script';
 import { btcNetworksConfig } from '../../../app/helpers/bitcoin/networks';
-import {
-  getKeypairAddress,
-  hash160,
-} from '../../../app/helpers/bitcoin/utils';
+import { getKeypairAddress, hash160 } from '../../../app/helpers/bitcoin/utils';
 import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
 import { AssetAccount } from '../../types';
 

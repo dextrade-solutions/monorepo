@@ -7,7 +7,7 @@ import React, { memo, useState, useCallback } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 // TODO: refactor to IconButton or ButtonIcon or Icon without mask-image styles
-const ICON_URL = './images/icons/swap-circle-arrow.svg';
+const ICON_URL = '/images/icons/swap-circle-arrow.svg';
 
 export const SelectCoinsSwap = memo(({ onClick, disabled }) => {
   const t = useI18nContext();

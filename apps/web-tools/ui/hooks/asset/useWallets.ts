@@ -45,7 +45,7 @@ export type WalletItem = {
 
 const getConnectorIcon = (item: Connector) => {
   if (item.name === 'WalletConnect') {
-    return '/public/images/icons/wallet-connect.svg';
+    return '/images/icons/wallet-connect.svg';
   }
   return item.icon;
 };
@@ -56,64 +56,71 @@ export function useWallets({ asset }: { asset: AssetModel }) {
   const [walletsModels, setWalletsModels] = useState<WalletItem[]>([]);
 
   useEffect(() => {
-    let supportedWallets = [];
-    if (asset.chainId) {
-      supportedWallets = config.connectors.map((item) => ({
-        icon: getConnectorIcon(item),
-        name: item.name,
-        connected: getEIP6963SerilizedConnectedAccount(item.uid),
-        connect: async () => {
-          const result = await item.connect();
-          const [address] = result.accounts;
-          return {
-            address,
-            connectedWallet: item.name,
-            icon: getConnectorIcon(item),
-          };
-        },
-        disconnect: async () => {
-          await item.disconnect();
-          setWalletsModels((prev) =>
-            prev.map((i) =>
-              i.name === item.name ? { ...i, connected: null } : i,
-            ),
-          );
-        },
-      }));
-    }
+    const updateWallets = () => {
+      let supportedWallets: WalletItem[] = [];
 
-    if (asset.network === NetworkNames.solana) {
-      supportedWallets = wallets.map((item) => ({
-        icon: item.adapter.icon,
-        name: item.adapter.name,
-        connected: getSolanaSerializedConnectedAccount(item.adapter),
-        connect: async (): Promise<AssetAccount> => {
-          select(item.adapter.name);
-          await item.adapter.connect();
-          const address = item.adapter.publicKey?.toBase58();
-          const { icon } = item.adapter;
-          if (!address) {
-            throw new Error('connect solana wallet - something is wrong');
-          }
-          return {
-            address,
-            connectedWallet: item.adapter.name,
-            icon,
-          };
-        },
-        disconnect: () => item.adapter.disconnect(),
-      }));
-    }
+      if (asset.chainId) {
+        supportedWallets = config.connectors.map((item) => ({
+          icon: getConnectorIcon(item),
+          name: item.name,
+          connected: getEIP6963SerilizedConnectedAccount(item.uid),
+          connect: async () => {
+            const result = await item.connect();
+            const [address] = result.accounts;
+            config.state.connections.set(item.uid, {
+              ...result,
+              connector: item,
+            });
+            return {
+              address,
+              connectedWallet: item.name,
+              icon: getConnectorIcon(item),
+            };
+          },
+          disconnect: async () => {
+            await item.disconnect();
+            config.state.connections.delete(item.uid);
+            updateWallets();
+          },
+        }));
+      }
 
-    if (!asset.chainId) {
-      supportedWallets.push({
-        icon: ledgerConnection.icon,
-        name: ledgerConnection.name,
-        connect: () => ledgerConnection.connectByNetwork(asset.network),
-        disconnect: () => ledgerConnection.disconnect(),
-      });
-    }
-    setWalletsModels(supportedWallets);
+      if (asset.network === NetworkNames.solana) {
+        supportedWallets = wallets.map((item) => ({
+          icon: item.adapter.icon,
+          name: item.adapter.name,
+          connected: getSolanaSerializedConnectedAccount(item.adapter),
+          connect: async (): Promise<AssetAccount> => {
+            select(item.adapter.name);
+            await item.adapter.connect();
+            const address = item.adapter.publicKey?.toBase58();
+            const { icon } = item.adapter;
+            if (!address) {
+              throw new Error('connect solana wallet - something is wrong');
+            }
+            return {
+              address,
+              connectedWallet: item.adapter.name,
+              icon,
+            };
+          },
+          disconnect: () => item.adapter.disconnect(),
+        }));
+      }
+
+      if (!asset.chainId) {
+        supportedWallets.push({
+          icon: ledgerConnection.icon,
+          name: ledgerConnection.name,
+          connected: null,
+          connect: () => ledgerConnection.connectByNetwork(asset.network),
+          disconnect: () => ledgerConnection.disconnect(),
+        });
+      }
+      setWalletsModels(supportedWallets);
+    };
+
+    updateWallets();
   }, [wallets, asset, select]);
 
   return walletsModels;

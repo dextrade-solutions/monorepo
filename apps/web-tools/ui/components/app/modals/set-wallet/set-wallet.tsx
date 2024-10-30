@@ -14,7 +14,8 @@ import {
 import { NetworkNames, shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon, ButtonIcon } from 'dex-ui';
-import { useState } from 'react';
+import { isEqual } from 'lodash';
+import { useCallback, useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
@@ -61,13 +62,16 @@ const SetWallet = ({
     onChange(result);
     hideModal();
   };
-  const onDisconnect = (item: WalletItem) => {
-    item.disconnect();
-    if (item.connected === value) {
-      onChange(null);
-      hideModal();
-    }
-  };
+  const onDisconnect = useCallback(
+    async (item: WalletItem) => {
+      if (item.name === savedValue?.connectedWallet) {
+        onChange(null);
+        hideModal();
+      }
+      await item.disconnect();
+    },
+    [hideModal, onChange, savedValue],
+  );
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>

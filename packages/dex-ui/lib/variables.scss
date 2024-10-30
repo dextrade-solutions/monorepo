@@ -1,0 +1,21 @@
+$dex-ui-primary-dark: #4143A1;
+$dex-ui-secondary-dark: #4143A1;
+$dex-ui-tertiary-dark: #ecedfa;
+
+$dex-ui-primary-light: #3662CF;
+$dex-ui-secondary-light: #33366D;
+$dex-ui-tertiary-light: #3d2f4c;
+
+
+// creating a light and a dark theme on html level
+html[data-theme="light"] {
+  --dex-ui-primary: #{$dex-ui-primary-light};
+  --dex-ui-secondary: #{$dex-ui-secondary-light};
+  --dex-ui-tertiary: #{$dex-ui-tertiary-light};
+}
+
+html[data-theme="dark"] {
+  --dex-ui-primary: #{$dex-ui-primary-dark};
+  --dex-ui-secondary: #{$dex-ui-secondary-dark};
+  --dex-ui-tertiary: #{$dex-ui-tertiary-dark};
+}

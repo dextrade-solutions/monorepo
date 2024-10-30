@@ -3,7 +3,7 @@ import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
 import React from 'react';
 import { Provider, useSelector } from 'react-redux';
-import { HashRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter, HashRouter, useLocation } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import Web3ModalProvider from './components/app/web3-modal-provider';
@@ -45,11 +45,11 @@ export function Ui() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <HashRouter>
+        <BrowserRouter>
           <I18nProvider>
             <ContentUi />
           </I18nProvider>
-        </HashRouter>
+        </BrowserRouter>
       </PersistGate>
     </Provider>
   );

@@ -28,7 +28,7 @@ const WC_PARAMS = {
   projectId,
   qrModalOptions: {
     themeVariables: {
-      '--wcm-font-family': '"Rubik", sans-serif',
+      '--wcm-font-family': '"Open-sans", sans-serif',
       '--wcm-z-index': '10000',
     },
   },
