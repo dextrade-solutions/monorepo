@@ -199,6 +199,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Typography>
         <AssetAmountField
           assetInput={assetInputFrom}
+          hasValidationErrors={hasValidationErrors}
           onChange={onInputAmountFrom}
         />
       </Box>
@@ -213,6 +214,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Typography>
         <AssetAmountField
           assetInput={assetInputTo}
+          hasValidationErrors={hasValidationErrors}
           reserve={ad.reserveInCoin2}
           onChange={onInputAmountTo}
         />

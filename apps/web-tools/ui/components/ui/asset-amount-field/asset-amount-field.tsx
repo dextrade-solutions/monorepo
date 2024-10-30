@@ -11,6 +11,8 @@ import {
   Button,
   Divider,
 } from '@mui/material';
+import { useWallet } from '@solana/wallet-adapter-react';
+import classNames from 'classnames';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -26,11 +28,17 @@ import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
 
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
+  hasValidationErrors: boolean;
   onChange: (v: string | number) => void;
   reserve?: number;
 }
 
-export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
+export const AssetAmountField = ({
+  assetInput,
+  onChange,
+  reserve,
+  hasValidationErrors,
+}: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account?.connectedWallet);
   return (
@@ -107,6 +115,9 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           variant="standard"
           valueIsNumericString
           InputProps={{
+            className: classNames({
+              'asset-amount-field__error': hasValidationErrors,
+            }),
             disableUnderline: true,
             style: {
               fontSize: 25,
