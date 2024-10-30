@@ -14,12 +14,12 @@ import { generateTxParams } from '../../../app/helpers/transactions';
 export function useSendTransaction({
   asset,
   amount,
-  recepient,
+  recipient,
   txSentHandlers,
 }: {
   asset: AssetModel;
   amount: number;
-  recepient: string;
+  recipient: string;
   txSentHandlers: {
     onSuccess: (txHash: string) => void;
     onError: (e: unknown) => void;
@@ -42,7 +42,7 @@ export function useSendTransaction({
       const txParams = generateTxParams({
         asset,
         amount,
-        to: recepient,
+        to: recipient,
       });
       sendTxEvm({ ...txParams, chainId: asset.chainId }, txSentHandlers);
     };
@@ -70,7 +70,7 @@ export function useSendTransaction({
         asset,
         connection,
         fromPubkey: publicKey,
-        recepientAddress: recepient,
+        recipientAddress: recipient,
         value: Number(value),
       });
       return sendTxSol(tx, connection)

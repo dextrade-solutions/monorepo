@@ -16,7 +16,7 @@ export const unlockSafe = async ({
   secretHash,
   refundTime,
   refundPKH,
-  recepientAddress,
+  recipientAddress,
   networkName,
   utxo,
   feeRate = 20n,
@@ -31,7 +31,7 @@ export const unlockSafe = async ({
   tx.version = 2;
   tx.addInput(idToHash(utxo.txId), 0, 0xfffffffe);
   const alicePayment = bitcoin.payments.p2pkh({
-    address: 'LU53hQLz2XEK74ZeBjkDYctnXFEjKZ4gUA' || recepientAddress,
+    address: 'LU53hQLz2XEK74ZeBjkDYctnXFEjKZ4gUA' || recipientAddress,
     network,
   });
 

@@ -83,14 +83,14 @@ export function useAdValidation({
     !assetInputTo.account?.address &&
     !assetInputTo.configuredWallet?.address
   ) {
-    params.submitBtnText = 'Set recepient wallet';
+    params.submitBtnText = 'Set recipient wallet';
     return params;
   }
   if (
     assetInputTo.configuredWallet &&
     !validateAddress(assetInputTo.asset, assetInputTo.configuredWallet.address)
   ) {
-    params.submitBtnText = 'Recepient address is not valid';
+    params.submitBtnText = 'Recipient address is not valid';
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;

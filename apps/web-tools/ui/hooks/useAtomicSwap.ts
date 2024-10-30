@@ -139,7 +139,7 @@ export const useAtomicSwap = (
         unlockSafe({
           secret: remove0x(password),
           secretHash: remove0x(hashedPassword),
-          recepientAddress: exchange.clientWalletAddress,
+          recipientAddress: exchange.clientWalletAddress,
           refundTime: exchangerParams?.responderRefundTime,
           networkName: to.network,
           refundPKH: exchangerParams?.refundPKH,
@@ -215,7 +215,7 @@ function parseSafe(safe: any) {
     return null;
   }
   const [
-    recepient,
+    recipient,
     sender,
     tokenAddress,
     amount,
@@ -224,10 +224,10 @@ function parseSafe(safe: any) {
     refunded,
     claimed,
   ] = safe.data;
-  return recepient === NULLISH_TOKEN_ADDRESS
+  return recipient === NULLISH_TOKEN_ADDRESS
     ? null
     : {
-        recepient,
+        recipient,
         sender,
         tokenAddress,
         amount,

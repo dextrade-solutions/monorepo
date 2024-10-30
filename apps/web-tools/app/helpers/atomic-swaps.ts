@@ -47,7 +47,7 @@ export function getTradeKeyPair(tradeId: string) {
 
 export type AtomicSwapParams = {
   msgSender: `0x${string}`;
-  recepient: `0x${string}`;
+  recipient: `0x${string}`;
   tokenAddress: `0x${string}`;
   amount: bigint;
   hashLock: `0x${string}`;
@@ -70,7 +70,7 @@ export type BuildedAtomicSwap = {
 
 export function getAtomicSwapId({
   msgSender,
-  recepient,
+  recipient,
   tokenAddress,
   amount,
   hashLock,
@@ -80,7 +80,7 @@ export function getAtomicSwapId({
   const secondsExpiration = expiration / 1000n;
   const encodedData = encodePacked(
     ['address', 'address', 'address', 'uint256', 'bytes32', 'uint256'],
-    [msgSender, recepient, contract, amount, hashLock, secondsExpiration],
+    [msgSender, recipient, contract, amount, hashLock, secondsExpiration],
   );
 
   const swapId = sha256(encodedData);
@@ -121,7 +121,7 @@ export function generateAtomicSwapParams(
 export function buildAtomicSwap(
   asset: AssetModel,
   sender: `0x${string}` | string,
-  recepient: `0x${string}` | string,
+  recipient: `0x${string}` | string,
   hashLock: `0x${string}`,
   expiration: bigint,
   amount: bigint,
@@ -130,7 +130,7 @@ export function buildAtomicSwap(
     const tokenAddress = asset.contract;
     const txParams = generateAtomicSwapParams(
       asset.network,
-      recepient,
+      recipient,
       hashLock,
       expiration,
       amount,
@@ -139,7 +139,7 @@ export function buildAtomicSwap(
 
     const swapId = getAtomicSwapId({
       msgSender: sender,
-      recepient,
+      recipient,
       expiration,
       amount,
       hashLock,

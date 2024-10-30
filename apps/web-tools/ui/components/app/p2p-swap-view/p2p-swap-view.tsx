@@ -57,7 +57,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const exchangeRate = ad.coinPair.price;
   const needPickupPaymentMethod =
     assetInputTo.asset.isFiat && !assetInputTo.paymentMethod;
-  const needPickupRecepientAddress =
+  const needPickupRecipientAddress =
     !assetInputTo.asset.isFiat && !assetInputTo.account?.address;
 
   const calcIncomingFee = useCallback(
@@ -275,7 +275,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           onClick={() => {
             if (needPickupPaymentMethod) {
               return assetInputTo.showPaymentMethod();
-            } else if (needPickupRecepientAddress) {
+            } else if (needPickupRecipientAddress) {
               return assetInputTo.showConfigureWallet();
             }
             return startExchange();

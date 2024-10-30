@@ -145,7 +145,7 @@ const SetWallet = ({
               </Typography>
               <Box>
                 <TextField
-                  placeholder="Recepient address"
+                  placeholder="Recipient address"
                   fullWidth
                   size="medium"
                   onChange={(v) => setInputWalletAddress(v.target.value)}

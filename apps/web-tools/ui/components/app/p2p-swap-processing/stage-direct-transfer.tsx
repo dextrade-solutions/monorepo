@@ -21,7 +21,7 @@ export default function StageDirectTransfer({
   onChange: (status: StageStatuses) => void;
 }) {
   const amount = Number(trade.amount1);
-  const recepient = parseAddress(from.network, trade.exchangerWalletAddress);
+  const recipient = parseAddress(from.network, trade.exchangerWalletAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
@@ -41,7 +41,7 @@ export default function StageDirectTransfer({
   const { sendTransaction } = useSendTransaction({
     asset: from,
     amount,
-    recepient,
+    recipient,
     txSentHandlers,
   });
 
