@@ -4,7 +4,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: calc(100% - 20px);
-  border-radius: clamp(0px, var(--wui-border-radius-l), 44px);
+  border-radius: clamp(0px, 24px, 44px);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
   overflow: scroll;
   max-width: 500px;

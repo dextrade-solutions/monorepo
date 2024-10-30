@@ -1,4 +1,8 @@
-import { createTransferInstruction } from '@solana/spl-token';
+import {
+  createAssociatedTokenAccountInstruction,
+  createTransferInstruction,
+  getAssociatedTokenAddressSync,
+} from '@solana/spl-token';
 import {
   Connection,
   PublicKey,
@@ -12,12 +16,12 @@ import { getAssociatedTokenAccount } from './get-associated-token-account';
 const createSendTokenInstruction = async ({
   tokenAddress,
   fromWallet,
-  toWallet,
+  toAddress,
   value,
   connection,
 }: {
   fromWallet: PublicKey;
-  toWallet: PublicKey;
+  toAddress: PublicKey;
   connection: Connection;
   tokenAddress: string;
   value: number;
@@ -29,16 +33,10 @@ const createSendTokenInstruction = async ({
     fromWallet,
   );
 
-  const toTokenAccount = await getAssociatedTokenAccount(
-    connection,
-    mint,
-    toWallet,
-  );
-
   // Add token transfer instructions to transaction
   return createTransferInstruction(
     fromTokenAccount.address,
-    toTokenAccount.address,
+    toAddress,
     fromWallet,
     value,
   );
@@ -62,10 +60,27 @@ export const buildTxSol = async ({
   const transaction = new Transaction();
   let sendInstruction;
   if (asset.contract) {
+    const mint = new PublicKey(asset.contract);
+    let toAddress;
+    try {
+      toAddress = (await getAssociatedTokenAccount(connection, mint, toPubkey))
+        .address;
+    } catch {
+      // no associated token account created
+      toAddress = getAssociatedTokenAddressSync(mint, toPubkey);
+      transaction.add(
+        createAssociatedTokenAccountInstruction(
+          fromPubkey,
+          toAddress,
+          toPubkey,
+          mint,
+        ),
+      );
+    }
     sendInstruction = await createSendTokenInstruction({
       connection,
       fromWallet: fromPubkey,
-      toWallet: toPubkey,
+      toAddress,
       tokenAddress: asset.contract,
       value,
     });
@@ -76,7 +91,6 @@ export const buildTxSol = async ({
       lamports: value,
     });
   }
-
   transaction.add(sendInstruction);
 
   return transaction;

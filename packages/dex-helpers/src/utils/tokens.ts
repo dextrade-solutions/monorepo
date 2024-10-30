@@ -1,3 +1,5 @@
+import { AssetModel } from "../../types";
+
 export const TOKEN_API_COIN_ICONS = `https://markets.nyc3.digitaloceanspaces.com/coin-icons/`;
 
 const LOCAL_COINS_URLS = {
@@ -40,4 +42,8 @@ export const getCoinIconByUid = (uid: string) => {
     return coinIcon;
   }
   return `${TOKEN_API_COIN_ICONS}${uid}@3x.png`;
+};
+
+export const getAssetKey = (asset: AssetModel) => {
+  return `${asset.network}-${asset.symbol}-${asset.contract || 'null'}`;
 };

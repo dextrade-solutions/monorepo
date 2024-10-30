@@ -21,8 +21,8 @@ export const ButtonIcon = ({
   color?: string;
   size?: 'sm' | 'md' | 'lg';
   iconName: string;
-  disabled: boolean;
-  iconProps: any;
+  disabled?: boolean;
+  iconProps?: any;
 } & IconButtonProps) => {
   return (
     <IconButton

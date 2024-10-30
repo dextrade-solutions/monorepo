@@ -6,10 +6,8 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
-
 import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
-import { AdItem } from 'dex-helpers/types';
-import { DextradeTypes } from 'dex-services';
+import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
 import ExchangerUserPreview from '../exchanger-user-preview';
@@ -17,7 +15,7 @@ import ExchangerUserPreview from '../exchanger-user-preview';
 interface IProps {
   ad: AdItem;
   fromTokenAmount?: number;
-  exchanger: DextradeTypes.UserModel;
+  exchanger: UserModel;
   isSelfAd?: boolean;
   onClick?: () => void;
   getAvatarLink?: (url: string) => string;
@@ -89,9 +87,9 @@ const AdPreview = ({
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>{t('quantity')}</Typography>
-            <Typography fontWeight="bold">
-              {formatFundsAmount(ad.reserveInCoin2, ad.toCoin.ticker)}
+            <Typography>Per 1 {ad.fromCoin.ticker}</Typography>
+            <Typography component="strong">
+              {formatFundsAmount(ad.coinPair.price, ad.toCoin.ticker)}
             </Typography>
           </Box>
           <Box
@@ -99,13 +97,9 @@ const AdPreview = ({
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>{t('limits')}</Typography>
-            <Typography fontWeight="bold">
-              {formatFundsAmount(ad.minimumExchangeAmountCoin2 || 0)} —{' '}
-              {formatFundsAmount(
-                ad.maximumExchangeAmountCoin2 || ad.reserveInCoin2,
-                ad.toCoin.ticker,
-              )}
+            <Typography>Per 1 {ad.toCoin.ticker}</Typography>
+            <Typography component="strong">
+              {formatFundsAmount(1 / ad.coinPair.price, ad.fromCoin.ticker)}
             </Typography>
           </Box>
         </CardContent>

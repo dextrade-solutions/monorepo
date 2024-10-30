@@ -75,7 +75,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           asset: assetTo,
           amount: toAmount.toFixed(8),
           from: ad.walletAddressInNetwork2,
-          to: account.address,
+          to: account?.address || NULLISH_TOKEN_ADDRESS,
           isAtomicSwap: ad.isAtomicSwap,
         });
         if (assetTo.contract) {
@@ -165,13 +165,14 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const startExchange = async () => {
     try {
       setLoadingStartExchange(true);
-      const result = await auth(() =>
+      const result = await auth((on401?: () => void) =>
         dispatch(
           createSwapP2P({
             from: assetInputFrom,
             to: assetInputTo,
             exchange: ad,
             slippage: 0.5,
+            on401,
           }),
         ),
       );
