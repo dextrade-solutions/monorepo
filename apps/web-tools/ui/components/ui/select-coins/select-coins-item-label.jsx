@@ -52,11 +52,13 @@ export const SelectCoinsItemLabel = ({
       )}
       {coin ? (
         <div className="select-coins__item__label__title">
-          <div className="select-coins__item__label__title__symbol">{name}</div>
           <Typography
-            color="text.secondary"
-            className="select-coins__item__label__title__type"
+            fontWeight="bold"
+            className="select-coins__item__label__title__symbol"
           >
+            {name}
+          </Typography>
+          <Typography className="select-coins__item__label__title__type">
             {type.toUpperCase()}
           </Typography>
         </div>

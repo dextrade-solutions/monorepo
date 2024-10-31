@@ -46,12 +46,6 @@
   color: var(--color-error-default);
 }
 
-.divider {
-  background-color: var(--color-border-muted);
-  width: 100%;
-  height: 1px;
-}
-
 .no-shadow {
   box-shadow: none !important;
 }
@@ -66,5 +60,7 @@
 }
 
 .bordered {
+  border-style: solid !important;
+  border-color: var(--color-border-muted) !important;
   border-radius: 12px !important;
 }

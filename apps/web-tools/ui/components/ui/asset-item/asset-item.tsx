@@ -43,10 +43,8 @@ const AssetItem = ({
         <>
           <UrlIcon size={iconSize} url={url} />
           <Box marginX={2}>
-            <Typography>{ticker}</Typography>
-            <Typography color="text.secondary" variant="body2">
-              {networkType}
-            </Typography>
+            <Typography fontWeight="bold">{ticker}</Typography>
+            <Typography variant="body2">{networkType}</Typography>
           </Box>
         </>
       )}

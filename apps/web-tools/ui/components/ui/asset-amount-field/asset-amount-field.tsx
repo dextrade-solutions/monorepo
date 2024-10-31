@@ -57,16 +57,14 @@ export const AssetAmountField = ({
                   {asset.symbol}
                 </Typography>
                 {asset.standard && (
-                  <Typography color="text.secondary">
-                    {asset.standard.toUpperCase()}
-                  </Typography>
+                  <Typography>{asset.standard.toUpperCase()}</Typography>
                 )}
               </Box>
             </Box>
             <div className="flex-grow" />
             {displayBalance && (
               <Box textAlign="right">
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" fontWeight="bold">
                   Balance
                 </Typography>
                 {assetInput.balance ? (
@@ -81,14 +79,10 @@ export const AssetAmountField = ({
                       disabled={Boolean(reserve)}
                       onClick={() => onChange(assetInput.balance.value)}
                     >
-                      <Typography
-                        as="span"
-                        color="text.secondary"
-                        marginRight={1}
-                      >
+                      <Typography as="span" marginRight={1}>
                         {assetInput.balance.formattedValue}
                       </Typography>
-                      <Typography as="span" color="text.secondary">
+                      <Typography as="span">
                         {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
                       </Typography>
                     </CardActionArea>

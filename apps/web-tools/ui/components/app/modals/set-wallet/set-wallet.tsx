@@ -11,10 +11,9 @@ import {
   ListItemButton,
   ListItemAvatar,
 } from '@mui/material';
-import { NetworkNames, shortenAddress } from 'dex-helpers';
+import { shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon, ButtonIcon } from 'dex-ui';
-import { isEqual } from 'lodash';
 import { useCallback, useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
@@ -118,7 +117,10 @@ const SetWallet = ({
                 {wallets.map((item, idx) => (
                   <Box key={idx} marginTop={1}>
                     <ListItemButton
-                      sx={{ backgroundColor: 'secondary.dark' }}
+                      sx={{
+                        backgroundColor: 'secondary.dark',
+                        borderWidth: savedValue?.connectedWallet === item.name ? 1 : 0,
+                      }}
                       className="bordered"
                       onClick={() => onSelectWallet(item)}
                     >
