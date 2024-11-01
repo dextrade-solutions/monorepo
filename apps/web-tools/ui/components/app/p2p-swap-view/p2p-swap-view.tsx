@@ -250,9 +250,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             </Box>
           </Box>
         )}
-        {incomingFee && incomingFee > 0 && (
+        {Boolean(incomingFee) && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Exchanger transaction fee</Typography>
+            <Typography>Transfer service fee</Typography>
             <Box display="flex">
               <Typography>
                 {formatFundsAmount(incomingFee, assetTo.symbol)}
