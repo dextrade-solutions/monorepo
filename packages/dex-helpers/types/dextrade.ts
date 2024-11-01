@@ -178,6 +178,7 @@ export type AdItem = {
   isKycVerified: boolean;
   timeToRefund: number;
   provider?: string;
+  officialMerchant: boolean;
 };
 
 export type AdSetting = {
