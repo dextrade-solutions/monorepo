@@ -30,21 +30,22 @@ export default function ExchangerUserPreview({
   };
 } & BoxProps) {
   return (
-    <Box
-      {...boxProps}
-      sx={
-        isOfficial
-          ? {
-              background: 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%);',
-              borderRadius: 1,
-              padding: '3px',
-            }
-          : {}
-      }
-    >
-      {/* {isOfficial && ( */}
-      {/* <> */}
-      <Box paddingRight={2} display="flex" alignItems="center">
+    <Box {...boxProps}>
+      <Box
+        sx={
+          isOfficial
+            ? {
+                background:
+                  'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%);',
+                borderRadius: 1,
+                padding: '3px',
+              }
+            : {}
+        }
+        paddingRight={2}
+        display="flex"
+        alignItems="center"
+      >
         {isOfficial ? (
           <Box></Box>
         ) : (
@@ -57,10 +58,16 @@ export default function ExchangerUserPreview({
         )}
         <Box marginLeft={2} textAlign="left">
           <Box display="flex" alignItems="center">
-            <Typography marginRight={1} fontWeight="bold">
+            <Typography
+              marginRight={1}
+              fontWeight="bold"
+              color={isOfficial && 'white'}
+            >
               {name}
             </Typography>
-            {isOfficial && <Typography>Official merchant</Typography>}
+            {isOfficial && (
+              <Typography color="white">Official merchant</Typography>
+            )}
             {!isOfficial && isKycVerified && (
               <Tooltip placement="top" title="KYC Verified">
                 <VerifiedIcon />
@@ -85,7 +92,7 @@ export default function ExchangerUserPreview({
           )}
         </Box>
       </Box>
-      {!isOfficial && rating && (
+      {rating && (
         <Box marginTop={1}>
           <RatingOutput {...rating} />
         </Box>
