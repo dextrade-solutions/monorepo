@@ -59,7 +59,6 @@ export default function UserAvatar({
             }}
           ></Box>
           <Typography
-            fontWeight="bold"
             className="user-avatar__fallback--letter"
           >
             {name?.charAt(0).toUpperCase() || ''}
