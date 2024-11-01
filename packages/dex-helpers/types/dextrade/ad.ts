@@ -96,4 +96,5 @@ export type AdItem = {
   isKycVerified: boolean;
   timeToRefund: number;
   provider?: string;
+  transactionFee?: number;
 };

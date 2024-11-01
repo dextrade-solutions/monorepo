@@ -89,14 +89,16 @@ export const P2PSwapSummary = ({ exchange: ad, totalFee = 0 }: IProps) => {
                 </span>
               </Typography>
             )} */}
-        {totalFee > 0 && (
-          <Typography display="flex">
-            <span className="flex-grow">{t('transactionFee')}</span>
-            <span className="row-summary__value">
-              ~ {formatFundsAmount(totalFee / exchangeRate, fromCoin.ticker)}
-            </span>
-          </Typography>
-        )}
+        <Box>
+          {totalFee > 0 && (
+            <Typography display="flex">
+              <span className="flex-grow">{t('transactionFee')}</span>
+              <span className="row-summary__value">
+                ~ {formatFundsAmount(totalFee / exchangeRate, fromCoin.ticker)}
+              </span>
+            </Typography>
+          )}
+        </Box>
         {ad.paymentMethod && (
           <Typography display="flex" marginTop={4}>
             <span className="flex-grow">Payment method</span>

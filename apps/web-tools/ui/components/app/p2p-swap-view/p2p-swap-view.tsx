@@ -41,7 +41,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const navigate = useNavigate();
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
-  const [incomingFee, setIncomingFee] = useState(0);
+  const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
 
   const auth = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
@@ -64,7 +64,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     async (toAmount: number) => {
       const { native, account } = assetInputTo;
       if (ad.isAtomicSwap || !native?.chainId) {
-        return 0;
+        return ad.transactionFee || 0;
       }
       let incomingFeeCalculated = 0;
       if (!native) {
@@ -220,7 +220,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         />
       </Box>
       <Box padding={2}>
-        <P2PSwapSummary exchange={ad} />
+        <P2PSwapSummary exchange={ad} totalFee={incomingFee} />
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">
             <Typography marginRight={1}>Slippage Tolerance</Typography>
@@ -246,9 +246,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             </Box>
           </Box>
         )}
-        {incomingFee > 0 && assetInputFrom.native && (
+        {incomingFee && incomingFee > 0 && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Incoming transaction fee</Typography>
+            <Typography>Exchanger transaction fee</Typography>
             <Box display="flex">
               <Typography>
                 {formatFundsAmount(incomingFee, assetTo.symbol)}
