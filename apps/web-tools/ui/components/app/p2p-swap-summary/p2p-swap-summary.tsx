@@ -15,24 +15,26 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
   const t = useI18nContext();
 
   const { fromCoin, toCoin } = ad;
-  const exchangeRate = ad.coinPair.price;
 
   return (
     <Box className="p2p-swap-summary">
       <div>
-        <ExchangerUserPreview
-          marginBottom={3}
-          avatarUrl={getUserAvatarUrl(ad.avatar)}
-          name={ad.name}
-          isActive={ad.isExchangerActive}
-          lastActive={ad.lastActive}
-          isKycVerified={ad.isKycVerified}
-          rating={{
-            exchangeCount: ad.exchangeCount,
-            сompletionRate: ad.exchangeCompletionRate,
-            totalRating: ad.rating.totalRating,
-          }}
-        />
+        <Box display="flex">
+          <ExchangerUserPreview
+            marginBottom={3}
+            avatarUrl={getUserAvatarUrl(ad.avatar)}
+            name={ad.name}
+            isActive={ad.isExchangerActive}
+            lastActive={ad.lastActive}
+            isKycVerified={ad.isKycVerified}
+            isOfficial={ad.officialMerchant}
+            rating={{
+              exchangeCount: ad.exchangeCount,
+              сompletionRate: ad.exchangeCompletionRate,
+              totalRating: ad.rating.totalRating,
+            }}
+          />
+        </Box>
         <Divider />
         <Typography marginTop={3} display="flex">
           <span className="flex-grow">Price per 1 {fromCoin.ticker}</span>
