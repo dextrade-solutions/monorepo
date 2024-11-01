@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import classnames from 'classnames';
 import React, { useState } from 'react';
 
@@ -9,7 +9,6 @@ export default function UserAvatar({
   size,
   className,
   name,
-  fallbackClassName,
   online = false,
 }: {
   icon: string;
@@ -48,13 +47,23 @@ export default function UserAvatar({
           alt={name || 'icon'}
         />
       ) : (
-        <Box
-          padding={2}
-          borderRadius={0.4}
-          style={style}
-          className={classnames('user-avatar__fallback', fallbackClassName)}
-        >
-          {name?.charAt(0).toUpperCase() || ''}
+        <Box className="user-avatar__fallback">
+          <Box
+            className="user-avatar__fallback--bg"
+            padding={2}
+            borderRadius={0.4}
+            style={style}
+            sx={{
+              bgcolor: 'primary.main',
+              opacity: 0.1,
+            }}
+          ></Box>
+          <Typography
+            fontWeight="bold"
+            className="user-avatar__fallback--letter"
+          >
+            {name?.charAt(0).toUpperCase() || ''}
+          </Typography>
         </Box>
       )}
     </Box>

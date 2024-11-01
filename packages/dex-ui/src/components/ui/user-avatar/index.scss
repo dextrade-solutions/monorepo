@@ -1,7 +1,6 @@
 .user-avatar {
   position: relative;
   background-position: center;
-  background-color: var(--color-background-default);
   box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   flex: 0 0 auto;
   -moz-animation: fadein 1s;
@@ -39,16 +38,29 @@
   }
 
   &__fallback {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: white;
-    color: #2D2338;
-    flex: 0 1 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 2px;
+    position: relative;
+
+    &--bg {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex: 0 1 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 2px;
+    }
+
+    &--letter {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }
 
