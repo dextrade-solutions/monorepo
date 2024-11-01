@@ -31,10 +31,8 @@ const AssetItem = ({ coin, alignReverse, loading, iconSize }: IProps) => {
         <>
           <UrlIcon size={iconSize} url={getCoinIconByUid(coin.uuid)} />
           <Box marginX={2}>
-            <Typography>{coin.ticker}</Typography>
-            <Typography color="text.secondary" variant="body2">
-              {coin.networkType}
-            </Typography>
+            <Typography fontWeight="bold">{coin.ticker}</Typography>
+            <Typography variant="body2">{coin.networkType}</Typography>
           </Box>
         </>
       )}

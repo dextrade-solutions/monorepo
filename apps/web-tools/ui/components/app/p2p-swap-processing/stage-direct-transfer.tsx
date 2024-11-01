@@ -38,17 +38,12 @@ export default function StageDirectTransfer({
   };
 
   const { data: walletClient } = useWalletClient();
-  const { sendTransaction } = useSendTransaction({
-    asset: from,
-    amount,
-    recipient,
-    txSentHandlers,
-  });
+  const { sendTransaction } = useSendTransaction(from);
 
   const initiateNewTx = () => {
     onChange(StageStatuses.requested);
     setSendTransactionFailure('');
-    sendTransaction();
+    sendTransaction(recipient, amount, txSentHandlers);
   };
 
   useEffect(() => {

@@ -12,8 +12,8 @@ import {
   Divider,
 } from '@mui/material';
 import { useWallet } from '@solana/wallet-adapter-react';
+import classNames from 'classnames';
 import {
-  NetworkNames,
   formatCurrency,
   formatFundsAmount,
   getCoinIconByUid,
@@ -21,23 +21,26 @@ import {
   shortenAddress,
 } from 'dex-helpers';
 import { ButtonIcon, UrlIcon } from 'dex-ui';
+import React from 'react';
 import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
 
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
+  hasValidationErrors: boolean;
   onChange: (v: string | number) => void;
   reserve?: number;
 }
 
-export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
-  const { asset } = assetInput;
-  const isSolanaInput = asset.network === NetworkNames.solana;
-  const { connected: isSolanaWalletConnected } = useWallet();
-  const displayBalance =
-    (isSolanaInput && isSolanaWalletConnected) ||
-    (asset.chainId && !asset.isFiat);
+export const AssetAmountField = ({
+  assetInput,
+  onChange,
+  reserve,
+  hasValidationErrors,
+}: IProps) => {
+  const { asset, account } = assetInput;
+  const displayBalance = Boolean(account?.connectedWallet);
   return (
     <Card
       className="asset-amount-field"
@@ -53,17 +56,15 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                 <Typography variant="h5" fontWeight="bold">
                   {asset.symbol}
                 </Typography>
-                {!asset.isNative && (
-                  <Typography color="text.secondary">
-                    {asset.standard.toUpperCase()}
-                  </Typography>
+                {asset.standard && (
+                  <Typography>{asset.standard.toUpperCase()}</Typography>
                 )}
               </Box>
             </Box>
             <div className="flex-grow" />
             {displayBalance && (
               <Box textAlign="right">
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" fontWeight="bold">
                   Balance
                 </Typography>
                 {assetInput.balance ? (
@@ -78,14 +79,10 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                       disabled={Boolean(reserve)}
                       onClick={() => onChange(assetInput.balance.value)}
                     >
-                      <Typography
-                        as="span"
-                        color="text.secondary"
-                        marginRight={1}
-                      >
+                      <Typography as="span" marginRight={1}>
                         {assetInput.balance.formattedValue}
                       </Typography>
-                      <Typography as="span" color="text.secondary">
+                      <Typography as="span">
                         {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
                       </Typography>
                     </CardActionArea>
@@ -112,6 +109,9 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           variant="standard"
           valueIsNumericString
           InputProps={{
+            className: classNames({
+              'asset-amount-field__error': hasValidationErrors,
+            }),
             disableUnderline: true,
             style: {
               fontSize: 25,

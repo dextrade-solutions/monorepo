@@ -42,7 +42,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const navigate = useNavigate();
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
-  const [incomingFee, setIncomingFee] = useState(0);
+  const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
 
   const auth = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
@@ -67,8 +67,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const calcIncomingFee = useCallback(
     async (toAmount: number) => {
       const { native, account } = assetInputTo;
-      if (ad.isAtomicSwap || !native?.chainId) {
-        return 0;
+      if (
+        ad.isAtomicSwap ||
+        !native?.chainId ||
+        ad.transactionFee !== undefined
+      ) {
+        return ad.transactionFee;
       }
       let incomingFeeCalculated = 0;
       if (!native) {
@@ -79,7 +83,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           asset: assetTo,
           amount: toAmount.toFixed(8),
           from: ad.walletAddressInNetwork2,
-          to: account.address,
+          to: account?.address || NULLISH_TOKEN_ADDRESS,
           isAtomicSwap: ad.isAtomicSwap,
         });
         if (assetTo.contract) {
@@ -173,7 +177,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   } = {}) => {
     try {
       setLoadingStartExchange(true);
-      const result = await auth(() =>
+      const result = await auth((on401?: () => void) =>
         dispatch(
           createSwapP2P({
             from: assetInputFrom,
@@ -181,6 +185,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             exchange: ad,
             slippage: 0.5,
             exchangerPaymentMethodId,
+            on401,
           }),
         ),
       );
@@ -222,6 +227,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Typography>
         <AssetAmountField
           assetInput={assetInputFrom}
+          hasValidationErrors={hasValidationErrors}
           onChange={onInputAmountFrom}
         />
       </Box>
@@ -236,6 +242,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Typography>
         <AssetAmountField
           assetInput={assetInputTo}
+          hasValidationErrors={hasValidationErrors}
           reserve={ad.reserveInCoin2}
           onChange={onInputAmountTo}
         />
@@ -267,9 +274,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             </Box>
           </Box>
         )}
-        {incomingFee > 0 && assetInputFrom.native && (
+        {Boolean(incomingFee) && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Incoming transaction fee</Typography>
+            <Typography>Transfer service fee</Typography>
             <Box display="flex">
               <Typography>
                 {formatFundsAmount(incomingFee, assetTo.symbol)}

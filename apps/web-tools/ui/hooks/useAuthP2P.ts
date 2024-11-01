@@ -37,31 +37,34 @@ export function useAuthP2P() {
       return f && f();
     };
 
+    const processSign = () =>
+      new Promise((resolve, reject) => {
+        if (inProgress) {
+          return null;
+        }
+        dispatch(setStatus(AuthStatus.signing));
+        signMessage(
+          { message: engine.keyringController.publicKey },
+          {
+            onSuccess: (result: string) => {
+              resolve(onSignedMessage(result));
+            },
+            onError: (e) => {
+              dispatch(setStatus(AuthStatus.failed));
+              reject(e);
+            },
+          },
+        );
+      });
+
     if (apikey && authStatus !== AuthStatus.failed) {
-      return f && f();
+      return f && f(processSign);
     }
 
     if (signature) {
       return onSignedMessage(signature);
     }
 
-    return new Promise((resolve, reject) => {
-      if (inProgress) {
-        return null;
-      }
-      dispatch(setStatus(AuthStatus.signing));
-      signMessage(
-        { message: engine.keyringController.publicKey },
-        {
-          onSuccess: (result: string) => {
-            resolve(onSignedMessage(result));
-          },
-          onError: (e) => {
-            dispatch(setStatus(AuthStatus.failed));
-            reject(e);
-          },
-        },
-      );
-    });
+    return processSign();
   };
 }

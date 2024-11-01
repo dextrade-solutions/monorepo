@@ -20,7 +20,7 @@ export const SigningModal = () => {
         padding={5}
       >
         <Typography marginBottom={4}>
-          Please, approve personal sign in you wallet
+          Please, approve personal sign in your wallet
         </Typography>
         <PulseLoader />
       </Box>

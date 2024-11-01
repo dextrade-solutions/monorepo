@@ -1,17 +1,10 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Fade,
-  InputAdornment,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
+import { AdItem } from 'dex-helpers/types';
 import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
 import { debounce, flatMap } from 'lodash';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
@@ -19,7 +12,6 @@ import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
-import { AdItem } from '../../../../app/types/p2p-swaps';
 import { showModal } from '../../../ducks/app/app';
 import {
   getFromToken,
@@ -27,13 +19,11 @@ import {
   getToToken,
 } from '../../../ducks/swaps/swaps';
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
-import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function P2PAds() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const auth = useAuthP2P();
   const navigate = useNavigate();
   const [providerName, setProviderName] = useState('');
   const toToken = useSelector(getToToken);
@@ -94,18 +84,16 @@ export default function P2PAds() {
   }, 500);
 
   const handleAdPreviewClick = (ad: AdItem) => {
-    auth(() =>
-      navigate({
-        pathname: EXCHANGE_VIEW_ROUTE,
-        search: `?${createSearchParams({
-          fromNetworkName: ad.fromCoin.networkName,
-          fromTicker: ad.fromCoin.ticker,
-          toNetworkName: ad.toCoin.networkName,
-          toTicker: ad.toCoin.ticker,
-          name: ad.name,
-        })}`,
-      }),
-    );
+    navigate({
+      pathname: EXCHANGE_VIEW_ROUTE,
+      search: `?${createSearchParams({
+        fromNetworkName: ad.fromCoin.networkName,
+        fromTicker: ad.fromCoin.ticker,
+        toNetworkName: ad.toCoin.networkName,
+        toTicker: ad.toCoin.ticker,
+        name: ad.name,
+      })}`,
+    });
   };
 
   const isEmptyResult =
@@ -159,6 +147,7 @@ export default function P2PAds() {
                   <Box marginTop={1} marginBottom={1} key={i.id}>
                     <AdPreview
                       ad={i}
+                      hideTickers={Boolean(fromToken && toToken)}
                       fromTokenAmount={fromTokenInputValue}
                       onClick={() => handleAdPreviewClick(i)}
                     />

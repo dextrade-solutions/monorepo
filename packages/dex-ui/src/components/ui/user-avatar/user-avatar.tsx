@@ -10,7 +10,7 @@ export default function UserAvatar({
   className,
   name,
   fallbackClassName,
-  online,
+  online = false,
 }: {
   icon: string;
   size: number;
@@ -18,6 +18,7 @@ export default function UserAvatar({
   name?: string;
   fallbackClassName?: string;
   online?: boolean;
+  isOfficial?: boolean;
 }) {
   const [iconError, setIconError] = useState(false);
   const style = size ? { height: `${size}px`, width: `${size}px` } : {};

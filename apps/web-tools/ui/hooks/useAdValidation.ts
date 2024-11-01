@@ -67,6 +67,8 @@ export function useAdValidation({
   }
   if (!assetInputFrom.amount || !assetInputTo.amount) {
     params.disabledBtn = true;
+    params.hasValidationErrors = true;
+    params.submitBtnText = 'Enter the amount to swap';
     return params;
   }
   if (

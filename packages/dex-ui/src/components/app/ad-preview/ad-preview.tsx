@@ -1,29 +1,29 @@
 import {
   Card,
   CardActionArea,
+  Divider,
   Box,
   Chip,
   CardContent,
-  Divider,
   Typography,
 } from '@mui/material';
 import {
   NetworkNames,
   formatFundsAmount,
-  getStrPaymentMethodInstance,
   getUserAvatarUrl,
 } from 'dex-helpers';
-import { AdItem } from 'dex-helpers/types';
-import { DextradeTypes } from 'dex-services';
+import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
+import { AssetItem, Icon } from '../../ui';
 import ExchangerUserPreview from '../exchanger-user-preview';
 
 interface IProps {
   ad: AdItem;
   fromTokenAmount?: number;
-  exchanger: DextradeTypes.UserModel;
+  exchanger: UserModel;
   isSelfAd?: boolean;
+  hideTickers?: boolean;
   onClick?: () => void;
   getAvatarLink?: (url: string) => string;
 }
@@ -32,6 +32,7 @@ const AdPreview = ({
   ad,
   fromTokenAmount = 0,
   isSelfAd,
+  hideTickers,
   getAvatarLink = (url) => getUserAvatarUrl(url),
   onClick,
 }: IProps) => {
@@ -56,6 +57,7 @@ const AdPreview = ({
               lastActive={ad.lastActive}
               isKycVerified={ad.isKycVerified}
               isSelfAd={isSelfAd}
+              isOfficial={ad.name === 'DexPay'}
               rating={{
                 exchangeCount: ad.exchangeCount,
                 сompletionRate: ad.exchangeCompletionRate,
@@ -72,6 +74,26 @@ const AdPreview = ({
               </Typography>
             )}
           </Box>
+          {!hideTickers && (
+            <>
+              <Box marginTop={1} marginBottom={1}>
+                <Divider />
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <AssetItem iconSize={30} coin={ad.fromCoin} />
+                <Icon name="exchange-direction" size="xl" />
+                <AssetItem iconSize={30} coin={ad.toCoin} alignReverse />
+              </Box>
+              <Box marginTop={1} marginBottom={1}>
+                <Divider />
+              </Box>
+            </>
+          )}
+
           <Box
             display="flex"
             justifyContent="space-between"

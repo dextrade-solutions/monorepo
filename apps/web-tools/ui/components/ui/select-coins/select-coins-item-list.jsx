@@ -109,15 +109,14 @@ export const SelectCoinsItemList = ({
                   <div className="select-coins__list__item__label">
                     <div className="select-coins__list__item__label__block">
                       {name && (
-                        <span className="searchable-item-list__primary-label">
+                        <Typography
+                          fontWeight="bold"
+                          className="searchable-item-list__primary-label"
+                        >
                           {`${symbol} (${name})`}
-                        </span>
-                      )}
-                      {standard && (
-                        <Typography color="text.secondary">
-                          {standard}
                         </Typography>
                       )}
+                      {standard && <Typography>{standard}</Typography>}
                     </div>
                     {/* {showRateLabel &&
                   (rightname || rightstandard) && (
