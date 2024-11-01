@@ -48,6 +48,7 @@ const AdPreview = ({
               lastActive={ad.lastActive}
               isKycVerified={ad.isKycVerified}
               isSelfAd={isSelfAd}
+              isOfficial={ad.name === 'DexPay'}
               rating={{
                 exchangeCount: ad.exchangeCount,
                 сompletionRate: ad.exchangeCompletionRate,

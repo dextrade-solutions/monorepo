@@ -1,8 +1,8 @@
 export const HOME_ROUTE = `/`;
-export const EXCHANGE_VIEW_ROUTE = `/p2p/swap-view`;
-export const AWAITING_SWAP_ROUTE = '/p2p/swap-awaiting';
-export const SWAPS_ERROR_ROUTE = '/p2p/swap-error';
-export const SWAPS_HISTORY_ROUTE = '/p2p/trade-history';
+export const EXCHANGE_VIEW_ROUTE = `/swap-view`;
+export const AWAITING_SWAP_ROUTE = '/swap-awaiting';
+export const SWAPS_ERROR_ROUTE = '/swap-error';
+export const SWAPS_HISTORY_ROUTE = '/swaps-history';
 export const SETTINGS_ROUTE = '/settings';
 export const KYC_ROUTE = '/settings/kyc';
 export const SETTINGS_GENERAL_ROUTE = '/settings/general';

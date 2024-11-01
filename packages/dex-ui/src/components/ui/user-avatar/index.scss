@@ -17,7 +17,7 @@
     width: 32px;
     height: 32px;
   }
-
+  
   &::after {
     content: '';
     width: 9px;
@@ -39,8 +39,8 @@
   }
 
   &__fallback {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: var(--color-background-alternative);
     color: #2D2338;
