@@ -42,47 +42,56 @@ export default function ExchangerUserPreview({
           : {}
       }
     >
-      {isOfficial ? (
-        <Typography paddingX={2} color="white" fontSize={14}>
-          Official merchant
-        </Typography>
-      ) : (
-        <>
-          <Box marginBottom={1} display="flex" alignItems="center">
-            <UserAvatar
-              name={name}
-              icon={avatarUrl}
-              isOfficial={isOfficial}
-              online={isActive}
-            />
-            <Box marginLeft={2} textAlign="left">
-              <Box display="flex" alignItems="center">
-                <Typography marginRight={1} fontWeight="bold">
-                  {name}
-                </Typography>
-                {isKycVerified && (
-                  <Tooltip placement="top" title="KYC Verified">
-                    <VerifiedIcon />
-                  </Tooltip>
-                )}
-              </Box>
-              <Box display="flex" alignItems="center">
-                {isSelfAd && (
-                  <Typography color="primary.main" variant="caption">
-                    My ad
-                  </Typography>
-                )}
-                {!isActive && lastActive && (
-                  <Typography variant="body2" color="text.secondary">
-                    Active {relativeFromCurrentDate(lastActive)}
-                  </Typography>
-                )}
-              </Box>
-            </Box>
+      {/* {isOfficial && ( */}
+      {/* <> */}
+      <Box paddingRight={2} display="flex" alignItems="center">
+        {isOfficial ? (
+          <Box></Box>
+        ) : (
+          <UserAvatar
+            name={name}
+            icon={avatarUrl}
+            isOfficial={isOfficial}
+            online={isActive}
+          />
+        )}
+        <Box marginLeft={2} textAlign="left">
+          <Box display="flex" alignItems="center">
+            <Typography marginRight={1} fontWeight="bold">
+              {name}
+            </Typography>
+            {isOfficial && <Typography>Official merchant</Typography>}
+            {!isOfficial && isKycVerified && (
+              <Tooltip placement="top" title="KYC Verified">
+                <VerifiedIcon />
+              </Tooltip>
+            )}
           </Box>
-          {rating && <RatingOutput {...rating} />}
-        </>
+          {isOfficial ? (
+            <Box></Box>
+          ) : (
+            <Box display="flex" alignItems="center">
+              {isSelfAd && (
+                <Typography color="primary.main" variant="caption">
+                  My ad
+                </Typography>
+              )}
+              {!isActive && lastActive && (
+                <Typography variant="body2" color="text.secondary">
+                  Active {relativeFromCurrentDate(lastActive)}
+                </Typography>
+              )}
+            </Box>
+          )}
+        </Box>
+      </Box>
+      {!isOfficial && rating && (
+        <Box marginTop={1}>
+          <RatingOutput {...rating} />
+        </Box>
       )}
+      {/* </> */}
+      {/* )} */}
     </Box>
   );
 }
