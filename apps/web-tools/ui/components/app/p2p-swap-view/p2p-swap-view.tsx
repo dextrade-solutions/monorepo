@@ -55,6 +55,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     isToAsset: true,
   });
   const exchangeRate = ad.coinPair.price;
+  // PROD_TODO:
   // const availablePaymentMethods = ad.paymentMethods.filter(
   //   (paymentMethod) => !paymentMethod.data,
   // );

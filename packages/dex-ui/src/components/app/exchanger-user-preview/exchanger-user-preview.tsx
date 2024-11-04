@@ -50,7 +50,9 @@ export default function ExchangerUserPreview({
             </Typography>
             {!isOfficial && isKycVerified && (
               <Tooltip placement="top" title="KYC Verified">
-                <VerifiedIcon />
+                <Box>
+                  <VerifiedIcon />
+                </Box>
               </Tooltip>
             )}
             {isOfficial && (
