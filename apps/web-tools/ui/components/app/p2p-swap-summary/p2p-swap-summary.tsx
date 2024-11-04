@@ -25,8 +25,9 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
   const { fromCoin, toCoin } = ad;
 
   const showPaymentMethods =
-    ad.fromCoin.networkName === NetworkNames.fiat ||
-    ad.toCoin.networkName === NetworkNames.fiat;
+    ad.paymentMethods &&
+    (ad.fromCoin.networkName === NetworkNames.fiat ||
+      ad.toCoin.networkName === NetworkNames.fiat);
 
   return (
     <Box className="p2p-swap-summary">

@@ -55,9 +55,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     isToAsset: true,
   });
   const exchangeRate = ad.coinPair.price;
-  const availablePaymentMethods = ad.paymentMethods.filter(
-    (paymentMethod) => !paymentMethod.data,
-  );
+  // const availablePaymentMethods = ad.paymentMethods.filter(
+  //   (paymentMethod) => !paymentMethod.data,
+  // );
+  const availablePaymentMethods = [ad.paymentMethod];
   const needPickupExchangerPaymentMethod = assetInputFrom.asset.isFiat;
   const needPickupClientPaymentMethod =
     assetInputTo.asset.isFiat && !assetInputTo.paymentMethod;
