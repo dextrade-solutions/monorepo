@@ -41,11 +41,7 @@ export default function ExchangerUserPreview({
         />
         <Box marginLeft={2} textAlign="left">
           <Box display="flex" alignItems="center">
-            <Typography
-              marginRight={1}
-              fontWeight="bold"
-              color={isOfficial && 'white'}
-            >
+            <Typography marginRight={1} fontWeight="bold">
               {name}
             </Typography>
             {!isOfficial && isKycVerified && (
