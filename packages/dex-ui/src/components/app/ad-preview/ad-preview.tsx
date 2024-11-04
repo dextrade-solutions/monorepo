@@ -7,12 +7,9 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import {
-  NetworkNames,
-  formatFundsAmount,
-  getUserAvatarUrl,
-} from 'dex-helpers';
+import { NetworkNames, formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
+import { sumBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { AssetItem, Icon } from '../../ui';
@@ -38,9 +35,10 @@ const AdPreview = ({
 }: IProps) => {
   const { t } = useTranslation();
   const showPaymentMethods =
-    ad.fromCoin.networkName === NetworkNames.fiat ||
-    ad.toCoin.networkName === NetworkNames.fiat;
-  const [reserve] = ad.reserve;
+    ad.paymentMethods &&
+    (ad.fromCoin.networkName === NetworkNames.fiat ||
+      ad.toCoin.networkName === NetworkNames.fiat);
+  const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
   return (
     <Card
       variant="outlined"
@@ -115,7 +113,32 @@ const AdPreview = ({
               {formatFundsAmount(1 / ad.coinPair.price, ad.fromCoin.ticker)}
             </Typography>
           </Box>
-          {showPaymentMethods ? (
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignContent="center"
+          >
+            <Typography>{t('quantity')}</Typography>
+            <Typography fontWeight="bold">
+              {formatFundsAmount(reserveInCoin2, ad.toCoin.ticker)}
+            </Typography>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignContent="center"
+          >
+            <Typography>{t('limits')}</Typography>
+            <Typography fontWeight="bold">
+              {formatFundsAmount(ad.minimumExchangeAmountCoin2 || 0)} —{' '}
+              {formatFundsAmount(
+                ad.maximumExchangeAmountCoin2 || reserveInCoin2,
+                ad.toCoin.ticker,
+              )}
+            </Typography>
+          </Box>
+
+          {showPaymentMethods && (
             <Box display="flex" marginTop={2}>
               {ad.paymentMethods
                 .filter((paymentMethod) => !paymentMethod.data)
@@ -125,33 +148,6 @@ const AdPreview = ({
                   </Box>
                 ))}
             </Box>
-          ) : (
-            <>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignContent="center"
-              >
-                <Typography>{t('quantity')}</Typography>
-                <Typography fontWeight="bold">
-                  {formatFundsAmount(reserve.reserveInCoin2, ad.toCoin.ticker)}
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignContent="center"
-              >
-                <Typography>{t('limits')}</Typography>
-                <Typography fontWeight="bold">
-                  {formatFundsAmount(ad.minimumExchangeAmountCoin2 || 0)} —{' '}
-                  {formatFundsAmount(
-                    ad.maximumExchangeAmountCoin2 || reserve.reserveInCoin2,
-                    ad.toCoin.ticker,
-                  )}
-                </Typography>
-              </Box>
-            </>
           )}
         </CardContent>
       </CardActionArea>

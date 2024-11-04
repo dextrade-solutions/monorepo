@@ -13,6 +13,7 @@ import { formatUnits } from 'viem';
 import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
+import { showModal } from '../../../ducks/app/app';
 import {
   createSwapP2P,
   getFromTokenInputValue,
@@ -27,7 +28,6 @@ import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
-import { showModal } from '../../../ducks/app/app';
 
 interface IProps {
   ad: AdItem;

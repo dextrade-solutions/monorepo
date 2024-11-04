@@ -19,6 +19,7 @@ import P2PService from '../../../app/services/p2p-service';
 import P2PSwapView from '../../components/app/p2p-swap-view';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { sumBy } from 'lodash';
 
 export default function AdView() {
   const t = useI18nContext();
@@ -50,6 +51,9 @@ export default function AdView() {
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
+    if (ad.reserve) {
+      ad.reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
+    }
 
     if (assetFrom && assetTo) {
       content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;

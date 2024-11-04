@@ -3,6 +3,7 @@ import { relativeFromCurrentDate } from 'dex-helpers';
 
 import UserAvatar from '../../ui/user-avatar';
 import { RatingOutput } from '../rating-output';
+import OfficialIcon from './official-icon';
 import VerifiedIcon from './verified-icon';
 
 export default function ExchangerUserPreview({
@@ -31,31 +32,13 @@ export default function ExchangerUserPreview({
 } & BoxProps) {
   return (
     <Box {...boxProps}>
-      <Box
-        sx={
-          isOfficial
-            ? {
-                background:
-                  'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%);',
-                borderRadius: 1,
-                padding: '3px',
-              }
-            : {}
-        }
-        paddingRight={2}
-        display="flex"
-        alignItems="center"
-      >
-        {isOfficial ? (
-          <Box></Box>
-        ) : (
-          <UserAvatar
-            name={name}
-            icon={avatarUrl}
-            isOfficial={isOfficial}
-            online={isActive}
-          />
-        )}
+      <Box paddingRight={2} display="flex" alignItems="center">
+        <UserAvatar
+          name={name}
+          icon={avatarUrl}
+          isOfficial={isOfficial}
+          online={isActive}
+        />
         <Box marginLeft={2} textAlign="left">
           <Box display="flex" alignItems="center">
             <Typography
@@ -65,31 +48,32 @@ export default function ExchangerUserPreview({
             >
               {name}
             </Typography>
-            {isOfficial && (
-              <Typography color="white">Official merchant</Typography>
-            )}
             {!isOfficial && isKycVerified && (
               <Tooltip placement="top" title="KYC Verified">
                 <VerifiedIcon />
               </Tooltip>
             )}
+            {isOfficial && (
+              <Tooltip placement="top" title="Is official merchant">
+                <Box display="flex" alignItems="center">
+                  <OfficialIcon />
+                  <Typography marginLeft={1}>Official</Typography>
+                </Box>
+              </Tooltip>
+            )}
           </Box>
-          {isOfficial ? (
-            <Box></Box>
-          ) : (
-            <Box display="flex" alignItems="center">
-              {isSelfAd && (
-                <Typography color="primary.main" variant="caption">
-                  My ad
-                </Typography>
-              )}
-              {!isActive && lastActive && (
-                <Typography variant="body2" color="text.secondary">
-                  Active {relativeFromCurrentDate(lastActive)}
-                </Typography>
-              )}
-            </Box>
-          )}
+          <Box display="flex" alignItems="center">
+            {isSelfAd && (
+              <Typography color="primary.main" variant="caption">
+                My ad
+              </Typography>
+            )}
+            {!isActive && lastActive && (
+              <Typography variant="body2" color="text.secondary">
+                Active {relativeFromCurrentDate(lastActive)}
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Box>
       {rating && (
