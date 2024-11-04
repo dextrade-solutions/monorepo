@@ -118,8 +118,9 @@ const SetWallet = ({
                   <Box key={idx} marginTop={1}>
                     <ListItemButton
                       sx={{
-                        backgroundColor: 'secondary.dark',
-                        borderWidth: savedValue?.connectedWallet === item.name ? 1 : 0,
+                        backgroundcolor: 'secondary.dark',
+                        borderWidth:
+                          savedValue?.connectedWallet === item.name ? 1 : 0,
                       }}
                       className="bordered"
                       onClick={() => onSelectWallet(item)}

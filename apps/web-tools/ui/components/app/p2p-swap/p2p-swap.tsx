@@ -1,5 +1,7 @@
 import { Box, Button, Card, Typography } from '@mui/material';
+import classNames from 'classnames';
 import { ButtonIcon } from 'dex-ui';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
@@ -9,14 +11,19 @@ import {
   SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
+import { useDetectSticky } from '../../../hooks/useDetectStycky';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import SelectCoins from '../../ui/select-coins';
 import P2PExchangers from '../p2p-ads';
+
+import './index.scss';
 
 export default function P2PSwap() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const auth = useAuthP2P();
+  const [isSticky, ref] = useDetectSticky();
+
   const { isConnected } = useAccount();
   return (
     <Box>
@@ -54,7 +61,10 @@ export default function P2PSwap() {
         )}
       </Box>
       <Card
-        className="overflow-unset"
+        ref={ref}
+        className={classNames('select-coins-wrap', {
+          'select-coins-wrap--is-sticky': Boolean(isSticky),
+        })}
         variant="outlined"
         sx={{ bgcolor: 'primary.light' }}
       >

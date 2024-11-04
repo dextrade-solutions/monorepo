@@ -1,0 +1,11 @@
+.select-coins-wrap {
+  position: sticky;
+  top: 10px;
+  z-index: 2;
+  border: 1px solid #1d1d1d;
+  overflow: unset !important;
+  
+  &--is-sticky {
+    box-shadow: 0px 0px 23px 4px #00000030;
+  }
+}
