@@ -17,6 +17,7 @@ import {
 } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import {
+  AssetItem,
   CountdownTimer,
   Icon,
   PaymentMethodDisplay,
@@ -39,7 +40,6 @@ import P2PService from '../../../../app/services/p2p-service';
 import { SWAPS_HISTORY_ROUTE } from '../../../helpers/constants/routes';
 import { useAtomicSwap } from '../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import AssetItem from '../../ui/asset-item';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
 

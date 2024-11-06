@@ -116,7 +116,9 @@ export const SelectCoinsItemList = ({
                           {`${symbol} (${name})`}
                         </Typography>
                       )}
-                      {standard && <Typography>{standard}</Typography>}
+                      {standard && (
+                        <Typography fontWeight="light">{standard}</Typography>
+                      )}
                     </div>
                     {/* {showRateLabel &&
                   (rightname || rightstandard) && (

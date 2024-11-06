@@ -1,11 +1,21 @@
-import { Box, Button, Card, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  Switch,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import classNames from 'classnames';
 import { ButtonIcon } from 'dex-ui';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 import InputAmount from './input-amount';
+import { getCurrentTheme, setTheme } from '../../../ducks/app/app';
+import { getAuth } from '../../../ducks/auth';
 import {
   SWAPS_HISTORY_ROUTE,
   SETTINGS_ROUTE,
@@ -22,9 +32,18 @@ export default function P2PSwap() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const auth = useAuthP2P();
+  const dispatch = useDispatch();
+  const authData = useSelector(getAuth);
   const [isSticky, ref] = useDetectSticky();
 
-  const { isConnected } = useAccount();
+  const currentTheme = useSelector(getCurrentTheme);
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const isDarkMode =
+    currentTheme === 'system' ? prefersDarkMode : currentTheme === 'dark';
+  const toggleDarkMode = () => {
+    const toggleValue = isDarkMode ? 'light' : 'dark';
+    dispatch(setTheme(toggleValue));
+  };
   return (
     <Box>
       <Box
@@ -38,8 +57,7 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        {/* <WalletConnectButton /> */}
-        {isConnected && (
+        {authData && (
           <Box display="flex" marginLeft={1} alignItems="center">
             <Button
               color="secondary"
@@ -50,6 +68,7 @@ export default function P2PSwap() {
             >
               {t('activity')}
             </Button>
+
             <Box marginLeft={1}>
               <ButtonIcon
                 iconName="setting-dex"
@@ -59,6 +78,14 @@ export default function P2PSwap() {
             </Box>
           </Box>
         )}
+        <Box marginLeft={1} paddingTop={1}>
+          <DarkModeSwitch
+            checked={isDarkMode}
+            onChange={toggleDarkMode}
+            moonColor="white"
+            sunColor="dark"
+          />
+        </Box>
       </Box>
       <Card
         ref={ref}

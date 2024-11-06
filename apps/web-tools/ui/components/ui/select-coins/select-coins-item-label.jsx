@@ -58,7 +58,10 @@ export const SelectCoinsItemLabel = ({
           >
             {name}
           </Typography>
-          <Typography className="select-coins__item__label__title__type">
+          <Typography
+            fontWeight="light"
+            className="select-coins__item__label__title__type"
+          >
             {type.toUpperCase()}
           </Typography>
         </div>

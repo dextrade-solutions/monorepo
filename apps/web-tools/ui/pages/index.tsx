@@ -28,7 +28,6 @@ import {
 } from '../helpers/constants/routes';
 
 export default function RoutesRoot() {
-  // const { isConnected } = useAccount();
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
   const queryClient = useQueryClient();

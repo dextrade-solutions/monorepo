@@ -13,14 +13,13 @@ import {
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, UrlIcon, ButtonIcon } from 'dex-ui';
+import { CopyData, UrlIcon, ButtonIcon, AssetItem } from 'dex-ui';
 import { useCallback, useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetAccount } from '../../../../types';
-import AssetItem from '../../../ui/asset-item';
 import { ModalProps } from '../types';
 
 type ConfiguredWallet = { address: string; icon: string };

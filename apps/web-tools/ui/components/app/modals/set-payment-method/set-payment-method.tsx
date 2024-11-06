@@ -1,11 +1,10 @@
 import '../styles.scss';
 import { Box, Divider } from '@mui/material';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { ButtonIcon } from 'dex-ui';
+import { AssetItem, ButtonIcon } from 'dex-ui';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import AssetItem from '../../../ui/asset-item';
 import PaymentMethods from '../../payment-methods';
 import { ModalProps } from '../types';
 

@@ -13,13 +13,12 @@ import {
   TRADE_ACTIVE_STATUSES,
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
-import { Icon } from 'dex-ui';
+import { AssetItem, Icon } from 'dex-ui';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { showModal } from '../../../ducks/app/app';
 import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
-import AssetItem from '../../ui/asset-item';
 import P2PDisplayStatus from '../p2p-display-status';
 
 export function TradePreview({ trade }: { trade: Trade }) {

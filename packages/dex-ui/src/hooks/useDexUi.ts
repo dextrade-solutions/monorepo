@@ -7,7 +7,7 @@ export function useDexUI({ theme }) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const paletteMode =
-    (theme !== 'system' && theme) || (prefersDarkMode ? 'dark' : 'light'); // TODO: Fix light mode
+    (theme !== 'system' && theme) || (prefersDarkMode ? 'dark' : 'light');
 
   const muiTheme = React.useMemo(
     () =>
