@@ -4,6 +4,9 @@ import Trx from '@ledgerhq/hw-app-trx';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { PublicKey } from '@solana/web3.js';
 import { NetworkNames } from 'dex-helpers';
+import { WalletAPIClient } from "@ledgerhq/wallet-api-client";
+import { listen } from "@ledgerhq/logs";
+
 
 class LedgerConnection {
   transport: TransportWebUSB | null = null;
@@ -12,13 +15,17 @@ class LedgerConnection {
 
   name = 'LedgerLive';
 
+  constructor() {
+    listen(log => console.log(log));
+  }
+
   async initTransport() {
     // Connect to the Ledger device using HID
     const transport = await TransportWebUSB.create();
     this.transport = transport;
   }
 
-  connectByNetwork(network: NetworkNames) {
+  connect(network: NetworkNames) {
     const connections = {
       [NetworkNames.bitcoin]: this.connectBTC.bind(this),
       [NetworkNames.solana]: this.connectSolana.bind(this),
@@ -32,9 +39,10 @@ class LedgerConnection {
 
   async connectTron() {
     await this.initTransport();
-    const _trx = new Trx(this.transport);
-    const result = await _trx.getAddress("44'/195'/0'/0/0");
+    const client = new Trx(this.transport);
+    const result = await client.getAddress("44'/195'/0'/0/0");
     return {
+      client,
       address: result.address,
       connectedWallet: this.name,
     };
@@ -50,7 +58,7 @@ class LedgerConnection {
 
       const address = await btc.getWalletPublicKey(path);
 
-      return address;
+      return { address, client: btc, connectedWallet: this.name };
     } catch (error) {
       console.error('Error connecting to Ledger:', error);
       throw error;
@@ -61,10 +69,11 @@ class LedgerConnection {
     await this.initTransport();
 
     if (this.transport) {
-      const _sol = new Solana(this.transport);
-      const { address } = await _sol.getAddress("44'/501'/0'");
+      const client = new Solana(this.transport);
+      const { address } = await client.getAddress("44'/501'/0'");
       const pubKey = new PublicKey(address);
       return {
+        client,
         address: pubKey.toBase58(),
         connectedWallet: this.name,
       };

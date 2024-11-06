@@ -5134,6 +5134,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ledgerhq/hw-transport-http@npm:^6.30.4":
+  version: 6.30.4
+  resolution: "@ledgerhq/hw-transport-http@npm:6.30.4"
+  dependencies:
+    "@ledgerhq/errors": "npm:^6.19.1"
+    "@ledgerhq/hw-transport": "npm:^6.31.4"
+    "@ledgerhq/logs": "npm:^6.12.0"
+    axios: "npm:1.7.7"
+    ws: "npm:^7.5.2"
+  checksum: 10/802f8a35dd2f5a4b96fa7dd8a75fd4bf4a99da4d28ffac3b8b5973106fc5d8ab19bb7527a800e921d4602fa72d86b0f103f0a78ede90837952348590aa3b8804
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/hw-transport-node-hid-noevents@npm:^5.51.1":
   version: 5.51.1
   resolution: "@ledgerhq/hw-transport-node-hid-noevents@npm:5.51.1"
@@ -17138,6 +17151,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:1.7.7, axios@npm:^1.2.1, axios@npm:^1.6.1, axios@npm:^1.6.7, axios@npm:^1.6.8, axios@npm:^1.7.4":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
+  languageName: node
+  linkType: hard
+
 "axios@npm:^0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
@@ -17153,17 +17177,6 @@ __metadata:
   dependencies:
     follow-redirects: "npm:^1.14.4"
   checksum: 10/4c5a7a5a45c909b4ce73fbf54b1fbc52a2290fc37cc51e64f8ef2ba8ac5f76a2e369a08ddfd7ec50317528d5aa55f5987cc56fb320923ef87e1b87f8ff05b5ba
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.2.1, axios@npm:^1.6.1, axios@npm:^1.6.7, axios@npm:^1.6.8, axios@npm:^1.7.4":
-  version: 1.7.7
-  resolution: "axios@npm:1.7.7"
-  dependencies:
-    follow-redirects: "npm:^1.15.6"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10/7f875ea13b9298cd7b40fd09985209f7a38d38321f1118c701520939de2f113c4ba137832fe8e3f811f99a38e12c8225481011023209a77b0c0641270e20cde1
   languageName: node
   linkType: hard
 
@@ -47178,6 +47191,7 @@ __metadata:
     "@ledgerhq/hw-app-btc": "npm:^10.4.3"
     "@ledgerhq/hw-app-solana": "npm:^7.2.4"
     "@ledgerhq/hw-app-trx": "npm:^6.29.4"
+    "@ledgerhq/hw-transport-http": "npm:^6.30.4"
     "@ledgerhq/hw-transport-webusb": "npm:^6.29.4"
     "@ledgerhq/wallet-api-client": "npm:^1.6.0"
     "@ledgerhq/wallet-api-client-react": "npm:^1.3.12"
@@ -48538,7 +48552,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.0, ws@npm:^7.4.6, ws@npm:^7.5.0, ws@npm:^7.5.1, ws@npm:^7.5.10, ws@npm:^7.5.9":
+"ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.0, ws@npm:^7.4.6, ws@npm:^7.5.0, ws@npm:^7.5.1, ws@npm:^7.5.10, ws@npm:^7.5.2, ws@npm:^7.5.9":
   version: 7.5.10
   resolution: "ws@npm:7.5.10"
   peerDependencies:

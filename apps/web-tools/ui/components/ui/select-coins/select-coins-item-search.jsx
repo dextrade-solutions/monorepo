@@ -1,50 +1,110 @@
-import { InputAdornment, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  InputAdornment,
+  ListItemAvatar,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
+} from '@mui/material';
+import { BUILT_IN_NETWORKS, NetworkNames, getCoinIconByUid } from 'dex-helpers';
+import { Icon, UrlIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 
-// import { Icon, ICON_NAMES } from '../../../components/component-library';
-// import TextField from '../../../components/ui/text-field';
-// import { IconColor, Size } from '../../../helpers/constants/design-system';
+const EndIcon = ({ value, onClick, onChange }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
-const StartIcon = () => (
-  <div className="select-coins__search__input__adornment">
-    <InputAdornment position="start">
-      {/* <Icon name={ICON_NAMES.SEARCH} color={IconColor.iconAlternative} /> */}
-    </InputAdornment>
-  </div>
-);
+  const stopPropagation = (e) => {
+    e && e.preventDefault();
+    e && e.stopPropagation();
+    e && e.nativeEvent?.stopImmediatePropagation();
+  };
 
-const EndIcon = ({ onClick }) => {
   const handleClick = useCallback(
     (e) => {
-      e && e.preventDefault();
-      e && e.stopPropagation();
-      e && e.nativeEvent?.stopImmediatePropagation();
-      onClick && onClick(e);
+      stopPropagation(e);
+      setAnchorEl(e.currentTarget);
     },
     [onClick],
   );
+  const handleClose = (e) => {
+    stopPropagation(e);
+    setAnchorEl(null);
+  };
+
+  const handleChange = (e, v) => {
+    handleClose(e);
+    onChange(v);
+  };
+
+  const valuesList = Object.values(BUILT_IN_NETWORKS);
+
   return (
-    <div
-      className="select-coins__search__input__adornment"
-      onClick={handleClick}
-    >
-      <InputAdornment position="end">
-        {/* <Icon
-          name={ICON_NAMES.CLOSE}
-          color={IconColor.iconAlternative}
-          size={Size.SM}
-        /> */}
-      </InputAdornment>
-    </div>
+    <InputAdornment position="end">
+      <Button onClick={handleClick}>
+        <Box display="flex" alignItems="center">
+          {value && (
+            <Box marginRight={1}>
+              <UrlIcon url={getCoinIconByUid(value.uid)} />
+            </Box>
+          )}
+          <Icon name="chevron-down" color="text.secondary" size="sm" />
+        </Box>
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              maxHeight: 600,
+
+              overflow: 'scroll',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={(e) => handleChange(e, null)}>All networks</MenuItem>
+        <MenuItem
+          onClick={(e) =>
+            handleChange(e, {
+              key: NetworkNames.fiat,
+              uid: 'fiat',
+            })
+          }
+        >
+          Fiat
+        </MenuItem>
+        {valuesList.map((item) => (
+          <MenuItem onClick={(e) => handleChange(e, item)}>
+            <ListItemAvatar>
+              <UrlIcon size={40} url={getCoinIconByUid(item.uid)} />
+            </ListItemAvatar>
+            <ListItemText>{item.name}</ListItemText>
+          </MenuItem>
+        ))}
+      </Menu>
+    </InputAdornment>
   );
 };
 
 export const SelectCoinsItemSearch = ({
   inputRef,
   value,
+  network,
   placeholder,
   onChange,
+  onChangeNetwork,
   error,
 }) => {
   const handleChange = useCallback(
@@ -65,8 +125,9 @@ export const SelectCoinsItemSearch = ({
         onChange={handleChange}
         error={error}
         fullWidth
-        // startAdornment={<StartIcon />}
-        // endAdornment={value && <EndIcon onClick={handleClear} />}
+        InputProps={{
+          endAdornment: <EndIcon value={network} onChange={onChangeNetwork} />,
+        }}
         autoComplete="off"
       />
     </div>

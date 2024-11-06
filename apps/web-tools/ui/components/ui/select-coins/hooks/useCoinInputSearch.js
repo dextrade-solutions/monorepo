@@ -4,7 +4,6 @@ import log from 'loglevel';
 import { useRef, useCallback, useEffect } from 'react';
 import { MILLISECOND } from '../../../../../app/constants/time';
 
-
 export const useCoinInputSearch = (params) => {
   const { list, fuseSearchKeys } = params;
   const prevList = useRef(list);

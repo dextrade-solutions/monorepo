@@ -113,7 +113,7 @@ export function useWallets({ asset }: { asset: AssetModel }) {
           icon: ledgerConnection.icon,
           name: ledgerConnection.name,
           connected: null,
-          connect: () => ledgerConnection.connectByNetwork(asset.network),
+          connect: () => ledgerConnection.connect(asset.network),
           disconnect: () => ledgerConnection.disconnect(),
         });
       }

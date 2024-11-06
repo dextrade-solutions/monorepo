@@ -47,62 +47,74 @@ export const BUILT_IN_NETWORKS = {
   // EVM
   [NetworkNames.ethereum]: {
     ...mainnetConfig,
+    key: NetworkNames.ethereum,
     uid: 'ethereum',
   },
   [NetworkNames.binance]: {
     ...bscConfig,
+    key: NetworkNames.binance,
     uid: 'binancecoin',
     atomicSwapContract: '0xac98e7242f8aa005f44accd6baeed1ff5af6824e',
     atomicSwapExpiration: BigInt(2 * MINUTE),
   },
   [NetworkNames.arbitrum]: {
     ...arbitrumConfig,
+    key: NetworkNames.arbitrum,
     uid: 'aeneas',
   },
   [NetworkNames.polygon]: {
     ...polygonConfig,
+    key: NetworkNames.polygon,
     uid: 'matic',
   },
   [NetworkNames.gnosis]: {
     ...gnosisConfig,
+    key: NetworkNames.gnosis,
     uid: 'gnosis',
   },
   [NetworkNames.base]: {
     ...baseConfig,
+    key: NetworkNames.base,
     uid: 'base',
   },
   [NetworkNames.humanode]: {
     id: 5234,
+    key: NetworkNames.humanode,
     uid: 'humanode',
     name: 'Humanode',
     nativeCurrency: { name: 'Humanode', symbol: 'eHMND', decimals: 18 },
   },
   [NetworkNames.xdc]: {
     ...xdcConfig,
+    key: NetworkNames.xdc,
     uid: 'xdce-crowd-sale',
   },
 
   // Non-EVM
   [NetworkNames.ton]: {
     id: null,
+    key: NetworkNames.ton,
     uid: 'ton',
     name: 'The Open Network',
     nativeCurrency: { name: 'Ton Coin', symbol: 'TONCOIN', decimals: 9 },
   },
   [NetworkNames.tron]: {
     id: null,
+    key: NetworkNames.tron,
     uid: 'tron',
     name: 'Tron',
     nativeCurrency: { name: 'Tron', symbol: 'TRX', decimals: 6 },
   },
   [NetworkNames.bitcoin]: {
     id: null,
+    key: NetworkNames.bitcoin,
     uid: 'bitcoin',
     name: 'Bitcoin',
     nativeCurrency: { name: 'Bitcoin', symbol: 'BTC', decimals: 8 },
   },
   [NetworkNames.litecoin]: {
     id: null,
+    key: NetworkNames.litecoin,
     uid: 'litecoin',
     name: 'Litecoin',
     nativeCurrency: { name: 'Litecoin', symbol: 'LTC', decimals: 8 },
@@ -110,6 +122,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.solana]: {
     id: null,
+    key: NetworkNames.solana,
     uid: 'solana',
     name: 'Solana',
     nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },

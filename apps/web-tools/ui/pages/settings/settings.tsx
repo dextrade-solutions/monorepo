@@ -28,7 +28,8 @@ export default function P2PSettings() {
 
   return (
     <Box>
-      <Box marginBottom={2}>
+      <Box display="flex" marginBottom={2}>
+        <div className="flex-grow" />
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
           color="secondary"

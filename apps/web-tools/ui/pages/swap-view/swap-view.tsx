@@ -8,7 +8,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { NetworkNames } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { Icon } from 'dex-ui';
 import { useMemo } from 'react';
@@ -19,12 +18,12 @@ import P2PService from '../../../app/services/p2p-service';
 import P2PSwapView from '../../components/app/p2p-swap-view';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { sumBy } from 'lodash';
 
 export default function AdView() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const isIframe = Boolean(searchParams.get('iframe'));
   const filterModel = useMemo(
     () => ({
       fromNetworkName: searchParams.get('fromNetworkName'),
@@ -45,7 +44,11 @@ export default function AdView() {
       P2PService.filterAds(filterModel).then((response) => response.data),
   });
 
-  let content = <Typography>Ad not found...</Typography>;
+  let content = (
+    <Box marginTop={3}>
+      <Alert severity="info">Ad not found...</Alert>
+    </Box>
+  );
 
   const [ad] = data || [];
   if (ad) {
@@ -121,15 +124,21 @@ export default function AdView() {
 
   return (
     <Box>
-      <Box marginBottom={2}>
-        <Button
-          startIcon={<Icon name="arrow-left-dex" />}
-          color="secondary"
-          variant="contained"
-          onClick={() => navigate(HOME_ROUTE)}
-        >
-          {t('back')}
-        </Button>
+      <Box display="flex" alignItems="center" padding={1}>
+        <Typography variant="h6">Swap preview</Typography>
+        <div className="flex-grow" />
+        {!isIframe && (
+          <Box>
+            <Button
+              startIcon={<Icon name="arrow-left-dex" />}
+              color="secondary"
+              variant="contained"
+              onClick={() => navigate(HOME_ROUTE)}
+            >
+              {t('back')}
+            </Button>
+          </Box>
+        )}
       </Box>
       {content}
     </Box>

@@ -118,7 +118,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
         </Box>
       )}
       {ad.exchangersPolicy && (
-        <Box marginY={3}>
+        <Box marginY={3} border={1} borderRadius={1}>
           <Card variant="outlined" sx={{ bgcolor: 'transparent' }}>
             <CardContent>
               <Alert severity="info">

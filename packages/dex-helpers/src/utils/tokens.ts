@@ -31,6 +31,9 @@ const LOCAL_COINS_URLS = {
   humanode: '/images/coins/humanode.svg',
   philtoken: '/images/coins/phil.svg',
   'cat-in-a-dogs-world': '/images/coins/mew.png',
+  matic: '/images/coins/matic.svg',
+  ton: '/images/coins/ton.svg',
+  base: '/images/coins/base.png',
   default: '/images/coins/default.svg',
 };
 

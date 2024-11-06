@@ -1,12 +1,16 @@
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Button, Divider, Typography } from '@mui/material';
+import { Icon } from 'dex-ui';
 import { flatMap, groupBy } from 'lodash';
 import { InView } from 'react-intersection-observer';
 
 import { TradePreview } from './trade-preview';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTrades } from '../../../queries/useTrades';
 import { useTradesActive } from '../../../queries/useTradesActive';
 
-export const P2PTradeHistory = () => {
+export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
+  const t = useI18nContext();
+
   const { isLoading: isLoadingTradesActive, data: tradesActive = [] } =
     useTradesActive();
   const { isFetching, isLoading, fetchNextPage, data } = useTrades();
@@ -18,14 +22,33 @@ export const P2PTradeHistory = () => {
   const activeTradesById = groupBy(tradesActive, ({ id }) => id);
   const tradesTerminal = allTrades.filter((t) => !activeTradesById[t.id]);
 
+  const backbutton = (
+    <Button
+      startIcon={<Icon name="arrow-left-dex" />}
+      color="secondary"
+      variant="contained"
+      onClick={onBack}
+    >
+      {t('back')}
+    </Button>
+  );
+
   if (allTrades.length > 0) {
     return (
       <Box>
         {tradesActive.length > 0 && (
           <Box>
-            <Typography marginLeft={2} fontWeight="bold" variant="h6">
-              Pending ({tradesActive.length})
-            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              padding={1}
+            >
+              <Typography fontWeight="bold" variant="h6">
+                Pending ({tradesActive.length})
+              </Typography>
+              {backbutton}
+            </Box>
             <Box marginY={1}>
               <Divider />
             </Box>
@@ -38,9 +61,15 @@ export const P2PTradeHistory = () => {
         )}
         {tradesTerminal.length > 0 && (
           <Box>
-            <Typography marginLeft={2} variant="h6">
-              History
-            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              padding={1}
+            >
+              <Typography variant="h6">History</Typography>
+              {tradesActive.length === 0 && backbutton}
+            </Box>
             <Box marginY={1}>
               <Divider />
             </Box>

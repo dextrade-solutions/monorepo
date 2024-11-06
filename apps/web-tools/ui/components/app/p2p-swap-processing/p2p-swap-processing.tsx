@@ -67,6 +67,10 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const [outgoingPaymentApproved, setOutgoingPaymentApproved] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
+  const canCancel = [TradeStatus.waitExchangerVerify, TradeStatus.new].includes(
+    exchange.status,
+  );
+
   const pairType = determineTradeType(exchange);
   const isTradeStarted =
     TRADE_ACTIVE_STATUSES.includes(exchange.status) &&
@@ -156,9 +160,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   if (exchange.status === TradeStatus.canceled) {
     statusImage = <SwapFailtureIcon />;
     headerText = t('Trade Canceled');
-    content = (
-      <Alert severity="error">The swap was canceled by the exchanger</Alert>
-    );
+    content = <Alert severity="error">The swap was canceled</Alert>;
   } else if (
     [
       TradeStatus.exchangerTransactionFailed,
@@ -168,7 +170,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     statusImage = <SwapFailtureIcon />;
     headerText = t('Trade Failed');
     content = <Alert severity="error">The swap failed</Alert>;
-  } else if (exchange.status === TradeStatus.new && from.isFiat) {
+  } else if (exchange.status === TradeStatus.new) {
     statusImage = <PulseLoader />;
     headerText = t('Trade Processing');
     let approveDeadline = 15 * MINUTE;
@@ -178,60 +180,62 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     if (historyRow && exchange.exchangerSettings.timeToPay) {
       approveDeadline = exchange.exchangerSettings.timeToPay;
     }
-
-    content = (
-      <Box>
-        {outgoingPaymentApproved ? (
-          <Alert>You are confirmed {from.symbol} transfer</Alert>
-        ) : (
-          <>
-            <Alert severity="info">
-              Please, send{' '}
-              <strong>{`${exchange.amount1} ${from.symbol}`}</strong> using your
-              bank account and press the confirm button
-            </Alert>
-            <Box marginTop={3}>
-              <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-                <CardContent>
-                  <PaymentMethodDisplay
-                    title="Exchanger Payment Method"
-                    paymentMethod={exchange.exchangerPaymentMethod}
-                    expanded
-                  />
-                </CardContent>
-              </Card>
-            </Box>
-            <Box
-              display="flex"
-              marginY={4}
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography>
-                <CountdownTimer
-                  timeStarted={historyRow?.cdt}
-                  timerBase={approveDeadline}
-                  labelKey="approvalTimerP2PLabel"
-                  infoTooltipLabelKey="approvalTimerP2PInfo"
-                  warningTime="1:00"
-                />
-              </Typography>
-              <Button
-                onClick={async () => {
-                  await P2PService.exchangeApprove(true, {
-                    id: exchange.id,
-                  });
-                  setOutgoingPaymentApproved(true);
-                }}
-                variant="contained"
+    submitText = t('cancel');
+    if (from.isFiat) {
+      content = (
+        <Box>
+          {outgoingPaymentApproved ? (
+            <Alert>You are confirmed {from.symbol} transfer</Alert>
+          ) : (
+            <>
+              <Alert severity="info">
+                Please, send{' '}
+                <strong>{`${exchange.amount1} ${from.symbol}`}</strong> using
+                your bank account and press the confirm button
+              </Alert>
+              <Box marginTop={3}>
+                <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
+                  <CardContent>
+                    <PaymentMethodDisplay
+                      title="Exchanger Payment Method"
+                      paymentMethod={exchange.exchangerPaymentMethod}
+                      expanded
+                    />
+                  </CardContent>
+                </Card>
+              </Box>
+              <Box
+                display="flex"
+                marginY={4}
+                alignItems="center"
+                justifyContent="space-between"
               >
-                Confirm payment
-              </Button>
-            </Box>
-          </>
-        )}
-      </Box>
-    );
+                <Typography>
+                  <CountdownTimer
+                    timeStarted={historyRow?.cdt}
+                    timerBase={approveDeadline}
+                    labelKey="approvalTimerP2PLabel"
+                    infoTooltipLabelKey="approvalTimerP2PInfo"
+                    warningTime="1:00"
+                  />
+                </Typography>
+                <Button
+                  onClick={async () => {
+                    await P2PService.exchangeApprove(true, {
+                      id: exchange.id,
+                    });
+                    setOutgoingPaymentApproved(true);
+                  }}
+                  variant="contained"
+                >
+                  Confirm payment
+                </Button>
+              </Box>
+            </>
+          )}
+        </Box>
+      );
+    }
   } else if (exchange.status === TradeStatus.waitExchangerVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Reservation');
@@ -301,7 +305,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   }
 
   const onSubmit = async () => {
-    if (exchange.status === TradeStatus.waitExchangerVerify) {
+    if (canCancel) {
       try {
         setCancelLoading(true);
         await P2PService.cancelExchange(exchange.id);
@@ -427,7 +431,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       <Button
         fullWidth
         onClick={onSubmit}
-        disabled={isTradeStarted || cancelLoading}
+        disabled={(isTradeStarted && !canCancel) || cancelLoading}
       >
         {submitText}
       </Button>

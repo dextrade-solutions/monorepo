@@ -14,16 +14,14 @@ const ICON_BY_STATUS = {
   CLIENT_TRANSACTION_FAILED: <PulseLoader />,
   WAIT_EXCHANGER_TRANSFER: <PulseLoader />,
   EXCHANGER_TRANSACTION_VERIFY: <PulseLoader />,
-  EXCHANGER_TRANSACTION_FAILED: <PulseLoader />,
+  EXCHANGER_TRANSACTION_FAILED: <Icon name="alert" color="error.main" />,
   VERIFIED: <PulseLoader />,
   COMPLETED: <Icon color="success.light" name="check" size="lg" />,
   EXPIRED: <Icon name="timer" />,
   DISPUTE: <Icon color="warning.light" name="info" />,
 };
 
-export const P2PDisplayStatus: React.FC<{ status: TradeStatus }> = ({
-  status,
-}) => {
+export const P2PDisplayStatus = ({ status }: { status: TradeStatus }) => {
   const t = useI18nContext();
   return (
     <Box display="flex" alignItems="center">

@@ -15,7 +15,7 @@ import {
   formatFundsAmount,
   getBlockExplorerLink,
 } from 'dex-helpers';
-import { CoinModel, Trade } from 'dex-helpers/types';
+import { Trade } from 'dex-helpers/types';
 import { CopyData, StepProgressBar, CountdownTimer } from 'dex-ui';
 import { useMemo } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
@@ -258,22 +258,54 @@ const TradeHistoryRowModal = ({
       <Box marginY={2} />
       <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
         <CardContent>
-          <Typography display="flex">
-            <strong className="flex-grow">{t('youGet')}</strong>
-            <Typography>
-              {formatFundsAmount(
-                trade.amount2,
-                trade.exchangerSettings.to.ticker,
-              )}
-            </Typography>
-            <Typography color="text.secondary" marginLeft={1}>
-              {formatCurrency(
-                trade.amount2 *
-                  trade.exchangerSettings.coinPair.priceCoin2InUsdt,
-                'usd',
-              )}
-            </Typography>
+          <Typography display="flex" justifyContent="space-between">
+            <Box display="flex">
+              <strong className="flex-grow">{t('youGet')}</strong>
+              <Typography marginLeft={1} color="text.secondary">
+                Plan
+              </Typography>
+            </Box>
+            <Box display="flex">
+              <Typography>
+                {formatFundsAmount(
+                  trade.amount2,
+                  trade.exchangerSettings.to.ticker,
+                )}
+              </Typography>
+              <Typography color="text.secondary" marginLeft={1}>
+                {formatCurrency(
+                  trade.amount2 *
+                    trade.exchangerSettings.coinPair.priceCoin2InUsdt,
+                  'usd',
+                )}
+              </Typography>
+            </Box>
           </Typography>
+          {trade.exchangerSentAmount && (
+            <Typography display="flex" justifyContent="space-between">
+              <Box display="flex">
+                <strong className="flex-grow">{t('youGet')}</strong>
+                <Typography marginLeft={1} color="text.secondary">
+                  Fact
+                </Typography>
+              </Box>
+              <Box display="flex">
+                <Typography>
+                  {formatFundsAmount(
+                    trade.exchangerSentAmount,
+                    trade.exchangerSettings.to.ticker,
+                  )}
+                </Typography>
+                <Typography color="text.secondary" marginLeft={1}>
+                  {formatCurrency(
+                    trade.exchangerSentAmount *
+                      trade.exchangerSettings.coinPair.priceCoin2InUsdt,
+                    'usd',
+                  )}
+                </Typography>
+              </Box>
+            </Typography>
+          )}
 
           {trade.exchangerTransactionHash && (
             <>

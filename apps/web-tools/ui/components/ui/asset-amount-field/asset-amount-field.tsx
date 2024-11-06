@@ -11,7 +11,6 @@ import {
   Button,
   Divider,
 } from '@mui/material';
-import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import {
   formatCurrency,

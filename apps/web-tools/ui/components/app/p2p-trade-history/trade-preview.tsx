@@ -57,7 +57,7 @@ export function TradePreview({ trade }: { trade: Trade }) {
               <Typography color="primary">
                 +{' '}
                 {formatFundsAmount(
-                  trade.amount2,
+                  trade.exchangerSentAmount || trade.amount2,
                   trade.exchangerSettings.to.ticker,
                 )}
               </Typography>

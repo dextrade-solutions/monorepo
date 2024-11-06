@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { ButtonIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 
 import { useCoinInputSearch } from './hooks/useCoinInputSearch';
 import { SelectCoinsItemImportToken } from './select-coins-item-import-token';
@@ -61,11 +61,17 @@ export const SelectCoinsItemDropdown = ({
 }) => {
   const t = useI18nContext();
   const [searchQuery, setSearchQuery] = useState('');
+  const [network, setNetwork] = useState(null);
   const [tokenForImport, setTokenForImport] = useState(null);
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
+  let itemsFiltered = items;
+  if (network) {
+    itemsFiltered = itemsFiltered.filter((i) => i.network === network.key);
+  }
 
   const [searchItems, handleSearchItems] = useCoinInputSearch({
-    list: items,
+    list: itemsFiltered,
+    network,
     fuseSearchKeys,
     shouldSearchForImports,
   });
@@ -73,12 +79,12 @@ export const SelectCoinsItemDropdown = ({
   const renderList = useMemo(() => {
     const list = searchQuery
       ? searchItems
-      : items.slice(0, 6).map((i, idx) => ({ item: i, refIndex: idx }));
+      : itemsFiltered.slice(0, 6).map((i, idx) => ({ item: i, refIndex: idx }));
 
     return list.sort(
       (p, n) => Number(n.selected || false) - Number(p.selected || false),
     );
-  }, [searchItems, items, searchQuery]);
+  }, [searchItems, itemsFiltered, searchQuery]);
 
   const handleClose = useCallback(() => {
     setSearchQuery('');
@@ -140,9 +146,14 @@ export const SelectCoinsItemDropdown = ({
         onClose={handleClose}
       />
       <SelectCoinsItemSearch
+        network={network}
         inputRef={inputRef}
         value={searchQuery}
         onChange={handleChangeSearchValue}
+        onChangeNetwork={(v) => {
+          setNetwork(v);
+          handleChangeSearchValue(searchQuery, v);
+        }}
         placeholder={placeholderInput}
       />
       <SelectCoinsItemList

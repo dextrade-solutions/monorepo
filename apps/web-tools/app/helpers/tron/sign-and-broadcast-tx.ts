@@ -1,15 +1,12 @@
-import Trx from '@ledgerhq/hw-app-trx';
+import { NetworkNames } from 'dex-helpers';
 
 import { tronWeb } from './tronweb';
 import { ledgerConnection } from '../../../ui/helpers/utils/ledger';
 
 export async function signAndBroadcastTx(unsignedTx: any) {
-  await ledgerConnection.connectTron();
-  const { transport } = ledgerConnection;
-  const trxApp = new Trx(transport);
-
+  const { client } = await ledgerConnection.connect(NetworkNames.tron);
   // Sign transaction using Ledger
-  const signature = await trxApp.signTransaction(
+  const signature = await client.signTransaction(
     "44'/195'/0'/0/0",
     unsignedTx.raw_data_hex,
     [],

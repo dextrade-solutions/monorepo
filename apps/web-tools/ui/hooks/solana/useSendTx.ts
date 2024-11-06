@@ -1,15 +1,17 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
 
 import { buildTxSol } from '../../../app/helpers/solana/send-sol';
 import { getAssetAccount } from '../../ducks/app/app';
+import { ledgerConnection } from '../../helpers/utils/ledger';
 
 export default function useSendTx(asset: AssetModel) {
   const assetAccount = useSelector((state) => getAssetAccount(state, asset));
-  const { publicKey, sendTransaction: sendTxSol } = useWallet();
+  const { sendTransaction: sendTxSol } = useWallet();
   const { connection } = useConnection();
 
   const txSend = async (
@@ -20,24 +22,47 @@ export default function useSendTx(asset: AssetModel) {
       onError: (e: unknown) => void;
     },
   ) => {
-    let from = publicKey;
+    const from = new PublicKey(assetAccount.address);
+
     const value = parseUnits(String(amount), asset.decimals);
 
-    if (assetAccount?.connectedWallet === 'LedgerLive') {
-      from = new PublicKey(assetAccount.address);
-    }
-
-    if (!from) {
-      throw new Error('sendTxSol - wallet is not connected');
-    }
-    const tx = await buildTxSol({
+    const transaction = await buildTxSol({
       asset,
       connection,
       fromPubkey: from,
       recipientAddress: recipient,
       value: Number(value),
     });
-    return sendTxSol(tx, connection)
+
+    if (assetAccount?.connectedWallet === 'LedgerLive') {
+      const { client } = await ledgerConnection.connect(NetworkNames.solana);
+
+      const { blockhash } = await connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = from;
+      const serializedTx = transaction.serializeMessage();
+      const signature = await client.signTransaction(
+        "44'/501'/0'",
+        serializedTx,
+      );
+
+      // Add the signature from Ledger to the transaction
+      transaction.addSignature(
+        new PublicKey(from),
+        Buffer.from(signature.signature),
+      );
+
+      // Verify the signature and send the transaction
+      const isVerified = transaction.verifySignatures();
+      if (isVerified) {
+        const rawTransaction = transaction.serialize();
+        const txid = await connection.sendRawTransaction(rawTransaction);
+        console.log('Transaction ID:', txid);
+      } else {
+        console.error('Signature verification failed.');
+      }
+    }
+    return sendTxSol(transaction, connection)
       .then(txSentHandlers.onSuccess)
       .catch(txSentHandlers.onError);
   };
