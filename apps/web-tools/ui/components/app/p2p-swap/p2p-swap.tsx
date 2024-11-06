@@ -57,7 +57,7 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        {authData && (
+        {authData.apikey && (
           <Box display="flex" marginLeft={1} alignItems="center">
             <Button
               color="secondary"
