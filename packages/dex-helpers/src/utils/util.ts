@@ -99,7 +99,13 @@ export function formatFundsAmount(
   decimalsToKeep?: number,
   maxDecimalsLen = 8,
 ) {
-  const parsed = String(amount).split('.');
+  let parsedStr: string;
+  if (typeof amount === 'number') {
+    parsedStr = amount.toFixed(18);
+  } else {
+    parsedStr = amount;
+  }
+  const parsed = parsedStr.split('.');
   const beforeDecimal = parsed[0];
   let afterDecimal = parsed[1] || '0';
 

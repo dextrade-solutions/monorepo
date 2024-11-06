@@ -58,11 +58,11 @@ export const useAtomicSwap = (
   const expirationTo =
     isAtomicSwap && BigInt(BUILT_IN_NETWORKS[to.network]?.atomicSwapExpiration);
 
-  const toSpendAmount = BigInt(parseEther(String(exchange.amount1)));
+  const toSpendAmount = BigInt(parseEther(exchange.amount1.toFixed(18)));
   const exchangerParams = getParsedExchangerParams(exchange);
   const toReceiveAmount =
     exchangerParams?.responderAmount ||
-    BigInt(parseEther(String(exchange.amount2)));
+    BigInt(parseEther(exchange.amount2.toFixed(18)));
 
   const { hashLock: hashedPassword, password } = getTradeKeyPair(exchange.id);
 
