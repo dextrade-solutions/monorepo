@@ -6,7 +6,7 @@ import React from 'react';
 
 import Icon from '../ui/icon';
 
-export default function Disabled() {
+export function Disabled() {
   return (
     <Alert severity="info">
       KYC verification temporarily is disabled. Please, try again later
@@ -14,7 +14,7 @@ export default function Disabled() {
   );
 }
 
-export function KycIndentification({
+export default function KycIndentification({
   getKycInfo = async () =>
     kycService
       .getKycInfo({ baseUrl: ServiceBridge.instance.baseUrl, format: 'json' })
