@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -9,6 +10,7 @@ export default defineConfig({
   base: '/',
   plugins: [
     react(),
+    VitePWA(),
     wasm(),
     nodePolyfills({
       include: ['buffer', 'process', 'crypto'],
