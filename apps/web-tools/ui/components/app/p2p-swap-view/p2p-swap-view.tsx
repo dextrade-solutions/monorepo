@@ -74,8 +74,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         !native?.chainId ||
         ad.transactionFee !== undefined
       ) {
-        return ad.transactionFee;
+        return ad.transactionFee || 0;
       }
+
       let incomingFeeCalculated = 0;
       if (!native) {
         throw new Error('calcIncomingFee - no native asset');

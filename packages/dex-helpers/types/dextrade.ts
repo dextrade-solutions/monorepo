@@ -179,6 +179,7 @@ export type AdItem = {
   timeToRefund: number;
   provider?: string;
   officialMerchant: boolean;
+  transactionFee?: number;
 };
 
 export type AdSetting = {

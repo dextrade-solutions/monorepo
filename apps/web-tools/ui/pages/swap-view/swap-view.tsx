@@ -125,7 +125,7 @@ export default function AdView() {
   return (
     <Box>
       <Box display="flex" alignItems="center" padding={1}>
-        <Typography variant="h6">Swap preview</Typography>
+        <Typography variant="h6">Swap</Typography>
         <div className="flex-grow" />
         {!isIframe && (
           <Box>

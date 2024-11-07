@@ -69,11 +69,8 @@ export const SelectCoinsItemDropdown = ({
     itemsFiltered = itemsFiltered.filter((i) => i.network === network.key);
   }
 
-  const [searchItems, handleSearchItems] = useCoinInputSearch({
-    list: itemsFiltered,
-    network,
+  const [searchItems, handleSearchItems, handleSetFuse] = useCoinInputSearch({
     fuseSearchKeys,
-    shouldSearchForImports,
   });
 
   const renderList = useMemo(() => {
@@ -107,6 +104,10 @@ export const SelectCoinsItemDropdown = ({
     },
     [handleSearchItems],
   );
+
+  useEffect(() => {
+    handleSetFuse(itemsFiltered, searchQuery);
+  }, [itemsFiltered]);
 
   const onImportToken = useCallback((token) => {
     setTokenForImport(token);
@@ -152,7 +153,6 @@ export const SelectCoinsItemDropdown = ({
         onChange={handleChangeSearchValue}
         onChangeNetwork={(v) => {
           setNetwork(v);
-          handleChangeSearchValue(searchQuery, v);
         }}
         placeholder={placeholderInput}
       />
