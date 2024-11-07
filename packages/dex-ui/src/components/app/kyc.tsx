@@ -1,9 +1,10 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
 import { KycStatuses } from 'dex-helpers';
 import { ServiceBridge, kycService, DextradeTypes } from 'dex-services';
 import React from 'react';
 
+import { useRequest } from '../../hooks/useRequest';
 import Icon from '../ui/icon';
 
 export function Disabled() {
@@ -30,13 +31,15 @@ export default function KycIndentification({
   getKycInfo: () => Promise<DextradeTypes.KycModel>;
   startVerification: () => Promise<void>;
 }) {
-  const { isError, data: kycInfo } = useQuery({
+  // TODO: I changed useQuery to own useRequest because of errors after bundling, need resolve it
+  const { isError, data: kycInfo } = useRequest({
     queryKey: ['kycInfo'],
     retry: false,
     queryFn: getKycInfo,
   });
-  const { isPending, mutate: startKyc } = useMutation({
-    mutationFn: startVerification,
+  const { isLoading, fetchData: startKyc } = useRequest({
+    queryFn: startVerification,
+    immediate: false,
   });
   let alert;
   let kycBtn;
@@ -52,7 +55,7 @@ export default function KycIndentification({
       );
       kycBtn = (
         <Button
-          disabled={isPending}
+          disabled={isLoading}
           onClick={() => startKyc()}
           variant="contained"
         >
@@ -86,7 +89,7 @@ export default function KycIndentification({
 
       kycBtn = (
         <Button
-          disabled={isPending}
+          disabled={isLoading}
           onClick={() => startKyc()}
           variant="contained"
         >
@@ -107,7 +110,7 @@ export default function KycIndentification({
       );
       kycBtn = (
         <Button
-          disabled={isPending}
+          disabled={isLoading}
           onClick={() => startKyc()}
           variant="contained"
         >
