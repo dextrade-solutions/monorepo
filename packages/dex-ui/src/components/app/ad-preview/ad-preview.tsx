@@ -38,9 +38,7 @@ const AdPreview = ({
     ad.paymentMethods &&
     (ad.fromCoin.networkName === NetworkNames.fiat ||
       ad.toCoin.networkName === NetworkNames.fiat);
-  // PROD_TODO:
-  // const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
-  const reserveInCoin2 = ad.reserveInCoin2;
+  const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
   return (
     <Card
       variant="outlined"
