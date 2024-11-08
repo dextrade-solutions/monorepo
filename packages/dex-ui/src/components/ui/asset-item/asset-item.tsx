@@ -41,13 +41,13 @@ const AssetItem = ({
           </Box>
         </>
       )}
-      {coin && !loading && (
+      {!loading && (
         <>
           <UrlIcon size={iconSize} url={url} />
           <Box marginX={2}>
             <Typography fontWeight="bold">{ticker}</Typography>
             <Typography fontWeight={200} variant="body2">
-              {networkType}
+              {networkType?.toUpperCase()}
             </Typography>
           </Box>
         </>

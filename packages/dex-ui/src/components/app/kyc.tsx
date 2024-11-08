@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
 // import { useQuery } from '@tanstack/react-query';
-import { KycStatuses } from 'dex-helpers';
+import { KycStatuses, SUPPORT_REQUEST_LINK } from 'dex-helpers';
 import { ServiceBridge, kycService, DextradeTypes } from 'dex-services';
 import React from 'react';
 
@@ -124,7 +124,7 @@ export default function KycIndentification({
       <Box display="flex" marginTop={2}>
         {kycBtn}
         <div className="flex-grow" />
-        <Button>
+        <Button onClick={() => window.open(SUPPORT_REQUEST_LINK)}>
           <Typography marginRight={1}>Telegram support</Typography>{' '}
           <Icon name="send-1" />
         </Button>

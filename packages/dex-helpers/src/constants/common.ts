@@ -1,7 +1,7 @@
 export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
-const _supportRequestLink = 'https://dextrade.com/';
+const _supportRequestLink = 'https://t.me/dextrade_support';
 const _contractAddressLink = 'https://dextrade.com/contract';
 
 export const SUPPORT_REQUEST_LINK = _supportRequestLink;
