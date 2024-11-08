@@ -5,7 +5,7 @@ import {
   avalanche,
   base,
   bsc,
-  mainnet,
+  mainnet as defaultMainnet,
   sepolia,
   xdc,
 } from 'wagmi/chains';
@@ -20,6 +20,15 @@ const metadata = {
   description: 'Web3Modal Example',
   url: 'https://web3modal.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/37784886'],
+};
+
+const mainnet = {
+  ...defaultMainnet,
+  rpcUrls: {
+    default: {
+      http: ['https://eth.llamarpc.com'],
+    },
+  },
 };
 
 const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
