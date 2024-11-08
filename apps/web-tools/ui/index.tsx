@@ -3,7 +3,7 @@ import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
 import React from 'react';
 import { Provider, useSelector } from 'react-redux';
-import { BrowserRouter, HashRouter, useLocation } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import Web3ModalProvider from './components/app/web3-modal-provider';

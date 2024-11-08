@@ -117,7 +117,9 @@ export const SelectCoinsItemList = ({
                         </Typography>
                       )}
                       {standard && (
-                        <Typography fontWeight="light">{standard}</Typography>
+                        <Typography fontWeight="light">
+                          {standard.toUpperCase()}
+                        </Typography>
                       )}
                     </div>
                     {/* {showRateLabel &&

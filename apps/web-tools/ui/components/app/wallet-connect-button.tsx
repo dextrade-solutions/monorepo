@@ -1,22 +1,17 @@
 import { Box, Button } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import { PulseLoader, UrlIcon } from 'dex-ui';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useAccount } from 'wagmi';
 
 import { showModal } from '../../ducks/app/app';
-import { getAuth } from '../../ducks/auth';
 import { SETTINGS_ROUTE } from '../../helpers/constants/routes';
+import { useAuthWallet } from '../../hooks/useAuthWallet';
 
 export default function WalletConnectButton() {
-  // eslint-disable-next-line no-shadow
-  const account = useAccount();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const authData = useSelector(getAuth);
-  const isConnected = account.isConnected && authData.apikey;
-  const walletInfo = account.connector;
+  const { isConnected, address, walletInfo } = useAuthWallet();
 
   const onClick = () => {
     if (isConnected) {
@@ -28,7 +23,7 @@ export default function WalletConnectButton() {
 
   return (
     <Button
-      variant={isConnected ? 'outlined' : 'contained'}
+      variant={isConnected ? '' : 'contained'}
       disableElevation
       sx={{
         backgroundImage: isConnected
@@ -37,7 +32,7 @@ export default function WalletConnectButton() {
       }}
       onClick={onClick}
     >
-      {isConnected ? shortenAddress(account.address) : 'Sign in'}
+      {isConnected ? shortenAddress(address) : 'Sign in'}
       {isConnected && (
         <Box marginLeft={2}>
           {walletInfo?.name ? (

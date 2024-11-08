@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useAccount, useSignMessage } from 'wagmi';
+import { Connector, useAccount, useConnectors, useSignMessage } from 'wagmi';
 
 import { AuthStatus } from '../../app/constants/auth';
 import engine from '../../app/engine';
@@ -18,23 +18,32 @@ export function useAuthP2P() {
   const { keyring } = engine.keyringController;
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
-  const { isConnected } = useAccount();
+  const account = useAccount();
   const connectWallet = useWeb3Connection();
   const { apikey } = useSelector(getAuth);
   const { signature } = useSelector(getSession);
   const { signMessage } = useSignMessage();
+  const connectors = useConnectors();
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
     authStatus,
   );
 
-  return async (f?: (...args: any) => any) => {
-    if (!isConnected) {
+  return async ({
+    wallet,
+    onSuccess,
+  }: {
+    wallet?: string;
+    onSuccess?: (...args: any) => any;
+  }) => {
+    const connector =
+      connectors.find((i) => i.name === wallet) || account.connector;
+    if (!account.isConnected) {
       await connectWallet();
     }
     const onSignedMessage = async (result: string) => {
-      await dispatch(login(keyring, result));
-      return f && f();
+      await dispatch(login(keyring, result, connector.name));
+      return onSuccess && onSuccess();
     };
 
     const processSign = () =>
@@ -44,7 +53,7 @@ export function useAuthP2P() {
         }
         dispatch(setStatus(AuthStatus.signing));
         signMessage(
-          { message: engine.keyringController.publicKey },
+          { connector, message: engine.keyringController.publicKey },
           {
             onSuccess: (result: string) => {
               resolve(onSignedMessage(result));
@@ -58,7 +67,7 @@ export function useAuthP2P() {
       });
 
     if (apikey && authStatus !== AuthStatus.failed) {
-      return f && f(processSign);
+      return onSuccess && onSuccess(processSign);
     }
 
     if (signature) {

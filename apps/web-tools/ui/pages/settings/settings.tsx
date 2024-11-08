@@ -6,6 +6,7 @@ import {
   ListItemText,
   MenuItem,
   MenuList,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -65,7 +66,17 @@ export default function P2PSettings() {
         <Box padding={2}>
           <Box margin={2}>
             {isLoading ? (
-              <Box>Loading</Box>
+              <Box display="flex">
+                <Skeleton variant="circular" width={40} height={40} />
+                <Box display="flex" marginLeft={1}>
+                  <Skeleton width={100} />
+                </Box>
+                <Box className="flex-grow" />
+                <Skeleton width={70} />
+                <Box display="flex" marginLeft={1}>
+                  <Skeleton width={30} />
+                </Box>
+              </Box>
             ) : (
               <Box display="flex" alignItems="center">
                 <UserAvatar name={user?.name} />
@@ -74,7 +85,7 @@ export default function P2PSettings() {
                 </Typography>
                 <Box className="flex-grow" />
                 <Button
-                  color="secondary"
+                  color="primary"
                   variant="outlined"
                   onClick={() => {
                     navigate(SWAPS_HISTORY_ROUTE);
@@ -93,7 +104,7 @@ export default function P2PSettings() {
               </Box>
             )}
           </Box>
-          <Box display="flex" alignItems="center">
+          <Box display="flex" alignItems="center" marginTop={3}>
             {pathnames.map((value, index) => {
               const to = `/${pathnames.slice(0, index + 1).join('/')}`;
               const isLast = index === pathnames.length - 1;

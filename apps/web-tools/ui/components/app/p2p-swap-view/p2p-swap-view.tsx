@@ -178,18 +178,19 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   } = {}) => {
     try {
       setLoadingStartExchange(true);
-      const result = await auth((on401?: () => void) =>
-        dispatch(
-          createSwapP2P({
-            from: assetInputFrom,
-            to: assetInputTo,
-            exchange: ad,
-            slippage: 0.5,
-            exchangerPaymentMethodId,
-            on401,
-          }),
-        ),
-      );
+      const result = await auth({
+        onSuccess: (on401?: () => void) =>
+          dispatch(
+            createSwapP2P({
+              from: assetInputFrom,
+              to: assetInputTo,
+              exchange: ad,
+              slippage: 0.5,
+              exchangerPaymentMethodId,
+              on401,
+            }),
+          ),
+      });
 
       navigate(`${AWAITING_SWAP_ROUTE}/${result.id}`);
     } catch (e) {

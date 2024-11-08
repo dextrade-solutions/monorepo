@@ -18,13 +18,16 @@ import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ModalProps } from '../types';
 
-const LoginModal = ({ hideModal }: {} & ModalProps) => {
+const LoginModal = ({ hideModal }: ModalProps) => {
   const t = useI18nContext();
   const wallets = useWallets();
   const auth = useAuthP2P();
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
-    await auth(item.connect);
+    await item.connect();
+    await auth({
+      wallet: item.name,
+    });
     hideModal();
   };
   return (

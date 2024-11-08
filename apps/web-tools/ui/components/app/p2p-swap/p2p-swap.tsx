@@ -59,28 +59,7 @@ export default function P2PSwap() {
         </Typography>
         <div className="flex-grow" />
         <WalletConnectButton />
-        {/* {authData.apikey && (
-          <Box display="flex" marginLeft={1} alignItems="center">
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={() => {
-                auth(() => navigate(SWAPS_HISTORY_ROUTE));
-              }}
-            >
-              {t('activity')}
-            </Button>
-
-            <Box marginLeft={1}>
-              <ButtonIcon
-                iconName="setting-dex"
-                size="lg"
-                onClick={() => navigate(SETTINGS_ROUTE)}
-              />
-            </Box>
-          </Box>
-        )} */}
-        <Box marginLeft={1} paddingTop={1}>
+        <Box marginLeft={2} paddingTop={1}>
           <DarkModeSwitch
             checked={isDarkMode}
             onChange={toggleDarkMode}

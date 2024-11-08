@@ -20,6 +20,7 @@ interface AuthState {
     apikey: string | null;
     startSocket: boolean;
     hasExchanger: boolean;
+    wallet: string | null;
   };
   session: {
     mnemonic: string | null;
@@ -33,6 +34,8 @@ const initialState: AuthState = {
     apikey: null,
     startSocket: false,
     hasExchanger: false,
+
+    wallet: null, // signed wallet name
   },
   session: {
     mnemonic: null,
@@ -67,7 +70,7 @@ export { clearAuthState, setStatus };
 
 export default reducer;
 
-export const login = (keyring: any, signature: string) => {
+export const login = (keyring: any, signature: string, wallet: string) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setStatus(AuthStatus.authenticating));
     const mnemonicString = await keyring
@@ -99,7 +102,12 @@ export const login = (keyring: any, signature: string) => {
         publicKey,
       }),
     );
-    dispatch(setAuthData(authData.data));
+    dispatch(
+      setAuthData({
+        wallet,
+        ...authData.data,
+      }),
+    );
     dispatch(setStatus(AuthStatus.completed));
   };
 };
@@ -117,6 +125,10 @@ export const logout = () => {
     queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
     queryClient.removeQueries({
       queryKey: ['dextradeUser'],
+      exact: true,
+    });
+    queryClient.removeQueries({
+      queryKey: ['authenticatedUser'],
       exact: true,
     });
   };
