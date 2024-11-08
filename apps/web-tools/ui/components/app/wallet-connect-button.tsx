@@ -1,18 +1,30 @@
 import { Box, Button } from '@mui/material';
-// import { useWalletInfo, useWeb3Modal } from '@web3modal/wagmi/react';
 import { shortenAddress } from 'dex-helpers';
 import { PulseLoader, UrlIcon } from 'dex-ui';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
-import { useAuthP2P } from '../../hooks/useAuthP2P';
+import { showModal } from '../../ducks/app/app';
+import { getAuth } from '../../ducks/auth';
+import { SETTINGS_ROUTE } from '../../helpers/constants/routes';
 
 export default function WalletConnectButton() {
   // eslint-disable-next-line no-shadow
-  const auth = useAuthP2P();
-  const { open } = useWeb3Modal();
-  const { walletInfo } = useWalletInfo();
-  const { address } = useAccount();
-  const isConnected = Boolean(walletInfo?.name);
+  const account = useAccount();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const authData = useSelector(getAuth);
+  const isConnected = account.isConnected && authData.apikey;
+  const walletInfo = account.connector;
+
+  const onClick = () => {
+    if (isConnected) {
+      navigate(SETTINGS_ROUTE);
+    } else {
+      dispatch(showModal({ name: 'LOGIN_MODAL' }));
+    }
+  };
 
   return (
     <Button
@@ -23,9 +35,9 @@ export default function WalletConnectButton() {
           ? undefined
           : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
       }}
-      onClick={() => (isConnected ? open() : auth())}
+      onClick={onClick}
     >
-      {isConnected ? shortenAddress(address) : 'Connect wallet'}
+      {isConnected ? shortenAddress(account.address) : 'Sign in'}
       {isConnected && (
         <Box marginLeft={2}>
           {walletInfo?.name ? (

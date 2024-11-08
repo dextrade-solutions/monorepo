@@ -2,6 +2,7 @@ import { Aml } from './Aml';
 import { Exchange } from './Exchange';
 import { Kyc } from './Kyc';
 import { Payment } from './Payment';
+import { User } from './User';
 
 export class ServiceBridge {
   // eslint-disable-next-line no-use-before-define
@@ -43,3 +44,4 @@ export const kycService = new Kyc(opts);
 export const amlService = new Aml(opts);
 export const paymentService = new Payment(opts);
 export const exchangeService = new Exchange(opts);
+export const userService = new User(opts);

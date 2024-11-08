@@ -219,16 +219,12 @@ export class User<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * @request GET:/api/user/current
    */
   current = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     params: RequestParams = {},
   ) =>
     this.request<UserModel, Record<string, string>>({
       path: `/api/user/current`,
       method: "GET",
-      query: query,
+      format: 'json',
       ...params,
     });
 }

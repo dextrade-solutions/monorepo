@@ -27,6 +27,7 @@ import SelectCoins from '../../ui/select-coins';
 import P2PExchangers from '../p2p-ads';
 
 import './index.scss';
+import WalletConnectButton from '../wallet-connect-button';
 
 export default function P2PSwap() {
   const t = useI18nContext();
@@ -57,7 +58,8 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        {authData.apikey && (
+        <WalletConnectButton />
+        {/* {authData.apikey && (
           <Box display="flex" marginLeft={1} alignItems="center">
             <Button
               color="secondary"
@@ -77,7 +79,7 @@ export default function P2PSwap() {
               />
             </Box>
           </Box>
-        )}
+        )} */}
         <Box marginLeft={1} paddingTop={1}>
           <DarkModeSwitch
             checked={isDarkMode}

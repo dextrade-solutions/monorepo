@@ -50,7 +50,8 @@ const getConnectorIcon = (item: Connector) => {
   return item.icon;
 };
 
-export function useWallets({ asset }: { asset: AssetModel }) {
+// if asset is not passed, shows only EVM wallets
+export function useWallets({ asset }: { asset?: AssetModel } = {}) {
   const { wallets, select } = useWallet();
 
   const [walletsModels, setWalletsModels] = useState<WalletItem[]>([]);
@@ -59,7 +60,7 @@ export function useWallets({ asset }: { asset: AssetModel }) {
     const updateWallets = () => {
       let supportedWallets: WalletItem[] = [];
 
-      if (asset.chainId) {
+      if (!asset || asset?.chainId) {
         supportedWallets = config.connectors.map((item) => ({
           icon: getConnectorIcon(item),
           name: item.name,
@@ -85,7 +86,7 @@ export function useWallets({ asset }: { asset: AssetModel }) {
         }));
       }
 
-      if (asset.network === NetworkNames.solana) {
+      if (asset?.network === NetworkNames.solana) {
         supportedWallets = wallets.map((item) => ({
           icon: item.adapter.icon,
           name: item.adapter.name,
@@ -108,7 +109,7 @@ export function useWallets({ asset }: { asset: AssetModel }) {
         }));
       }
 
-      if (!asset.chainId) {
+      if (asset && !asset.chainId) {
         supportedWallets.push({
           icon: ledgerConnection.icon,
           name: ledgerConnection.name,

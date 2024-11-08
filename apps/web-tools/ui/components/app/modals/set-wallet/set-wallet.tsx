@@ -153,7 +153,7 @@ const SetWallet = ({
                 ))}
                 {!wallets.length && (
                   <Typography color="text.secondary">
-                    No solana wallets detected...
+                    No supported wallets detected...
                   </Typography>
                 )}
               </MenuList>
