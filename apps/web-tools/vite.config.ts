@@ -21,6 +21,7 @@ export default defineConfig({
         lang: 'en',
         scope: '/',
         description: 'P2P Exchange Marketplace',
+        theme_color: '#26202e',
         orientation: 'portrait',
         icons: [
           {
