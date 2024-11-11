@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import { parseEther, parseUnits } from 'viem';
 import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
 
+import { useAuthWallet } from './useAuthWallet';
 import { ATOMIC_SWAP_ABI } from '../../app/constants/abi';
 import { SECOND } from '../../app/constants/time';
 import {
@@ -14,6 +15,7 @@ import {
 } from '../../app/helpers/atomic-swaps';
 import { unlockSafe } from '../../app/helpers/bitcoin/unlock-safe';
 import { isBtcTypeAsset } from '../../app/helpers/chain-helpers/is-btc-type-asset';
+import useAsset from './asset/useAsset';
 
 const getParsedExchangerParams = (trade: Trade) => {
   if (trade.exchangerParams) {
@@ -46,6 +48,7 @@ export const useAtomicSwap = (
   to: AssetModel,
 ) => {
   const { data: walletClient } = useWalletClient();
+  const { connector } = useAsset(from);
   const { isAtomicSwap } = exchange.exchangerSettings;
   const fromAtomicSwapContract =
     isAtomicSwap && BUILT_IN_NETWORKS[from.network]?.atomicSwapContract;
@@ -124,10 +127,13 @@ export const useAtomicSwap = (
     if (!fromAtomicSwap) {
       throw new Error('initiateNewSwap - atomicSwap is not initialized');
     }
-    writeContract(fromAtomicSwap.txParams, {
-      onSuccess,
-      onError,
-    });
+    writeContract(
+      { connector, ...fromAtomicSwap.txParams },
+      {
+        onSuccess,
+        onError,
+      },
+    );
   };
 
   const claimSwap = useCallback(

@@ -16,6 +16,7 @@ export function useAuthWallet() {
     if (usedConnector) {
       const [firstAddress] = await usedConnector.getAccounts();
       const isAuthorized = await usedConnector.isAuthorized();
+
       return {
         address: firstAddress,
         isConnected: Boolean(apikey && isAuthorized),

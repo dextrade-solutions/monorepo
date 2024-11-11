@@ -8,6 +8,7 @@ import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { ERC20 } from '../../../../app/constants/abi';
+import useAsset from '../../../hooks/asset/useAsset';
 
 export default function AllowanceStage({
   trade,
@@ -22,6 +23,7 @@ export default function AllowanceStage({
 }) {
   const { writeContract } = useWriteContract();
   const { data: walletClient } = useWalletClient();
+  const { connector } = useAsset(from);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
 
   const toSpendAmount = BigInt(parseEther(String(trade.amount1)));
@@ -40,6 +42,7 @@ export default function AllowanceStage({
     onChange(StageStatuses.requested);
     writeContract(
       {
+        connector,
         abi: ERC20,
         chainId: from.chainId,
         address: from.contract,

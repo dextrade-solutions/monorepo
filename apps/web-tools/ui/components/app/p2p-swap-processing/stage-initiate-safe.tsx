@@ -6,6 +6,7 @@ import { useSwitchChain, useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
+import useAsset from '../../../hooks/asset/useAsset';
 
 export default function StageInitiateSafe({
   trade,
@@ -22,6 +23,7 @@ export default function StageInitiateSafe({
 }) {
   const { switchChain } = useSwitchChain();
   const { data: walletClient } = useWalletClient();
+  const { connector } = useAsset(from);
 
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
   const txSentHandlers = {
@@ -48,7 +50,7 @@ export default function StageInitiateSafe({
     onChange(StageStatuses.requested);
     setSendTransactionFailure('');
     switchChain(
-      { chainId: from.chainId },
+      { connector, chainId: from.chainId },
       {
         onSuccess: makeAtomicSwap,
         onError: (e) => {

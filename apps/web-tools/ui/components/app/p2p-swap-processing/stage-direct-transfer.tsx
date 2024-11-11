@@ -8,6 +8,7 @@ import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { parseAddress } from '../../../../app/helpers/utils';
 import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
+import { useAuthWallet } from '../../../hooks/useAuthWallet';
 
 export default function StageDirectTransfer({
   value,
