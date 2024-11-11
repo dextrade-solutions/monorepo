@@ -8,7 +8,6 @@ import {
   ListItemButton,
   ListItemAvatar,
 } from '@mui/material';
-import { shortenAddress } from 'dex-helpers';
 import { UrlIcon, ButtonIcon } from 'dex-ui';
 import React from 'react';
 
@@ -61,13 +60,7 @@ const LoginModal = ({ hideModal }: ModalProps) => {
                 <ListItemAvatar>
                   <UrlIcon size={40} url={item.icon} />
                 </ListItemAvatar>
-
-                <ListItemText
-                  primary={item.name}
-                  secondary={
-                    item.connected ? shortenAddress(item.connected.address) : ''
-                  }
-                />
+                <ListItemText primary={item.name} />
               </ListItemButton>
             </Box>
           ))}
