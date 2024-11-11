@@ -92,7 +92,7 @@ export type AdItem = {
   coinPair: CoinPair;
   exchangersPolicy?: string;
   lastActive?: number;
-  paymentMethod?: UserPaymentMethod;
+  paymentMethods: UserPaymentMethod[];
   isKycVerified: boolean;
   timeToRefund: number;
   provider?: string;

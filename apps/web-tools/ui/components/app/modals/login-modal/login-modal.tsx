@@ -24,10 +24,7 @@ const LoginModal = ({ hideModal }: ModalProps) => {
   const auth = useAuthP2P();
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
-    if (item.connected) {
-      await item.disconnect();
-    }
-    await item.connect();
+    await item.disconnect();
     await auth({
       wallet: item.name,
     });

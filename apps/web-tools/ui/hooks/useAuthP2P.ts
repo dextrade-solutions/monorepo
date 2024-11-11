@@ -11,7 +11,6 @@ import {
   login,
   setStatus,
 } from '../ducks/auth';
-import { useWeb3Connection } from '../helpers/utils/use-web3-connection';
 import { AppDispatch } from '../store/store';
 
 export function useAuthP2P() {
@@ -19,7 +18,7 @@ export function useAuthP2P() {
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
   const account = useAccount();
-  const connectWallet = useWeb3Connection();
+  // const connectWallet = useWeb3Connection();
   const { apikey } = useSelector(getAuth);
   const { signature } = useSelector(getSession);
   const { signMessage } = useSignMessage();
@@ -36,10 +35,18 @@ export function useAuthP2P() {
     wallet?: string;
     onSuccess?: (...args: any) => any;
   }) => {
+    engine.queryClient.removeQueries({
+      queryKey: ['authenticatedUser'],
+      exact: true,
+    });
     const connector =
       connectors.find((i) => i.name === wallet) || account.connector;
-    if (!account.isConnected) {
-      await connectWallet();
+    if (!connector) {
+      throw new Error('auth - no connector found');
+    }
+    const isConnected = await connector?.isAuthorized();
+    if (!isConnected) {
+      await connector.connect();
     }
     const onSignedMessage = async (result: string) => {
       await dispatch(login(keyring, result, connector.name));
