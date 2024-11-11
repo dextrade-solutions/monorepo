@@ -18,11 +18,10 @@ export default defineConfig({
         short_name: 'DexTrade P2P',
         start_url: '/',
         display: 'standalone',
-        background_color: '#f7f8fc',
         lang: 'en',
         scope: '/',
         description: 'P2P Exchange Marketplace',
-        theme_color: '#f7f8fc',
+        theme_color: '#26202e',
         orientation: 'portrait',
         icons: [
           {
