@@ -17,6 +17,8 @@ import {
   getFromToken,
   getFromTokenInputValue,
   getToToken,
+  setFromToken,
+  setToToken,
 } from '../../../ducks/swaps/swaps';
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -46,6 +48,12 @@ export default function P2PAds() {
         onSelect: (v) => setSortBy(v),
       }),
     );
+  };
+
+  const cleanFilter = () => {
+    setProviderName('');
+    dispatch(setFromToken(null));
+    dispatch(setToToken(null));
   };
 
   const filterModel = useMemo(
@@ -79,10 +87,6 @@ export default function P2PAds() {
     refetchInterval: 10 * SECOND,
   });
 
-  const handleSearchByProviderName = debounce((v: string) => {
-    setProviderName(v);
-  }, 500);
-
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
       pathname: EXCHANGE_VIEW_ROUTE,
@@ -109,6 +113,7 @@ export default function P2PAds() {
         alignItems="center"
       >
         <TextField
+          value={providerName}
           className="flex-grow"
           size="small"
           placeholder="Search by exchanger name"
@@ -120,7 +125,7 @@ export default function P2PAds() {
               </InputAdornment>
             ),
           }}
-          onChange={(e) => handleSearchByProviderName(e.target.value)}
+          onChange={(e) => setProviderName(e.target.value)}
         />
         <Box marginLeft={2}>
           <ButtonIcon
@@ -132,6 +137,18 @@ export default function P2PAds() {
             onClick={toggleSortPicker}
           />
         </Box>
+        {(fromToken || toToken || providerName) && (
+          <Box marginLeft={2}>
+            <ButtonIcon
+              iconProps={{
+                color: 'text.secondary',
+              }}
+              size="xl"
+              iconName="filter-clean"
+              onClick={() => cleanFilter()}
+            />
+          </Box>
+        )}
       </Box>
       <Box className="p2p-ads__list">
         {isEmptyResult && (

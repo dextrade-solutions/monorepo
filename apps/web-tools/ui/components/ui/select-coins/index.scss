@@ -204,12 +204,12 @@
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: center;
+        // justify-content: center;
         & button {
           padding: 8px 0;
           width: 100%;
           align-self: center;
-          text-transform: lowercase;
+          text-transform: initial;
         }
       }
 

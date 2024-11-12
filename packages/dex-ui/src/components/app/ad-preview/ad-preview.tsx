@@ -139,14 +139,22 @@ const AdPreview = ({
           </Box>
 
           {showPaymentMethods && (
-            <Box display="flex" marginTop={2}>
-              {ad.paymentMethods
-                .filter((paymentMethod) => !paymentMethod.data)
-                .map((paymentMethod) => (
-                  <Box marginRight={1}>
-                    <Chip label={paymentMethod.paymentMethod.name} />
-                  </Box>
-                ))}
+            <Box marginTop={2}>
+              {ad.paymentMethods.map((paymentMethod) => (
+                <Box display="inline-flex" alignItems="center" marginRight={2}>
+                  <Box
+                    sx={{
+                      width: 4,
+                      height: 14,
+                      bgcolor: 'primary.main',
+                      borderRadius: 1,
+                      opacity: 0.5,
+                    }}
+                    marginRight={2}
+                  />
+                  <Typography>{paymentMethod.paymentMethod.name}</Typography>
+                </Box>
+              ))}
             </Box>
           )}
         </CardContent>

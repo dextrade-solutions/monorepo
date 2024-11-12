@@ -1,29 +1,24 @@
-import { Box, Button, Collapse, Typography } from '@mui/material';
+import { Box, Button, Chip, Collapse, Typography } from '@mui/material';
 import classnames from 'classnames';
 import { getCoinIconByUid } from 'dex-helpers';
-import { UrlIcon } from 'dex-ui';
+import { Icon, UrlIcon } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUseCurrencyRateCheck } from '../../../selectors';
 
 export const SelectCoinsItemList = ({
   list,
   coin,
   hideItemIf,
-  showRateLabel,
   onChange,
   onImportToken,
   placeholder: Placeholder,
   onClose,
   onReset,
-  searchQuery,
 }) => {
   const t = useI18nContext();
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const handleReset = useCallback(
     (e) => {
@@ -46,14 +41,44 @@ export const SelectCoinsItemList = ({
     <>
       <ul className="select-coins__list">
         {Boolean(coin) && (
-          <li
+          <Box
+            as="li"
+            marginLeft={2}
+            marginY={1}
             className="select-coins__list__item__clear"
             key="select-coin-item-reset"
           >
-            <Button type="inline" onClick={handleReset}>
-              {t('reset')}
-            </Button>
-          </li>
+            <Typography marginRight={2}>Selected: </Typography>
+            <Chip
+              type="inline"
+              label={
+                <Box display="flex" alignItems="center" alignContent="center">
+                  {coin.uid && (
+                    <Box marginRight={1}>
+                      <UrlIcon
+                        marginRight={2}
+                        url={getCoinIconByUid(coin.uid)}
+                        name={coin.name}
+                      />
+                    </Box>
+                  )}
+                  <Typography
+                    fontWeight="bold"
+                    className="searchable-item-list__primary-label"
+                  >
+                    {`${coin.symbol}`}
+                  </Typography>
+                  {coin.standard && (
+                    <Typography marginLeft={1} fontWeight="light">
+                      {coin.standard.toUpperCase()}
+                    </Typography>
+                  )}
+                  <Icon marginLeft={1} name="close" size="sm" />
+                </Box>
+              }
+              onClick={handleReset}
+            ></Chip>
+          </Box>
         )}
         <TransitionGroup>
           {list.map(({ item, refIndex }) => {

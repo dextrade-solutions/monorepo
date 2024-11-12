@@ -45,7 +45,7 @@ export const SelectCoinsItemDropdown = ({
   inputRef,
   coin,
   items,
-  showRateLabel,
+  reversed,
   onChange,
   onClose,
   placeholder,
@@ -64,7 +64,7 @@ export const SelectCoinsItemDropdown = ({
   const [network, setNetwork] = useState(null);
   const [tokenForImport, setTokenForImport] = useState(null);
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
-  let itemsFiltered = items;
+  let itemsFiltered = items.filter((i) => i !== coin);
   if (network) {
     itemsFiltered = itemsFiltered.filter((i) => i.network === network.key);
   }
@@ -129,7 +129,9 @@ export const SelectCoinsItemDropdown = ({
         paddingRight={1}
         marginY={1}
       >
-        <Typography>{t('Select Coin')}</Typography>
+        <Typography fontWeight="bolder">
+          {reversed ? t('youGet') : t('youGive')}
+        </Typography>
         <ButtonIcon
           iconName="close"
           size="sm"
@@ -160,7 +162,7 @@ export const SelectCoinsItemDropdown = ({
         coin={coin}
         list={renderList}
         searchQuery={searchQuery}
-        showRateLabel={showRateLabel}
+        showRateLabel={reversed}
         onChange={handleChange}
         onImportToken={onImportToken}
         onClose={handleClose}
@@ -191,7 +193,7 @@ SelectCoinsItemDropdown.propTypes = {
   maxListItem: PropTypes.number.isRequired,
   coin: PropTypes.object,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
-  showRateLabel: PropTypes.bool,
+  reversed: PropTypes.bool,
   onChange: PropTypes.func,
   onClose: PropTypes.func,
   hideItemIf: PropTypes.func,
