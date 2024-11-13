@@ -10,7 +10,9 @@ import {
 } from '@mui/material';
 import { UrlIcon, ButtonIcon } from 'dex-ui';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
+import { clearAuthState } from '../../../../ducks/auth';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
@@ -19,11 +21,13 @@ import { ModalProps } from '../types';
 
 const LoginModal = ({ hideModal }: ModalProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const wallets = useWallets();
   const auth = useAuthP2P();
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
     await item.disconnect();
+    dispatch(clearAuthState());
     await auth({
       wallet: item.name,
     });

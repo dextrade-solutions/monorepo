@@ -22,7 +22,6 @@ import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { useAssetInput } from '../../../hooks/asset/useAssetInput';
 import { useAdValidation } from '../../../hooks/useAdValidation';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
-import { useAuthWallet } from '../../../hooks/useAuthWallet';
 import { useFee } from '../../../hooks/useFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
@@ -46,7 +45,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
 
   const auth = useAuthP2P();
-  const { walletInfo: connector } = useAuthWallet();
   const dispatch = useDispatch<AppDispatch>();
 
   const assetInputFrom = useAssetInput({
@@ -178,7 +176,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     try {
       setLoadingStartExchange(true);
       const result = await auth({
-        connector,
         onSuccess: (on401?: () => void) =>
           dispatch(
             createSwapP2P({

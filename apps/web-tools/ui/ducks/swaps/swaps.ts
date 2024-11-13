@@ -165,7 +165,6 @@ export const createSwapP2P = (props: {
           1000n,
       ].join('|');
     };
-    debugger;
 
     const exchangePairType = determineTradeTypeByAd(exchange);
     const response = await handleRequest(

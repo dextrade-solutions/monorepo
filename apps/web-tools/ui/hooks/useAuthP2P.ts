@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useAccount, useConnectors, useSignMessage } from 'wagmi';
 
+import { useAuthWallet } from './useAuthWallet';
 import { AuthStatus } from '../../app/constants/auth';
 import engine from '../../app/engine';
 import {
@@ -11,7 +12,6 @@ import {
   setStatus,
 } from '../ducks/auth';
 import { AppDispatch } from '../store/store';
-import { showModal } from '../ducks/app/app';
 
 export function useAuthP2P() {
   const { keyring } = engine.keyringController;
@@ -19,6 +19,7 @@ export function useAuthP2P() {
   const authStatus = useSelector(getAuthStatus);
   const account = useAccount();
   // const connectWallet = useWeb3Connection();
+  const authWallet = useAuthWallet();
   const { apikey } = useSelector(getAuth);
   const { signature } = useSelector(getSession);
   const { signMessage } = useSignMessage();
@@ -40,7 +41,10 @@ export function useAuthP2P() {
       exact: true,
     });
     const connector =
-      connectors.find((i) => i.name === wallet) || account.connector;
+      connectors.find((i) => i.name === wallet) ||
+      authWallet.walletInfo ||
+      account.connector;
+
     if (!connector) {
       throw new Error('auth - no connector found');
     }

@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
+// import mkcert from 'vite-plugin-mkcert';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
 import wasm from 'vite-plugin-wasm';
@@ -10,6 +11,7 @@ export default defineConfig({
   base: '/',
   plugins: [
     react(),
+    // mkcert(),
     VitePWA({
       includeAssets: ['images/*'],
       manifest: {
