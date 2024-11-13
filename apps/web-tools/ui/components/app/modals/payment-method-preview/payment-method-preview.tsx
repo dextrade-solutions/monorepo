@@ -1,9 +1,8 @@
 import '../styles.scss';
 import { Box, Modal } from '@mui/material';
+import { UserPaymentMethod } from 'dex-helpers/types';
+import { PaymentMethodExpanded } from 'dex-ui';
 import React from 'react';
-
-import { UserPaymentMethod } from '../../../../../app/types/dextrade';
-import PaymentMethodExpanded from '../../../ui/payment-method-display/payment-method-expanded';
 
 interface IProps {
   title: string;
@@ -11,11 +10,11 @@ interface IProps {
   onClose: () => void;
 }
 
-export const PaymentMethodPreview: React.FC<IProps> = ({
+export const PaymentMethodPreview = ({
   title,
   paymentMethod,
   onClose,
-}) => {
+}: IProps) => {
   return (
     <Modal open onClose={onClose}>
       <Box

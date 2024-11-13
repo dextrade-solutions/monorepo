@@ -7,6 +7,7 @@ import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
 import { AppDispatch, RootState } from '../store/store';
+import { showModal } from './app/app';
 
 export const getAuth = (state: RootState) => state.auth.authData;
 export const getAuthStatus = (state: RootState) => state.auth.authStatus;
@@ -79,7 +80,10 @@ export const login = (keyring: any, signature: string, wallet: string) => {
 
     const publicKey = Buffer.from(keyring.hdWallet.pubKey).toString('hex');
     const masterPublicKey = recoverPubKeyFromSignature(signature, publicKey);
-    const mnemonicHash = await generateMnemonicHash(masterPublicKey);
+
+    const mnemonicHash = await generateMnemonicHash(masterPublicKey).catch(
+      (e) => dispatch(showModal({ name: 'ALERT_MODAL', text: e.message })),
+    );
 
     const authData = await P2PService.login({
       mnemonicHash,
@@ -87,7 +91,7 @@ export const login = (keyring: any, signature: string, wallet: string) => {
       signature,
       publicKey,
       deviceId: navigator.userAgent,
-    });
+    }).catch((e) => {});
     // MOCK
     // const authData = {
     //   data: {

@@ -1,11 +1,11 @@
 import { remove0x } from '@metamask/utils';
 import { BUILT_IN_NETWORKS } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
-import { useCallback } from 'react';
+import { atomicService } from 'dex-services';
 import { parseEther, parseUnits } from 'viem';
 import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
 
-import { useAuthWallet } from './useAuthWallet';
+import useAsset from './asset/useAsset';
 import { ATOMIC_SWAP_ABI } from '../../app/constants/abi';
 import { SECOND } from '../../app/constants/time';
 import {
@@ -15,7 +15,6 @@ import {
 } from '../../app/helpers/atomic-swaps';
 import { unlockSafe } from '../../app/helpers/bitcoin/unlock-safe';
 import { isBtcTypeAsset } from '../../app/helpers/chain-helpers/is-btc-type-asset';
-import useAsset from './asset/useAsset';
 
 const getParsedExchangerParams = (trade: Trade) => {
   if (trade.exchangerParams) {
@@ -61,12 +60,11 @@ export const useAtomicSwap = (
   const expirationTo =
     isAtomicSwap && BigInt(BUILT_IN_NETWORKS[to.network]?.atomicSwapExpiration);
 
-  const toSpendAmount = BigInt(parseEther(exchange.amount1.toFixed(18)));
+  const toSpendAmount = BigInt(parseEther(exchange.amount1.toFixed(8)));
   const exchangerParams = getParsedExchangerParams(exchange);
   const toReceiveAmount =
     exchangerParams?.responderAmount ||
-    BigInt(parseEther(exchange.amount2.toFixed(18)));
-
+    BigInt(parseEther(exchange.amount2.toFixed(8)));
   const { hashLock: hashedPassword, password } = getTradeKeyPair(exchange.id);
 
   const fromAtomicSwap =
@@ -117,15 +115,15 @@ export const useAtomicSwap = (
 
   const initiateNewSwap = async (
     onSuccess: (txHash: string) => void,
-    onError: (e: any) => void,
+    onError: (e: unknown) => void,
   ) => {
-    // EXAMPLE:
-    // const msgSender = '0x14105076F374Afc0a77404D29448F66643311ca9';
-    // const recipient = '0x8b71d2EEbfbf321B9CfBB313c71b887f1cfE71db';
-    // const amount = BigInt(4999780803690692);
-    // const hashLock = this.hashPassword(password); // 0xc0f65f42c82cda15c51228e342b24f179394a98aca35e896c96026d7d07561ba
     if (!fromAtomicSwap) {
       throw new Error('initiateNewSwap - atomicSwap is not initialized');
+    }
+    const isConnected = await connector?.isAuthorized();
+
+    if (!isConnected) {
+      await connector?.connect();
     }
     writeContract(
       { connector, ...fromAtomicSwap.txParams },
@@ -136,59 +134,50 @@ export const useAtomicSwap = (
     );
   };
 
-  const claimSwap = useCallback(
-    (onSuccess?: (txHash: string) => void, onError?: (e: any) => void) => {
-      if (isBtcTypeAsset(to)) {
-        if (!exchange.exchangerSafe) {
-          throw new Error('exchangerSafe is not provided in trade');
-        }
-        unlockSafe({
-          secret: remove0x(password),
-          secretHash: remove0x(hashedPassword),
-          recipientAddress: exchange.clientWalletAddress,
-          refundTime: exchangerParams?.responderRefundTime,
-          networkName: to.network,
-          refundPKH: exchangerParams?.refundPKH,
-          utxo: {
-            txId: exchange.exchangerSafe.transactionHash,
-            vout: exchange.exchangerSafe.vout,
-            value: parseUnits(String(exchange.exchangerSafe.amount), 8),
-          },
-        })
-          .then(onSuccess)
-          .catch(onError);
-      } else {
-        
-        // writeContract(
-        //   {
-        //     chainId: to.chainId,
-        //     address: toAtomicSwapContract,
-        //     abi: ATOMIC_SWAP_ABI,
-        //     functionName: 'claimSwap',
-        //     args: [toAtomicSwap.swapId, password],
-        //   },
-        //   {
-        //     onSuccess,
-        //     onError,
-        //   },
-        // );
+  const claimSwap = ({
+    exchangerSafe,
+    onSuccess,
+    onError,
+  }: {
+    exchangerSafe: Trade['exchangerSafe'];
+    onSuccess?: (txHash: string) => void;
+    onError?: (e: unknown) => void;
+  }) => {
+    if (isBtcTypeAsset(to)) {
+      if (!exchangerSafe) {
+        throw new Error('exchangerSafe is not provided');
       }
-    },
-    [
-      exchange,
-      exchangerParams,
-      password,
-      hashedPassword,
-      to,
-      writeContract,
-      toAtomicSwapContract,
-      toAtomicSwap?.swapId,
-    ],
-  );
+      unlockSafe({
+        secret: remove0x(password),
+        secretHash: remove0x(hashedPassword),
+        recipientAddress: exchange.clientWalletAddress,
+        refundTime: exchangerParams?.responderRefundTime,
+        networkName: to.network,
+        refundPKH: exchangerParams?.refundPKH,
+        utxo: {
+          txId: exchangerSafe.transactionHash,
+          vout: exchangerSafe.vout,
+          value: parseUnits(String(exchangerSafe.amount), 8),
+        },
+      })
+        .then(onSuccess)
+        .catch(onError);
+    } else {
+      atomicService
+        .swapClaim({
+          swapId: toAtomicSwap.swapId,
+          password,
+          contractAddress: toAtomicSwapContract,
+          rateOfFeeInNative: '0',
+        })
+        .then(onSuccess)
+        .catch(onError);
+    }
+  };
 
   function refundSwap(
     onSuccess?: (txHash: string) => void,
-    onError?: (e: any) => void,
+    onError?: (e?: unknown) => void,
   ) {
     writeContract(
       {
@@ -200,9 +189,7 @@ export const useAtomicSwap = (
       },
       {
         onSuccess,
-        onError: (e) => {
-          console.error(e.message);
-        },
+        onError,
       },
     );
   }

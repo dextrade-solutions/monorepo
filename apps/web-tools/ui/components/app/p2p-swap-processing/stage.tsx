@@ -9,10 +9,12 @@ export default function Stage({
   status,
   title = 'Send transaction',
   subtitle,
+  loading,
   sendTransactionFailure,
 }: {
   title: string;
   subtitle?: ReactNode;
+  loading?: boolean;
   status: StageStatuses | null;
   sendTransactionFailure?: string;
   onRequest: () => void;
@@ -35,7 +37,7 @@ export default function Stage({
     case StageStatuses.failed:
       severity = 'error';
       action = (
-        <Button color="error" onClick={onRequest}>
+        <Button disabled={loading} color="error" onClick={onRequest}>
           Try again
         </Button>
       );
@@ -49,7 +51,12 @@ export default function Stage({
       severity = 'info';
       message = 'Please approve the transaction in your wallet';
       action = (
-        <Button variant="contained" size="small" onClick={onRequest}>
+        <Button
+          disabled={loading}
+          variant="contained"
+          size="small"
+          onClick={onRequest}
+        >
           Approve
         </Button>
       );
@@ -61,7 +68,7 @@ export default function Stage({
         <Box>
           <Typography fontWeight="bold">{title}</Typography>
           {subtitle}
-          {message}
+          {loading ? 'Loading...' : message}
         </Box>
       </Alert>
     </Box>

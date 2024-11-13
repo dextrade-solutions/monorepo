@@ -10,6 +10,8 @@ import {
 
 import engine from '../../../app/engine';
 import { genKeyPair } from '../../../app/helpers/atomic-swaps';
+import { getRedeemAndRefundAddress } from '../../../app/helpers/bitcoin/utils';
+import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
 import {
   determineTradeTypeByAd,
   getSerializedAddressFromInput,
@@ -136,18 +138,34 @@ export const createSwapP2P = (props: {
     }
     const keypair = genKeyPair();
     const generateRequestString = () => {
+      let toRedeemAddress;
+      let fromRefundAddress;
+      if (isBtcTypeAsset(to.asset)) {
+        toRedeemAddress = getRedeemAndRefundAddress(
+          to.asset.network,
+        ).redeemAddress;
+      } else {
+        toRedeemAddress = remove0x(to.account?.address);
+      }
+
+      if (isBtcTypeAsset(from.asset)) {
+        fromRefundAddress = getRedeemAndRefundAddress(from.asset.network).refundAddress;
+      } else {
+        fromRefundAddress = remove0x(from.account?.address);
+      }
       return [
         `${exchange.fromCoin.ticker}_${exchange.fromCoin.networkType || 'NATIVE'}`,
         `${exchange.toCoin.ticker}_${exchange.toCoin.networkType || 'NATIVE'}`,
         from.amount,
         to.amount,
         remove0x(keypair.hashLock),
-        to.accountConnected?.redeemAddress,
-        from.accountConnected?.refundAddress,
+        toRedeemAddress,
+        fromRefundAddress,
         BUILT_IN_NETWORKS[exchange.fromCoin.networkName].atomicSwapExpiration /
           1000n,
       ].join('|');
     };
+    debugger;
 
     const exchangePairType = determineTradeTypeByAd(exchange);
     const response = await handleRequest(

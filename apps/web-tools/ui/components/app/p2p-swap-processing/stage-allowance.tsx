@@ -33,7 +33,7 @@ export default function AllowanceStage({
     address: from.contract,
     functionName: 'allowance',
     args: [
-      walletClient?.account.address,
+      '0x8b71d2EEbfbf321B9CfBB313c71b887f1cfE71db' || trade.clientWalletAddress,
       BUILT_IN_NETWORKS[from.network]?.atomicSwapContract,
     ],
   });
@@ -95,6 +95,7 @@ export default function AllowanceStage({
           </Typography>
         )
       }
+      loading={tokenApproval.isLoading}
       onRequest={approveSpendAmount}
       sendTransactionFailure={sendTransactionFailure}
       status={value}

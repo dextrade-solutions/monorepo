@@ -154,7 +154,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const onInputAmountFrom = (v) => {
     assetInputFrom.setInputAmount(v);
-
     assetInputTo.setLoading(true);
     recalculateTo(v);
   };

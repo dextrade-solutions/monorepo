@@ -1,6 +1,5 @@
-import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Connector, useAccount, useConnectors, useSignMessage } from 'wagmi';
+import { useAccount, useConnectors, useSignMessage } from 'wagmi';
 
 import { AuthStatus } from '../../app/constants/auth';
 import engine from '../../app/engine';
@@ -12,6 +11,7 @@ import {
   setStatus,
 } from '../ducks/auth';
 import { AppDispatch } from '../store/store';
+import { showModal } from '../ducks/app/app';
 
 export function useAuthP2P() {
   const { keyring } = engine.keyringController;

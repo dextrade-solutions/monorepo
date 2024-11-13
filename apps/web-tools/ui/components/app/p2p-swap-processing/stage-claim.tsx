@@ -16,10 +16,11 @@ export function StageClaim({
   safe2?: any;
   value: StageStatuses | null;
   onChange: (status: StageStatuses) => void;
-  claimSwap: () => void;
+  claimSwap: (opts: any) => void;
 }) {
   const awaitingClaimSwap =
     trade.exchangerSettings.isAtomicSwap && trade.exchangerSafe;
+  const loading = !trade.exchangerSafe;
 
   const onClaim = useCallback(() => {
     const claimSwapHandlers = {
@@ -35,7 +36,7 @@ export function StageClaim({
         onChange(StageStatuses.failed);
       },
     };
-    claimSwap(claimSwapHandlers.onSuccess, claimSwapHandlers.onError);
+    claimSwap({ exchangerSafe: trade.exchangerSafe, ...claimSwapHandlers });
   }, [trade, claimSwap, onChange]);
 
   useEffect(() => {
@@ -47,5 +48,12 @@ export function StageClaim({
     }
   }, [trade, awaitingClaimSwap]);
 
-  return <Stage title="Claiming safe" onRequest={onClaim} status={value} />;
+  return (
+    <Stage
+      loading={loading}
+      title="Claiming safe"
+      onRequest={onClaim}
+      status={value}
+    />
+  );
 }

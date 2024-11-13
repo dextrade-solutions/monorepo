@@ -29,7 +29,7 @@ export default function StageInitiateSafe({
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
       onChange(StageStatuses.success);
-      exchangeService.clientSendSafe({
+      exchangeService.retrieveClientSafe({
         exchangeId: trade.id,
         transactionHash: txHash,
         address: trade.exchangerWalletAddress,
@@ -48,6 +48,7 @@ export default function StageInitiateSafe({
 
   const initiateNewTx = () => {
     onChange(StageStatuses.requested);
+
     setSendTransactionFailure('');
     switchChain(
       { connector, chainId: from.chainId },
@@ -66,7 +67,8 @@ export default function StageInitiateSafe({
     if (
       value !== StageStatuses.requested &&
       walletClient &&
-      trade?.status === TradeStatus.new
+      trade?.status === TradeStatus.new &&
+      !trade.clientSafe
     ) {
       initiateNewTx();
     } else if (trade.clientSafe || trade.exchangerSafe) {

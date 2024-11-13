@@ -346,7 +346,7 @@ const TradeHistoryRowModal = ({
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => claimSwap()}
+                  onClick={() => claimSwap({})}
                 >
                   Claim
                 </Button>
