@@ -214,6 +214,7 @@ export class User<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
     this.request<UserModel, Record<string, string>>({
       path: `/api/user/current`,
       method: "GET",
+      format: 'json',
       ...params,
     });
 }

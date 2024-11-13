@@ -1,4 +1,5 @@
 import { Aml } from './Aml';
+import { Atomic } from './Atomic';
 import { Exchange } from './Exchange';
 import { Kyc } from './Kyc';
 import { Payment } from './Payment';
@@ -45,3 +46,4 @@ export const amlService = new Aml(opts);
 export const paymentService = new Payment(opts);
 export const exchangeService = new Exchange(opts);
 export const userService = new User(opts);
+export const atomicService = new Atomic(opts);

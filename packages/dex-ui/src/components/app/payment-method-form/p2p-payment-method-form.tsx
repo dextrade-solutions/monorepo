@@ -18,6 +18,7 @@ import {
 import { paymentService } from 'dex-services';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const PAYMENT_METHOD_FORM_FIELDS = {
   TEXT_AREA: TextareaAutosize,
@@ -76,7 +77,7 @@ export const PaymentMethodForm = ({
   paymentMethodCreateOrUpdate = (data) =>
     paymentService.save(data, { method: data.id ? 'PUT' : 'POST' }),
 }) => {
-  const t = useI18nContext();
+  const { t } = useTranslation();
   const [formValues, setFormValues] = useState(
     edit || {
       currency,

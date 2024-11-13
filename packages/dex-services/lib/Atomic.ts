@@ -20,7 +20,7 @@ export class Atomic<SecurityDataType = unknown> extends HttpClient<SecurityDataT
    * @name GetStatistics2
    * @request POST:/api/atomic/swap/claim
    */
-  getStatistics2 = (data: ClaimSwapOwnerModel, params: RequestParams = {}) =>
+  swapClaim = (data: ClaimSwapOwnerModel, params: RequestParams = {}) =>
     this.request<string, Record<string, string>>({
       path: `/api/atomic/swap/claim`,
       method: "POST",

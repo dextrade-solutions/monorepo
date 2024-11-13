@@ -4,10 +4,11 @@ import { CopyData } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import Image from '../../ui/image';
 
 export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
-  const t = useTranslation();
+  const { t } = useTranslation();
   const fields = JSON.parse(item.data);
 
   function getOutput(fieldKey, value) {

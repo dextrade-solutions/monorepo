@@ -4,5 +4,22 @@
   "copiedExclamation": "Copied",
   "approvalTimerP2PLabel": "Approval time",
   "approvalTimerP2PInfo": "If you do not confirm the exchange in the time, it will be automatically cancelled",
-  "approveRefundAfterTimeLock": "Time lock"
+  "approveRefundAfterTimeLock": "Time lock",
+  "ADDITIONAL_INFO": "Additional info",
+  "CARD_NUMBER": "Card number",
+  "IBAN": "IBAN",
+  "IBAN_OR_CARD_NUMBER": "IBAN or card number",
+  "IMAGE_QR": "Image QR",
+  "IMAGE": "Image",
+  "EMAIL": "Email",
+  "NUMBER_ONLY": "Number only",
+  "LAST_4_DIGITS": "Last 4 digits",
+  "PHONE": "Phone",
+  "USER_NAME": "User name",
+  "FULL_NAME": "Full name",
+  "BANK_NAME": "Bank name",
+  "ACCOUNT_OPENING_DEPARTMENT": "Bank account opening department",
+  "BAN": "Bank account",
+  "BANK_TRANSFER": "Bank transfer",
+  "WIRE_TRANSFER": "Wire transfer"
 }

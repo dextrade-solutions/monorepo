@@ -3,9 +3,9 @@ import { getStrPaymentMethodInstance } from 'dex-helpers';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import PaymentMethodExpanded from './payment-method-expanded';
 import { Icon } from '../../ui';
 import PaymentMethodPreview from '../modals/payment-method-preview';
+import PaymentMethodExpanded from '../payment-method-expanded';
 
 export default function PaymentMethodDisplay({
   title,
