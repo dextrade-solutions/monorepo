@@ -10,6 +10,8 @@ import {
   Typography,
 } from '@mui/material';
 import classNames from 'classnames';
+import { Trade } from 'dex-helpers/types';
+import { Icon } from 'dex-ui';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -17,9 +19,7 @@ import { InputMessage } from './input-message';
 import { MessageItem } from './types';
 import { UserMessage } from './user-message';
 import { DEXTRADE_HOST } from '../../../../app/helpers/constants';
-import { Trade } from '../../../../app/types/p2p-swaps';
 import { getSessionPublicKey } from '../../../ducks/auth';
-import { Icon } from 'dex-ui';
 
 export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
   const [wsChat, setWsChat] = useState<WebSocket | null>(null);
@@ -116,7 +116,7 @@ export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
       </CardActionArea>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Box maxHeight={400} overflow="scroll">
+          <Box maxHeight={400} overflow="auto">
             {messages.map((m, idx) => (
               <UserMessage key={idx} {...m} />
             ))}
