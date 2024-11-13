@@ -21,6 +21,7 @@ import {
   NewExchangeFiatModel,
   NewExchangeModel,
   ReserveExchangeModel,
+  RetrieveSafeRequestModel,
   SaveResponseModel,
   UUIDRequestModel,
 } from "./data-contracts";
@@ -70,6 +71,24 @@ export class Exchange<SecurityDataType = unknown> extends HttpClient<SecurityDat
   exchangerVerifyReserve = (data: ReserveExchangeModel, params: RequestParams = {}) =>
     this.request<SaveResponseModel[], Record<string, string>>({
       path: `/api/exchange/exchanger/verify/reserve`,
+      method: "POST",
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags exchange-controller
+   * @name RetrieveExchangerSafe
+   * @request POST:/api/exchange/exchanger/send/safe
+   */
+  retrieveExchangerSafe = (
+    data: RetrieveSafeRequestModel,
+    params: RequestParams = {},
+  ) =>
+    this.request<void, Record<string, string>>({
+      path: `/api/exchange/exchanger/send/safe`,
       method: "POST",
       body: data,
       type: ContentType.Json,
@@ -223,6 +242,24 @@ export class Exchange<SecurityDataType = unknown> extends HttpClient<SecurityDat
    * No description
    *
    * @tags exchange-controller
+   * @name RetrieveClientSafe
+   * @request POST:/api/exchange/client/send/safe
+   */
+  retrieveClientSafe = (
+    data: RetrieveSafeRequestModel,
+    params: RequestParams = {},
+  ) =>
+    this.request<void, Record<string, string>>({
+      path: `/api/exchange/client/send/safe`,
+      method: "POST",
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags exchange-controller
    * @name ConfirmClientTransaction
    * @request POST:/api/exchange/client/send/fiat
    */
@@ -250,17 +287,6 @@ export class Exchange<SecurityDataType = unknown> extends HttpClient<SecurityDat
   ) =>
     this.request<void, Record<string, string>>({
       path: `/api/exchange/client/send/crypto`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
-  clientSendSafe = (
-    data: { exchangeId: string; transactionHash: string; address: string; amount: number; vout?: 0 },
-    params: RequestParams = {},
-  ) =>
-    this.request<void, Record<string, string>>({
-      path: `/api/exchange/client/send/safe`,
       method: "POST",
       body: data,
       type: ContentType.Json,

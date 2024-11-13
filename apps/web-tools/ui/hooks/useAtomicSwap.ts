@@ -158,19 +158,20 @@ export const useAtomicSwap = (
           .then(onSuccess)
           .catch(onError);
       } else {
-        writeContract(
-          {
-            chainId: to.chainId,
-            address: toAtomicSwapContract,
-            abi: ATOMIC_SWAP_ABI,
-            functionName: 'claimSwap',
-            args: [toAtomicSwap.swapId, password],
-          },
-          {
-            onSuccess,
-            onError,
-          },
-        );
+        
+        // writeContract(
+        //   {
+        //     chainId: to.chainId,
+        //     address: toAtomicSwapContract,
+        //     abi: ATOMIC_SWAP_ABI,
+        //     functionName: 'claimSwap',
+        //     args: [toAtomicSwap.swapId, password],
+        //   },
+        //   {
+        //     onSuccess,
+        //     onError,
+        //   },
+        // );
       }
     },
     [

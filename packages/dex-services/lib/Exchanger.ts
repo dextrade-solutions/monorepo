@@ -19,6 +19,7 @@ import {
   IdNetworkModel,
   IdRequestModel,
   OnOffSettingsRequestModel,
+  PaymentMethodsDeleteModel,
   ReserveModel,
   ReserveRequestModel,
   UserSessionInfoModel,
@@ -49,17 +50,12 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request POST:/api/exchanger/status
    */
   onOffSetting = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: OnOffSettingsRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<void, Record<string, string>>({
       path: `/api/exchanger/status`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -102,16 +98,11 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request GET:/api/exchanger/reserve
    */
   reserveList = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     params: RequestParams = {},
   ) =>
     this.request<ReserveModel[], Record<string, string>>({
       path: `/api/exchanger/reserve`,
       method: "GET",
-      query: query,
       ...params,
     });
   /**
@@ -122,17 +113,12 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request POST:/api/exchanger/reserve
    */
   createReserve = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: ReserveModel,
     params: RequestParams = {},
   ) =>
     this.request<void, Record<string, string>>({
       path: `/api/exchanger/reserve`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -145,17 +131,12 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request POST:/api/exchanger/reserve/list
    */
   createReserve1 = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: ReserveRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<ReserveModel[], Record<string, string>>({
       path: `/api/exchanger/reserve/list`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -215,6 +196,21 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
   deleteExchange = (data: IdRequestModel, params: RequestParams = {}) =>
     this.request<void, Record<string, string>>({
       path: `/api/exchanger/delete/setting`,
+      method: "POST",
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags exchanger-controller
+   * @name DeletePaymentMethodFromExchangerSettings
+   * @request POST:/api/exchanger/delete/payment-method/from/exchanger-settings
+   */
+  deletePaymentMethodFromExchangerSettings = (data: PaymentMethodsDeleteModel[], params: RequestParams = {}) =>
+    this.request<void, Record<string, string>>({
+      path: `/api/exchanger/delete/payment-method/from/exchanger-settings`,
       method: "POST",
       body: data,
       type: ContentType.Json,
@@ -313,16 +309,11 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request GET:/api/exchanger/settings
    */
   getUserSettingsByUserId = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     params: RequestParams = {},
   ) =>
     this.request<ExchangerSettingsInfoModel[], Record<string, string>>({
       path: `/api/exchanger/settings`,
       method: "GET",
-      query: query,
       ...params,
     });
   /**
@@ -334,16 +325,11 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
    */
   getUserSettingsById = (
     id: number,
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     params: RequestParams = {},
   ) =>
     this.request<ExchangerSettingsInfoModel, Record<string, string>>({
       path: `/api/exchanger/settings/${id}`,
       method: "GET",
-      query: query,
       ...params,
     });
   /**

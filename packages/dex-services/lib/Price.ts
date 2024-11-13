@@ -9,29 +9,21 @@
  * ---------------------------------------------------------------
  */
 
-import { StatisticRequestModel, StatisticResponseModel } from "./data-contracts";
+import { PriceResponseModel } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
-export class Statistics<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Price<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @tags statistics-controller
-   * @name GetStatistics
-   * @request POST:/api/statistics
+   * @tags price-controller
+   * @name GetByAggregatorAndPair
+   * @request POST:/public/price/by/uuids
    */
-  getStatistics = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
-    data: StatisticRequestModel,
-    params: RequestParams = {},
-  ) =>
-    this.request<StatisticResponseModel, Record<string, string>>({
-      path: `/api/statistics`,
+  getByAggregatorAndPair = (data: string[], params: RequestParams = {}) =>
+    this.request<PriceResponseModel[], Record<string, string>>({
+      path: `/public/price/by/uuids`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,

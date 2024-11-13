@@ -21,17 +21,12 @@ export class User<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * @request POST:/api/user/update
    */
   update = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: UserModel,
     params: RequestParams = {},
   ) =>
     this.request<void, Record<string, string>>({
       path: `/api/user/update`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -119,16 +114,11 @@ export class User<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * @request POST:/api/user/delete
    */
   delete = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     params: RequestParams = {},
   ) =>
     this.request<void, Record<string, string>>({
       path: `/api/user/delete`,
       method: "POST",
-      query: query,
       ...params,
     });
   /**
@@ -224,7 +214,6 @@ export class User<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
     this.request<UserModel, Record<string, string>>({
       path: `/api/user/current`,
       method: "GET",
-      format: 'json',
       ...params,
     });
 }

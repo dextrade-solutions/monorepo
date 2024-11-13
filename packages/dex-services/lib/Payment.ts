@@ -15,10 +15,12 @@ import {
   IdRequestModel,
   PaymentBalanceUpdateModel,
   PaymentCallBackModel,
+  PaymentCreateExchangeRequestModel,
   PaymentInfoModel,
   PaymentMethodCurrencyModel,
   PaymentMethodsCreateModel,
   PaymentMethodsModel,
+  PaymentOrderResponseModel,
   PaymentPricesModel,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
@@ -95,6 +97,42 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
       method: "POST",
       body: data,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags payments-controller
+   * @name CreateExchange
+   * @request POST:/api/payment/exchange
+   */
+  createExchange = (data: PaymentCreateExchangeRequestModel, params: RequestParams = {}) =>
+    this.request<string, Record<string, string>>({
+      path: `/api/payment/exchange`,
+      method: "POST",
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags payments-public-controller
+   * @name CreateCryptoCrypto1
+   * @request GET:/public/payment/dex/order/info
+   */
+  createCryptoCrypto1 = (
+    query: {
+      uuid: string;
+      /** api key */
+      "api-key": any;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<PaymentOrderResponseModel, Record<string, string>>({
+      path: `/public/payment/dex/order/info`,
+      method: "GET",
+      query: query,
       ...params,
     });
   /**

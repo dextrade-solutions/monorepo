@@ -9,20 +9,20 @@
  * ---------------------------------------------------------------
  */
 
-import { UtilsUTXORequestModel, UtilsUTXOResponseModel } from "./data-contracts";
+import { ClaimSwapOwnerModel } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
-export class Utils<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Atomic<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @tags utils-controller
-   * @name GetUtxo
-   * @request POST:/api/utils/utxo
+   * @tags atomic-swap-controller
+   * @name GetStatistics2
+   * @request POST:/api/atomic/swap/claim
    */
-  getUtxo = (data: UtilsUTXORequestModel, params: RequestParams = {}) =>
-    this.request<UtilsUTXOResponseModel, Record<string, string>>({
-      path: `/api/utils/utxo`,
+  getStatistics2 = (data: ClaimSwapOwnerModel, params: RequestParams = {}) =>
+    this.request<string, Record<string, string>>({
+      path: `/api/atomic/swap/claim`,
       method: "POST",
       body: data,
       type: ContentType.Json,

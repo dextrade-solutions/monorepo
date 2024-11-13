@@ -21,17 +21,12 @@ export class Aml<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request POST:/api/aml/transaction
    */
   checkTransaction = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: AmlTransactionRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<string, Record<string, string>>({
       path: `/api/aml/transaction`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -44,17 +39,12 @@ export class Aml<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request POST:/api/aml/exchange
    */
   checkExchange = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: AmlExchangeRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<string, Record<string, string>>({
       path: `/api/aml/exchange`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,
@@ -67,17 +57,12 @@ export class Aml<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request POST:/api/aml/address
    */
   checkAddress = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: AmlAddressRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<string, Record<string, string>>({
       path: `/api/aml/address`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,

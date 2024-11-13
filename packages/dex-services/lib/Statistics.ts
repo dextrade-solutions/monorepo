@@ -21,17 +21,12 @@ export class Statistics<SecurityDataType = unknown> extends HttpClient<SecurityD
    * @request POST:/api/statistics
    */
   getStatistics = (
-    query: {
-      /** api key */
-      "api-key": any;
-    },
     data: StatisticRequestModel,
     params: RequestParams = {},
   ) =>
     this.request<StatisticResponseModel, Record<string, string>>({
       path: `/api/statistics`,
       method: "POST",
-      query: query,
       body: data,
       type: ContentType.Json,
       ...params,

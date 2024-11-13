@@ -3,7 +3,7 @@
   "packageManager": "yarn@4.4.1",
   "type": "module",
   "scripts": {
-    "sw": "curl -o api-docs.json https://dev-api.dextrade.com/v3/api-docs && yarn swagger-typescript-api -p ./api-docs.json -o ./src/service --modular --module-name-index 1"
+    "sw": "curl -o api-docs.json https://dev-api.dextrade.com/v3/api-docs && yarn swagger-typescript-api -p ./api-docs.json -o ./lib --modular --module-name-index 1"
   },
   "devDependencies": {
     "swagger-typescript-api": "^13.0.22"

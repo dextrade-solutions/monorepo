@@ -87,6 +87,30 @@ export class Push<SecurityDataType = unknown> extends HttpClient<SecurityDataTyp
    * No description
    *
    * @tags push-controller
+   * @name SendIosDev
+   * @request POST:/public/push/ios/dev
+   */
+  sendIosDev = (
+    query: {
+      title: string;
+      mnemonicHash: string;
+      deviceId: string;
+    },
+    data: string,
+    params: RequestParams = {},
+  ) =>
+    this.request<void, Record<string, string>>({
+      path: `/public/push/ios/dev`,
+      method: "POST",
+      query: query,
+      body: data,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags push-controller
    * @name SendAndroid
    * @request POST:/public/push/android
    */

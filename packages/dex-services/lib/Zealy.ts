@@ -9,33 +9,35 @@
  * ---------------------------------------------------------------
  */
 
-import { TestModel } from "./data-contracts";
+import { ZealyAuthRequestModel } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
-export class Test<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Zealy<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
-   * @tags test-controller
-   * @name TestWithoutBody
-   * @request POST:/api/test/without-body
+   * @tags zealy-controller
+   * @name Task
+   * @request POST:/public/zealy/task
    */
-  testWithoutBody = (params: RequestParams = {}) =>
-    this.request<string, Record<string, string>>({
-      path: `/api/test/without-body`,
+  task = (data: ZealyAuthRequestModel, params: RequestParams = {}) =>
+    this.request<void, Record<string, string>>({
+      path: `/public/zealy/task`,
       method: "POST",
+      body: data,
+      type: ContentType.Json,
       ...params,
     });
   /**
    * No description
    *
-   * @tags test-controller
-   * @name TestWithBody
-   * @request POST:/api/test/with-body
+   * @tags zealy-controller
+   * @name Task2
+   * @request POST:/public/zealy/taskDextradeCom
    */
-  testWithBody = (data: TestModel, params: RequestParams = {}) =>
-    this.request<string, Record<string, string>>({
-      path: `/api/test/with-body`,
+  task2 = (data: ZealyAuthRequestModel, params: RequestParams = {}) =>
+    this.request<void, Record<string, string>>({
+      path: `/public/zealy/taskDextradeCom`,
       method: "POST",
       body: data,
       type: ContentType.Json,

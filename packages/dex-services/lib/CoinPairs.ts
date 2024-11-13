@@ -22,7 +22,7 @@ export class CoinPairs<SecurityDataType = unknown> extends HttpClient<SecurityDa
    */
   listCurrencyByPair = (
     query: {
-      currency: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
+      currency: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
     },
     params: RequestParams = {},
   ) =>
@@ -56,12 +56,12 @@ export class CoinPairs<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags pairs-controller
-   * @name GetByAggregatorAndPair
+   * @name GetByAggregatorAndPair1
    * @request GET:/api/coin-pairs/by/currency-and-pair
    */
-  getByAggregatorAndPair = (
+  getByAggregatorAndPair1 = (
     query: {
-      currencies: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
+      currencies: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
       nameFrom: string;
       nameTo: string;
     },
@@ -82,7 +82,7 @@ export class CoinPairs<SecurityDataType = unknown> extends HttpClient<SecurityDa
    */
   listAllCurrencies1 = (params: RequestParams = {}) =>
     this.request<
-      ("BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE")[],
+      ("BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE")[],
       Record<string, string>
     >({
       path: `/api/coin-pairs/all/currencies`,

@@ -9,42 +9,135 @@
  * ---------------------------------------------------------------
  */
 
-export interface PaymentCallBackModel {
-  event_type?: string;
-  payload?: PaymentPayloadModel[];
+export interface ZealyAccountsModel {
+  email?: string;
+  wallet?: string;
+  discord?: ZealyDiscordModel;
+  twitter?: ZealyTwitterModel;
+  "zealy-connect"?: string;
 }
 
-export interface PaymentCurrencyModel {
-  iso?: string;
+export interface ZealyAuthRequestModel {
+  userId?: string;
+  communityId?: string;
+  subdomain?: string;
+  questId?: string;
+  requestId?: string;
+  accounts?: ZealyAccountsModel;
 }
 
-export interface PaymentPayloadModel {
-  /** @format int64 */
-  id?: number;
-  amount?: string;
+export interface ZealyDiscordModel {
+  id?: string;
+  handle?: string;
+}
+
+export interface ZealyTwitterModel {
+  id?: string;
+  username?: string;
+}
+
+export interface UtilsUTXORequestModel {
+  address?: string;
+  currency?: "ETH" | "BNB" | "TRX" | "BTC" | "USDT";
+  sortedValuesByKeyAsString?: string;
+}
+
+export interface UtilsUTXODataModel {
   txid?: string;
-  type?: string;
-  from_address?: string;
-  to_address?: string;
-  /** @format int32 */
-  confirmations?: number;
-  /** @format int32 */
-  blockchain_status?: number;
-  /** @format int32 */
-  status?: number;
-  network_fee?: string;
-  user?: PaymentPayloadUserModel;
-  currency?: PaymentCurrencyModel;
+  /** @format int64 */
+  vout?: number;
+  amount?: number;
 }
 
-export interface PaymentPayloadUserModel {
+export interface UtilsUTXOResponseModel {
+  data?: UtilsUTXODataModel[];
+}
+
+export interface ProviderExchangerSettingsStatusRequestModel {
+  projectName?: string;
   /** @format int64 */
-  id?: number;
-  external_id?: string;
+  exchangerSettingsId?: number;
+  status?: boolean;
   /** @format int64 */
-  project_id?: number;
+  userId?: number;
+}
+
+export interface CoinCreateModel {
+  ticker?: string;
+  tokenName?: string;
+  uuid?: string;
+  networkType?: string;
+  networkName?:
+    | "ethereum"
+    | "tron"
+    | "the_open_network"
+    | "binance_smart_chain"
+    | "binance_chain"
+    | "polygon"
+    | "optimism"
+    | "gnosis"
+    | "fantom"
+    | "avalanche"
+    | "solana"
+    | "bitcoin"
+    | "elrond"
+    | "litecoin"
+    | "dash"
+    | "dogecoin"
+    | "zcash"
+    | "ecash"
+    | "bitcoin_cash"
+    | "fiat"
+    | "arbitrumOne"
+    | "xdc_network";
+}
+
+export interface CoinPairsCreateModel {
+  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  price?: number;
+}
+
+export interface ProviderOptionalExchangerSettingsModel {
+  minimumExchangeAmountCoin1?: number;
+  maximumExchangeAmountCoin1?: number;
+  priceAdjustment?: number;
+  transactionFee?: number;
+  active?: boolean;
+  /** @format double */
+  amlRiskLimit?: number;
+  /** @format double */
+  slippage?: number;
+  reserveLimitation?: number;
   /** @format int64 */
-  status?: number;
+  timeToPay?: number;
+  tradeWithKycUsers?: boolean;
+}
+
+export interface ProviderUserExchangerSettingsUpdateModel {
+  projectName?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  userId?: number;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  fromCoin?: CoinCreateModel;
+  toCoin?: CoinCreateModel;
+  coinPair?: CoinPairsCreateModel;
+  exchangersPolicy?: string;
+  optionalSettings?: ProviderOptionalExchangerSettingsModel;
+}
+
+export interface ProviderExchangerSettingsResponseModel {
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  reversedExchangerSettingsId?: number;
+}
+
+export interface ProviderExchangerSettingsListRequestModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
 }
 
 export interface BankDictModel {
@@ -100,6 +193,7 @@ export interface CoinModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -107,7 +201,8 @@ export interface CoinModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   /** @format int64 */
   networkId?: number;
 }
@@ -124,7 +219,7 @@ export interface CoinPairsModel {
   price?: number;
   priceCoin1InUsdt?: number;
   priceCoin2InUsdt?: number;
-  currencyAggregator?: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
+  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
   flipped?: boolean;
   /** @format int64 */
   parentId?: number;
@@ -137,6 +232,174 @@ export interface CountryDictModel {
   id?: number;
   iso?: string;
   name?: string;
+}
+
+export interface ExchangerSettingsInfoModel {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  userId?: number;
+  active?: boolean;
+  priceAdjustment?: number;
+  transactionFee?: number;
+  walletAddress?: string;
+  walletAddressInNetwork2?: string;
+  coinPair?: CoinPairsModel;
+  from?: CoinModel;
+  to?: CoinModel;
+  reserve?: ReserveModel[];
+  reserveSum?: number;
+  priceCoin1InCoin2?: number;
+  minimumExchangeAmountCoin1?: number;
+  minimumExchangeAmountCoin2?: number;
+  maximumExchangeAmountCoin1?: number;
+  maximumExchangeAmountCoin2?: number;
+  reserveLimitation?: number;
+  /** @format int64 */
+  timeToPay?: number;
+  exchangersPolicy?: string;
+  paymentMethods?: PaymentMethodsModel[];
+  statistic?: StatisticModel;
+  isAtomicSwap?: boolean;
+  /** @format int64 */
+  timeToRefund?: number;
+  /** @format double */
+  slippage?: number;
+  /** @format int64 */
+  lastActive?: number;
+  /** @format double */
+  amlRiskLimit?: number;
+  officialMerchant?: boolean;
+  tradeWithKycUsers?: boolean;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  /** @format int64 */
+  cdt?: number;
+}
+
+export interface PaymentMethodCurrencyModel {
+  /** @format int64 */
+  id?: number;
+  iso?: string;
+  name?: string;
+}
+
+export interface PaymentMethodsModel {
+  /** @format int64 */
+  userPaymentMethodId?: number;
+  paymentMethod?: BankDictModel;
+  currency?: PaymentMethodCurrencyModel;
+  country?: CountryDictModel;
+  balance?: number;
+  balanceIsRequired?: boolean;
+  /** @format int64 */
+  userId?: number;
+  data?: string;
+}
+
+export interface ReserveModel {
+  /** @format int64 */
+  id?: number;
+  coin?: CoinModel;
+  reserveInCoin1?: number;
+  reserveInCoin2?: number;
+  reservedAmount?: number;
+  walletAddress?: string;
+  /** @format int64 */
+  userId?: number;
+}
+
+export interface StatisticModel {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  userId?: number;
+  /** @format int64 */
+  transactionCount?: number;
+  amountInCoinFrom?: number;
+  amountInCoinTo?: number;
+  amountInUsdt?: number;
+  amountInBTC?: number;
+  amountInETH?: number;
+  /** @format uuid */
+  exchangeId?: string;
+  /** @format date-time */
+  cdt?: string;
+}
+
+export interface ProviderUserCreateModel {
+  projectName?: string;
+  name?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface ProviderUserResponseModel {
+  /** @format int64 */
+  userId?: number;
+}
+
+export interface ProviderUserExchangerSettingsCreateModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  fromCoin?: CoinCreateModel;
+  toCoin?: CoinCreateModel;
+  coinPair?: CoinPairsCreateModel;
+  createReversedPair?: boolean;
+  exchangersPolicy?: string;
+  optionalSettings?: ProviderOptionalExchangerSettingsModel;
+  reversedOptionalSettings?: ProviderOptionalExchangerSettingsModel;
+}
+
+export interface PriceResponseModel {
+  /** @format int64 */
+  last_updated?: number;
+  /** @format int64 */
+  price_change_24h?: number;
+  price?: number;
+  uid?: string;
+}
+
+export interface PaymentCallBackModel {
+  event_type?: string;
+  payload?: PaymentPayloadModel[];
+}
+
+export interface PaymentCurrencyModel {
+  iso?: string;
+}
+
+export interface PaymentPayloadModel {
+  /** @format int64 */
+  id?: number;
+  amount?: string;
+  txid?: string;
+  type?: string;
+  from_address?: string;
+  to_address?: string;
+  /** @format int32 */
+  confirmations?: number;
+  /** @format int32 */
+  blockchain_status?: number;
+  /** @format int32 */
+  status?: number;
+  network_fee?: string;
+  user?: PaymentPayloadUserModel;
+  currency?: PaymentCurrencyModel;
+}
+
+export interface PaymentPayloadUserModel {
+  /** @format int64 */
+  id?: number;
+  external_id?: string;
+  /** @format int64 */
+  project_id?: number;
+  /** @format int64 */
+  status?: number;
 }
 
 export interface ExchangeModel {
@@ -152,6 +415,7 @@ export interface ExchangeModel {
   exchangerWalletAddress?: string;
   exchangerWalletAddressInNetwork2?: string;
   exchangerSentAmount?: number;
+  exchangerFee?: number;
   exchangerTransactionHash?: string;
   exchangerTransactionStatus?: "PENDING" | "FAILED" | "SEND" | "CONFIRMED" | "IN_PROGRESS";
   /** @format int64 */
@@ -187,8 +451,8 @@ export interface ExchangeModel {
   fromNetworkType?: string;
   toTicker?: string;
   toNetworkType?: string;
-  fromAggregator?: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
-  toAggregator?: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
+  fromAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  toAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
   exchangerBlockChain?:
     | "ethereum"
     | "tron"
@@ -202,6 +466,7 @@ export interface ExchangeModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -209,7 +474,8 @@ export interface ExchangeModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   clientBlockChain?:
     | "ethereum"
     | "tron"
@@ -223,6 +489,7 @@ export interface ExchangeModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -230,7 +497,8 @@ export interface ExchangeModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   exchangerSettings?: ExchangerSettingsInfoModel;
   statistic?: StatisticModel;
   statusHistory?: StatusHistoryModel[];
@@ -251,100 +519,24 @@ export interface ExchangeModel {
   clientTransactionRiskScore?: number;
   /** @format double */
   clientSentFromAddressRiskScore?: number;
-}
-
-export interface ExchangerSettingsInfoModel {
-  /** @format int64 */
-  id?: number;
-  /** @format int64 */
-  userId?: number;
-  active?: boolean;
-  priceAdjustment?: number;
-  transactionFee?: number;
-  walletAddress?: string;
-  walletAddressInNetwork2?: string;
-  coinPair?: CoinPairsModel;
-  from?: CoinModel;
-  to?: CoinModel;
-  reserve?: ReserveModel;
-  priceCoin1InCoin2?: number;
-  minimumExchangeAmountCoin1?: number;
-  minimumExchangeAmountCoin2?: number;
-  maximumExchangeAmountCoin1?: number;
-  maximumExchangeAmountCoin2?: number;
-  reserveLimitation?: number;
-  /** @format int64 */
-  timeToPay?: number;
-  exchangersPolicy?: string;
-  paymentMethod?: PaymentMethodsModel;
-  statistic?: StatisticModel;
-  isAtomicSwap?: boolean;
-  /** @format int64 */
-  timeToRefund?: number;
-  /** @format double */
-  slippage?: number;
-  /** @format int64 */
-  lastActive?: number;
-  /** @format double */
-  amlRiskLimit?: number;
-  /** @format int64 */
-  cdt?: number;
-}
-
-export interface PaymentMethodCurrencyModel {
-  /** @format int64 */
-  id?: number;
-  iso?: string;
-  name?: string;
-}
-
-export interface PaymentMethodsModel {
-  /** @format int64 */
-  userPaymentMethodId?: number;
-  paymentMethod?: BankDictModel;
-  currency?: PaymentMethodCurrencyModel;
-  country?: CountryDictModel;
-  balance?: number;
-  balanceIsRequired?: boolean;
-  /** @format int64 */
-  userId?: number;
-  data?: string;
+  clientSafe?: SafeModel;
+  exchangerSafe?: SafeModel;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
 }
 
 export interface RatingModel {
   positive?: boolean;
   feedback?: string;
-  /** @format date-time */
-  cdt?: string;
+  /** @format int64 */
+  cdt?: number;
 }
 
-export interface ReserveModel {
-  /** @format int64 */
-  id?: number;
-  coin?: CoinModel;
-  reserve?: number;
-  reservedAmount?: number;
-  walletAddress?: string;
-  /** @format int64 */
-  userId?: number;
-}
-
-export interface StatisticModel {
-  /** @format int64 */
-  id?: number;
-  /** @format int64 */
-  userId?: number;
-  /** @format int64 */
-  transactionCount?: number;
-  amountInCoinFrom?: number;
-  amountInCoinTo?: number;
-  amountInUsdt?: number;
-  amountInBTC?: number;
-  amountInETH?: number;
-  /** @format uuid */
-  exchangeId?: string;
-  /** @format date-time */
-  cdt?: string;
+export interface SafeModel {
+  transactionHash?: string;
+  address?: string;
+  amount?: number;
+  /** @format int32 */
+  vout?: number;
 }
 
 export interface StatusHistoryModel {
@@ -401,6 +593,7 @@ export interface ExchangerFilterModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -408,7 +601,8 @@ export interface ExchangerFilterModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   orderBy?: "BY_PRICE" | "BY_RATING" | "BY_RESERVE";
   toTicker?: string;
   toNetworkType?: string;
@@ -425,6 +619,7 @@ export interface ExchangerFilterModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -432,7 +627,8 @@ export interface ExchangerFilterModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   amountInCoin1?: number;
   /** @format int32 */
   rating?: number;
@@ -458,13 +654,13 @@ export interface ExchangerModel {
   /** @format int64 */
   timeToPay?: number;
   reserveLimitation?: number;
-  paymentMethod?: PaymentMethodsModel;
+  paymentMethods?: PaymentMethodsModel[];
   priceInCoin2?: number;
+  reserve?: ReserveModel[];
+  reserveSum?: number;
   feeInCoin1?: number;
-  reserveInCoin1?: number;
   transactionFee?: number;
   priceAdjustment?: number;
-  reserveInCoin2?: number;
   minimumExchangeAmountCoin1?: number;
   minimumExchangeAmountCoin2?: number;
   maximumExchangeAmountCoin1?: number;
@@ -504,9 +700,10 @@ export interface ExchangerModel {
   daysSinceFirstExchange?: number;
   /** @format int32 */
   counterpartiesCount?: number;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  officialMerchant?: boolean;
   hasReversed?: boolean;
   exchangerActive?: boolean;
-  exolix?: boolean;
 }
 
 export interface TotalRatingResponseModel {
@@ -566,6 +763,7 @@ export interface UserModel {
   lastName?: string;
   email?: string;
   phone?: string;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
   rating?: TotalRatingResponseModel;
   /** @format int32 */
   exchangeCount?: number;
@@ -596,6 +794,7 @@ export interface StatisticRequestModel {
   startTimestamp?: number;
   /** @format int64 */
   endTimestamp?: number;
+  ticker?: string;
 }
 
 export interface StatisticResponseModel {
@@ -630,6 +829,34 @@ export interface IdRequestModel {
   id?: number;
 }
 
+export interface PaymentCreateExchangeRequestModel {
+  addressTo?: string;
+  senderAddress?: string;
+  /** @format uuid */
+  exchangeId?: string;
+  rate?: number;
+  amountFrom?: number;
+  fromTicker?: string;
+  toTicker?: string;
+  fromNetworkType?: string;
+  toNetworkType?: string;
+}
+
+export interface PriceApiKeyInfoRequestModel {
+  apiKey?: string;
+}
+
+export interface PriceApiKeyRequestLimitModel {
+  /** @format int64 */
+  resetTimestamp?: number;
+  /** @format int32 */
+  monthLimit?: number;
+  /** @format int32 */
+  requestUsed?: number;
+  /** @format int32 */
+  requestLeft?: number;
+}
+
 export interface FeeEstimateModel {
   from?: string;
   to?: string;
@@ -647,6 +874,7 @@ export interface FeeEstimateModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -654,7 +882,8 @@ export interface FeeEstimateModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   data?: string;
   parameter?: string;
   contractAddress?: string;
@@ -679,7 +908,7 @@ export interface ExchangerSettingsCreateModel {
   coinPair?: CoinPairsModel;
   from?: CoinModel;
   to?: CoinModel;
-  reserve?: ReserveModel;
+  reserve?: ReserveModel[];
   priceCoin1InCoin2?: number;
   minimumExchangeAmountCoin1?: number;
   minimumExchangeAmountCoin2?: number;
@@ -688,7 +917,7 @@ export interface ExchangerSettingsCreateModel {
   reserveLimitation?: number;
   /** @format int64 */
   timeToPay?: number;
-  paymentMethod?: PaymentMethodsModel;
+  paymentMethods?: PaymentMethodsModel[];
   statistic?: StatisticModel;
   isAtomicSwap?: boolean;
   /** @format int64 */
@@ -698,12 +927,21 @@ export interface ExchangerSettingsCreateModel {
   exchangersPolicy?: string;
   /** @format double */
   amlRiskLimit?: number;
+  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  tradeWithKycUsers?: boolean;
 }
 
 export interface ReserveRequestModel {
   reserves?: ReserveModel[];
   /** @format int64 */
   timestamp?: number;
+}
+
+export interface PaymentMethodsDeleteModel {
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  paymentMethodId?: number;
 }
 
 export interface CreateRatingModel {
@@ -761,6 +999,7 @@ export interface ExchangeFilterModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -768,7 +1007,8 @@ export interface ExchangeFilterModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
   /** @format int64 */
   dateFrom?: number;
   /** @format int64 */
@@ -798,6 +1038,16 @@ export interface SaveResponseModel {
   name?: string;
 }
 
+export interface RetrieveSafeRequestModel {
+  /** @format uuid */
+  exchangeId?: string;
+  transactionHash?: string;
+  address?: string;
+  amount?: number;
+  /** @format int32 */
+  vout?: number;
+}
+
 export interface ExchangerSendFiatRequestModel {
   /** @format uuid */
   id?: string;
@@ -808,6 +1058,7 @@ export interface ExchangerSendCryptoRequestModel {
   /** @format uuid */
   id?: string;
   transactionHash?: string;
+  fee?: number;
   amount?: number;
 }
 
@@ -825,7 +1076,10 @@ export interface UUIDRequestModel {
 export interface NewExchangeModel {
   /** @format int64 */
   exchangerSettingsId?: number;
+  /** @format int64 */
+  exchangerPaymentMethodId?: number;
   clientWalletAddress?: string;
+  clientWalletAddressInNetwork2?: string;
   amount1?: number;
   amount2?: number;
   /** @format double */
@@ -856,7 +1110,7 @@ export interface NewExchangeFiatModel {
   amount1?: number;
   amount2?: number;
   /** @format int64 */
-  paymentMethodId?: number;
+  clientPaymentMethodId?: number;
   sessionId?: string;
   params?: string;
 }
@@ -871,6 +1125,13 @@ export interface ClientSendCryptoRequestModel {
 
 export interface ImageModel {
   data?: string;
+}
+
+export interface ClaimSwapOwnerModel {
+  swapId?: string;
+  password?: string;
+  rateOfFeeInNative?: string;
+  contractAddress?: string;
 }
 
 export interface AmlTransactionRequestModel {
@@ -903,6 +1164,11 @@ export interface TariffModel {
   isDefault?: boolean;
 }
 
+export interface SettingsModel {
+  isP2PEnabled?: boolean;
+  isKycEnabled?: boolean;
+}
+
 export interface ReviewModel {
   /** @format int64 */
   id?: number;
@@ -920,6 +1186,16 @@ export interface ReviewModel {
   comment?: string;
   /** @format int64 */
   cdt?: number;
+}
+
+export interface PaymentOrderInvoiceModel {
+  address?: string;
+}
+
+export interface PaymentOrderResponseModel {
+  invoice?: PaymentOrderInvoiceModel;
+  /** @format int32 */
+  status?: number;
 }
 
 export interface UserSessionInfoModel {
@@ -984,6 +1260,17 @@ export interface KycModel {
   status?: "AWAITING" | "UNUSED" | "PENDING" | "VERIFIED" | "DECLINED";
 }
 
+export interface PriceApiKeyModel {
+  /** @format int64 */
+  id?: number;
+  apiKey?: string;
+  apiSecret?: string;
+  provider?: "COIN_MARKET_CUP";
+  purpose?: "SERVER" | "PLATFORM";
+  /** @format int32 */
+  requestLimit?: number;
+}
+
 export interface ExchangerMinModel {
   /** @format int64 */
   id?: number;
@@ -1006,6 +1293,7 @@ export interface IdNetworkModel {
     | "avalanche"
     | "solana"
     | "bitcoin"
+    | "elrond"
     | "litecoin"
     | "dash"
     | "dogecoin"
@@ -1013,13 +1301,14 @@ export interface IdNetworkModel {
     | "ecash"
     | "bitcoin_cash"
     | "fiat"
-    | "arbitrumOne";
+    | "arbitrumOne"
+    | "xdc_network";
 }
 
 export interface CoinPairAggregatorModel {
   /** @format int64 */
   id?: number;
-  currencyAggregator?: "BINANCE" | "COIN_GECKO" | "CRYPTO_COMPARE" | "COIN_PAPRICA" | "COIN_MARKET_CUP" | "FIXED_PRICE";
+  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
   price?: number;
   priceCoin1InUsdt?: number;
   priceCoin2InUsdt?: number;
