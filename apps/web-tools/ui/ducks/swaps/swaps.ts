@@ -182,11 +182,13 @@ export const createSwapP2P = (props: {
       }),
       { on401 },
     );
-    window.localStorage.setItem(response.data.id, JSON.stringify(keypair));
+    if (exchange.isAtomicSwap) {
+      window.localStorage.setItem(response.data.id, JSON.stringify(keypair));
+    }
     const activeTrades = (engine.queryClient.getQueryData(QUERY_KEY) ||
       []) as Trade[];
     const { data: newTrade } = await P2PService.exchangeById(response.data.id);
     engine.queryClient.setQueryData(QUERY_KEY, [newTrade, ...activeTrades]);
-    return response.data;
+    return response;
   };
 };

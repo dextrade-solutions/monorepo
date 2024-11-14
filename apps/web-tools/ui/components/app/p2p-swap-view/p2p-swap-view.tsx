@@ -190,7 +190,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           ),
       });
 
-      navigate(`${AWAITING_SWAP_ROUTE}/${result.id}`);
+      navigate(`${AWAITING_SWAP_ROUTE}/${result.data.id}`);
     } catch (e) {
       setLoadingStartExchange(false);
       console.error(e);

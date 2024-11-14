@@ -2,13 +2,11 @@ import { TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
-import { useWalletClient } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { parseAddress } from '../../../../app/helpers/utils';
 import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
-import { useAuthWallet } from '../../../hooks/useAuthWallet';
 
 export default function StageDirectTransfer({
   value,
@@ -38,7 +36,6 @@ export default function StageDirectTransfer({
     },
   };
 
-  const { data: walletClient } = useWalletClient();
   const { sendTransaction } = useSendTransaction(from);
 
   const initiateNewTx = () => {
@@ -50,7 +47,6 @@ export default function StageDirectTransfer({
   useEffect(() => {
     if (
       value !== StageStatuses.requested &&
-      walletClient &&
       trade?.status === TradeStatus.new
     ) {
       initiateNewTx();
