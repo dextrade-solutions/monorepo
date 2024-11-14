@@ -24,7 +24,7 @@ export function useTrade(tradeId?: string) {
         .catch(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrade?.status, tradeId]);
+  }, [currentTrade?.status, currentTrade?.exchangerSafe, tradeId]);
 
   return { isLoading: isLoading || loading, trade };
 }

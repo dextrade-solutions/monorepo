@@ -51,6 +51,7 @@ interface IProps {
 
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const t = useI18nContext();
+  console.log(exchange.exchangerSafe)
   const navigate = useNavigate();
   const [stagesStatuses, setStagesStatuses] = useState({
     allowance: null,

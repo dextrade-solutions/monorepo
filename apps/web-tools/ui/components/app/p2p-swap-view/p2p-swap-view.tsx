@@ -40,6 +40,7 @@ const RECALCULATE_DELAY = 1000;
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const [slippage, setSlippage] = useState(0.5);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
@@ -182,7 +183,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
               from: assetInputFrom,
               to: assetInputTo,
               exchange: ad,
-              slippage: 0.5,
+              slippage,
               exchangerPaymentMethodId,
               on401,
             }),
@@ -251,9 +252,20 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">
             <Typography marginRight={1}>Slippage Tolerance</Typography>
-            <ButtonIcon iconName="setting-dex" />
+            <ButtonIcon
+              onClick={() =>
+                dispatch(
+                  showModal({
+                    name: 'SLIPPAGE_MODAL',
+                    value: slippage,
+                    onChange: (v: number) => setSlippage(v),
+                  }),
+                )
+              }
+              iconName="setting-dex"
+            />
           </Box>
-          <Typography fontWeight="bold">0.5%</Typography>
+          <Typography fontWeight="bold">{slippage}%</Typography>
         </Box>
         {Boolean(outgoingFee && outgoingFee > 0 && assetInputFrom.native) && (
           <Box display="flex" justifyContent="space-between" marginTop={2}>

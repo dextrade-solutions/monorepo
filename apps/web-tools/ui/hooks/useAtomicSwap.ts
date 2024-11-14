@@ -168,7 +168,7 @@ export const useAtomicSwap = (
           swapId: toAtomicSwap.swapId,
           password,
           contractAddress: toAtomicSwapContract,
-          rateOfFeeInNative: '0',
+          rateOfFeeInNative: exchange.coinPair.priceCoin1InUsdt.toString(),
         })
         .then(onSuccess)
         .catch(onError);
