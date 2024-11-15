@@ -164,7 +164,6 @@ export default function P2PAds() {
                   <Box marginTop={1} marginBottom={1} key={i.id}>
                     <AdPreview
                       ad={i}
-                      hideTickers={Boolean(fromToken && toToken)}
                       fromTokenAmount={fromTokenInputValue}
                       onClick={() => handleAdPreviewClick(i)}
                     />
