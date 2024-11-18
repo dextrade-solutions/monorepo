@@ -13,6 +13,7 @@ import SetWallet from './set-wallet';
 import SlippageModal from './slippage-modal';
 import TradeHistoryRow from './trade-history-row-modal';
 import { ModalData } from './types';
+import WalletsList from './wallets-list';
 import { hideModal } from '../../../ducks/app/app';
 import { AppDispatch, RootState } from '../../../store/store';
 
@@ -25,6 +26,7 @@ const MODALS = {
   ITEM_PICKER: <ItemPicker />,
   LOGIN_MODAL: <LoginModal />,
   SLIPPAGE_MODAL: <SlippageModal />,
+  WALLETS_LIST: <WalletsList />,
   DEFAULT: null,
 };
 

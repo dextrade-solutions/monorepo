@@ -5,8 +5,9 @@ export default function useAccountBalance(
   chainId?: number,
 ) {
   const result = useBalance({
-    chainId,
     address,
+    chainId,
   });
+
   return result.data?.value;
 }

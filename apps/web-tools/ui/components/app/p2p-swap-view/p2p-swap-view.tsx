@@ -45,7 +45,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
 
-  const auth = useAuthP2P();
+  const { login } = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
 
   const assetInputFrom = useAssetInput({
@@ -139,16 +139,17 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
 
-  const { submitBtnText, hasValidationErrors, disabledBtn } = useAdValidation({
-    ad,
-    assetInputFrom,
-    assetInputTo,
-  });
   const { fee: outgoingFee } = useFee({
     asset: assetFrom,
     amount: assetInputFrom.amount,
     from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
     to: ad.walletAddress,
+  });
+  const { submitBtnText, hasValidationErrors, disabledBtn } = useAdValidation({
+    ad,
+    assetInputFrom,
+    assetInputTo,
+    outgoingFee,
   });
 
   const onInputAmountFrom = (v) => {
@@ -176,7 +177,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   } = {}) => {
     try {
       setLoadingStartExchange(true);
-      const result = await auth({
+      const result = await login({
+        wallet: assetInputFrom.configuredWallet?.name,
         onSuccess: (on401?: () => void) =>
           dispatch(
             createSwapP2P({

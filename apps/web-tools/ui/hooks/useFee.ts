@@ -14,7 +14,7 @@ type FeeParams = {
 
 const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const chainId = asset.chainId ? hexToNumber(asset.chainId) : null;
-  const estimateFee = useEstimateFeesPerGas({ chainId });
+  const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
 
   const txParams = generateTxParams({
     asset,
@@ -29,28 +29,27 @@ const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   }
 
   const estimateGas = useEstimateGas({ chainId, ...txParams });
-  if (estimateGas.data && estimateFee.data) {
+
+  if (estimateGas.data && estimateFeePerGas.data) {
     const fee =
       Number(
-        formatUnits(estimateGas.data * estimateFee.data.maxFeePerGas, 18),
+        formatUnits(estimateGas.data * estimateFeePerGas.data.maxFeePerGas, 18),
       ) * bufferMultiplier;
 
     return {
       fee,
-      feeNormalized: fee,
-      amountWithFeeExcluded: Number(amount) - fee,
       loading: false,
     };
   }
 
   return {
-    loading: false,
+    loading: true,
   };
 };
 
 const useSolFee = (params: FeeParams) => {
   return {
-    fee: 1,
+    fee: 0,
     loading: false,
   };
 };

@@ -7,11 +7,13 @@ type AdParams = {
   ad: AdItem;
   assetInputFrom: ReturnType<typeof useAssetInput>;
   assetInputTo: ReturnType<typeof useAssetInput>;
+  outgoingFee: number | undefined;
 };
 
 export function useAdValidation({
   assetInputFrom,
   assetInputTo,
+  outgoingFee,
   ad,
 }: AdParams) {
   const params = {
@@ -56,6 +58,12 @@ export function useAdValidation({
     params.disabledBtn = true;
     return params;
   }
+  if (!assetInputFrom.amount || !assetInputTo.amount) {
+    params.disabledBtn = true;
+    params.hasValidationErrors = true;
+    params.submitBtnText = 'Enter the amount to swap';
+    return params;
+  }
   if (
     assetInputFrom.amount &&
     Number(assetInputFrom.balance?.value) < Number(assetInputFrom.amount)
@@ -65,10 +73,13 @@ export function useAdValidation({
     params.disabledBtn = true;
     return params;
   }
-  if (!assetInputFrom.amount || !assetInputTo.amount) {
-    params.disabledBtn = true;
+  if (
+    outgoingFee &&
+    Number(assetInputFrom.balanceNative?.value) < outgoingFee
+  ) {
+    params.submitBtnText = `${assetInputFrom.balanceNative?.formattedValue} is insufficient for outgoing transaction fee`;
     params.hasValidationErrors = true;
-    params.submitBtnText = 'Enter the amount to swap';
+    params.disabledBtn = true;
     return params;
   }
   if (

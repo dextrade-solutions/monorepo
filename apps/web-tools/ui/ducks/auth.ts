@@ -131,9 +131,5 @@ export const logout = () => {
       queryKey: ['dextradeUser'],
       exact: true,
     });
-    queryClient.removeQueries({
-      queryKey: ['authenticatedUser'],
-      exact: true,
-    });
   };
 };

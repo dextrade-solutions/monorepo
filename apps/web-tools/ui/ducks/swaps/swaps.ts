@@ -189,6 +189,6 @@ export const createSwapP2P = (props: {
       []) as Trade[];
     const { data: newTrade } = await P2PService.exchangeById(response.data.id);
     engine.queryClient.setQueryData(QUERY_KEY, [newTrade, ...activeTrades]);
-    return response;
+    return response.data;
   };
 };

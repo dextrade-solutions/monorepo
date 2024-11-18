@@ -54,7 +54,7 @@ export const BUILT_IN_NETWORKS = {
     ...bscConfig,
     key: NetworkNames.binance,
     uid: 'binancecoin',
-    atomicSwapContract: '0x3be993d6a11d72bd1d99c143c4b65725e89fd994',
+    atomicSwapContract: '0x49007eaa009b59d5478e1609e0de54838788e05d',
     atomicSwapExpiration: BigInt(2 * MINUTE),
   },
   [NetworkNames.arbitrum]: {

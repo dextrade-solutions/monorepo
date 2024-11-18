@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react';
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { Trade } from '../../../../app/types/p2p-swaps';
+import { TradeStatus } from 'dex-helpers';
 
 export function StageClaim({
   value,
@@ -20,7 +21,7 @@ export function StageClaim({
 }) {
   const awaitingClaimSwap =
     trade.exchangerSettings.isAtomicSwap && trade.exchangerSafe;
-  const loading = !trade.exchangerSafe;
+  const loading = !trade.exchangerSafe && trade.status === TradeStatus.new;
 
   const onClaim = useCallback(() => {
     const claimSwapHandlers = {

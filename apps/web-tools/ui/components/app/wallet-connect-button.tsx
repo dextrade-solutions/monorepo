@@ -11,7 +11,7 @@ import { useAuthWallet } from '../../hooks/useAuthWallet';
 export default function WalletConnectButton() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isConnected, address, walletInfo } = useAuthWallet();
+  const { wallet, isConnected } = useAuthWallet();
 
   const onClick = () => {
     if (isConnected) {
@@ -32,14 +32,10 @@ export default function WalletConnectButton() {
       }}
       onClick={onClick}
     >
-      {isConnected ? shortenAddress(address) : 'Sign in'}
+      {isConnected ? shortenAddress(wallet?.connected?.address) : 'Sign in'}
       {isConnected && (
         <Box marginLeft={2}>
-          {walletInfo?.name ? (
-            <UrlIcon url={walletInfo.icon} />
-          ) : (
-            <PulseLoader />
-          )}
+          {wallet ? <UrlIcon url={wallet.icon} /> : <PulseLoader />}
         </Box>
       )}
     </Button>

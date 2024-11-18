@@ -35,7 +35,6 @@ export const useAssetInput = ({
   const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
-  const balance = useAssetBalance(asset, configuredWallet?.address);
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
@@ -71,7 +70,7 @@ export const useAssetInput = ({
   const makeTransfer = (recipient: string) => {
     sendTransaction(recipient, Number(inputAmount), {
       onSuccess: () => {},
-      onError: (err) => { },
+      onError: (err) => {},
     });
   };
 
@@ -91,7 +90,13 @@ export const useAssetInput = ({
       });
       setLoadingNative(false);
     });
-  }, [asset]);
+  }, []);
+
+  const balance = useAssetBalance(asset, configuredWallet?.address);
+  const balanceNative = useAssetBalance(
+    native || { ...asset, contract: null },
+    configuredWallet?.address,
+  );
 
   const onSetAmount = (v: string | number | null) => {
     return v ? setInputAmount(_.floor(Number(v), 8)) : setInputAmount('');
@@ -113,6 +118,7 @@ export const useAssetInput = ({
     native,
     account: configuredWallet,
     balance,
+    balanceNative,
     paymentMethod,
     setLoading,
     setInputAmount: onSetAmount,

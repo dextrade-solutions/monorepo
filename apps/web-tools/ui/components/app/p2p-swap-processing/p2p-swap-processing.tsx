@@ -408,7 +408,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
           )}
           value={{ trade: exchange }}
         />
-        {content && <Box marginY={4}>{content}</Box>}
         <Box marginTop={3}>
           {stages
             .filter(
@@ -418,6 +417,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             )
             .map(({ component }) => component)}
         </Box>
+        {content && <Box marginY={4}>{content}</Box>}
       </Box>
       {exchange.exchangerSettings.provider !== 'DEXPAY' && (
         <Box width="100%" marginY={2}>

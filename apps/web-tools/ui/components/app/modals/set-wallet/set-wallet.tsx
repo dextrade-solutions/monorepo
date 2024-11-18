@@ -17,6 +17,7 @@ import { CopyData, UrlIcon, ButtonIcon, AssetItem } from 'dex-ui';
 import { useCallback, useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
+import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetAccount } from '../../../../types';
@@ -39,9 +40,10 @@ const SetWallet = ({
 } & ModalProps) => {
   const canConnectExternalWallet = !asset.isFiat;
   const canPasteAddress = isToAsset;
+  const connectionType = determineConnectionType(asset);
 
   const t = useI18nContext();
-  const wallets = useWallets({ asset });
+  const wallets = useWallets({ connectionType });
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
 
@@ -55,7 +57,7 @@ const SetWallet = ({
     if (item.connected) {
       result = item.connected;
     } else {
-      result = await item.connect();
+      result = await item.connect(asset.network);
     }
     onChange(result);
     hideModal();
