@@ -21,6 +21,7 @@ export function useAuthP2P() {
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
   // const connectWallet = useWeb3Connection();
+  const connectors = useConnectors();
   const authWallet = useAuthWallet();
   const { signMessage } = useSignMessage();
   const wallets = useWallets({
@@ -67,9 +68,10 @@ export function useAuthP2P() {
             return null;
           }
           dispatch(setStatus(AuthStatus.signing));
+          const connector = connectors.find((i) => i.name === loginWallet.name);
           signMessage(
             {
-              connector: loginWallet.connected.connector,
+              connector,
               message: engine.keyringController.publicKey,
             },
             {

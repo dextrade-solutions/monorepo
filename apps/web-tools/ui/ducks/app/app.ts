@@ -63,14 +63,39 @@ const slice = createSlice({
       const { asset, assetAccount } = action.payload;
       state.assetAccounts[getAssetKey(asset)] = assetAccount;
     },
+    disconnectAssetWallet: (state, action) => {
+      const walletName = action.payload;
+      const assetAccounts = Object.entries(state.assetAccounts).reduce(
+        (acc, [key, assetAccount]) => {
+          if (assetAccount?.connectedWallet === walletName) {
+            return acc;
+          }
+          return { ...acc, [key]: assetAccount };
+        },
+        {},
+      );
+      state.assetAccounts = assetAccounts;
+    },
   }),
 });
 
 const { actions, reducer } = slice;
 
-const { showModal, hideModal, setTheme, setAssetAccount } = actions;
+const {
+  showModal,
+  hideModal,
+  setTheme,
+  setAssetAccount,
+  disconnectAssetWallet,
+} = actions;
 
-export { showModal, hideModal, setTheme, setAssetAccount };
+export {
+  showModal,
+  hideModal,
+  setTheme,
+  setAssetAccount,
+  disconnectAssetWallet,
+};
 
 export const getCurrentTheme = (state: { app: AppState }) => state.app.theme;
 

@@ -48,5 +48,5 @@ export const getCoinIconByUid = (uid: string) => {
 };
 
 export const getAssetKey = (asset: AssetModel) => {
-  return `${asset.network}-${asset.symbol}-${asset.contract || 'null'}`;
+  return `${asset.network}-${asset.symbol}`;
 };

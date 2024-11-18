@@ -145,6 +145,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
     to: ad.walletAddress,
   });
+
+  const insufficientNativeFee =
+    outgoingFee && Number(assetInputFrom.balanceNative?.value) < outgoingFee;
+
   const { submitBtnText, hasValidationErrors, disabledBtn } = useAdValidation({
     ad,
     assetInputFrom,
@@ -178,7 +182,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     try {
       setLoadingStartExchange(true);
       const result = await login({
-        wallet: assetInputFrom.configuredWallet?.name,
+        wallet:
+          assetInputFrom.configuredWallet?.connectedWallet ||
+          assetInputTo.configuredWallet?.connectedWallet,
         onSuccess: (on401?: () => void) =>
           dispatch(
             createSwapP2P({
@@ -323,6 +329,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
               return pickupExchangerPaymentMethod();
             } else if (needPickupRecipientAddress) {
               return assetInputTo.showConfigureWallet();
+            } else if (insufficientNativeFee) {
+              return assetInputFrom.showDeposit({
+                awaitingDepositAmount: outgoingFee,
+                onSuccess: () => startExchange(),
+              });
             }
             return startExchange();
           }}

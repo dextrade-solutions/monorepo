@@ -73,15 +73,15 @@ export function useAdValidation({
     params.disabledBtn = true;
     return params;
   }
-  if (
-    outgoingFee &&
-    Number(assetInputFrom.balanceNative?.value) < outgoingFee
-  ) {
-    params.submitBtnText = `${assetInputFrom.balanceNative?.formattedValue} is insufficient for outgoing transaction fee`;
-    params.hasValidationErrors = true;
-    params.disabledBtn = true;
-    return params;
-  }
+  // if (
+  //   outgoingFee &&
+  //   Number(assetInputFrom.balanceNative?.value) < outgoingFee
+  // ) {
+  //   params.submitBtnText = `${assetInputFrom.balanceNative?.formattedValue} is insufficient for outgoing transaction fee`;
+  //   // params.hasValidationErrors = true;
+  //   // params.disabledBtn = true;
+  //   return params;
+  // }
   if (
     assetInputTo.amount &&
     Number(ad.reserveInCoin2) < Number(assetInputTo.amount)

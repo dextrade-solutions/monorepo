@@ -98,6 +98,24 @@ export const useAssetInput = ({
     configuredWallet?.address,
   );
 
+  const showDeposit = ({
+    awaitingDepositAmount,
+    onSuccess,
+  }: {
+    awaitingDepositAmount?: number;
+    onSuccess: () => void;
+  }) => {
+    dispatch(
+      showModal({
+        name: 'DEPOSIT_WALLET',
+        asset: native,
+        awaitingDepositAmount,
+        address: configuredWallet?.address,
+        onSuccess,
+      }),
+    );
+  };
+
   const onSetAmount = (v: string | number | null) => {
     return v ? setInputAmount(_.floor(Number(v), 8)) : setInputAmount('');
   };
@@ -125,5 +143,6 @@ export const useAssetInput = ({
     showPaymentMethod,
     showConfigureWallet,
     makeTransfer,
+    showDeposit,
   };
 };

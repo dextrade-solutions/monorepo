@@ -25,7 +25,7 @@ const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
 
   let bufferMultiplier = 1;
   if (txParams.data) {
-    bufferMultiplier = 1.5;
+    bufferMultiplier = 2;
   }
 
   const estimateGas = useEstimateGas({ chainId, ...txParams });

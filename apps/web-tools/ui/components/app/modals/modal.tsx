@@ -5,6 +5,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 
 import AlertModalComponent from './alert-modal';
+import DepositWallet from './deposit-wallet';
 import ImageModalComponent from './image-modal';
 import ItemPicker from './item-picker';
 import LoginModal from './login-modal';
@@ -27,6 +28,7 @@ const MODALS = {
   LOGIN_MODAL: <LoginModal />,
   SLIPPAGE_MODAL: <SlippageModal />,
   WALLETS_LIST: <WalletsList />,
+  DEPOSIT_WALLET: <DepositWallet />,
   DEFAULT: null,
 };
 

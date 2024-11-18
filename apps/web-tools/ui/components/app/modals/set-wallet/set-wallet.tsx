@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, UrlIcon, ButtonIcon, AssetItem } from 'dex-ui';
+import { CopyData, UrlIcon, ButtonIcon, AssetItem, PulseLoader } from 'dex-ui';
 import { useCallback, useState } from 'react';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
@@ -45,6 +45,7 @@ const SetWallet = ({
   const t = useI18nContext();
   const wallets = useWallets({ connectionType });
   const [inputWalletAddress, setInputWalletAddress] = useState('');
+  const [loadingWallet, setLoadingWallet] = useState();
   const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
 
   const onSetInputWallet = () => {
@@ -54,13 +55,18 @@ const SetWallet = ({
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
     let result: AssetAccount;
-    if (item.connected) {
-      result = item.connected;
-    } else {
-      result = await item.connect(asset.network);
+    setLoadingWallet(item);
+    try {
+      if (item.connected) {
+        result = item.connected;
+      } else {
+        result = await item.connect(asset.network);
+      }
+      onChange(result);
+      hideModal();
+    } catch {
+      setLoadingWallet(null);
     }
-    onChange(result);
-    hideModal();
   };
   const onDisconnect = useCallback(
     async (item: WalletItem) => {
@@ -113,52 +119,67 @@ const SetWallet = ({
         <Box>
           {canConnectExternalWallet && (
             <>
-              <Typography variant="h6">Connect wallet</Typography>
-              <MenuList>
-                {wallets.map((item, idx) => (
-                  <Box key={idx} marginTop={1}>
-                    <ListItemButton
-                      sx={{
-                        backgroundcolor: 'secondary.dark',
-                        borderWidth:
-                          savedValue?.connectedWallet === item.name ? 1 : 0,
-                      }}
-                      className="bordered"
-                      onClick={() => onSelectWallet(item)}
-                    >
-                      <ListItemAvatar>
-                        <UrlIcon size={40} url={item.icon} />
-                      </ListItemAvatar>
-
-                      <ListItemText
-                        primary={item.name}
-                        secondary={
-                          item.connected
-                            ? shortenAddress(item.connected.address)
-                            : ''
-                        }
-                      />
-                      {item.connected && (
-                        <ListItemSecondaryAction>
-                          <ButtonIcon
-                            size="lg"
-                            iconName="disconnect"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDisconnect(item);
-                            }}
-                          />
-                        </ListItemSecondaryAction>
-                      )}
-                    </ListItemButton>
-                  </Box>
-                ))}
-                {!wallets.length && (
-                  <Typography color="text.secondary">
-                    No supported wallets detected...
+              {loadingWallet ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <UrlIcon size={40} url={loadingWallet.icon} />
+                  <Typography my={2}>
+                    {loadingWallet.name} connecting
                   </Typography>
-                )}
-              </MenuList>
+                  <PulseLoader />
+                </Box>
+              ) : (
+                <MenuList>
+                  <Typography variant="h6">Connect wallet</Typography>
+                  {wallets.map((item, idx) => (
+                    <Box key={idx} marginTop={1}>
+                      <ListItemButton
+                        sx={{
+                          backgroundcolor: 'secondary.dark',
+                          borderWidth:
+                            savedValue?.connectedWallet === item.name ? 1 : 0,
+                        }}
+                        className="bordered"
+                        onClick={() => onSelectWallet(item)}
+                      >
+                        <ListItemAvatar>
+                          <UrlIcon size={40} url={item.icon} />
+                        </ListItemAvatar>
+
+                        <ListItemText
+                          primary={item.name}
+                          secondary={
+                            item.connected
+                              ? shortenAddress(item.connected.address)
+                              : ''
+                          }
+                        />
+                        {item.connected && (
+                          <ListItemSecondaryAction>
+                            <ButtonIcon
+                              size="lg"
+                              iconName="disconnect"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDisconnect(item);
+                              }}
+                            />
+                          </ListItemSecondaryAction>
+                        )}
+                      </ListItemButton>
+                    </Box>
+                  ))}
+                  {!wallets.length && (
+                    <Typography color="text.secondary">
+                      No supported wallets detected...
+                    </Typography>
+                  )}
+                </MenuList>
+              )}
             </>
           )}
           {canPasteAddress && canConnectExternalWallet && (

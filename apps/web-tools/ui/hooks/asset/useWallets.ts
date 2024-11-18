@@ -2,8 +2,10 @@ import { Adapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
 import { useCallback, useRef, useState } from 'react';
-import { Config, Connection, Connector, useConfig, useConnections, useConnectors } from 'wagmi';
+import { useDispatch } from 'react-redux';
+import { Config, Connector, useConfig, useConnectors } from 'wagmi';
 
+import { disconnectAssetWallet } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 import { ledgerConnection } from '../../helpers/utils/ledger';
 import { AssetAccount } from '../../types';
@@ -19,7 +21,6 @@ const getEIP6963SerilizedConnectedAccount = (
     return {
       icon: connection.connector.icon,
       connectedWallet: connection.connector.name,
-      connector: connection.connector,
       address,
     };
   }
@@ -62,11 +63,11 @@ export function useWallets({
   const { wallets, select } = useWallet();
   const connectors = useConnectors();
   const config = useConfig();
-  const s = useRef(config);
+  const dispatch = useDispatch();
 
-  setInterval(() => {
-    forceUpdate();
-  }, 500);
+  // setInterval(() => {
+  //   forceUpdate();
+  // }, 500);
   // const connections = useConnections({ config });
 
   const eip6963wallets = connectors.map((item) => ({
@@ -87,7 +88,6 @@ export function useWallets({
       return {
         address,
         connectedWallet: item.name,
-        connector: item,
         icon: getConnectorIcon(item),
       };
     },
@@ -96,6 +96,7 @@ export function useWallets({
       if (isConnected) {
         await item.disconnect();
         config.state.connections.delete(item.uid);
+        dispatch(disconnectAssetWallet(item.name));
         forceUpdate();
       }
     },

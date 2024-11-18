@@ -1,3 +1,4 @@
+import { SECOND } from 'dex-helpers';
 import { useBalance } from 'wagmi';
 
 export default function useAccountBalance(
@@ -7,6 +8,9 @@ export default function useAccountBalance(
   const result = useBalance({
     address,
     chainId,
+    query: {
+      refetchInterval: 4 * SECOND,
+    },
   });
 
   return result.data?.value;

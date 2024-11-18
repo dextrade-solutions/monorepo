@@ -1,4 +1,5 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import React, { ReactNode } from 'react';
 import { WagmiProvider } from 'wagmi';
@@ -17,12 +18,9 @@ const persister = createSyncStoragePersister({
 export const Web3ModalProvider: React.FC<IProps> = ({ children }) => {
   return (
     <WagmiProvider config={config}>
-      <PersistQueryClientProvider
-        persistOptions={{ persister }}
-        client={engine.queryClient}
-      >
+      <QueryClientProvider client={engine.queryClient}>
         {children}
-      </PersistQueryClientProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 };

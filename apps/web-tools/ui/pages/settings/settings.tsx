@@ -13,10 +13,8 @@ import { useQuery } from '@tanstack/react-query';
 import { UserModel } from 'dex-helpers/types';
 import { userService } from 'dex-services';
 import { ButtonIcon, Icon, UserAvatar } from 'dex-ui';
-import { useDispatch } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { logout } from '../../ducks/auth';
 import {
   HOME_ROUTE,
   KYC_ROUTE,
@@ -24,13 +22,14 @@ import {
   SETTINGS_GENERAL_ROUTE,
   SWAPS_HISTORY_ROUTE,
 } from '../../helpers/constants/routes';
+import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function P2PSettings() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const { logout } = useAuthP2P();
 
   const { isLoading, data: user } = useQuery<UserModel>({
     queryKey: ['dextradeUser'],
@@ -40,7 +39,7 @@ export default function P2PSettings() {
   const pathnames = location.pathname.split('/').filter((item) => item);
 
   const onLogout = () => {
-    dispatch(logout());
+    logout();
     navigate('/');
   };
 
@@ -84,15 +83,6 @@ export default function P2PSettings() {
                   {user?.name}
                 </Typography>
                 <Box className="flex-grow" />
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={() => {
-                    navigate(SWAPS_HISTORY_ROUTE);
-                  }}
-                >
-                  {t('activity')}
-                </Button>
                 <Box marginLeft={1}>
                   <ButtonIcon
                     iconName="logout"
