@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Alert, Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
@@ -308,6 +308,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             </Box>
           </Box>
         )}
+      </Box>
+      <Box>
+        <Alert severity="info">
+          Make sure you have the latest version of Metamask app
+        </Alert>
       </Box>
       <Box marginTop={2}>
         <Button

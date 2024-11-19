@@ -2,6 +2,7 @@ import { TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
@@ -39,9 +40,16 @@ export default function StageDirectTransfer({
   const { sendTransaction } = useSendTransaction(from);
 
   const initiateNewTx = () => {
+    const tradeStore = window.localStorage.getItem(trade.id);
+    const tradeData = tradeStore ? JSON.parse(tradeStore) : {};
     onChange(StageStatuses.requested);
-    setSendTransactionFailure('');
-    sendTransaction(recipient, amount, txSentHandlers);
+
+    if (!tradeData.initiated || sendTransactionFailure) {
+      setSendTransactionFailure('');
+      tradeData.initiated = true;
+      window.localStorage.setItem(trade.id, JSON.stringify(tradeData));
+      sendTransaction(recipient, amount, txSentHandlers);
+    }
   };
 
   useEffect(() => {

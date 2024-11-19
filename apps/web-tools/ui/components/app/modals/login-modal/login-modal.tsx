@@ -8,6 +8,7 @@ import {
   ListItemButton,
   ListItemAvatar,
   ListItemSecondaryAction,
+  Alert,
 } from '@mui/material';
 import { UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
@@ -67,6 +68,11 @@ const LoginModal = ({ hideModal }: ModalProps) => {
         <Divider />
       </Box>
       <Box>
+        <Box>
+          <Alert severity="info">
+            Make sure you have the latest version of Metamask app
+          </Alert>
+        </Box>
         {loadingWallet ? (
           <Box
             display="flex"
