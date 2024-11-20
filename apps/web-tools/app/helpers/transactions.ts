@@ -21,7 +21,7 @@ export function generateTxParams({
   isAtomicSwap,
 }: Params) {
   let data;
-  let value = parseUnits(String(amount), asset.decimals);
+  let value = parseUnits(Number(amount).toFixed(8), asset.decimals);
   if (isAtomicSwap) {
     const callContractData = generateAtomicSwapParams(
       asset.network,

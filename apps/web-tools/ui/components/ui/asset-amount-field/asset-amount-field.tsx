@@ -39,7 +39,7 @@ export const AssetAmountField = ({
   hasValidationErrors,
 }: IProps) => {
   const { asset, account } = assetInput;
-  const displayBalance = Boolean(account?.connectedWallet);
+  const displayBalance = Boolean(account);
   return (
     <Card
       className="asset-amount-field"

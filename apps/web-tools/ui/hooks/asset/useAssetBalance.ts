@@ -1,11 +1,12 @@
 import { NetworkNames, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { formatUnits, hexToNumber } from 'viem';
+import { formatUnits } from 'viem';
 
+import useBitcoinBalance from '../bitcoin/useBalance';
 import useEvmAccountBalance from '../evm/useAccontBalance';
 import useErc20Balance from '../evm/useErc20Balance';
-import useSolanaBalance from '../solana/useSolanaBalance';
-import { useTronBalance } from '../tron/useTronBalance';
+import useSolanaBalance from '../solana/useBalance';
+import useTronBalance from '../tron/useBalance';
 
 type BalanceHookParams = {
   address: string;
@@ -21,6 +22,9 @@ export function getBalanceHook(
   }
   if (asset.network === NetworkNames.solana) {
     return ({ address, contract }) => useSolanaBalance(address, contract);
+  }
+  if (asset.network === NetworkNames.bitcoin) {
+    return ({ address }) => useBitcoinBalance(address);
   }
   if (asset.contract) {
     return ({ address, chainId, contract }) =>

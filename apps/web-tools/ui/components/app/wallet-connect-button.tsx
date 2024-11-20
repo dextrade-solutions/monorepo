@@ -16,7 +16,7 @@ import { useAuthWallet } from '../../hooks/useAuthWallet';
 export default function WalletConnectButton() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { wallet, isConnected } = useAuthWallet();
+  const { wallet, isAuthenticated } = useAuthWallet();
   const { logout } = useAuthP2P();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,7 +26,7 @@ export default function WalletConnectButton() {
   };
 
   const onClick = (event: any) => {
-    if (isConnected) {
+    if (isAuthenticated) {
       setAnchorEl(event.currentTarget);
     } else {
       dispatch(showModal({ name: 'LOGIN_MODAL' }));
@@ -36,17 +36,19 @@ export default function WalletConnectButton() {
   return (
     <>
       <Button
-        variant={isConnected ? '' : 'contained'}
+        variant={isAuthenticated ? '' : 'contained'}
         disableElevation
         sx={{
-          backgroundImage: isConnected
+          backgroundImage: isAuthenticated
             ? undefined
             : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
         }}
         onClick={onClick}
       >
-        {isConnected ? shortenAddress(wallet?.connected?.address) : 'Sign in'}
-        {isConnected && (
+        {isAuthenticated
+          ? shortenAddress(wallet?.connected?.address)
+          : 'Sign in'}
+        {isAuthenticated && (
           <Box marginLeft={2}>
             {wallet ? <UrlIcon url={wallet.icon} /> : <PulseLoader />}
           </Box>

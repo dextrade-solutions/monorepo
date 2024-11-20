@@ -1,10 +1,7 @@
-import { Connector } from 'wagmi';
+import { WalletConnectionType } from '../helpers/constants/wallets';
 
-export type AssetAccount = {
+export type WalletConnection = {
+  walletName: string;
+  connectionType: WalletConnectionType;
   address: string;
-  redeemAddress?: string;
-  refundAddress?: string;
-  icon?: string;
-  connectedWallet?: string;
-  connector?: Connector;
 };

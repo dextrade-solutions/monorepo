@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getAssetKey } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 
-import { AssetAccount } from '../../types';
+import { WalletConnection } from '../../types';
 
 interface AppState {
   modal: {
@@ -13,7 +13,8 @@ interface AppState {
     };
   };
   theme: string;
-  assetAccounts: Record<string, AssetAccount | null>;
+  assetAccounts: Record<string, WalletConnection | null>;
+  walletConnections: Record<string, WalletConnection>;
 }
 
 const initialState: AppState = {
@@ -26,6 +27,7 @@ const initialState: AppState = {
   },
   theme: 'system',
   assetAccounts: {},
+  walletConnections: {},
 };
 
 const slice = createSlice({
@@ -65,9 +67,23 @@ const slice = createSlice({
     },
     disconnectAssetWallet: (state, action) => {
       const walletName = action.payload;
+    },
+    setWalletConnection: (state, action) => {
+      const newConnection = action.payload as WalletConnection;
+      const key = `${newConnection.walletName}:${newConnection.connectionType}`;
+      state.walletConnections[key] = newConnection;
+    },
+    removeWalletConnection: (state, action) => {
+      const connection = action.payload as WalletConnection;
+      const toRemoveKey = `${connection.walletName}:${connection.connectionType}`;
+      const newState = { ...state.walletConnections };
+      delete newState[toRemoveKey];
+      state.walletConnections = newState;
+
       const assetAccounts = Object.entries(state.assetAccounts).reduce(
         (acc, [key, assetAccount]) => {
-          if (assetAccount?.connectedWallet === walletName) {
+          const walletKey = `${assetAccount?.walletName}:${assetAccount?.connectionType}`;
+          if (walletKey === toRemoveKey) {
             return acc;
           }
           return { ...acc, [key]: assetAccount };
@@ -87,6 +103,8 @@ const {
   setTheme,
   setAssetAccount,
   disconnectAssetWallet,
+  setWalletConnection,
+  removeWalletConnection,
 } = actions;
 
 export {
@@ -95,6 +113,8 @@ export {
   setTheme,
   setAssetAccount,
   disconnectAssetWallet,
+  setWalletConnection,
+  removeWalletConnection,
 };
 
 export const getCurrentTheme = (state: { app: AppState }) => state.app.theme;
@@ -105,6 +125,10 @@ export const getAssetAccount = (
 ) => {
   const key = getAssetKey(asset);
   return state.app.assetAccounts[key] || null;
+};
+
+export const getWalletConnections = ({ app }: { app: AppState }) => {
+  return app.walletConnections;
 };
 
 export default reducer;

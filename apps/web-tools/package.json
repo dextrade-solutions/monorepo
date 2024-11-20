@@ -78,6 +78,7 @@
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "remote-redux-devtools": "^0.5.16",
+    "sats-connect": "^3.0.1",
     "tronweb": "^6.0.0",
     "uint8array-tools": "^0.0.9",
     "use-debounce": "^10.0.4",

@@ -38,10 +38,11 @@ const LoginModal = ({ hideModal }: ModalProps) => {
         await item.disconnect();
         dispatch(clearAuthState());
         await login({
-          wallet: item.name,
+          walletId: item.id,
         });
         hideModal();
-      } catch {
+      } catch (e) {
+        console.error(e);
         setLoadingWallet(null);
       }
     },

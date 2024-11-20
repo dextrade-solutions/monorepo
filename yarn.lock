@@ -7769,7 +7769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.7.0, @noble/secp256k1@npm:^1.7.1, @noble/secp256k1@npm:~1.7.0":
+"@noble/secp256k1@npm:1.7.1, @noble/secp256k1@npm:^1.5.5, @noble/secp256k1@npm:^1.6.3, @noble/secp256k1@npm:^1.7.0, @noble/secp256k1@npm:^1.7.1, @noble/secp256k1@npm:~1.7.0":
   version: 1.7.1
   resolution: "@noble/secp256k1@npm:1.7.1"
   checksum: 10/214d4756c20ed20809d948d0cc161e95664198cb127266faf747fd7deffe5444901f05fe9f833787738f2c6e60b09e544c2f737f42f73b3699e3999ba15b1b63
@@ -8948,6 +8948,46 @@ __metadata:
   version: 3.22.2
   resolution: "@safe-global/safe-gateway-typescript-sdk@npm:3.22.2"
   checksum: 10/7f2b3cab4a1673647c8f7fd927be280f891dc74dba733f302862dee135fedd9d8e1875b1790c75b84c54164b517727bfe08a6dcaf7411659db13eeaefd1407fd
+  languageName: node
+  linkType: hard
+
+"@sats-connect/core@npm:0.4.1":
+  version: 0.4.1
+  resolution: "@sats-connect/core@npm:0.4.1"
+  dependencies:
+    axios: "npm:1.7.7"
+    bitcoin-address-validation: "npm:2.2.3"
+    buffer: "npm:6.0.3"
+    jsontokens: "npm:4.0.1"
+    valibot: "npm:0.42.1"
+  checksum: 10/43adbc500829bd949aae313695610ba205d726f1d4c3f95a2fcd9861a67665069114b354e22b6e471023be63fa5be99479482ab35bf1610382b5e7e963c5efe6
+  languageName: node
+  linkType: hard
+
+"@sats-connect/make-default-provider-config@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@sats-connect/make-default-provider-config@npm:0.0.10"
+  dependencies:
+    "@sats-connect/ui": "npm:^0.0.6"
+    bowser: "npm:^2.11.0"
+  peerDependencies:
+    "@sats-connect/core": "*"
+    typescript: ^5.0.0
+  checksum: 10/3d7a50a562f3e8c4421a06eb7cdd720669ecac3e94ef769062fcc05fd90e517f267eff6b3c22313d88bb99d4bf111bdefe9a8fd8595ee143a03ab9df638271a5
+  languageName: node
+  linkType: hard
+
+"@sats-connect/ui@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@sats-connect/ui@npm:0.0.7"
+  checksum: 10/bbe5a702de824edda0ced3404e4be93761bf35253d9444188dc126eef6f4ddc6b585f0736250b2aa0ea7d3c81e42dcd762393611a355e76c310474b26d94bc49
+  languageName: node
+  linkType: hard
+
+"@sats-connect/ui@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@sats-connect/ui@npm:0.0.6"
+  checksum: 10/d227f354386478f63ca892c5d25b6d445a6803f735d4b861ce271531cecf59797763a33dabcbb5f5d22838a64b5a46fd378d749b60ba0c453406c2c023b92eb9
   languageName: node
   linkType: hard
 
@@ -17574,6 +17614,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base58-js@npm:^1.0.0":
+  version: 1.0.5
+  resolution: "base58-js@npm:1.0.5"
+  checksum: 10/46c1b39d3a70bca0a47d56069c74a25d547680afd0f28609c90f280f5d614f5de36db5df993fa334db24008a68ab784a72fcdaa13eb40078e03c8999915a1100
+  languageName: node
+  linkType: hard
+
 "base58check@npm:^2.0.0":
   version: 2.0.0
   resolution: "base58check@npm:2.0.0"
@@ -17893,6 +17940,17 @@ __metadata:
   version: 2.0.0
   resolution: "bip66@npm:2.0.0"
   checksum: 10/919b25d3ed2b9d774eefe550ae6e825e29e1aa450fc1af12e7cef39115a8bc867018b5aa3d8e68b459ec198decabfc1ebe2bdbae9edfdca61c97e862d1db098d
+  languageName: node
+  linkType: hard
+
+"bitcoin-address-validation@npm:2.2.3":
+  version: 2.2.3
+  resolution: "bitcoin-address-validation@npm:2.2.3"
+  dependencies:
+    base58-js: "npm:^1.0.0"
+    bech32: "npm:^2.0.0"
+    sha256-uint8array: "npm:^0.10.3"
+  checksum: 10/01603b5edf610ecf0843ae546534313f1cffabc8e7435a3678bc9788f18a54e51302218a539794aafd49beb5be70b5d1d507eb7442cb33970fcd665592a71305
   languageName: node
   linkType: hard
 
@@ -32257,6 +32315,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jsontokens@npm:4.0.1":
+  version: 4.0.1
+  resolution: "jsontokens@npm:4.0.1"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.2"
+    "@noble/secp256k1": "npm:^1.6.3"
+    base64-js: "npm:^1.5.1"
+  checksum: 10/b1b2dbd29b7f491f31934bd5385555ae11b76ce853141d6b3bb39d54045d0e654d3cdcc159a02765b017b63766b4f7cdb7b1b394be570636c7b942f5f9e781f2
+  languageName: node
+  linkType: hard
+
 "jsprim@npm:^1.2.2":
   version: 1.4.2
   resolution: "jsprim@npm:1.4.2"
@@ -41400,6 +41469,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sats-connect@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "sats-connect@npm:3.0.1"
+  dependencies:
+    "@sats-connect/core": "npm:0.4.1"
+    "@sats-connect/make-default-provider-config": "npm:0.0.10"
+    "@sats-connect/ui": "npm:0.0.7"
+  checksum: 10/0e049c8c15dba6c3e1fbcf85736ee7b282d2ecd50450283de5f59ccf854545ae2002692c04c78f50df438bb6098ff4bd859a3b2c9404337543bbe74bcff8b08d
+  languageName: node
+  linkType: hard
+
 "sax@npm:^1.2.4":
   version: 1.4.1
   resolution: "sax@npm:1.4.1"
@@ -41922,6 +42002,13 @@ __metadata:
   bin:
     sha.js: ./bin.js
   checksum: 10/d833bfa3e0a67579a6ce6e1bc95571f05246e0a441dd8c76e3057972f2a3e098465687a4369b07e83a0375a88703577f71b5b2e966809e67ebc340dbedb478c7
+  languageName: node
+  linkType: hard
+
+"sha256-uint8array@npm:^0.10.3":
+  version: 0.10.7
+  resolution: "sha256-uint8array@npm:0.10.7"
+  checksum: 10/e427f9d2f9c521dea552f033d3f0c3bd641ab214d214dd41bde3c805edde393519cf982b3eee7d683b32e5f28fa23b2278d25935940e13fbe831b216a37832be
   languageName: node
   linkType: hard
 
@@ -46330,6 +46417,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"valibot@npm:0.42.1":
+  version: 0.42.1
+  resolution: "valibot@npm:0.42.1"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/3e6213d03fa1d9141566a7f9c8e24a783837f7e5216fe92658d29b6abc41a65c266ed5114f7002b9585ddb67f617505bd21b61639c8614a1457d584ef028a117
+  languageName: node
+  linkType: hard
+
 "valibot@npm:^0.37.0":
   version: 0.37.0
   resolution: "valibot@npm:0.37.0"
@@ -47245,6 +47344,7 @@ __metadata:
     redux-persist: "npm:^6.0.0"
     remote-redux-devtools: "npm:^0.5.16"
     sass: "npm:^1.75.0"
+    sats-connect: "npm:^3.0.1"
     tronweb: "npm:^6.0.0"
     typescript: "npm:^5.2.2"
     uint8array-tools: "npm:^0.0.9"

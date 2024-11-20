@@ -4,7 +4,7 @@ import getBalance from '../../../app/helpers/tron/get-balance';
 import getTokenBalance from '../../../app/helpers/tron/get-token-balance';
 import { tronWeb } from '../../../app/helpers/tron/tronweb';
 
-export function useTronBalance(address: string, contract?: string) {
+export default function useTronBalance(address: string, contract?: string) {
   const [balance, setBalance] = useState(0n);
   useEffect(() => {
     const updateBalance = async () => {

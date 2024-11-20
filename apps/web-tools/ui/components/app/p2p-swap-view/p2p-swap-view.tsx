@@ -309,11 +309,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
         )}
       </Box>
-      <Box>
-        <Alert severity="info">
-          Make sure you have the latest version of Metamask app
-        </Alert>
-      </Box>
       <Box marginTop={2}>
         <Button
           className={classNames({ 'btn-error': hasValidationErrors })}

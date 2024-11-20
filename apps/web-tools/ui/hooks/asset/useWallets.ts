@@ -2,36 +2,42 @@ import { Adapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
 import { useCallback, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Wallet, { AddressPurpose } from 'sats-connect';
 import { Config, Connector, useConfig, useConnectors } from 'wagmi';
 
-import { disconnectAssetWallet } from '../../ducks/app/app';
+import {
+  disconnectAssetWallet,
+  getWalletConnections,
+  removeWalletConnection,
+  setWalletConnection,
+} from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 import { ledgerConnection } from '../../helpers/utils/ledger';
-import { AssetAccount } from '../../types';
+import { WalletConnection } from '../../types';
 
 const getEIP6963SerilizedConnectedAccount = (
   // connections: Connection[],
   config: Config,
   connector: Connector,
-): AssetAccount | null => {
+): WalletConnection | null => {
   const connection = config.state.connections.get(connector.uid);
   if (connection) {
     const [address] = connection.accounts;
     return {
-      icon: connection.connector.icon,
-      connectedWallet: connection.connector.name,
+      walletName: connection.connector.name,
+      connectionType: WalletConnectionType.eip6963,
       address,
     };
   }
   return null;
 };
 
-const getSolanaSerializedConnectedAccount = (adapter: Adapter) => {
+const getSolanaSerializedConnectedAccount = (adapter: Adapter): WalletConnection | null => {
   if (adapter.connected) {
     return {
-      icon: adapter.icon,
-      connectedWallet: adapter.name,
+      walletName: adapter.name,
+      connectionType: WalletConnectionType.solana,
       address: adapter.publicKey.toBase58(),
     };
   }
@@ -41,8 +47,8 @@ const getSolanaSerializedConnectedAccount = (adapter: Adapter) => {
 export type WalletItem = {
   icon?: string;
   name: string;
-  connected: AssetAccount | null;
-  connect: () => Promise<AssetAccount>;
+  connected: WalletConnection | null;
+  connect: () => Promise<WalletConnection>;
   disconnect: () => Promise<void>;
 };
 
@@ -62,8 +68,9 @@ export function useWallets({
 
   const { wallets, select } = useWallet();
   const connectors = useConnectors();
-  const config = useConfig();
   const dispatch = useDispatch();
+
+  const connectedWallets = useSelector(getWalletConnections);
 
   // setInterval(() => {
   //   forceUpdate();
@@ -74,66 +81,134 @@ export function useWallets({
     connectionType: WalletConnectionType.eip6963,
     icon: getConnectorIcon(item),
     name: item.name,
+    get id() {
+      return `${this.name}:${this.connectionType}`;
+    },
     get connected() {
-      return getEIP6963SerilizedConnectedAccount(config, item);
+      return connectedWallets[this.id];
     },
     async connect() {
       const result = await item.connect();
       const [address] = result.accounts;
-      config.state.connections.set(item.uid, {
-        ...result,
-        connector: item,
-      });
-      forceUpdate();
-      return {
+      const walletConnection = {
+        connectionType: WalletConnectionType.eip6963,
         address,
-        connectedWallet: item.name,
-        icon: getConnectorIcon(item),
+        walletName: item.name,
       };
+      dispatch(setWalletConnection(walletConnection));
+      return walletConnection;
     },
-    disconnect: async () => {
+    async disconnect() {
       const isConnected = await item.isAuthorized();
       if (isConnected) {
         await item.disconnect();
-        config.state.connections.delete(item.uid);
-        dispatch(disconnectAssetWallet(item.name));
         forceUpdate();
+      }
+      if (this.connected) {
+        dispatch(removeWalletConnection(this.connected));
       }
     },
   }));
 
+  const satsWallets = [
+    {
+      connectionType: WalletConnectionType.sats,
+      icon: '',
+      name: 'Xverse',
+      get id() {
+        return `${this.name}:${this.connectionType}`;
+      },
+      get connected() {
+        return connectedWallets[this.id];
+      },
+      async connect() {
+        const res = await Wallet.request('wallet_connect', {
+          message: 'Cool app wants to know your addresses!',
+          addresses: [AddressPurpose.Payment],
+        });
+        const [btcAddress] = res.result.addresses.filter((a) =>
+          [AddressPurpose.Payment].includes(a.purpose),
+        );
+
+        const walletConnection = {
+          connectionType: WalletConnectionType.sats,
+          address: btcAddress.address,
+          walletName: 'Xverse',
+        };
+        dispatch(setWalletConnection(walletConnection));
+        return walletConnection;
+      },
+      async disconnect() {
+        await Wallet.disconnect();
+        dispatch(removeWalletConnection(this.connected));
+      },
+    },
+  ];
   const solanaWallets = wallets.map((item) => ({
     connectionType: WalletConnectionType.solana,
     icon: item.adapter.icon,
     name: item.adapter.name,
-    connected: getSolanaSerializedConnectedAccount(item.adapter),
-    connect: async (): Promise<AssetAccount> => {
+    get id() {
+      return `${this.name}:${this.connectionType}`;
+    },
+    get connected() {
+      return connectedWallets[this.id];
+    },
+    connect: async () => {
       select(item.adapter.name);
       await item.adapter.connect();
       const address = item.adapter.publicKey?.toBase58();
-      const { icon } = item.adapter;
       if (!address) {
         throw new Error('connect solana wallet - something is wrong');
       }
-      return {
+
+      const walletConnection = {
+        connectionType: WalletConnectionType.solana,
         address,
-        connectedWallet: item.adapter.name,
-        icon,
+        walletName: item.adapter.name,
       };
+      dispatch(setWalletConnection(walletConnection));
+      return walletConnection;
     },
-    disconnect: item.adapter.disconnect.bind(item),
+    async disconnect() {
+      await item.adapter.disconnect();
+      dispatch(removeWalletConnection(this.connected));
+    },
   }));
   const ledger = [
     {
-      connectionType: WalletConnectionType.ledger,
+      connectionType: WalletConnectionType.ledgerTron,
       icon: ledgerConnection.icon,
       name: ledgerConnection.name,
-      connected: null,
-      connect: (network: NetworkNames) => ledgerConnection.connect(network),
+      get id() {
+        return `${this.name}:${this.connectionType}`;
+      },
+      get connected() {
+        return connectedWallets[this.id];
+      },
+      connect: () => ledgerConnection.connect(NetworkNames.tron),
+      disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
+    },
+    {
+      connectionType: WalletConnectionType.ledgerSol,
+      icon: ledgerConnection.icon,
+      name: ledgerConnection.name,
+      get id() {
+        return `${this.name}:${this.connectionType}`;
+      },
+      get connected() {
+        return connectedWallets[this.id];
+      },
+      connect: () => ledgerConnection.connect(NetworkNames.solana),
       disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
     },
   ];
-  const result = [...eip6963wallets, ...solanaWallets, ...ledger];
+  const result = [
+    ...eip6963wallets,
+    ...solanaWallets,
+    ...satsWallets,
+    ...ledger,
+  ];
   if (connectionType) {
     return result.filter((w) => connectionType.includes(w.connectionType));
   }

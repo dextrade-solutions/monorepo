@@ -20,7 +20,7 @@ import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AssetAccount } from '../../../../types';
+import { WalletConnection } from '../../../../types';
 import { ModalProps } from '../types';
 
 type ConfiguredWallet = { address: string; icon: string };
@@ -33,10 +33,10 @@ const SetWallet = ({
   hideModal,
 }: {
   asset: AssetModel;
-  value: AssetAccount | null;
+  value: WalletConnection | null;
   open: boolean;
   isToAsset?: boolean;
-  onChange: (v: AssetAccount | null) => void;
+  onChange: (v: WalletConnection | null) => void;
 } & ModalProps) => {
   const canConnectExternalWallet = !asset.isFiat;
   const canPasteAddress = isToAsset;
@@ -54,13 +54,13 @@ const SetWallet = ({
   };
 
   const onSelectWallet = async (item: (typeof wallets)[number]) => {
-    let result: AssetAccount;
+    let result: WalletConnection;
     setLoadingWallet(item);
     try {
       if (item.connected) {
         result = item.connected;
       } else {
-        result = await item.connect(asset.network);
+        result = await item.connect();
       }
       onChange(result);
       hideModal();
@@ -70,7 +70,7 @@ const SetWallet = ({
   };
   const onDisconnect = useCallback(
     async (item: WalletItem) => {
-      if (item.name === savedValue?.connectedWallet) {
+      if (item.name === savedValue?.walletName) {
         onChange(null);
         hideModal();
       }
@@ -141,7 +141,7 @@ const SetWallet = ({
                         sx={{
                           backgroundcolor: 'secondary.dark',
                           borderWidth:
-                            savedValue?.connectedWallet === item.name ? 1 : 0,
+                            savedValue?.walletName === item.name ? 1 : 0,
                         }}
                         className="bordered"
                         onClick={() => onSelectWallet(item)}

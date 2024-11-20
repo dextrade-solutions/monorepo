@@ -38,16 +38,16 @@ export function useAuthP2P() {
       authWallet.wallet && authWallet.wallet.disconnect();
     },
     login: async ({
-      wallet,
+      walletId,
       onSuccess,
     }: {
-      wallet?: string;
+      walletId?: string;
       onSuccess?: (...args: any) => any;
     }) => {
       const { apikey } = getAuth(store.getState());
       const { signature } = getSession(store.getState());
       const loginWallet =
-        authWallet.wallet || wallets.find((i) => i.name === wallet);
+        authWallet.wallet || wallets.find((i) => i.id === walletId);
 
       if (!loginWallet) {
         throw new Error('auth - no wallet found');

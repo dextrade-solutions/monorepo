@@ -12,6 +12,6 @@ export function useAuthWallet() {
 
   return {
     wallet,
-    isConnected: apikey,
+    isAuthenticated: Boolean(apikey) && Boolean(wallet?.connected),
   };
 }

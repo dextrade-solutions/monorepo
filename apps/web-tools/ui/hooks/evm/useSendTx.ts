@@ -20,7 +20,7 @@ export default function useSendTx(asset: AssetModel) {
       onError: (e: unknown) => void;
     },
   ) => {
-    const connectedWallet = assetAccount?.connectedWallet;
+    const connectedWallet = assetAccount?.walletName;
     const connector = connectors.find((i) => i.name === connectedWallet);
     const approveTx = () => {
       const txParams = generateTxParams({

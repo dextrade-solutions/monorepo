@@ -33,7 +33,7 @@ export default function StageDirectTransfer({
     },
     onError: (e) => {
       onChange(StageStatuses.failed);
-      setSendTransactionFailure(e.message);
+      setSendTransactionFailure(e.shortMessage);
     },
   };
 
@@ -44,8 +44,12 @@ export default function StageDirectTransfer({
     const tradeData = tradeStore ? JSON.parse(tradeStore) : {};
     onChange(StageStatuses.requested);
 
-    if (!tradeData.initiated || sendTransactionFailure) {
+    if (sendTransactionFailure) {
       setSendTransactionFailure('');
+      tradeData.initiated = false;
+    }
+
+    if (!tradeData.initiated) {
       tradeData.initiated = true;
       window.localStorage.setItem(trade.id, JSON.stringify(tradeData));
       sendTransaction(recipient, amount, txSentHandlers);
