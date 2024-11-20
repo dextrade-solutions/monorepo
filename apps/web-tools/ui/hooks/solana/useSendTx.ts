@@ -34,7 +34,7 @@ export default function useSendTx(asset: AssetModel) {
       value: Number(value),
     });
 
-    if (assetAccount?.connectedWallet === 'LedgerLive') {
+    if (assetAccount?.walletName === 'LedgerLive') {
       const { client } = await ledgerConnection.connect(NetworkNames.solana);
 
       const { blockhash } = await connection.getLatestBlockhash();
