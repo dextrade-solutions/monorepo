@@ -12,6 +12,6 @@ export function useAuthWallet() {
 
   return {
     wallet,
-    isConnected: wallet?.connected && apikey,
+    isConnected: apikey,
   };
 }

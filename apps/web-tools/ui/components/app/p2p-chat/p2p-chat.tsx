@@ -45,7 +45,7 @@ export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
     };
 
     ws.onclose = () => {
-      console.log('WebSocket is closed now. Reopening...');
+      console.info('WebSocket is closed now. Reopening...');
       setTimeout(() => {
         if (!wsChat || wsChat.readyState === WebSocket.CLOSED) {
           openWebSocket();
