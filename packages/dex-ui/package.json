@@ -39,12 +39,12 @@
   "files": [
     "dist"
   ],
-  "main": "./bundle/dex-ui.umd.cjs",
-  "module": "./bundle/dex-ui.js",
+  "main": "./dist/dex-ui.umd.cjs",
+  "module": "./dist/dex-ui.js",
   "exports": {
     ".": {
-      "import": "./bundle/dex-ui.js",
-      "require": "./bundle/dex-ui.umd.cjs"
+      "import": "./dist/dex-ui.js",
+      "require": "./dist/dex-ui.umd.cjs"
     }
   }
 }
