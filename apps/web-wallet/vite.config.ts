@@ -115,10 +115,10 @@ export default defineConfig({
     mkcert(),
     viteStaticCopy({
       targets: [
-        {
-          src: './app/images/*',
-          dest: 'images',
-        },
+        // {
+        //   src: './app/images/*',
+        //   dest: 'images',
+        // },
         {
           src: './app/fonts/*',
           dest: 'fonts',
@@ -138,6 +138,10 @@ export default defineConfig({
         {
           src: 'node_modules/bitcore-lib/bitcore-lib.js',
           dest: 'lib',
+        },
+        {
+          src: '../../assets/images/*',
+          dest: 'images',
         },
       ],
     }),

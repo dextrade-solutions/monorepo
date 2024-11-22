@@ -110,7 +110,7 @@ export default class AppHeader extends PureComponent {
           <div className="app-header__contents">
             <MetaFoxLogo
               unsetIconHeight
-              src="./images/logo/desktop.svg"
+              src="./images/logo/dextrade-full.svg"
               onClick={async () => {
                 if (isDisabled) {
                   return;
@@ -138,7 +138,7 @@ export default class AppHeader extends PureComponent {
                 <div data-testid="app-header-desktop-dev-logo">
                   <MetaFoxLogo
                     unsetIconHeight
-                    src="./images/logo/desktop.svg"
+                    src="./images/logo/dextrade-full.svg"
                   />
                 </div>
               )

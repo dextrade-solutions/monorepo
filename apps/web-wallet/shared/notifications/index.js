@@ -4,7 +4,7 @@ export const UI_NOTIFICATIONS = {
     id: 18,
     date: null,
     image: {
-      src: 'images/logo/desktop.svg',
+      src: 'images/logo/dextrade-full.svg',
       width: '100%',
     },
   },

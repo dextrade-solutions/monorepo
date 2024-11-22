@@ -1,10 +1,9 @@
+import BaseService from './base';
+import { DEXTRADE_BASE_URL } from '../../../ui/helpers/constants/common';
 import {
   HttpError,
   handleFetch,
 } from '../../overrided-metamask/controller-utils';
-import BaseService from './base';
-
-const DEFAULT_URL = 'https://dev-api.dextrade.com/';
 
 class DextradeServiceApi extends BaseService {
   constructor({ getApiKey, refreshApiKey, signBody, verifyResponse } = {}) {
@@ -56,7 +55,7 @@ class DextradeServiceApi extends BaseService {
     };
 
     super({
-      apiBaseUrl: DEFAULT_URL,
+      apiBaseUrl: `${DEXTRADE_BASE_URL}/`,
       getApiKey,
       refreshApiKey,
       customHandleFetch,
@@ -66,7 +65,6 @@ class DextradeServiceApi extends BaseService {
 
   /**
    * Returns api key for auth requests
-   *
    * @param mnemonicHash - mnemonic hash string of master private key
    * @param masterPublicKey - master private key
    * @param signature - signed session pub key

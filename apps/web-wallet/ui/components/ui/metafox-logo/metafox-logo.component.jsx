@@ -28,7 +28,7 @@ export default class MetaFoxLogo extends PureComponent {
       />
     );
 
-    const imageSrc = './images/logo/dextrade-logo.svg';
+    const imageSrc = './images/logo/dextrade-short.svg';
 
     if (src) {
       renderHorizontalLogo = () => (

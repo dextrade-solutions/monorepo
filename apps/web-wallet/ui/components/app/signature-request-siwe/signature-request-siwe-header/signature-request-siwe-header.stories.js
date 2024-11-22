@@ -4,7 +4,7 @@ import SignatureRequestSIWEHeader from '.';
 
 const primaryIdentity = Object.values(testData.metamask.identities)[0];
 const subjectMetadata = {
-  iconUrl: '/images/logo/dextrade-logo.svg',
+  iconUrl: '/images/logo/dextrade-short.svg',
   name: 'DexTrade',
   origin: 'http://localhost:8080',
 };

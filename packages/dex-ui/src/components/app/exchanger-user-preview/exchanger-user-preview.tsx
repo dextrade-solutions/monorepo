@@ -79,8 +79,6 @@ export default function ExchangerUserPreview({
           <RatingOutput {...rating} />
         </Box>
       )}
-      {/* </> */}
-      {/* )} */}
     </Box>
   );
 }

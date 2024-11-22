@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MaterialSlider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+// import MaterialSlider from '@material-ui/core/Slider';
+// import { withStyles } from '@material-ui/core/styles';
 
 import {
   Color,

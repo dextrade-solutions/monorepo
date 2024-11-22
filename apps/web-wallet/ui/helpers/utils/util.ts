@@ -588,3 +588,7 @@ export function formatBalance(
   }
   return formatted;
 }
+
+export function getContractAtAddress() {
+  return '';
+}

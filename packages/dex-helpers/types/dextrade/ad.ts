@@ -77,13 +77,22 @@ export type AdItem = {
   minimumExchangeAmountCoin1?: number;
   maximumExchangeAmountCoin1?: number;
   priceAdjustment: number;
-  reserveInCoin2: number;
+  reserve: {
+    coin: CoinModel;
+    id: number;
+    reserveInCoin1: number;
+    reserveInCoin2: number;
+    walletAddress: string;
+  }[];
   minimumExchangeAmountCoin2?: number;
   maximumExchangeAmountCoin2?: number;
   name: string;
   walletAddress: string;
   walletAddressInNetwork2: string;
-  rating: number;
+  officialMerchant: boolean;
+  rating: {
+    totalRating: number;
+  };
   fromCoin: CoinModel;
   toCoin: CoinModel;
   isExchangerActive: boolean;

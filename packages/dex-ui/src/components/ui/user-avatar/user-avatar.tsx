@@ -2,7 +2,8 @@ import { Box, Typography } from '@mui/material';
 import classnames from 'classnames';
 import React, { useState } from 'react';
 
-import './index.scss';
+const DEFAULT_SIZE = 32;
+const DEFAULT_BORDER_RADIUS = 8;
 
 export default function UserAvatar({
   icon,
@@ -20,7 +21,14 @@ export default function UserAvatar({
   isOfficial?: boolean;
 }) {
   const [iconError, setIconError] = useState(false);
-  const style = size ? { height: `${size}px`, width: `${size}px` } : {};
+  const iconSize = size || DEFAULT_SIZE;
+  const borderRadius = DEFAULT_BORDER_RADIUS;
+
+  const imgSizes = {
+    height: `${iconSize}px`,
+    width: `${iconSize}px`,
+    borderRadius: `${borderRadius}px`,
+  };
 
   const handleOnError = () => {
     setIconError(true);
@@ -29,11 +37,19 @@ export default function UserAvatar({
   return (
     <Box
       display="flex"
-      className={classnames('user-avatar', {
-        'user-avatar--online': online,
-      })}
       sx={{
+        position: 'relative',
         '&::after': {
+          content: '""',
+          height: 9,
+          width: 9,
+          bgcolor: online ? '#00D509' : '#CDCDCD',
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          borderRadius,
+          borderStyle: 1,
+          borderWidth: 1,
           borderColor: 'primary.light',
         },
       }}
@@ -42,24 +58,31 @@ export default function UserAvatar({
         <img
           onError={handleOnError}
           src={icon}
-          style={style}
+          style={imgSizes}
           className={className}
           alt={name || 'icon'}
         />
       ) : (
-        <Box className="user-avatar__fallback">
+        <Box position="relative">
           <Box
-            className="user-avatar__fallback--bg"
             padding={2}
-            borderRadius={0.4}
-            style={style}
             sx={{
               bgcolor: 'primary.main',
               opacity: 0.1,
+              ...imgSizes,
             }}
           ></Box>
           <Typography
-            className="user-avatar__fallback--letter"
+            sx={{
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
             {name?.charAt(0).toUpperCase() || ''}
           </Typography>

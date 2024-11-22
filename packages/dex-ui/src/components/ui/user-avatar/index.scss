@@ -1,7 +1,6 @@
 .user-avatar {
   position: relative;
   background-position: center;
-  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   flex: 0 0 auto;
   -moz-animation: fadein 1s;
 
@@ -18,7 +17,7 @@
   }
   
   &::after {
-    content: '';
+    content: '""';
     width: 9px;
     height: 9px;
     background-color: #CDCDCD;

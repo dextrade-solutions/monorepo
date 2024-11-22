@@ -1,17 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { useDispatch } from 'react-redux';
 import { Divider } from '@mui/material';
-import { dextradeRequest, showModal } from '../../../store/actions';
+import { useQuery } from '@tanstack/react-query';
+import { CopyData } from 'dex-ui';
+import { useDispatch } from 'react-redux';
+
 import { Session } from '../../../../app/scripts/controllers/exchanger/types';
-import Box from '../../ui/box';
-import {
-  Button,
-  ICON_NAMES,
-  ICON_SIZES,
-  Icon,
-  Text,
-} from '../../component-library';
+import { SessionStatuses } from '../../../../shared/constants/exchanger';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,9 +16,16 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { relativeFromCurrentDate } from '../../../helpers/utils/util';
-import { SessionStatuses } from '../../../../shared/constants/exchanger';
-import CopyData from '../../ui/copy-data';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { dextradeRequest, showModal } from '../../../store/actions';
+import {
+  Button,
+  ICON_NAMES,
+  ICON_SIZES,
+  Icon,
+  Text,
+} from '../../component-library';
+import Box from '../../ui/box';
 
 export default function DextradeSessions() {
   const t = useI18nContext();

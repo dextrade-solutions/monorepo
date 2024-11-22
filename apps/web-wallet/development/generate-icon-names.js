@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SVG_ICONS_FOLDER = './app/images/icons';
+const SVG_ICONS_FOLDER = '../../assets/images/icons';
 const ASSET_EXT = '.svg';
 
 const getIconNameKebabCase = (fileName) => path.basename(fileName, ASSET_EXT);

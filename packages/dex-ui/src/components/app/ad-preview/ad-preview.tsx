@@ -3,11 +3,10 @@ import {
   CardActionArea,
   Divider,
   Box,
-  Chip,
   CardContent,
   Typography,
 } from '@mui/material';
-import { NetworkNames, formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
+import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
 import { sumBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -34,10 +33,6 @@ const AdPreview = ({
   onClick,
 }: IProps) => {
   const { t } = useTranslation();
-  const showPaymentMethods =
-    ad.paymentMethods &&
-    (ad.fromCoin.networkName === NetworkNames.fiat ||
-      ad.toCoin.networkName === NetworkNames.fiat);
   const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
   return (
     <Card
@@ -138,10 +133,15 @@ const AdPreview = ({
             </Typography>
           </Box>
 
-          {showPaymentMethods && (
+          {Boolean(ad.paymentMethods.length) && (
             <Box marginTop={2}>
               {ad.paymentMethods.map((paymentMethod) => (
-                <Box display="inline-flex" alignItems="center" marginRight={2}>
+                <Box
+                  key={paymentMethod.userPaymentMethodId}
+                  display="inline-flex"
+                  alignItems="center"
+                  marginRight={2}
+                >
                   <Box
                     sx={{
                       width: 4,

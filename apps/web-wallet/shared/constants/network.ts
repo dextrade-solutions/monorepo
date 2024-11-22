@@ -1,4 +1,5 @@
 import { capitalize } from 'lodash';
+
 import { MINUTE } from './time';
 
 /**
@@ -318,22 +319,17 @@ export const CURRENCY_SYMBOLS = {
   TON: 'TON',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
-export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
-export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
-export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
-export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
-export const AETH_TOKEN_IMAGE_URL = './images/arbitrum.svg';
-export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
-export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
-export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
-export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
-export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
-export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
-export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
-export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
-export const BASE_TOKEN_IMAGE_URL = './images/base.svg';
-export const TON_TOKEN_IMAGE_URL = './images/toncoin.svg';
+export const ETH_TOKEN_IMAGE_URL =
+  'https://markets.nyc3.digitaloceanspaces.com/coin-icons/ethereum@3x.png';
+export const TEST_ETH_TOKEN_IMAGE_URL =
+  'https://markets.nyc3.digitaloceanspaces.com/coin-icons/ethereum@3x.png';
+export const BNB_TOKEN_IMAGE_URL =
+  'https://markets.nyc3.digitaloceanspaces.com/coin-icons/binancecoin@3x.png';
+export const AETH_TOKEN_IMAGE_URL = './images/coins/arbitrum.svg';
+export const MATIC_TOKEN_IMAGE_URL = './images/coins/matic.svg';
+export const GNOSIS_TOKEN_IMAGE_URL = './images/coins/gnosis.svg';
+export const BASE_TOKEN_IMAGE_URL = './images/coins/base.svg';
+export const TON_TOKEN_IMAGE_URL = './images/coins/toncoin.svg';
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
@@ -408,18 +404,9 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.ARBITRUM]: AETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BASE]: BASE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.TON]: TON_TOKEN_IMAGE_URL,
 } as const;
@@ -475,9 +462,6 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.TEST_ETH]: TEST_ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.BNB]: BNB_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.MATIC]: MATIC_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -693,16 +677,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.AVALANCHE,
-    nickname: AVALANCHE_DISPLAY_NAME,
-    rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AVALANCHE,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://snowtrace.io/',
-      imageUrl: AVAX_TOKEN_IMAGE_URL,
-    },
-  },
-  {
     chainId: CHAIN_IDS.BSC,
     nickname: BNB_DISPLAY_NAME,
     rpcUrl: 'https://bsc-dataseed.binance.org/',
@@ -710,16 +684,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://bscscan.com/',
       imageUrl: BNB_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.OPTIMISM,
-    nickname: OPTIMISM_DISPLAY_NAME,
-    rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://optimistic.etherscan.io/',
-      imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
     },
   },
   {
@@ -733,16 +697,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.CELO,
-    nickname: CELO_DISPLAY_NAME,
-    rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.CELO,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://celoscan.io',
-      imageUrl: CELO_TOKEN_IMAGE_URL,
-    },
-  },
-  {
     chainId: CHAIN_IDS.GNOSIS,
     nickname: GNOSIS_DISPLAY_NAME,
     rpcUrl: `https://rpc.gnosischain.com`,
@@ -750,16 +704,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.ZKSYNC_ERA,
-    nickname: ZK_SYNC_ERA_DISPLAY_NAME,
-    rpcUrl: `https://mainnet.era.zksync.io`,
-    ticker: CURRENCY_SYMBOLS.ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.zksync.io/',
-      imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
     },
   },
   {

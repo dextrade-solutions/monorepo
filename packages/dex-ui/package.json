@@ -43,7 +43,7 @@
   "module": "./dist/dex-ui.js",
   "exports": {
     ".": {
-      "import": "./lib/main.tsx",
+      "import": "./dist/dex-ui.js",
       "require": "./dist/dex-ui.umd.cjs"
     }
   }
