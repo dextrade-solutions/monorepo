@@ -41,7 +41,7 @@ export function useAuthP2P() {
       walletId,
       onSuccess,
     }: {
-      walletId?: string;
+      walletId?: string | null;
       onSuccess?: (...args: any) => any;
     }) => {
       const { apikey } = getAuth(store.getState());

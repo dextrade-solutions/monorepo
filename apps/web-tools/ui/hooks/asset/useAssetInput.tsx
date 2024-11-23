@@ -35,6 +35,9 @@ export const useAssetInput = ({
   const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
+  const walletId =
+    configuredWallet &&
+    `${configuredWallet.walletName}:${configuredWallet.connectionType}`;
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
@@ -135,6 +138,7 @@ export const useAssetInput = ({
 
     native,
     account: configuredWallet,
+    walletId,
     balance,
     balanceNative,
     paymentMethod,
