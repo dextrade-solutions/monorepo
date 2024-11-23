@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 // import mkcert from 'vite-plugin-mkcert';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
 import wasm from 'vite-plugin-wasm';
@@ -68,6 +69,14 @@ export default defineConfig({
         global: true,
         process: true,
       },
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: '../../assets/images/*',
+          dest: 'images',
+        },
+      ],
     }),
   ],
   optimizeDeps: {

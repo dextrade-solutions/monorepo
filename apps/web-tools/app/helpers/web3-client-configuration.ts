@@ -9,7 +9,7 @@ import {
   sepolia,
   xdc,
 } from 'wagmi/chains';
-import { walletConnect } from 'wagmi/connectors';
+import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
@@ -49,6 +49,14 @@ export const config = createConfig({
   connectors: [
     walletConnect({
       ...WC_PARAMS,
+    }),
+    coinbaseWallet({
+      appName: 'Dextrade',
+      // CB SDK doesn't pass the parent origin context to their passkey site
+      // Flagged to CB team and can remove UNISWAP_WEB_URL once fixed
+      appLogoUrl: `https://p2p.dextrade.com/images/dextrade-full.svg`,
+      reloadOnDisconnect: false,
+      enableMobileWalletLink: true,
     }),
   ],
   client({ chain }) {

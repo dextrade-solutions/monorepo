@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import { PaymentContentTypes, humanizePaymentMethodName } from 'dex-helpers';
-import { CopyData } from 'dex-ui';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import CopyData from '../../ui/copy-data';
 import Image from '../../ui/image';
 
 export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
