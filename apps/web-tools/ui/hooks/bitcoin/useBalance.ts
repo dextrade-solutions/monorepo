@@ -17,8 +17,9 @@ export default function useBalance(address: string) {
         console.error('Failed to retrieve account info:', error);
       }
     };
-
-    updateBalance();
+    if (address) {
+      updateBalance();
+    }
   }, [address]);
   return balance;
 }

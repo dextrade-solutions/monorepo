@@ -7,7 +7,6 @@ import Wallet, { AddressPurpose } from 'sats-connect';
 import { Config, Connector, useConfig, useConnectors } from 'wagmi';
 
 import {
-  disconnectAssetWallet,
   getWalletConnections,
   removeWalletConnection,
   setWalletConnection,
