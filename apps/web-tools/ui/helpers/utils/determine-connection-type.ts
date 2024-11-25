@@ -2,7 +2,6 @@ import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 
 import { WalletConnectionType } from '../constants/wallets';
-import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
 
 export function determineConnectionType(asset: AssetModel) {
   const supported = [];
@@ -11,12 +10,12 @@ export function determineConnectionType(asset: AssetModel) {
     supported.push(WalletConnectionType.eip6963);
   } else if (asset.network === NetworkNames.solana) {
     supported.push(WalletConnectionType.solana);
-    supported.push(WalletConnectionType.ledger);
+    supported.push(WalletConnectionType.ledgerSol);
   } else if (asset.network === NetworkNames.tron) {
-    supported.push(WalletConnectionType.ledger);
+    supported.push(WalletConnectionType.ledgerTron);
   } else if (asset.network === NetworkNames.bitcoin) {
     supported.push(WalletConnectionType.sats);
-    supported.push(WalletConnectionType.ledger);
+    supported.push(WalletConnectionType.ledgerBtc);
   }
 
   return supported;

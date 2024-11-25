@@ -1,10 +1,9 @@
-import { Adapter } from '@solana/wallet-adapter-base';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NetworkNames } from 'dex-helpers';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Wallet, { AddressPurpose } from 'sats-connect';
-import { Config, Connector, useConfig, useConnectors } from 'wagmi';
+import { useConnectors } from 'wagmi';
 
 import {
   getWalletConnections,
@@ -13,35 +12,8 @@ import {
 } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 import { ledgerConnection } from '../../helpers/utils/ledger';
+import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
-
-const getEIP6963SerilizedConnectedAccount = (
-  // connections: Connection[],
-  config: Config,
-  connector: Connector,
-): WalletConnection | null => {
-  const connection = config.state.connections.get(connector.uid);
-  if (connection) {
-    const [address] = connection.accounts;
-    return {
-      walletName: connection.connector.name,
-      connectionType: WalletConnectionType.eip6963,
-      address,
-    };
-  }
-  return null;
-};
-
-const getSolanaSerializedConnectedAccount = (adapter: Adapter): WalletConnection | null => {
-  if (adapter.connected) {
-    return {
-      walletName: adapter.name,
-      connectionType: WalletConnectionType.solana,
-      address: adapter.publicKey.toBase58(),
-    };
-  }
-  return null;
-};
 
 export type WalletItem = {
   icon?: string;
@@ -51,14 +23,6 @@ export type WalletItem = {
   disconnect: () => Promise<void>;
 };
 
-const getConnectorIcon = (item: Connector) => {
-  if (item.name === 'WalletConnect') {
-    return '/images/icons/wallet-connect.svg';
-  }
-  return item.icon;
-};
-
-// if asset is not passed, shows only EVM wallets
 export function useWallets({
   connectionType,
 }: { connectionType?: WalletConnectionType[] } = {}) {
@@ -71,14 +35,9 @@ export function useWallets({
 
   const connectedWallets = useSelector(getWalletConnections);
 
-  // setInterval(() => {
-  //   forceUpdate();
-  // }, 500);
-  // const connections = useConnections({ config });
-
   const eip6963wallets = connectors.map((item) => ({
     connectionType: WalletConnectionType.eip6963,
-    icon: getConnectorIcon(item),
+    icon: item.icon || getWalletIcon(item.name),
     name: item.name,
     get id() {
       return `${this.name}:${this.connectionType}`;
@@ -112,7 +71,7 @@ export function useWallets({
   const satsWallets = [
     {
       connectionType: WalletConnectionType.sats,
-      icon: '',
+      icon: getWalletIcon('xverse'),
       name: 'Xverse',
       get id() {
         return `${this.name}:${this.connectionType}`;

@@ -12,5 +12,5 @@ export default function useBalance(address: string) {
     },
   });
 
-  return data ? BigInt(data.final_balance) : null;
+  return data?.final_balance ? BigInt(data.final_balance) : null;
 }

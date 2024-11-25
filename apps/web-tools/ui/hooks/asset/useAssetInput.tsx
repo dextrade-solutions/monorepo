@@ -13,6 +13,7 @@ import {
   setAssetAccount,
   showModal,
 } from '../../ducks/app/app';
+import { useWallets } from './useWallets';
 
 export const useAssetInput = ({
   asset,
@@ -22,6 +23,7 @@ export const useAssetInput = ({
   isToAsset?: boolean;
 }) => {
   const dispatch = useDispatch();
+  const wallets = useWallets();
   const walletConnection = useSelector((state) =>
     getAssetAccount(state, asset),
   );
@@ -38,6 +40,7 @@ export const useAssetInput = ({
   const walletId =
     walletConnection &&
     `${walletConnection.walletName}:${walletConnection.connectionType}`;
+  const wallet = wallets.find((w) => w.id === walletId);
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
@@ -137,6 +140,7 @@ export const useAssetInput = ({
 
     native,
     account: walletConnection,
+    wallet,
     walletId,
     balance,
     balanceNative,

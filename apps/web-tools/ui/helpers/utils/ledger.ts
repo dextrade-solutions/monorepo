@@ -2,21 +2,21 @@ import Btc from '@ledgerhq/hw-app-btc';
 import Solana from '@ledgerhq/hw-app-solana';
 import Trx from '@ledgerhq/hw-app-trx';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import { listen } from '@ledgerhq/logs';
 import { PublicKey } from '@solana/web3.js';
 import { NetworkNames } from 'dex-helpers';
-import { WalletAPIClient } from "@ledgerhq/wallet-api-client";
-import { listen } from "@ledgerhq/logs";
 
+import { getWalletIcon } from './util';
 
 class LedgerConnection {
   transport: TransportWebUSB | null = null;
 
-  icon = '';
+  icon = getWalletIcon('LedgerLive');
 
   name = 'LedgerLive';
 
   constructor() {
-    listen(log => console.log(log));
+    listen((log) => console.log(log));
   }
 
   async initTransport() {
