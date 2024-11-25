@@ -2,6 +2,7 @@ import './index.scss';
 
 import { Box, BoxProps, Button, Tooltip } from '@mui/material';
 import classnames from 'classnames';
+import { shortenAddress } from 'dex-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,9 +13,11 @@ const CopyData = ({
   data,
   tooltipPosition = 'bottom',
   className,
+  shorten,
   ...args
 }: {
   data: string;
+  shorten?: boolean;
   tooltipPosition?: 'top' | 'left' | 'bottom' | 'right';
   className?: string;
 } & BoxProps) => {
@@ -34,7 +37,9 @@ const CopyData = ({
           }}
           className="copy-data__button"
         >
-          <div className="copy-data__label">{data}</div>
+          <div className="copy-data__label">
+            {shorten ? shortenAddress(data) : data}
+          </div>
           <div className="copy-data__icon">
             <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
           </div>
