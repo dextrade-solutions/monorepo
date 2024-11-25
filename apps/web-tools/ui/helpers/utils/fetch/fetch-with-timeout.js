@@ -1,5 +1,5 @@
 import { memoize } from 'lodash';
-import { SECOND } from '../../../app/constants/time';
+import { SECOND } from '../../../../app/constants/time';
 
 const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
   if (!Number.isInteger(timeout) || timeout < 1) {

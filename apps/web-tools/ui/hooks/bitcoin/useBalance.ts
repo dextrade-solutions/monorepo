@@ -1,25 +1,16 @@
-import { useEffect, useState } from 'react';
-import Wallet from 'sats-connect';
+import { useQuery } from '@tanstack/react-query';
+
+import { bitcoinInfo } from '../../../app/services/bitcoininfo';
 
 export default function useBalance(address: string) {
-  const [balance, setBalance] = useState(0n);
+  const { data } = useQuery({
+    queryKey: ['paymentMethods'],
+    queryFn: async () => {
+      const response = await bitcoinInfo.fetchAccount(address);
+      const result = await response.json();
+      return result;
+    },
+  });
 
-  useEffect(() => {
-    const updateBalance = async () => {
-      try {
-        const response = await Wallet.request('getBalance', undefined);
-        if (response.status === 'success') {
-          setBalance(BigInt(response.result.confirmed));
-        } else {
-          throw new Error(response.error);
-        }
-      } catch (error) {
-        console.error('Failed to retrieve account info:', error);
-      }
-    };
-    if (address) {
-      updateBalance();
-    }
-  }, [address]);
-  return balance;
+  return data ? BigInt(data.final_balance) : null;
 }

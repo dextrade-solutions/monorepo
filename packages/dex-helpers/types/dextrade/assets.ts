@@ -30,12 +30,3 @@ export type AssetBalance = {
   formattedValue: string;
   inUsdt: number | null;
 };
-
-export type AssetInputValue = {
-  amount: number | string;
-  loading: boolean;
-  configuredWallet: {
-    address: string;
-    icon: string;
-  } | null;
-};

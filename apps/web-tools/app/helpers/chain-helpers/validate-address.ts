@@ -17,7 +17,7 @@ export function validateAddress(asset: AssetModel, address: string): boolean {
 
 function validateBtcTypeAddress(asset: AssetModel, address: string): boolean {
   try {
-    bitcoin.payments.p2pkh({
+    bitcoin.payments.p2wpkh({
       address,
       network: btcNetworksConfig[asset.network],
     });

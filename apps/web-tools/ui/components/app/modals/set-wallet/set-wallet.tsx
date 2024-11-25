@@ -16,6 +16,7 @@ import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon, ButtonIcon, AssetItem, PulseLoader } from 'dex-ui';
 import { useCallback, useState } from 'react';
 
+import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
@@ -49,7 +50,11 @@ const SetWallet = ({
   const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
 
   const onSetInputWallet = () => {
-    onChange({ address: inputWalletAddress, icon: '' });
+    onChange({
+      address: inputWalletAddress,
+      connectionType: WalletConnectionType.manual,
+      walletName: '',
+    });
     hideModal();
   };
 

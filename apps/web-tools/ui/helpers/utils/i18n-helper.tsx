@@ -1,7 +1,7 @@
 // cross-browser connection to extension i18n API
 import log from 'loglevel';
 
-import getFetchWithTimeout from './fetch-with-timeout';
+import getFetchWithTimeout from './fetch/fetch-with-timeout';
 
 export const ISO_LANGS = {
   en: 'English',

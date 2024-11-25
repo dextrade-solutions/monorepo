@@ -1,4 +1,4 @@
-import { NetworkNames, getAssetKey } from 'dex-helpers';
+import { NetworkNames } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -21,7 +21,8 @@ export const useAssetInput = ({
   asset: AssetModel;
   isToAsset?: boolean;
 }) => {
-  const configuredWallet = useSelector((state) =>
+  const dispatch = useDispatch();
+  const walletConnection = useSelector((state) =>
     getAssetAccount(state, asset),
   );
 
@@ -30,14 +31,13 @@ export const useAssetInput = ({
   const [inputAmount, setInputAmount] = useState<number | string>();
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
-  const dispatch = useDispatch();
 
   const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
   const walletId =
-    configuredWallet &&
-    `${configuredWallet.walletName}:${configuredWallet.connectionType}`;
+    walletConnection &&
+    `${walletConnection.walletName}:${walletConnection.connectionType}`;
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
@@ -46,7 +46,7 @@ export const useAssetInput = ({
         name: 'SET_WALLET',
         asset,
         isToAsset,
-        value: configuredWallet,
+        value: walletConnection,
         onChange: (v) => {
           dispatch(
             setAssetAccount({
@@ -95,10 +95,10 @@ export const useAssetInput = ({
     });
   }, []);
 
-  const balance = useAssetBalance(asset, configuredWallet?.address);
+  const balance = useAssetBalance(asset, walletConnection?.address);
   const balanceNative = useAssetBalance(
     native || { ...asset, contract: null },
-    configuredWallet?.address,
+    walletConnection?.address,
   );
 
   const showDeposit = ({
@@ -113,7 +113,7 @@ export const useAssetInput = ({
         name: 'DEPOSIT_WALLET',
         asset: native,
         awaitingDepositAmount,
-        address: configuredWallet?.address,
+        address: walletConnection?.address,
         onSuccess,
       }),
     );
@@ -129,7 +129,6 @@ export const useAssetInput = ({
     // input parameters
     amount: inputAmount,
     loading: loading || loadingNative,
-    configuredWallet,
     permissions: {
       canChooseWallet,
       canChoosePaymentMethod,
@@ -137,7 +136,7 @@ export const useAssetInput = ({
     },
 
     native,
-    account: configuredWallet,
+    account: walletConnection,
     walletId,
     balance,
     balanceNative,
