@@ -326,7 +326,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       flexDirection="column"
     >
       <div className="flex-grow" />
-      <Typography marginBottom={1} variant="h4">{headerText}</Typography>
+      <Typography marginBottom={1} variant="h4">
+        {headerText}
+      </Typography>
       <Typography variant="body2" marginBottom={4}>
         Trade with <strong>{exchange.exchangerName}</strong>
       </Typography>
@@ -350,9 +352,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             },
           }}
         >
-          <CardContent>
+          <Box display="flex" alignItems="center" height={50} paddingX={2}>
             <AssetItem coin={exchange.exchangerSettings.from} />
-          </CardContent>
+          </Box>
           <CardContent>
             <Typography>
               {formatFundsAmount(
@@ -383,9 +385,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             },
           }}
         >
-          <CardContent>
+          <Box display="flex" alignItems="center" height={50} paddingX={2}>
             <AssetItem coin={exchange.exchangerSettings.to} />
-          </CardContent>
+          </Box>
           <CardContent>
             <Typography>
               {formatFundsAmount(
