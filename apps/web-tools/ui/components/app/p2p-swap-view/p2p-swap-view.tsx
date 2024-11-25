@@ -182,9 +182,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     try {
       setLoadingStartExchange(true);
       const result = await login({
-        wallet:
-          assetInputFrom.configuredWallet?.connectedWallet ||
-          assetInputTo.configuredWallet?.connectedWallet,
+        walletId: assetInputFrom.walletId || assetInputTo.walletId,
         onSuccess: (on401?: () => void) =>
           dispatch(
             createSwapP2P({

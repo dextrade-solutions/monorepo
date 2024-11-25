@@ -91,17 +91,13 @@ export function useAdValidation({
     params.disabledBtn = true;
     return params;
   }
-  if (
-    !assetInputTo.asset.isFiat &&
-    !assetInputTo.account?.address &&
-    !assetInputTo.configuredWallet?.address
-  ) {
+  if (!assetInputTo.asset.isFiat && !assetInputTo.account?.address) {
     params.submitBtnText = 'Set recipient wallet';
     return params;
   }
   if (
-    assetInputTo.configuredWallet &&
-    !validateAddress(assetInputTo.asset, assetInputTo.configuredWallet.address)
+    assetInputTo.account &&
+    !validateAddress(assetInputTo.asset, assetInputTo.account.address)
   ) {
     params.submitBtnText = 'Recipient address is not valid';
     params.hasValidationErrors = true;
