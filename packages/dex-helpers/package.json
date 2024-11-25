@@ -22,7 +22,7 @@
     "./types": "./types/index.ts"
   },
   "devDependencies": {
-    "vite": "^5.4.8"
+    "vite": "^5.2.0"
   },
   "dependencies": {
     "viem": "^2.21.17"

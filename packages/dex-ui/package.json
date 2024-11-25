@@ -34,17 +34,17 @@
     "@vitejs/plugin-react": "^4.3.1",
     "globals": "^15.9.0",
     "typescript": "^5.5.3",
-    "vite": "^5.4.1"
+    "vite": "^5.2.0"
   },
   "files": [
     "dist"
   ],
-  "main": "./dist/dex-ui.umd.cjs",
-  "module": "./dist/dex-ui.js",
+  "main": "./lib/main.tsx",
+  "module": "./lib/main.tsx",
   "exports": {
     ".": {
-      "import": "./dist/dex-ui.js",
-      "require": "./dist/dex-ui.umd.cjs"
+      "import": "./lib/main.tsx",
+      "require": "./lib/main.tsx"
     }
   }
 }

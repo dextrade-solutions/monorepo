@@ -13,7 +13,10 @@
     "outDir": "tsout",
     "rootDir": ".",
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "*": ["./types/*"]
+    }
   },
   "exclude": [
     "**/*.test.js",
@@ -31,7 +34,4 @@
     "development/ts-migration-dashboard/intermediate/**/*"
   ],
   "extends": "@tsconfig/node16/tsconfig.json",
-  "paths": {
-    "*": ["./types/*"]
-  }
 }
