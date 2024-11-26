@@ -1,9 +1,10 @@
 import '../styles.scss';
-import { Box, Typography, Divider, Alert } from '@mui/material';
+import { Box, Typography, Divider, Alert, Button } from '@mui/material';
 import { formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { CopyData, ButtonIcon, AssetItem } from 'dex-ui';
 import { useEffect } from 'react';
+import QRCode from 'react-qr-code';
 
 import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAssetBalance } from '../../../../hooks/asset/useAssetBalance';
@@ -14,35 +15,42 @@ const DepositWallet = ({
   asset,
   awaitingDepositAmount,
   address,
+  manualConfirmation,
+  description,
+  onClose,
   onSuccess,
   hideModal,
 }: {
   asset: AssetModel;
   address: string;
+  description?: string;
+  manualConfirmation?: boolean;
   awaitingDepositAmount?: number;
   onSuccess?: () => void;
+  onClose?: () => void;
 } & ModalProps) => {
   const t = useI18nContext();
   const balance = useAssetBalance(asset, address);
 
   useEffect(() => {
     if (
+      !manualConfirmation &&
       onSuccess &&
       awaitingDepositAmount &&
       Number(balance?.value) > awaitingDepositAmount
     ) {
       onSuccess();
     }
-  }, [balance, awaitingDepositAmount, onSuccess]);
+  }, [balance, awaitingDepositAmount, manualConfirmation, onSuccess]);
 
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
         <Box>
           <AssetItem asset={asset} />
-          {balance && (
+          {balance?.formattedValue && (
             <Typography marginTop={1}>
-              Balance: {balance?.formattedValue}
+              Balance: {balance.formattedValue}
             </Typography>
           )}
         </Box>
@@ -50,7 +58,7 @@ const DepositWallet = ({
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={hideModal}
+          onClick={() => hideModal(onClose)}
           ariaLabel={t('close')}
         />
       </Box>
@@ -60,15 +68,40 @@ const DepositWallet = ({
       <Box>
         {awaitingDepositAmount && (
           <Alert severity="info">
-            To start the swap, you need to deposit the native token{' '}
-            {formatFundsAmount(awaitingDepositAmount, asset.symbol)}
+            {description && <Box>{description}</Box>}
+
+            <Typography marginTop={1} fontWeight={900}>
+              Deposit amount:{' '}
+              {formatFundsAmount(awaitingDepositAmount, asset.symbol)}
+            </Typography>
           </Alert>
         )}
-        <Typography marginTop={2}>Deposit address:</Typography>
-        <Box marginBottom={3}>
+        <Box
+          display="flex"
+          alignItems="center"
+          marginBottom={3}
+          flexDirection="column"
+        >
+          <Typography marginY={1}>Deposit address:</Typography>
+          <QRCode height={280} value={address} />
           <CopyData tooltipPosition="top" width="100%" data={address} />
         </Box>
       </Box>
+      {manualConfirmation && onSuccess && (
+        <Box display="flex">
+          <Button onClick={() => hideModal(onClose)}>Cancel</Button>
+          <div className="flex-grow"></div>
+          <Button
+            variant="contained"
+            onClick={async () => {
+              onSuccess();
+              hideModal();
+            }}
+          >
+            Confirm I sent
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

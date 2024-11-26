@@ -116,6 +116,7 @@ export const useAssetInput = ({
         name: 'DEPOSIT_WALLET',
         asset: native,
         awaitingDepositAmount,
+        description: 'To start the swap, you need to deposit the native token',
         address: walletConnection?.address,
         onSuccess,
       }),

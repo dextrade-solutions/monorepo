@@ -12,7 +12,7 @@ export default function Stage({
   loading,
   sendTransactionFailure,
 }: {
-  title: string;
+  title?: string;
   subtitle?: ReactNode;
   loading?: boolean;
   status: StageStatuses | null;

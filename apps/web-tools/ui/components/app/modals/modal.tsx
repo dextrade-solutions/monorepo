@@ -40,14 +40,15 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: AppDispatch) {
   return {
-    hideModal: () => {
+    hideModal: (callback?: () => void) => {
       dispatch(hideModal());
+      callback && callback();
     },
   };
 }
 
 type ModalState = {
-  hideModal: () => void;
+  hideModal: (callback?: () => void) => void;
   modal: ModalData;
 };
 
@@ -56,7 +57,12 @@ class Modal extends Component<ModalState> {
     const modal = MODALS[this.props.modal.modalState.name || 'DEFAULT'];
 
     return (
-      <ModalMui open={this.props.modal.open} onClose={this.props.hideModal}>
+      <ModalMui
+        open={this.props.modal.open}
+        onClose={() =>
+          this.props.hideModal(this.props.modal.modalState.props.onClose)
+        }
+      >
         <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">
           {modal}
         </Box>

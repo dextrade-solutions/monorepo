@@ -2,7 +2,6 @@ import { TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
@@ -23,6 +22,19 @@ export default function StageDirectTransfer({
   const amount = Number(trade.amount1);
   const recipient = parseAddress(from.network, trade.exchangerWalletAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
+
+  const getTradeExtra = () => {
+    const tradeStore = window.localStorage.getItem(trade.id);
+    const tradeData = tradeStore ? JSON.parse(tradeStore) : {};
+    return {
+      ...tradeData,
+      commit() {
+        const commitData = { ...this, commit: undefined };
+        window.localStorage.setItem(trade.id, JSON.stringify(commitData));
+      },
+    };
+  };
+
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
       onChange(StageStatuses.success);
@@ -33,25 +45,26 @@ export default function StageDirectTransfer({
     },
     onError: (e) => {
       onChange(StageStatuses.failed);
-      setSendTransactionFailure(e.shortMessage);
+      const tradeData = getTradeExtra();
+      tradeData.initiated = false;
+      tradeData.commit();
+      setSendTransactionFailure(e.shortMessage || e.message);
     },
   };
 
   const { sendTransaction } = useSendTransaction(from);
 
   const initiateNewTx = () => {
-    const tradeStore = window.localStorage.getItem(trade.id);
-    const tradeData = tradeStore ? JSON.parse(tradeStore) : {};
+    const tradeData = getTradeExtra();
     onChange(StageStatuses.requested);
 
     if (sendTransactionFailure) {
       setSendTransactionFailure('');
-      tradeData.initiated = false;
     }
 
     if (!tradeData.initiated) {
       tradeData.initiated = true;
-      window.localStorage.setItem(trade.id, JSON.stringify(tradeData));
+      tradeData.commit();
       sendTransaction(recipient, amount, txSentHandlers);
     }
   };

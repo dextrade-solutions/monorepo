@@ -8,7 +8,7 @@ import useSendTxTron from '../tron/useSendTx';
 
 function getSendTxHook(asset: AssetModel) {
   if (asset.network === NetworkNames.bitcoin) {
-    return () => useSendTxBitcoin();
+    return () => useSendTxBitcoin(asset);
   }
   if (asset.network === NetworkNames.tron) {
     return () => useSendTxTron(asset);

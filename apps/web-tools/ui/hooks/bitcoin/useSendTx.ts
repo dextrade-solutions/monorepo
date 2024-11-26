@@ -1,7 +1,16 @@
+import { AssetModel } from 'dex-helpers/types';
+import { useDispatch, useSelector } from 'react-redux';
 import Wallet from 'sats-connect';
 import { parseUnits } from 'viem';
 
-export default function useSendTx() {
+import { hideModal } from '../../../../web-wallet/ui/store/actions.new';
+import { getAssetAccount, showModal } from '../../ducks/app/app';
+import { WalletConnectionType } from '../../helpers/constants/wallets';
+
+export default function useSendTx(asset: AssetModel) {
+  const dispatch = useDispatch();
+  const assetAccount = useSelector((state) => getAssetAccount(state, asset));
+
   const txSend = async (
     recipient: string,
     amount: number,
@@ -10,22 +19,38 @@ export default function useSendTx() {
       onError: (e: unknown) => void;
     },
   ) => {
-    await Wallet.request('sendTransfer', {
-      recipients: [
-        {
-          address: recipient,
-          amount: Number(parseUnits(String(amount), 8)),
-        },
-      ],
-    })
-      .then((response) => {
-        if (response.status === 'success') {
-          txSentHandlers.onSuccess(response.result.txid);
-        } else {
-          throw new Error(response.error.message);
-        }
+    if (assetAccount?.connectionType === WalletConnectionType.sats) {
+      await Wallet.request('sendTransfer', {
+        recipients: [
+          {
+            address: recipient,
+            amount: Number(parseUnits(String(amount), 8)),
+          },
+        ],
       })
-      .catch(txSentHandlers.onError);
+        .then((response) => {
+          if (response.status === 'success') {
+            txSentHandlers.onSuccess(response.result.txid);
+          } else {
+            throw new Error(response.error.message);
+          }
+        })
+        .catch(txSentHandlers.onError);
+    } else {
+      dispatch(
+        showModal({
+          name: 'DEPOSIT_WALLET',
+          asset,
+          awaitingDepositAmount: amount,
+          address: recipient,
+          manualConfirmation: true,
+          description: `Please send ${asset.symbol} to the address below using any wallet, and then press the confirm button.`,
+          onSuccess: () => txSentHandlers.onSuccess('direct-transfer'),
+          onClose: () =>
+            txSentHandlers.onError(new Error('User rejected transfer')),
+        }),
+      );
+    }
   };
 
   return txSend;

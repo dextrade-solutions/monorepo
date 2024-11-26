@@ -8,4 +8,6 @@ export type ModalData = {
   modalState: ModalState;
 };
 
-export type ModalProps = ModalState & { hideModal: () => void };
+export type ModalProps = ModalState & {
+  hideModal: (callback?: () => void) => void;
+};

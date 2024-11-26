@@ -39113,6 +39113,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-qr-code@npm:^2.0.15":
+  version: 2.0.15
+  resolution: "react-qr-code@npm:2.0.15"
+  dependencies:
+    prop-types: "npm:^15.8.1"
+    qr.js: "npm:0.0.0"
+  peerDependencies:
+    react: "*"
+  checksum: 10/4124b7c2ce71bfe94279d85322175c881ba87dcc9b67f3c6d6e2806854a8792cf5f9ed8e10ea04c22e39aa060ef12fb39e679e780cba14f168d3cd6cffb7086d
+  languageName: node
+  linkType: hard
+
 "react-qr-reader@npm:^2.2.1":
   version: 2.2.1
   resolution: "react-qr-reader@npm:2.2.1"
@@ -47024,6 +47036,7 @@ __metadata:
     react-dom: "npm:18.2.0"
     react-intersection-observer: "npm:^9.10.1"
     react-number-format: "npm:^5.4.0"
+    react-qr-code: "npm:^2.0.15"
     react-redux: "npm:^8.0.2"
     react-router-dom: "npm:^6.23.0"
     react-tippy: "npm:^1.4.0"

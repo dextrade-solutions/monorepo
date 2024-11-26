@@ -14,7 +14,10 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = (dispatch: AppDispatch) => {
   return {
-    hideModal: () => dispatch(hideModal()),
+    hideModal: (callback?: () => void) => {
+      dispatch(hideModal());
+      callback && callback();
+    },
   };
 };
 
