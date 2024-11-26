@@ -306,7 +306,15 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
         )}
       </Box>
-      <Box marginTop={2}>
+      <Box
+        sx={{
+          position: 'sticky',
+          bottom: '10px',
+          zIndex: 2,
+          overflow: 'unset !important',
+        }}
+        marginTop={1}
+      >
         <Button
           className={classNames({ 'btn-error': hasValidationErrors })}
           fullWidth

@@ -22,6 +22,9 @@ const Palette = {
       primary: '#4143A1',
       secondary: '#9091cd',
     },
+    action: {
+      disabledBackground: '#f2f2f3',
+    },
   },
   dark: {
     primary: {
@@ -50,6 +53,9 @@ const Palette = {
     },
     gradient:
       'linear-gradient(to left, var(--mui-palette-primary-light), var(--mui-palette-primary-main))',
+    action: {
+      disabledBackground: '#2e2e2e',
+    },
   },
 };
 
