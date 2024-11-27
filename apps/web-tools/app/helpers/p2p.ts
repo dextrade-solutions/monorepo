@@ -17,6 +17,17 @@ export function parseCoin(
   return null;
 }
 
+export function parseCoinByTickerAndNetwork(
+  ticker: string,
+  networkName: NetworkNames,
+) {
+  return assetList.find(
+    (item) =>
+      item.network.toLowerCase() === networkName.toLowerCase() &&
+      item.symbol === ticker,
+  );
+}
+
 export function getNative(network: NetworkNames) {
   const item = assetList.find(
     (item) => item.isNative && item.network === network,

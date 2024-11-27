@@ -94,8 +94,8 @@ const DepositWallet = ({
           <Button
             variant="contained"
             onClick={async () => {
-              onSuccess();
               hideModal();
+              onSuccess();
             }}
           >
             Confirm I sent

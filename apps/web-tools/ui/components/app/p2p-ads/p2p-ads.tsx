@@ -14,22 +14,20 @@ import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
 import { showModal } from '../../../ducks/app/app';
 import {
-  getFromToken,
   getFromTokenInputValue,
-  getToToken,
   setFromToken,
   setToToken,
 } from '../../../ducks/swaps/swaps';
 import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useQueryAds } from '../../../hooks/useQueryAds';
 
 export default function P2PAds() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [providerName, setProviderName] = useState('');
-  const toToken = useSelector(getToToken);
-  const fromToken = useSelector(getFromToken);
+  const { fromToken, toToken } = useQueryAds();
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
 
   const [sortBy, setSortBy] = useState(SortTypes.byPrice);
