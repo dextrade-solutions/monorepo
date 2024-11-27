@@ -72,20 +72,19 @@ export default function P2PAds() {
     }),
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
-  const { isFetching, isLoading, fetchNextPage, data } = useInfiniteQuery<
-    AdItem[]
-  >({
-    queryKey: ['p2pAds', filterModel],
-    queryFn: ({ pageParam }) =>
-      P2PService.filterAds({ ...filterModel, page: pageParam }).then(
-        (response) => response.data,
-      ),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length ? allPages.length + 1 : null;
-    },
-    refetchInterval: 10 * SECOND,
-  });
+  const { isFetchingNextPage, isFetching, isLoading, fetchNextPage, data } =
+    useInfiniteQuery<AdItem[]>({
+      queryKey: ['p2pAds', filterModel],
+      queryFn: ({ pageParam }) =>
+        P2PService.filterAds({ ...filterModel, page: pageParam }).then(
+          (response) => response.data,
+        ),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.length ? allPages.length + 1 : null;
+      },
+      refetchInterval: 10 * SECOND,
+    });
 
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
@@ -177,12 +176,12 @@ export default function P2PAds() {
               <InView
                 as="div"
                 onChange={(inView) => {
-                  if (inView && !isLoading && !isFetching) {
+                  if (inView && !isLoading && !isFetchingNextPage) {
                     fetchNextPage();
                   }
                 }}
               >
-                {isFetching ? (
+                {isLoading || isFetchingNextPage ? (
                   [...Array(3)].map((_, idx) => (
                     <Box key={idx} marginTop={1} marginBottom={1}>
                       <AdPreviewSkeleton />

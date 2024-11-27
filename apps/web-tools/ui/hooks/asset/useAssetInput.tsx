@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useAssetBalance } from './useAssetBalance';
 import { useSendTransaction } from './useSendTransaction';
+import { useWallets } from './useWallets';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
 import {
@@ -13,7 +14,6 @@ import {
   setAssetAccount,
   showModal,
 } from '../../ducks/app/app';
-import { useWallets } from './useWallets';
 
 export const useAssetInput = ({
   asset,

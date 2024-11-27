@@ -210,7 +210,7 @@ export const AssetAmountField = ({
                     {shortenAddress(assetInput.account.address)}
                   </Typography>
                   <Box marginLeft={2}>
-                    <UrlIcon url={assetInput.wallet.icon} />
+                    <UrlIcon url={assetInput.wallet?.icon} />
                   </Box>
                 </Box>
               )}
