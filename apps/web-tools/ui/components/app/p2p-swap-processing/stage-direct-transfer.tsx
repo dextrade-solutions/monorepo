@@ -2,10 +2,12 @@ import { TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { exchangeService } from 'dex-services';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { parseAddress } from '../../../../app/helpers/utils';
+import { hideModal } from '../../../ducks/app/app';
 import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
 
 export default function StageDirectTransfer({
@@ -22,6 +24,7 @@ export default function StageDirectTransfer({
   const amount = Number(trade.amount1);
   const recipient = parseAddress(from.network, trade.exchangerWalletAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
+  const dispatch = useDispatch();
 
   const getTradeExtra = () => {
     const tradeStore = window.localStorage.getItem(trade.id);
@@ -77,7 +80,9 @@ export default function StageDirectTransfer({
       initiateNewTx();
     } else if (trade.clientTransactionHash) {
       onChange(StageStatuses.success);
+      dispatch(hideModal());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trade]);
 
   return (

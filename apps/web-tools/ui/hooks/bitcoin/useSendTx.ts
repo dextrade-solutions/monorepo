@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Wallet from 'sats-connect';
 import { parseUnits } from 'viem';
 
-import { hideModal } from '../../../../web-wallet/ui/store/actions.new';
 import { getAssetAccount, showModal } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 
@@ -44,7 +43,7 @@ export default function useSendTx(asset: AssetModel) {
           awaitingDepositAmount: amount,
           address: recipient,
           manualConfirmation: true,
-          description: `Please send ${asset.symbol} to the address below using any wallet, and then press the confirm button.`,
+          description: `Please send ${asset.symbol} to the address below using any wallet exact deposit amount, and then press the confirm button.`,
           onSuccess: () => txSentHandlers.onSuccess('direct-transfer'),
           onClose: () =>
             txSentHandlers.onError(new Error('User rejected transfer')),

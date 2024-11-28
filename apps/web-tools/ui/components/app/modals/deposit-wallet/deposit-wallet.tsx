@@ -71,8 +71,7 @@ const DepositWallet = ({
             {description && <Box>{description}</Box>}
 
             <Typography marginTop={1} fontWeight={900}>
-              Deposit amount:{' '}
-              {formatFundsAmount(awaitingDepositAmount, asset.symbol)}
+              Deposit amount: {awaitingDepositAmount} {asset.symbol}
             </Typography>
           </Alert>
         )}
