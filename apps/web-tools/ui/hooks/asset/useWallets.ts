@@ -14,6 +14,7 @@ import { WalletConnectionType } from '../../helpers/constants/wallets';
 import { ledgerConnection } from '../../helpers/utils/ledger';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
+import { MultiverseExtension } from '../../../app/helpers/multiversex';
 
 export type WalletItem = {
   icon?: string;
@@ -161,11 +162,27 @@ export function useWallets({
       disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
     },
   ];
+  // const multiverse = [
+  //   {
+  //     connectionType: WalletConnectionType.ledgerTron,
+  //     icon: MultiverseExtension.icon,
+  //     name: MultiverseExtension.name,
+  //     get id() {
+  //       return `${this.name}:${this.connectionType}`;
+  //     },
+  //     get connected() {
+  //       return connectedWallets[this.id];
+  //     },
+  //     connect: () => new MultiverseExtension().connect(),
+  //     disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
+  //   },
+  // ];
   const result = [
     ...eip6963wallets,
     ...solanaWallets,
     ...satsWallets,
     ...ledger,
+    // ...multiverse,
   ];
   if (connectionType) {
     return result.filter((w) => connectionType.includes(w.connectionType));
