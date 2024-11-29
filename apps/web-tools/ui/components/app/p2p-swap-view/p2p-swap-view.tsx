@@ -1,6 +1,6 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { NetworkNames, formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { ButtonIcon } from 'dex-ui';
 import { isEqual } from 'lodash';
@@ -315,6 +315,17 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }}
         marginTop={1}
       >
+        {assetInputFrom.asset.network === NetworkNames.tron &&
+          assetInputFrom.account && (
+            <Button
+              fullWidth
+              onClick={() => {
+                P2PService.requestEnergy(assetInputFrom.account.address);
+              }}
+            >
+              Request energy
+            </Button>
+          )}
         <Button
           className={classNames({ 'btn-error': hasValidationErrors })}
           fullWidth
