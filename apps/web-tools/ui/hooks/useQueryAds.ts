@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
@@ -16,6 +16,9 @@ export const useQueryAds = () => {
   const fromToken = useSelector(getFromToken);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
+  const [providerName, setProviderName] = useState(
+    searchParams.get('merchant'),
+  );
 
   useEffect(() => {
     const fromString = searchParams.get('fromToken');
@@ -53,12 +56,21 @@ export const useQueryAds = () => {
     } else {
       searchParams.delete('toToken');
     }
+
+    if (providerName) {
+      searchParams.set('merchant', providerName);
+    } else {
+      searchParams.delete('merchant');
+    }
+
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromToken, toToken]);
+  }, [fromToken, toToken, providerName]);
 
   return {
     fromToken,
     toToken,
+    providerName,
+    setProviderName,
   };
 };

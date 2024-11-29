@@ -26,8 +26,8 @@ export default function P2PAds() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [providerName, setProviderName] = useState('');
-  const { fromToken, toToken } = useQueryAds();
+
+  const { fromToken, toToken, providerName, setProviderName } = useQueryAds();
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
 
   const [sortBy, setSortBy] = useState(SortTypes.byPrice);
@@ -113,7 +113,7 @@ export default function P2PAds() {
           value={providerName}
           className="flex-grow"
           size="small"
-          placeholder="Search by exchanger name"
+          placeholder="Search by merchant name"
           fullWidth
           InputProps={{
             startAdornment: (
