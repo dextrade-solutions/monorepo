@@ -7,7 +7,7 @@ import {
   bsc,
   mainnet as defaultMainnet,
   sepolia,
-  xdc,
+  xdc as defaultXdc,
 } from 'wagmi/chains';
 import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
 
@@ -29,6 +29,11 @@ const mainnet = {
       http: ['https://eth.llamarpc.com'],
     },
   },
+};
+
+const xdc = {
+  ...defaultXdc,
+  contracts: {},
 };
 
 const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
