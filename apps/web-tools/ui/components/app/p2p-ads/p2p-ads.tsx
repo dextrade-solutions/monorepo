@@ -121,6 +121,16 @@ export default function P2PAds() {
                 <Icon color="text.secondary" name="search" />
               </InputAdornment>
             ),
+            endAdornment: providerName && (
+              <InputAdornment position="end">
+                <ButtonIcon
+                  color="text.secondary"
+                  size="sm"
+                  iconName="close"
+                  onClick={() => setProviderName('')}
+                />
+              </InputAdornment>
+            ),
           }}
           onChange={(e) => setProviderName(e.target.value)}
         />
