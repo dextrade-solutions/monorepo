@@ -86,7 +86,7 @@ const EndIcon = ({ value, onClick, onChange }) => {
           Fiat
         </MenuItem>
         {valuesList.map((item) => (
-          <MenuItem onClick={(e) => handleChange(e, item)}>
+          <MenuItem key={item.key} onClick={(e) => handleChange(e, item)}>
             <ListItemAvatar>
               <UrlIcon size={40} url={getCoinIconByUid(item.uid)} />
             </ListItemAvatar>

@@ -61,7 +61,7 @@
   {
     "uid": "tether",
     "name": "Tether",
-    "code": "USDT",
+    "code": "xUSDT",
     "market_cap_rank": null,
     "coingecko_id": "tether",
     "platforms": [
@@ -69,7 +69,7 @@
         "type": "xrc20",
         "decimals": 6,
         "address": "0xd4b5f10d61916bd6e0860144a91ac658de8a1437",
-        "symbol": "USDT"
+        "symbol": null
       }
     ]
   }

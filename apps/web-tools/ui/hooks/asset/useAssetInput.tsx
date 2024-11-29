@@ -14,6 +14,8 @@ import {
   setAssetAccount,
   showModal,
 } from '../../ducks/app/app';
+import { useAuthP2P } from '../useAuthP2P';
+import { useAuthWallet } from '../useAuthWallet';
 
 export const useAssetInput = ({
   asset,
@@ -22,7 +24,9 @@ export const useAssetInput = ({
   asset: AssetModel;
   isToAsset?: boolean;
 }) => {
+  const { isAuthenticated } = useAuthWallet();
   const dispatch = useDispatch();
+  const { login } = useAuthP2P();
   const wallets = useWallets();
   const walletConnection = useSelector((state) =>
     getAssetAccount(state, asset),
@@ -63,14 +67,21 @@ export const useAssetInput = ({
   };
 
   const showPaymentMethod = () => {
-    dispatch(
-      showModal({
-        name: 'SET_PAYMENT_METHOD',
-        asset,
-        value: paymentMethod,
-        onChange: (v) => setPaymentMethod(v),
-      }),
-    );
+    if (isAuthenticated) {
+      login({
+        onSuccess: () =>
+          dispatch(
+            showModal({
+              name: 'SET_PAYMENT_METHOD',
+              asset,
+              value: paymentMethod,
+              onChange: (v) => setPaymentMethod(v),
+            }),
+          ),
+      });
+    } else {
+      dispatch(showModal({ name: 'LOGIN_MODAL' }));
+    }
   };
 
   const makeTransfer = (recipient: string) => {
