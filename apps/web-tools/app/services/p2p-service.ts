@@ -5,6 +5,18 @@ import { AuthParams } from '../types/dextrade';
 import { AdFilterModel, TradeFilterModel } from '../types/p2p-swaps';
 import { TradeType } from 'dex-helpers';
 
+type PublicGetMarketFeeResponse = {
+  status: boolean;
+  data: {
+    from_address: string;
+    to_address: string;
+    amount: string;
+    type: string;
+    network_cost: number;
+    result_amount: string;
+  };
+};
+
 class P2PService {
   axios: Axios;
 
@@ -96,6 +108,18 @@ class P2PService {
 
   public estimateFee(txParams: any) {
     return this.axios.post('api/fee/estimate', txParams);
+  }
+
+  public publicGetMarketFee(params: {
+    amount: number;
+    side: 'sell' | 'buy';
+    currency_1_iso: string;
+    currency_2_iso: string;
+  }) {
+    return this.axios.post<PublicGetMarketFeeResponse>(
+      'https://api.cryptodao.com/v2/pub/get-market-fee',
+      params,
+    );
   }
 
   public saveImage(base64: string) {

@@ -1,15 +1,24 @@
+import { useQuery } from '@tanstack/react-query';
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { hexToNumber, formatUnits } from 'viem';
 import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
 
 import { generateTxParams } from '../../app/helpers/transactions';
+import P2PService from '../../app/services/p2p-service';
 
 type FeeParams = {
   asset: AssetModel;
   amount?: string | number;
   from?: string | null;
   to: string;
+};
+
+type PublicFeeParams = {
+  amount: number;
+  side: 'sell' | 'buy';
+  currency_1_iso: string;
+  currency_2_iso: string;
 };
 
 const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
@@ -51,6 +60,18 @@ const useSolFee = (params: FeeParams) => {
   return {
     fee: 0,
     loading: false,
+  };
+};
+
+export const useDexTradeFee = (params: PublicFeeParams) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['public-get-market-fee', params],
+    queryFn: () => P2PService.publicGetMarketFee(params),
+  });
+
+  return {
+    fee: data?.data.data.network_cost,
+    loading: isLoading,
   };
 };
 
