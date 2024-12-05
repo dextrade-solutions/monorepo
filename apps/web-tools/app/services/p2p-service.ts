@@ -4,6 +4,8 @@ import { DEXTRADE_BASE_URL } from '../helpers/constants';
 import { AuthParams } from '../types/dextrade';
 import { AdFilterModel, TradeFilterModel } from '../types/p2p-swaps';
 import { TradeType } from 'dex-helpers';
+import { EstimatedFeeParamsEth } from '../../ui/types';
+import { EstimatedFeeParamsToken } from '../../ui/types';
 
 type PublicGetMarketFeeResponse = {
   status: boolean;
@@ -106,7 +108,9 @@ class P2PService {
     return this.axios.post(`api/exchange/client/confirm/fiat`, { id });
   }
 
-  public estimateFee(txParams: any) {
+  public estimateFee(
+    txParams: EstimatedFeeParamsToken | EstimatedFeeParamsEth,
+  ) {
     return this.axios.post('api/fee/estimate', txParams);
   }
 
