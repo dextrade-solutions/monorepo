@@ -11,9 +11,10 @@ import {
   setWalletConnection,
 } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
-import { ledgerConnection } from '../../helpers/utils/ledger';
+import { ledgerConnection } from '../../helpers/utils/connections/ledger';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
+import useConnection from '../wallets/useConnection';
 
 export type WalletItem = {
   icon?: string;
@@ -32,6 +33,7 @@ export function useWallets({
   const { wallets, select } = useWallet();
   const connectors = useConnectors();
   const dispatch = useDispatch();
+  const keypairConnection = useConnection('Keypair Wallet');
 
   const connectedWallets = useSelector(getWalletConnections);
 
@@ -166,6 +168,7 @@ export function useWallets({
     ...solanaWallets,
     ...satsWallets,
     ...ledger,
+    keypairConnection,
   ];
   if (connectionType) {
     return result.filter((w) => connectionType.includes(w.connectionType));

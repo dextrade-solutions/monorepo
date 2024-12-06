@@ -7,7 +7,7 @@ import { parseUnits } from 'viem';
 
 import { buildTxSol } from '../../../app/helpers/solana/send-sol';
 import { getAssetAccount } from '../../ducks/app/app';
-import { ledgerConnection } from '../../helpers/utils/ledger';
+import { ledgerConnection } from '../../helpers/utils/connections/ledger';
 
 export default function useSendTx(asset: AssetModel) {
   const assetAccount = useSelector((state) => getAssetAccount(state, asset));

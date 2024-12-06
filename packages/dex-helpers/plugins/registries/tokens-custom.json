@@ -14,6 +14,21 @@
     ]
   },
   {
+    "uid": "tether",
+    "name": "Tether",
+    "code": "USDT",
+    "market_cap_rank": null,
+    "coingecko_id": "tether",
+    "platforms": [
+      {
+        "type": "SOLANA",
+        "decimals": 6,
+        "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "symbol": "USDT"
+      }
+    ]
+  },
+  {
     "uid": "cat-in-a-dogs-world",
     "name": "cat in a dogs world",
     "code": "mew",

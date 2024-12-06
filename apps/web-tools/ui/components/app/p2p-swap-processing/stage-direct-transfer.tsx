@@ -67,7 +67,7 @@ export default function StageDirectTransfer({
 
     if (!tradeData.initiated) {
       tradeData.initiated = true;
-      // TODO: tradeData.commit();
+      tradeData.commit();
       sendTransaction(recipient, amount, txSentHandlers);
     }
   };

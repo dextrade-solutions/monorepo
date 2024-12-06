@@ -1,6 +1,6 @@
 import { Box, Button, Menu, MenuItem } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import { PulseLoader, UrlIcon } from 'dex-ui';
+import { ButtonIcon, PulseLoader, UrlIcon } from 'dex-ui';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -35,25 +35,16 @@ export default function WalletConnectButton() {
 
   return (
     <>
-      <Button
-        variant={isAuthenticated ? '' : 'contained'}
-        disableElevation
-        sx={{
-          backgroundImage: isAuthenticated
-            ? undefined
-            : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
-        }}
-        onClick={onClick}
-      >
-        {isAuthenticated
-          ? shortenAddress(wallet?.connected?.address)
-          : 'Sign in'}
-        {isAuthenticated && (
+      {isAuthenticated ? (
+        <Button variant="" disableElevation onClick={onClick}>
+          {shortenAddress(wallet?.connected?.address)}
           <Box marginLeft={2}>
             {wallet ? <UrlIcon url={wallet.icon} /> : <PulseLoader />}
           </Box>
-        )}
-      </Button>
+        </Button>
+      ) : (
+        <ButtonIcon iconName="login" size="lg" onClick={onClick} />
+      )}
       <Menu
         anchorEl={anchorEl}
         variant="selectedMenu"

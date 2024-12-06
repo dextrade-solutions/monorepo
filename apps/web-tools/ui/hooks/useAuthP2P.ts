@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useAccount, useConnectors, useSignMessage } from 'wagmi';
+import { useConnectors, useSignMessage } from 'wagmi';
+import Web3 from 'web3';
 
 import { useAuthWallet } from './useAuthWallet';
 import { AuthStatus } from '../../app/constants/auth';
@@ -14,12 +15,14 @@ import {
 } from '../ducks/auth';
 import { AppDispatch, store } from '../store/store';
 import { useWallets } from './asset/useWallets';
+import useConnection from './wallets/useConnection';
 import { WalletConnectionType } from '../helpers/constants/wallets';
 
 export function useAuthP2P() {
   const { keyring } = engine.keyringController;
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
+  const keypairConnection = useConnection('Keypair Wallet');
   // const connectWallet = useWeb3Connection();
   const connectors = useConnectors();
   const authWallet = useAuthWallet();
@@ -46,11 +49,12 @@ export function useAuthP2P() {
     }) => {
       const { apikey } = getAuth(store.getState());
       const { signature } = getSession(store.getState());
-      const loginWallet =
+      let loginWallet =
         authWallet.wallet || wallets.find((i) => i.id === walletId);
 
       if (!loginWallet) {
-        throw new Error('auth - no wallet found');
+        // if auth wallet is not setted, then use keypair connection
+        loginWallet = keypairConnection;
       }
       const isConnected = loginWallet.connected;
 
@@ -62,8 +66,21 @@ export function useAuthP2P() {
         return onSuccess && onSuccess();
       };
 
-      const processSign = () =>
-        new Promise((resolve, reject) => {
+      const processSign = () => {
+        if (loginWallet.name === 'Keypair Wallet') {
+          // const sign = engine.keyringController.signDER(
+          //   engine.keyringController.publicKey,
+          // );
+          const web3 = new Web3();
+          const result = web3.eth.accounts.sign(
+            engine.keyringController.publicKey,
+            `0x${engine.keyringController.privateKey}`,
+          );
+          return onSignedMessage(result.signature);
+        }
+
+        // try to sign via EVM wallet
+        return new Promise((resolve, reject) => {
           if (inProgress) {
             return null;
           }
@@ -85,6 +102,7 @@ export function useAuthP2P() {
             },
           );
         });
+      };
 
       if (apikey && authStatus !== AuthStatus.failed) {
         return onSuccess && onSuccess(processSign);
