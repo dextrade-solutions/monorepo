@@ -11,7 +11,7 @@ import { ledgerConnection } from '../../helpers/utils/ledger';
 
 export default function useSendTx(asset: AssetModel) {
   const assetAccount = useSelector((state) => getAssetAccount(state, asset));
-  const { sendTransaction: sendTxSol } = useWallet();
+  const { sendTransaction: sendTxSol, connected, connect } = useWallet();
   const { connection } = useConnection();
 
   const txSend = async (
@@ -22,6 +22,9 @@ export default function useSendTx(asset: AssetModel) {
       onError: (e: unknown) => void;
     },
   ) => {
+    if (!connected) {
+      await connect();
+    }
     const from = new PublicKey(assetAccount.address);
 
     const value = parseUnits(String(amount), asset.decimals);

@@ -7513,6 +7513,65 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@multiversx/sdk-bls-wasm@npm:0.3.5":
+  version: 0.3.5
+  resolution: "@multiversx/sdk-bls-wasm@npm:0.3.5"
+  checksum: 10/68f8def576193e958547be194645e67da31bd89a85bdb0668fada7c6c2d48d7d5949d802f6d2b48f6df3a7513314f7473d6d1a6ae9de6fa736e9a59fb51447c5
+  languageName: node
+  linkType: hard
+
+"@multiversx/sdk-core@npm:^13.15.0":
+  version: 13.15.0
+  resolution: "@multiversx/sdk-core@npm:13.15.0"
+  dependencies:
+    "@multiversx/sdk-bls-wasm": "npm:0.3.5"
+    "@multiversx/sdk-transaction-decoder": "npm:1.0.2"
+    "@noble/ed25519": "npm:1.7.3"
+    "@noble/hashes": "npm:1.3.0"
+    axios: "npm:^1.7.4"
+    bech32: "npm:1.1.4"
+    bip39: "npm:3.1.0"
+    blake2b: "npm:2.1.3"
+    buffer: "npm:6.0.3"
+    ed25519-hd-key: "npm:1.1.2"
+    ed2curve: "npm:0.3.0"
+    json-bigint: "npm:1.0.0"
+    keccak: "npm:3.0.2"
+    scryptsy: "npm:2.1.0"
+    tweetnacl: "npm:1.0.3"
+    uuid: "npm:8.3.2"
+  peerDependencies:
+    bignumber.js: ^9.0.1
+    protobufjs: ^7.2.6
+  dependenciesMeta:
+    "@multiversx/sdk-bls-wasm":
+      optional: true
+    axios:
+      optional: true
+    bip39:
+      optional: true
+  checksum: 10/5e4961a1c52c2b2cd2648d22813657a2d0217d237778c23ef3d861e3f636f355959a246f1a02a508a2dec9f78890f74cfb6a0fbd3648eda4ab447278f3c417be
+  languageName: node
+  linkType: hard
+
+"@multiversx/sdk-extension-provider@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@multiversx/sdk-extension-provider@npm:4.0.0"
+  peerDependencies:
+    "@multiversx/sdk-core": ">= 13.5.0"
+  checksum: 10/fe22d8fb9c6fe8ab999699629c4c708998d3ae49243cfb176dc0ebcd16563b2ed1cfd99ffb2c645387e34637d7803e9c69ac643afb8c17789e53a904af8a9beb
+  languageName: node
+  linkType: hard
+
+"@multiversx/sdk-transaction-decoder@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@multiversx/sdk-transaction-decoder@npm:1.0.2"
+  dependencies:
+    bech32: "npm:^2.0.0"
+  checksum: 10/7d741aa52c3e1c1b0ffb4854db510e983809a7f9ca77c64c4a2ac97a84191f9005592a4b41e16c967a278ded565e1156d4b6a669179a26baa7d6493600872355
+  languageName: node
+  linkType: hard
+
 "@ngraveio/bc-ur@npm:^1.0.0, @ngraveio/bc-ur@npm:^1.1.5, @ngraveio/bc-ur@npm:^1.1.6":
   version: 1.1.13
   resolution: "@ngraveio/bc-ur@npm:1.1.13"
@@ -7573,7 +7632,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ed25519@npm:^1.6.0":
+"@noble/ed25519@npm:1.7.3, @noble/ed25519@npm:^1.6.0":
   version: 1.7.3
   resolution: "@noble/ed25519@npm:1.7.3"
   checksum: 10/48d389a36ec5222366b477a22cfe33dc3837044b58232d99b3fff8ee8aba90877b8153eb60dd436869004f85c6101e8c907f17a48d818d218b4efecee1817237
@@ -7584,6 +7643,13 @@ __metadata:
   version: 1.2.0
   resolution: "@noble/hashes@npm:1.2.0"
   checksum: 10/c295684a2799f4ddad10a855efd9b82c70c27ac5f7437642df9700e120087c796851dd95b12d2e7596802303fe6afbfdf0f8733b5c7453f70c4c080746dde6ff
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@noble/hashes@npm:1.3.0"
+  checksum: 10/4680a71941c06ac897cc9eab9d229717d5af1147cea5e8cd4942190c817426ad3173ded750d897f58d764b869f9347d4fc3f6b3c16574541ac81906efa9ddc36
   languageName: node
   linkType: hard
 
@@ -13251,6 +13317,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:11.11.6":
+  version: 11.11.6
+  resolution: "@types/node@npm:11.11.6"
+  checksum: 10/3b0be5fe7104dc24d34271cb043149dab55317356bc20d7f3871dc9cb60954dc77ffc6b0531b00c3de32a748c207db769b925f17dbe03565f8a4a5001acbf367
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:22.7.5":
   version: 22.7.5
   resolution: "@types/node@npm:22.7.5"
@@ -17757,7 +17830,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:^3.0.2":
+"bip39@npm:3.0.2":
+  version: 3.0.2
+  resolution: "bip39@npm:3.0.2"
+  dependencies:
+    "@types/node": "npm:11.11.6"
+    create-hash: "npm:^1.1.0"
+    pbkdf2: "npm:^3.0.9"
+    randombytes: "npm:^2.0.1"
+  checksum: 10/f9755660e6eed99b50ad6f88b07d38a5969a180a59face8101a4d0f906317e6d61e072cd9558cc51554f1ea7becf23e3a7cf63685ff474f890435dc20db37df6
+  languageName: node
+  linkType: hard
+
+"bip39@npm:3.1.0, bip39@npm:^3.0.2":
   version: 3.1.0
   resolution: "bip39@npm:3.1.0"
   dependencies:
@@ -18004,6 +18089,25 @@ __metadata:
     node-gyp-build: "npm:^4.2.2"
     readable-stream: "npm:^3.6.0"
   checksum: 10/91cb584c2c98bfeb94f2fe01ab1663577fd8a69c330b03ea071ce53eda8e3e28293da891e3eacd78a95ad1275325cf7055e39294535c0474f297ada373083fd2
+  languageName: node
+  linkType: hard
+
+"blake2b-wasm@npm:^1.1.0":
+  version: 1.1.7
+  resolution: "blake2b-wasm@npm:1.1.7"
+  dependencies:
+    nanoassert: "npm:^1.0.0"
+  checksum: 10/2460c21299bdd34758cd74bbe14fd631e2e447280ae15c44d4bb5765dc443de24a95e1f702ef7a6a18bc7dbf2d535211097decb17dfd3284d932f2609dbb7204
+  languageName: node
+  linkType: hard
+
+"blake2b@npm:2.1.3":
+  version: 2.1.3
+  resolution: "blake2b@npm:2.1.3"
+  dependencies:
+    blake2b-wasm: "npm:^1.1.0"
+    nanoassert: "npm:^1.0.0"
+  checksum: 10/6ed3f1f62f2d45d751d034883dfe337e84dd4eef9743e1fffa24284fe28987520b8c1990ba276ebbf48f3f57d077f80d7b9859711bb47089cd481cc2c66434e6
   languageName: node
   linkType: hard
 
@@ -20760,7 +20864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-hmac@npm:^1.1.0, create-hmac@npm:^1.1.3, create-hmac@npm:^1.1.4, create-hmac@npm:^1.1.7":
+"create-hmac@npm:1.1.7, create-hmac@npm:^1.1.0, create-hmac@npm:^1.1.3, create-hmac@npm:^1.1.4, create-hmac@npm:^1.1.7":
   version: 1.1.7
   resolution: "create-hmac@npm:1.1.7"
   dependencies:
@@ -22950,6 +23054,26 @@ __metadata:
     valibot: "npm:^0.37.0"
     wif: "npm:^5.0.0"
   checksum: 10/107051ad442803540442afbba6f68388eabeb95a60c13154aa75d3c349919f5481bb315a0b3db96090e653f55e8130dc49c5916b2fb71dd7f1b7245836daf7ba
+  languageName: node
+  linkType: hard
+
+"ed25519-hd-key@npm:1.1.2":
+  version: 1.1.2
+  resolution: "ed25519-hd-key@npm:1.1.2"
+  dependencies:
+    bip39: "npm:3.0.2"
+    create-hmac: "npm:1.1.7"
+    tweetnacl: "npm:1.0.3"
+  checksum: 10/9817ef5ca205198ec3896135e12ff9301f54fc9ddef718aa3d36a6899709eff6ecacca6c7ffd5b43c828b16981f2c6d47858c39f27daa2783e5c2b113d313d9e
+  languageName: node
+  linkType: hard
+
+"ed2curve@npm:0.3.0":
+  version: 0.3.0
+  resolution: "ed2curve@npm:0.3.0"
+  dependencies:
+    tweetnacl: "npm:1.x.x"
+  checksum: 10/b5551bea14bd101a0d674114b1240abcdde11b475f48ab0b8d4d52452257f87ee27b1848d5760b8356224b6ef82b0746a9ac100f5090b4a4de00a3984526b61a
   languageName: node
   linkType: hard
 
@@ -31845,6 +31969,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-bigint@npm:1.0.0":
+  version: 1.0.0
+  resolution: "json-bigint@npm:1.0.0"
+  dependencies:
+    bignumber.js: "npm:^9.0.0"
+  checksum: 10/cd3973b88e5706f8f89d2a9c9431f206ef385bd5c584db1b258891a5e6642507c32316b82745239088c697f5ddfe967351e1731f5789ba7855aed56ad5f70e1f
+  languageName: node
+  linkType: hard
+
 "json-buffer@npm:3.0.1":
   version: 3.0.1
   resolution: "json-buffer@npm:3.0.1"
@@ -35016,6 +35149,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoassert@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "nanoassert@npm:1.1.0"
+  checksum: 10/f360fe639db8edc422de9f5a8a7d384ba9c11e9c6fac149f7ad3b0a94e4ec9d5aa44ce55b3e4c7682658efad792604fc96c336b0e80a3590744104ba58af80c7
+  languageName: node
+  linkType: hard
+
 "nanoid@npm:^2.0.0, nanoid@npm:^2.1.6":
   version: 2.1.11
   resolution: "nanoid@npm:2.1.11"
@@ -37084,7 +37224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.1.2":
+"pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9, pbkdf2@npm:^3.1.2":
   version: 3.1.2
   resolution: "pbkdf2@npm:3.1.2"
   dependencies:
@@ -41393,6 +41533,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"scryptsy@npm:2.1.0":
+  version: 2.1.0
+  resolution: "scryptsy@npm:2.1.0"
+  checksum: 10/1cbdab9d7eee87d2e6aaf86f6a3e759ccd0087d91ca6b760ffe23c0234cb3cc7ba8e1697a59ff84f06a4f08574940c2453dfbbd0e6db64c6c76992a21b6c3733
+  languageName: node
+  linkType: hard
+
 "scryptsy@npm:^1.2.1":
   version: 1.2.1
   resolution: "scryptsy@npm:1.2.1"
@@ -44853,7 +45000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tweetnacl@npm:1.0.3, tweetnacl@npm:^1.0.3":
+"tweetnacl@npm:1.0.3, tweetnacl@npm:1.x.x, tweetnacl@npm:^1.0.3":
   version: 1.0.3
   resolution: "tweetnacl@npm:1.0.3"
   checksum: 10/ca122c2f86631f3c0f6d28efb44af2a301d4a557a62a3e2460286b08e97567b258c2212e4ad1cfa22bd6a57edcdc54ba76ebe946847450ab0999e6d48ccae332
@@ -46986,6 +47133,8 @@ __metadata:
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/utils": "npm:^8.4.0"
     "@mui/material": "npm:^5.15.15"
+    "@multiversx/sdk-core": "npm:^13.15.0"
+    "@multiversx/sdk-extension-provider": "npm:^4.0.0"
     "@reduxjs/toolkit": "npm:^2.2.3"
     "@rollup/plugin-inject": "npm:^5.0.5"
     "@scure/bip39": "npm:^1.3.0"
