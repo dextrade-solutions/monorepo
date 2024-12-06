@@ -12,6 +12,9 @@ export const getWalletIcon = (walletName: string) => {
     case 'coinbase wallet': {
       return '/images/wallets/coinbase.webp';
     }
+    case 'multiversx wallet': {
+      return '/images/wallets/multiversx.webp';
+    }
     default: {
       return null;
     }

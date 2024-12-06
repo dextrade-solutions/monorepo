@@ -6,10 +6,16 @@ import {
 } from '@multiversx/sdk-core';
 import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 
-export class MultiverseExtension {
-  static icon = '';
+import { getWalletIcon } from '../../../ui/helpers/utils/util';
 
-  static name = 'Multiversx';
+export class MultiverseExtension {
+  provider: ReturnType<typeof ExtensionProvider.getInstance>;
+
+  name = 'MultiversX Wallet';
+
+  get icon() {
+    return getWalletIcon(this.name);
+  }
 
   constructor() {
     this.provider = ExtensionProvider.getInstance();
@@ -17,7 +23,23 @@ export class MultiverseExtension {
 
   async connect() {
     await this.provider.init();
-    await this.provider.getAccount();
+    return this.provider.login();
+  }
+
+  async loginWithToken() {
+    await this.provider.init();
+
+    const account = await this.provider.login({ token: '123' });
+
+    const { address } = account;
+    const { signature } = account;
+    const nativeAuthToken = packNativeAuthToken(
+      address,
+      nativeAuthInitialPart,
+      signature,
+    );
+
+    verifyNativeAuthToken(nativeAuthToken);
   }
 
   async signTransaction() {
@@ -34,13 +56,11 @@ export class MultiverseExtension {
       gasPrice: 1000000000,
       gasLimit: 50000,
       data: new TransactionPayload(),
-      chainID: CHAIN_ID,
+      chainID: 'M',
       version: 1,
     });
 
     await this.provider.signTransaction(transaction);
-
-    alert(JSON.stringify(transaction.toSendable(), null, 4));
   }
 
   async signTransactions() {
@@ -93,4 +113,13 @@ export class MultiverseExtension {
     const signedMessage = await this.provider.signMessage(message);
     return signedMessage;
   }
+
+  async logout() {
+    await this.provider.init();
+    await this.provider.logout();
+  }
 }
+
+const multiversxExtensionProvider = new MultiverseExtension();
+
+export default multiversxExtensionProvider;

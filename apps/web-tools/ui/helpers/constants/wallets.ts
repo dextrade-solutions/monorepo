@@ -4,6 +4,7 @@ export enum WalletConnectionType {
   ledgerSol = 'ledger-solana',
   ledgerTron = 'ledger-tron',
   ledgerBtc = 'ledger-btc',
-  sats = 'sats-connect', // only for btc
+  sats = 'sats-connect', // only for btc wallet extensions
+  multiversxExtension = 'multiversx-extension',
   manual = 'manual', // just pasted address from clipboard
 }
