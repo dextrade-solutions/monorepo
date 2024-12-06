@@ -28,7 +28,13 @@ const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     bufferMultiplier = 2;
   }
 
-  const estimateGas = useEstimateGas({ chainId, ...txParams });
+  const estimateGas = useEstimateGas({
+    chainId,
+    account: txParams.from,
+    to: txParams.to,
+    data: txParams.data,
+    value: txParams.value,
+  });
 
   if (estimateGas.data && estimateFeePerGas.data) {
     const fee =
