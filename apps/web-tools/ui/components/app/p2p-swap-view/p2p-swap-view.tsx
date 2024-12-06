@@ -302,7 +302,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">
               <Typography>
-                {formatFundsAmount(estimatedFee, assetInputFrom.native?.symbol)}
+                {parseFloat(estimatedFee) < 0.00000001 &&
+                parseFloat(estimatedFee) !== 0
+                  ? `< 0.00000001 ${assetInputFrom.native?.symbol}`
+                  : formatFundsAmount(
+                      estimatedFee,
+                      assetInputFrom.native?.symbol,
+                    )}
               </Typography>
               {assetInputFrom.native?.priceInUsdt && (
                 <Typography color="text.secondary" marginLeft={1}>
