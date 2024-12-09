@@ -1,19 +1,19 @@
+import { useQuery } from '@tanstack/react-query';
 import { NetworkNames } from 'dex-helpers';
-import { AssetModel } from 'dex-helpers/types';
 import { hexToNumber, formatUnits } from 'viem';
 import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
 
 import { generateTxParams } from '../../app/helpers/transactions';
-
-type FeeParams = {
-  asset: AssetModel;
-  amount?: string | number;
-  from?: string | null;
-  to: string;
-};
+import P2PService from '../../app/services/p2p-service';
+import {
+  FeeParams,
+  PublicFeeParams,
+  EstimatedFeeParamsToken,
+  EstimatedFeeParamsEth,
+} from '../types';
 
 const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
-  const chainId = asset.chainId ? hexToNumber(asset.chainId) : null;
+  const chainId = asset.chainId ? hexToNumber(asset.chainId) : undefined;
   const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
 
   const txParams = generateTxParams({
@@ -57,6 +57,32 @@ const useSolFee = (params: FeeParams) => {
   return {
     fee: 0,
     loading: false,
+  };
+};
+
+export const useDexTradeFee = (params: PublicFeeParams) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['public-get-market-fee', params],
+    queryFn: () => P2PService.publicGetMarketFee(params),
+  });
+
+  return {
+    fee: data?.data.data.network_cost,
+    loading: isLoading,
+  };
+};
+
+export const useEstimatedFee = (
+  params: EstimatedFeeParamsToken | EstimatedFeeParamsEth,
+) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['estimate-fee', params],
+    queryFn: () => P2PService.estimateFee(params),
+  });
+
+  return {
+    fee: formatUnits(data?.data || 0, 18),
+    loading: isLoading,
   };
 };
 

@@ -11,8 +11,10 @@ import { useDebouncedCallback } from 'use-debounce';
 import { formatUnits } from 'viem';
 
 import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
+import { generateERC20TransferData } from '../../../../app/helpers/send.utils';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
+import assetList from '../../../../src/assets-list.json';
 import { showModal } from '../../../ducks/app/app';
 import {
   createSwapP2P,
@@ -22,7 +24,7 @@ import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import { useAssetInput } from '../../../hooks/asset/useAssetInput';
 import { useAdValidation } from '../../../hooks/useAdValidation';
 import { useAuthP2P } from '../../../hooks/useAuthP2P';
-import { useFee } from '../../../hooks/useFee';
+import { useEstimatedFee, useFee } from '../../../hooks/useFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
@@ -144,6 +146,29 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     amount: assetInputFrom.amount,
     from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
     to: ad.walletAddress,
+  });
+
+  // const { fee: dexTradeFee } = useDexTradeFee({
+  //   amount: Number(assetInputTo?.amount || 0),
+  //   side: 'sell',
+  //   currency_1_iso: assetFrom.symbol,
+  //   currency_2_iso: assetTo.symbol,
+  // });
+
+  const transferData = ad.walletAddress
+    ? generateERC20TransferData({
+        toAddress: ad.walletAddress,
+        amount: assetInputFrom.amount?.toString() || '',
+      })
+    : '';
+
+  const { fee: estimatedFee } = useEstimatedFee({
+    from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
+    data: transferData,
+    contractAddress:
+      assetList.find((a) => a.symbol === assetInputFrom.asset.symbol)
+        ?.contract || NULLISH_TOKEN_ADDRESS,
+    network: assetInputFrom.asset.network,
   });
 
   const insufficientNativeFee =
@@ -271,25 +296,32 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">{slippage}%</Typography>
         </Box>
-        {Boolean(outgoingFee && outgoingFee > 0 && assetInputFrom.native) && (
+        {estimatedFee && assetInputFrom.native ? (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">
               <Typography>
-                {formatFundsAmount(outgoingFee, assetInputFrom.native?.symbol)}
+                {parseFloat(estimatedFee) < 0.00000001 &&
+                parseFloat(estimatedFee) !== 0
+                  ? `< 0.00000001 ${assetInputFrom.native?.symbol}`
+                  : formatFundsAmount(
+                      estimatedFee,
+                      assetInputFrom.native?.symbol,
+                    )}
               </Typography>
               {assetInputFrom.native?.priceInUsdt && (
                 <Typography color="text.secondary" marginLeft={1}>
                   {formatCurrency(
-                    outgoingFee * assetInputFrom.native.priceInUsdt,
+                    Number(estimatedFee) *
+                      (assetInputFrom.native.priceInUsdt || 0),
                     'usd',
                   )}
                 </Typography>
               )}
             </Box>
           </Box>
-        )}
-        {Boolean(incomingFee) && (
+        ) : null}
+        {incomingFee ? (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Transfer service fee</Typography>
             <Box display="flex">
@@ -303,7 +335,17 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
               )}
             </Box>
           </Box>
-        )}
+        ) : null}
+        {/* {dexTradeFee ? (
+          <Box display="flex" justifyContent="space-between" marginTop={1}>
+            <Typography>Uniswap Fee (for comparison):</Typography>
+            <Box display="flex">
+              <Typography>
+                {formatCurrency(String(dexTradeFee), 'usd')}
+              </Typography>
+            </Box>
+          </Box>
+        ) : null} */}
       </Box>
       <Box
         sx={{
