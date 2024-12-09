@@ -13,10 +13,11 @@ export function determineConnectionType(asset: AssetModel) {
     supported.push(WalletConnectionType.ledgerSol);
   } else if (asset.network === NetworkNames.tron) {
     supported.push(WalletConnectionType.ledgerTron);
-    supported.push(WalletConnectionType.multiversxExtension);
   } else if (asset.network === NetworkNames.bitcoin) {
     supported.push(WalletConnectionType.sats);
     supported.push(WalletConnectionType.ledgerBtc);
+  } else if (asset.network === NetworkNames.multiversx) {
+    supported.push(WalletConnectionType.multiversxExtension);
   }
 
   return supported;

@@ -39,6 +39,7 @@ export enum NetworkNames {
   litecoin = 'litecoin',
   solana = 'solana',
   xdc = 'xdc_network',
+  multiversx = 'elrond',
 
   // testnets
   sepolia = 'sepolia',
@@ -127,6 +128,13 @@ export const BUILT_IN_NETWORKS = {
     uid: 'solana',
     name: 'Solana',
     nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  },
+  [NetworkNames.multiversx]: {
+    id: null,
+    key: NetworkNames.multiversx,
+    uid: 'elrond-erd-2',
+    name: 'Multiversx',
+    nativeCurrency: { name: 'Multiversx', symbol: 'EGLD', decimals: 18 },
   },
 };
 

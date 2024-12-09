@@ -5,6 +5,7 @@ import { formatUnits } from 'viem';
 import useBitcoinBalance from '../bitcoin/useBalance';
 import useEvmAccountBalance from '../evm/useAccontBalance';
 import useErc20Balance from '../evm/useErc20Balance';
+import useMultiversxBalance from '../multiversx/useBalance';
 import useSolanaBalance from '../solana/useBalance';
 import useTronBalance from '../tron/useBalance';
 
@@ -25,6 +26,9 @@ export function getBalanceHook(
   }
   if (asset.network === NetworkNames.bitcoin) {
     return ({ address }) => useBitcoinBalance(address);
+  }
+  if (asset.network === NetworkNames.multiversx) {
+    return ({ address }) => useMultiversxBalance(address);
   }
   if (asset.contract) {
     return ({ address, chainId, contract }) =>
