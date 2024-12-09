@@ -21,6 +21,10 @@ class KeyringController {
     return Buffer.from(this.keyring.hdWallet.pubKey).toString('hex');
   }
 
+  get privateKey() {
+    return Buffer.from(this.keyring.hdWallet?.privateKey).toString('hex');
+  }
+
   public signDER(message: string) {
     if (!this.keyring) {
       throw new Error('keyring not initialized');

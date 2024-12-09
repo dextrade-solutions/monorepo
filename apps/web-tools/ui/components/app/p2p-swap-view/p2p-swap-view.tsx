@@ -181,7 +181,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     try {
       setLoadingStartExchange(true);
       const result = await login({
-        walletId: assetInputFrom.walletId || assetInputTo.walletId,
         onSuccess: (on401?: () => void) =>
           dispatch(
             createSwapP2P({
@@ -272,25 +271,30 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">{slippage}%</Typography>
         </Box>
-        {Boolean(outgoingFee && outgoingFee > 0 && assetInputFrom.native) && (
+        {outgoingFee && assetInputFrom.native ? (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Outgoing transaction fee</Typography>
             <Box display="flex">
               <Typography>
-                {formatFundsAmount(outgoingFee, assetInputFrom.native?.symbol)}
+                {outgoingFee < 0.00000001 && outgoingFee !== 0
+                  ? `< 0.00000001 ${assetInputFrom.native?.symbol}`
+                  : formatFundsAmount(
+                      outgoingFee,
+                      assetInputFrom.native?.symbol,
+                    )}
               </Typography>
               {assetInputFrom.native?.priceInUsdt && (
                 <Typography color="text.secondary" marginLeft={1}>
                   {formatCurrency(
-                    outgoingFee * assetInputFrom.native.priceInUsdt,
+                    outgoingFee * (assetInputFrom.native.priceInUsdt || 0),
                     'usd',
                   )}
                 </Typography>
               )}
             </Box>
           </Box>
-        )}
-        {Boolean(incomingFee) && (
+        ) : null}
+        {incomingFee ? (
           <Box display="flex" justifyContent="space-between" marginTop={2}>
             <Typography>Transfer service fee</Typography>
             <Box display="flex">
@@ -304,7 +308,17 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
               )}
             </Box>
           </Box>
-        )}
+        ) : null}
+        {/* {dexTradeFee ? (
+          <Box display="flex" justifyContent="space-between" marginTop={1}>
+            <Typography>Uniswap Fee (for comparison):</Typography>
+            <Box display="flex">
+              <Typography>
+                {formatCurrency(String(dexTradeFee), 'usd')}
+              </Typography>
+            </Box>
+          </Box>
+        ) : null} */}
       </Box>
       <Box
         sx={{

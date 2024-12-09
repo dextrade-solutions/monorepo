@@ -7,4 +7,5 @@ export enum WalletConnectionType {
   sats = 'sats-connect', // only for btc wallet extensions
   multiversxExtension = 'multiversx-extension',
   manual = 'manual', // just pasted address from clipboard
+  keypair = 'keypair', // local generated private key
 }

@@ -6,7 +6,7 @@ import { listen } from '@ledgerhq/logs';
 import { PublicKey } from '@solana/web3.js';
 import { NetworkNames } from 'dex-helpers';
 
-import { getWalletIcon } from './util';
+import { getWalletIcon } from '../util';
 
 class LedgerConnection {
   transport: TransportWebUSB | null = null;

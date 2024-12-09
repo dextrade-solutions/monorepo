@@ -50,7 +50,7 @@ const slice = createSlice({
   name: 'auth',
   initialState,
   reducers: () => ({
-    clearAuthState: () => initialState,
+    clearAuthState: (state) => ({ ...initialState, session: state.session }),
     setAuthData: (state, action) => {
       state.authData = action.payload;
     },

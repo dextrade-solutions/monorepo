@@ -4,6 +4,20 @@ import { DEXTRADE_BASE_URL } from '../helpers/constants';
 import { AuthParams } from '../types/dextrade';
 import { AdFilterModel, TradeFilterModel } from '../types/p2p-swaps';
 import { TradeType } from 'dex-helpers';
+import { EstimatedFeeParamsEth } from '../../ui/types';
+import { EstimatedFeeParamsToken } from '../../ui/types';
+
+type PublicGetMarketFeeResponse = {
+  status: boolean;
+  data: {
+    from_address: string;
+    to_address: string;
+    amount: string;
+    type: string;
+    network_cost: number;
+    result_amount: string;
+  };
+};
 
 class P2PService {
   axios: Axios;
@@ -94,8 +108,22 @@ class P2PService {
     return this.axios.post(`api/exchange/client/confirm/fiat`, { id });
   }
 
-  public estimateFee(txParams: any) {
+  public estimateFee(
+    txParams: EstimatedFeeParamsToken | EstimatedFeeParamsEth,
+  ) {
     return this.axios.post('api/fee/estimate', txParams);
+  }
+
+  public publicGetMarketFee(params: {
+    amount: number;
+    side: 'sell' | 'buy';
+    currency_1_iso: string;
+    currency_2_iso: string;
+  }) {
+    return this.axios.post<PublicGetMarketFeeResponse>(
+      'https://api.cryptodao.com/v2/pub/get-market-fee',
+      params,
+    );
   }
 
   public saveImage(base64: string) {
