@@ -3,6 +3,7 @@ import { NetworkNames } from 'dex-helpers';
 import { hexToNumber, formatUnits } from 'viem';
 import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
 
+import { NULLISH_TOKEN_ADDRESS } from '../../app/helpers/atomic-swaps';
 import { generateERC20TransferData } from '../../app/helpers/send.utils';
 import { generateTxParams } from '../../app/helpers/transactions';
 import P2PService from '../../app/services/p2p-service';
@@ -77,23 +78,29 @@ export const useDexTradeFee = (params: PublicFeeParams) => {
 export const useEstimatedFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const txParams = generateTxParams({
     asset,
-    amount,
+    amount: Number(amount).toFixed(8),
     from,
-    to,
+    to: to || NULLISH_TOKEN_ADDRESS,
   });
-  const { data, isLoading } = useQuery({
+  if (asset.contract) {
+    txParams.contractAddress = txParams.to;
+    delete txParams.to;
+  }
+
+  const { data: fee, isLoading } = useQuery({
     queryKey: ['estimate-fee', from],
     queryFn: () =>
       P2PService.estimateFee({
-        from: txParams.from,
-        data: txParams.data,
-        contractAddress: asset.contract,
+        ...txParams,
+        value: undefined,
         network: asset.network,
+      }).then(({ data }) => {
+        return Number(formatUnits(BigInt(data), 18));
       }),
   });
 
   return {
-    fee: parseFloat(formatUnits(data?.data || 0, 18)),
+    fee,
     loading: isLoading,
   };
 };
