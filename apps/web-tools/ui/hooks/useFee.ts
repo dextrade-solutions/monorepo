@@ -81,9 +81,8 @@ export const useEstimatedFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     from,
     to,
   });
-
   const { data, isLoading } = useQuery({
-    queryKey: ['estimate-fee', txParams],
+    queryKey: ['estimate-fee', from],
     queryFn: () =>
       P2PService.estimateFee({
         from: txParams.from,
