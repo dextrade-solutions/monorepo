@@ -3,6 +3,7 @@ import { NetworkNames } from 'dex-helpers';
 import { hexToNumber, formatUnits } from 'viem';
 import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
 
+import { generateERC20TransferData } from '../../app/helpers/send.utils';
 import { generateTxParams } from '../../app/helpers/transactions';
 import P2PService from '../../app/services/p2p-service';
 import {
@@ -12,6 +13,7 @@ import {
   EstimatedFeeParamsEth,
 } from '../types';
 
+// Deprecated, useEstimatedFee
 const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const chainId = asset.chainId ? hexToNumber(asset.chainId) : undefined;
   const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
@@ -72,23 +74,34 @@ export const useDexTradeFee = (params: PublicFeeParams) => {
   };
 };
 
-export const useEstimatedFee = (
-  params: EstimatedFeeParamsToken | EstimatedFeeParamsEth,
-) => {
+export const useEstimatedFee = ({ asset, amount = 0, from, to }: FeeParams) => {
+  const txParams = generateTxParams({
+    asset,
+    amount,
+    from,
+    to,
+  });
+
   const { data, isLoading } = useQuery({
-    queryKey: ['estimate-fee', params],
-    queryFn: () => P2PService.estimateFee(params),
+    queryKey: ['estimate-fee', txParams],
+    queryFn: () =>
+      P2PService.estimateFee({
+        from: txParams.from,
+        data: txParams.data,
+        contractAddress: asset.contract,
+        network: asset.network,
+      }),
   });
 
   return {
-    fee: formatUnits(data?.data || 0, 18),
+    fee: parseFloat(formatUnits(data?.data || 0, 18)),
     loading: isLoading,
   };
 };
 
 const getFeeHook = (params: FeeParams) => {
   if (params.asset.chainId) {
-    return useWCFee;
+    return useEstimatedFee;
   } else if (params.asset.network === NetworkNames.solana) {
     return useSolFee;
   }
