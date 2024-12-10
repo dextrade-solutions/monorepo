@@ -3,6 +3,7 @@ import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { parseUnits } from 'viem';
 
 import { useAssetBalance } from './useAssetBalance';
 import { useSendTransaction } from './useSendTransaction';
@@ -86,7 +87,9 @@ export const useAssetInput = ({
 
   const makeTransfer = (recipient: string) => {
     sendTransaction(recipient, Number(inputAmount), {
-      onSuccess: () => { debugger; },
+      onSuccess: () => {
+        debugger;
+      },
       onError: (err) => {},
     });
   };
@@ -140,11 +143,18 @@ export const useAssetInput = ({
     setInputAmount(newValue || 0);
   };
 
+  const value =
+    inputAmount && asset.decimals
+      ? Number(parseUnits(String(inputAmount), asset.decimals))
+      : inputAmount;
+
   return {
     asset,
     isToAsset,
     // input parameters
     amount: inputAmount,
+    value,
+
     loading: loading || loadingNative,
     permissions: {
       canChooseWallet,

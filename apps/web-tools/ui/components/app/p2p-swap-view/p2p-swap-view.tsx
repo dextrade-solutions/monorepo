@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
@@ -141,7 +141,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const { fee: outgoingFee } = useFee({
     asset: assetFrom,
-    amount: assetInputFrom.amount,
+    amount: assetInputFrom.value,
     from: assetInputFrom.account?.address || NULLISH_TOKEN_ADDRESS,
     to: ad.walletAddress,
   });
