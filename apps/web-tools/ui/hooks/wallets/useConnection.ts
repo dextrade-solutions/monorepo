@@ -71,6 +71,7 @@ export default function useConnection(instance) {
 
       return instance
         .txSend({
+          contractAddress: asset.contract,
           sender: assetAccount.address,
           recipient,
           value,

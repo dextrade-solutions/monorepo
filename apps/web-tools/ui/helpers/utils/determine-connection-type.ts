@@ -13,6 +13,7 @@ export function determineConnectionType(asset: AssetModel) {
     supported.push(WalletConnectionType.ledgerSol);
   } else if (asset.network === NetworkNames.tron) {
     supported.push(WalletConnectionType.ledgerTron);
+    supported.push(WalletConnectionType.tronlink);
   } else if (asset.network === NetworkNames.bitcoin) {
     supported.push(WalletConnectionType.sats);
     supported.push(WalletConnectionType.ledgerBtc);

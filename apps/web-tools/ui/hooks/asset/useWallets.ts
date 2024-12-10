@@ -14,6 +14,7 @@ import { WalletConnectionType } from '../../helpers/constants/wallets';
 import keypairWalletConnection from '../../helpers/utils/connections/keypair';
 import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
 import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
+import tronlinkProvider from '../../helpers/utils/connections/tronlink';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
@@ -38,6 +39,7 @@ export function useWallets({
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
+  const tronlinkConnection = useConnection(tronlinkProvider);
 
   const connectedWallets = useSelector(getWalletConnections);
 
@@ -174,6 +176,7 @@ export function useWallets({
     ...ledger,
     multiversxConnection,
     keypairConnection,
+    tronlinkConnection,
   ];
   if (connectionType) {
     return result.filter((w) => connectionType.includes(w.connectionType));
