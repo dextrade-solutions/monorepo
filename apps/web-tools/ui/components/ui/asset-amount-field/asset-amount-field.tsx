@@ -108,6 +108,7 @@ export const AssetAmountField = ({
           variant="standard"
           valueIsNumericString
           InputProps={{
+            id: reserve ? 'input-to' : 'input-from',
             className: classNames({
               'asset-amount-field__error': hasValidationErrors,
             }),
