@@ -104,14 +104,16 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     loading: isLoading,
   };
 };
-export const useDefaultFee = ({ asset, amount = 0, from, to }: FeeParams) => {
+export const useDefaultFee = ({ asset, amount, from, to }: FeeParams) => {
   const { data: fee, isLoading } = useQuery({
     queryKey: ['estimate-fee', from, amount],
+    enabled: Boolean(from && to),
     queryFn: () =>
       P2PService.estimateFee({
         contractAddress: asset.contract ? asset.contract : undefined,
         from,
-        value: amount,
+        to,
+        value: amount || 0,
         network: asset.network,
       }).then(({ data }) => {
         return Number(formatUnits(BigInt(data), asset.decimals));

@@ -140,12 +140,12 @@ export const useAssetInput = ({
   const onSetAmount = (v: string | number | null) => {
     const convertedAmount = _.floor(Number(v), 8);
     const newValue = convertedAmount || v;
-    setInputAmount(newValue || 0);
+    setInputAmount(newValue || '');
   };
 
   const value =
     inputAmount && asset.decimals
-      ? Number(parseUnits(String(inputAmount), asset.decimals))
+      ? Number(parseUnits(Number(inputAmount).toFixed(8), asset.decimals))
       : inputAmount;
 
   return {
