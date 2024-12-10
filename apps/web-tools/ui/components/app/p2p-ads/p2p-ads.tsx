@@ -168,7 +168,7 @@ export default function P2PAds() {
             <Fade key={idx}>
               <Box>
                 {group.map((i) => (
-                  <Box marginTop={1} marginBottom={1} key={i.id}>
+                  <Box id={i.id} marginTop={1} marginBottom={1} key={i.id}>
                     <AdPreview
                       ad={i}
                       fromTokenAmount={fromTokenInputValue}

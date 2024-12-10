@@ -36,7 +36,6 @@ const AdPreview = ({
   const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
   return (
     <Card
-      id={ad.id}
       variant="outlined"
       sx={{ bgcolor: 'primary.light' }}
       onClick={onClick}
