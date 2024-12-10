@@ -9,7 +9,6 @@ export default function useBalance(address: string) {
     queryFn: async () => {
       const response = await bitcoinInfo.fetchAccount(address);
       const result = await response.json();
-      console.log(result);
       return result;
     },
   });
