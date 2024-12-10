@@ -114,7 +114,7 @@ export const useDefaultFee = ({ asset, amount = 0, from, to }: FeeParams) => {
         value: amount,
         network: asset.network,
       }).then(({ data }) => {
-        return Number(formatUnits(BigInt(data), 18));
+        return Number(formatUnits(BigInt(data), asset.decimals));
       }),
   });
 
