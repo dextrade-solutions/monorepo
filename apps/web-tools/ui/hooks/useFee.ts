@@ -75,7 +75,7 @@ export const useDexTradeFee = (params: PublicFeeParams) => {
   };
 };
 
-export const useEstimatedFee = ({ asset, amount = 0, from, to }: FeeParams) => {
+export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const txParams = generateTxParams({
     asset,
     amount: Number(amount).toFixed(8),
@@ -104,14 +104,31 @@ export const useEstimatedFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     loading: isLoading,
   };
 };
+export const useDefaultFee = ({ asset, amount = 0, from, to }: FeeParams) => {
+  const { data: fee, isLoading } = useQuery({
+    queryKey: ['estimate-fee', from],
+    queryFn: () =>
+      P2PService.estimateFee({
+        contractAddress: asset.contract ? asset.contract : undefined,
+        from,
+        value: amount,
+        network: asset.network,
+      }).then(({ data }) => {
+        return Number(formatUnits(BigInt(data), 18));
+      }),
+  });
+
+  return {
+    fee,
+    loading: isLoading,
+  };
+};
 
 const getFeeHook = (params: FeeParams) => {
   if (params.asset.chainId) {
-    return useEstimatedFee;
-  } else if (params.asset.network === NetworkNames.solana) {
-    return useSolFee;
+    return useEVMFee;
   }
-  return () => ({ fee: 0 });
+  return useDefaultFee;
 };
 
 export const useFee = (params: FeeParams) => {
