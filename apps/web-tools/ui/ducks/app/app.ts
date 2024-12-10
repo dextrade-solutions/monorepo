@@ -127,6 +127,10 @@ export const getAssetAccount = (
   return state.app.assetAccounts[key] || null;
 };
 
+export const getAssetAccounts = (state: { app: AppState }) => {
+  return state.app.assetAccounts;
+};
+
 export const getWalletConnections = ({ app }: { app: AppState }) => {
   return app.walletConnections;
 };

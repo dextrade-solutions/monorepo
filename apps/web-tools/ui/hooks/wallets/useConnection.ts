@@ -1,19 +1,20 @@
+import { getAssetKey } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
 import { useDispatch, useSelector } from 'react-redux';
+import { parseUnits } from 'viem';
 
 import {
+  getAssetAccounts,
   getWalletConnections,
   removeWalletConnection,
   setWalletConnection,
 } from '../../ducks/app/app';
-import keypairConnection from '../../helpers/utils/connections/keypair';
 import { getWalletIcon } from '../../helpers/utils/util';
 
-const WALLETS = [keypairConnection];
-
-export default function useConnection(walletName: string) {
-  const instance = WALLETS.find((i) => i.name === walletName);
-  const connectedWallets = useSelector(getWalletConnections);
+export default function useConnection(instance) {
   const dispatch = useDispatch();
+  const connectedWallets = useSelector(getWalletConnections);
+  const assetAccounts = useSelector(getAssetAccounts);
 
   if (!instance) {
     throw new Error('Connection not found');
@@ -42,6 +43,40 @@ export default function useConnection(walletName: string) {
     async disconnect() {
       await instance.disconnect();
       dispatch(removeWalletConnection(this.connected));
+    },
+    async txSend({
+      asset,
+      amount,
+      recipient,
+      txSentHandlers,
+    }: {
+      asset: AssetModel;
+      recipient: string;
+      amount: number;
+      txSentHandlers: {
+        onSuccess: (txHash: string) => void;
+        onError: (e: unknown) => void;
+      };
+    }) {
+      const key = getAssetKey(asset);
+      const assetAccount = assetAccounts[key];
+      const value = parseUnits(String(amount), asset.decimals);
+      if (!assetAccount) {
+        throw new Error('txSend - No address provided');
+      }
+
+      if (!instance.isConnected) {
+        await instance.connect();
+      }
+
+      return instance
+        .txSend({
+          sender: assetAccount.address,
+          recipient,
+          value,
+        })
+        .then(txSentHandlers.onSuccess)
+        .catch(txSentHandlers.onError);
     },
   };
 }

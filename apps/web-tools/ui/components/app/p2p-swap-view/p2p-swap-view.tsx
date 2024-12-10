@@ -169,7 +169,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   };
 
   useEffect(() => {
-    assetInputFrom.setInputAmount(fromTokenInputValue);
+    onInputAmountFrom(fromTokenInputValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTokenInputValue]);
 
@@ -309,16 +309,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             </Box>
           </Box>
         ) : null}
-        {/* {dexTradeFee ? (
-          <Box display="flex" justifyContent="space-between" marginTop={1}>
-            <Typography>Uniswap Fee (for comparison):</Typography>
-            <Box display="flex">
-              <Typography>
-                {formatCurrency(String(dexTradeFee), 'usd')}
-              </Typography>
-            </Box>
-          </Box>
-        ) : null} */}
       </Box>
       <Box
         sx={{
@@ -342,6 +332,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
+            // return assetInputFrom.makeTransfer();
             if (needPickupClientPaymentMethod) {
               return assetInputTo.showPaymentMethod();
             } else if (needPickupExchangerPaymentMethod) {

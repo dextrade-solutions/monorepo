@@ -96,4 +96,6 @@ class LedgerConnection {
   }
 }
 
-export const ledgerConnection = new LedgerConnection();
+const ledgerWalletConnection = new LedgerConnection();
+
+export default ledgerWalletConnection;

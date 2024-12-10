@@ -12,7 +12,7 @@ export default function useSendTx(asset: AssetModel) {
   const { switchChain } = useSwitchChain();
   const connectors = useConnectors();
 
-  const txSend = (
+  const txSend = async (
     recipient: string,
     amount: number,
     txSentHandlers: {
@@ -22,7 +22,16 @@ export default function useSendTx(asset: AssetModel) {
   ) => {
     const connectedWallet = assetAccount?.walletName;
     const connector = connectors.find((i) => i.name === connectedWallet);
-    const approveTx = () => {
+
+    if (!connector) {
+      throw new Error('No connector found');
+    }
+
+    const isConnected = await connector.isAuthorized();
+    if (!isConnected) {
+      await connector?.connect();
+    }
+    const approveTx = async () => {
       const txParams = generateTxParams({
         asset,
         amount,

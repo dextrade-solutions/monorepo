@@ -86,7 +86,7 @@ export const useAssetInput = ({
 
   const makeTransfer = (recipient: string) => {
     sendTransaction(recipient, Number(inputAmount), {
-      onSuccess: () => {},
+      onSuccess: () => { debugger; },
       onError: (err) => {},
     });
   };
@@ -135,7 +135,9 @@ export const useAssetInput = ({
   };
 
   const onSetAmount = (v: string | number | null) => {
-    return v ? setInputAmount(_.floor(Number(v), 8)) : setInputAmount('');
+    const convertedAmount = _.floor(Number(v), 8);
+    const newValue = convertedAmount || v;
+    setInputAmount(newValue || 0);
   };
 
   return {

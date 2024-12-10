@@ -1,19 +1,7 @@
-import axios, { Axios } from 'axios';
+import { ApiNetworkProvider } from '@multiversx/sdk-core';
 
-const BASE_URL = 'https://gateway.multiversx.com/';
+const BASE_URL = 'https://api.multiversx.com';
 
-class MultiverseXService {
-  axios: Axios;
-
-  constructor() {
-    this.axios = axios.create({
-      baseURL: BASE_URL,
-    });
-  }
-
-  getBalance(bech32Address) {
-    return this.axios.get(`address/${bech32Address}/balance`);
-  }
-}
-
-export const multiversxService = new MultiverseXService();
+export const multiversxService = new ApiNetworkProvider(BASE_URL, {
+  clientName: 'multiversx-your-client-name',
+});

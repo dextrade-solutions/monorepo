@@ -1,7 +1,7 @@
 import { NetworkNames } from 'dex-helpers';
 
 import { tronWeb } from './tronweb';
-import { ledgerConnection } from '../../../ui/helpers/utils/connections/ledger';
+import ledgerConnection from '../../../ui/helpers/utils/connections/ledger';
 
 export async function signAndBroadcastTx(unsignedTx: any) {
   const { client } = await ledgerConnection.connect(NetworkNames.tron);

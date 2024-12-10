@@ -17,13 +17,13 @@ import { AppDispatch, store } from '../store/store';
 import { useWallets } from './asset/useWallets';
 import useConnection from './wallets/useConnection';
 import { WalletConnectionType } from '../helpers/constants/wallets';
+import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
 export function useAuthP2P() {
   const { keyring } = engine.keyringController;
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
-  const keypairConnection = useConnection('Keypair Wallet');
-  // const connectWallet = useWeb3Connection();
+  const keypairConnection = useConnection(keypairWalletConnection);
   const connectors = useConnectors();
   const authWallet = useAuthWallet();
   const { signMessage } = useSignMessage();

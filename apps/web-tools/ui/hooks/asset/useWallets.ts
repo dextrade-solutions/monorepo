@@ -5,14 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import Wallet, { AddressPurpose } from 'sats-connect';
 import { useConnectors } from 'wagmi';
 
-import multiversxExtensionProvider from '../../../app/helpers/multiversx';
 import {
   getWalletConnections,
   removeWalletConnection,
   setWalletConnection,
 } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
-import { ledgerConnection } from '../../helpers/utils/connections/ledger';
+import keypairWalletConnection from '../../helpers/utils/connections/keypair';
+import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
+import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
@@ -34,7 +35,9 @@ export function useWallets({
   const { wallets, select } = useWallet();
   const connectors = useConnectors();
   const dispatch = useDispatch();
-  const keypairConnection = useConnection('Keypair Wallet');
+  const keypairConnection = useConnection(keypairWalletConnection);
+  const multiversxConnection = useConnection(multiversxWalletConnection);
+  const ledgerConnection = useConnection(ledgerWalletConnection);
 
   const connectedWallets = useSelector(getWalletConnections);
 
@@ -164,40 +167,12 @@ export function useWallets({
       disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
     },
   ];
-  const multiverse = [
-    {
-      connectionType: WalletConnectionType.multiversxExtension,
-      icon: multiversxExtensionProvider.icon,
-      name: multiversxExtensionProvider.name,
-      get id() {
-        return `${this.name}:${this.connectionType}`;
-      },
-      get connected() {
-        return connectedWallets[this.id];
-      },
-      async connect() {
-        const result = await multiversxExtensionProvider.connect();
-
-        const walletConnection = {
-          connectionType: this.connectionType,
-          walletName: this.name,
-          address: result.address,
-        };
-        dispatch(setWalletConnection(walletConnection));
-        return walletConnection;
-      },
-      async disconnect() {
-        await multiversxExtensionProvider.logout();
-        dispatch(removeWalletConnection(this.connected));
-      },
-    },
-  ];
   const result = [
     ...eip6963wallets,
     ...solanaWallets,
     ...satsWallets,
     ...ledger,
-    ...multiverse,
+    multiversxConnection,
     keypairConnection,
   ];
   if (connectionType) {
