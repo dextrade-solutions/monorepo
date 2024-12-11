@@ -332,7 +332,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
-            return assetInputFrom.makeTransfer();
             if (needPickupClientPaymentMethod) {
               return assetInputTo.showPaymentMethod();
             } else if (needPickupExchangerPaymentMethod) {

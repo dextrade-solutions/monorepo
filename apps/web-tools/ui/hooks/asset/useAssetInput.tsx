@@ -87,7 +87,7 @@ export const useAssetInput = ({
 
   const makeTransfer = (recipient: string) => {
     sendTransaction(recipient, Number(inputAmount), {
-      onSuccess: () => {
+      onSuccess: (txHash) => {
         debugger;
       },
       onError: (err) => {},

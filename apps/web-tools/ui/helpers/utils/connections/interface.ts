@@ -2,7 +2,7 @@ import { WalletConnectionType } from '../../constants/wallets';
 
 export type TxParams = {
   sender: string;
-  recepient: string;
+  recipient: string;
   value: string;
   contractAddress?: string;
 };

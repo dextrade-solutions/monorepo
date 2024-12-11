@@ -32,18 +32,16 @@ class TronlinkExtensionProvider implements ConnectionProvider {
   async txSend(params: TxParams) {
     const tronweb = this.provider.tronWeb;
     const fromAddress = tronweb.defaultAddress.base58;
-    const toAddress = params.recepient;
+    const toAddress = params.recipient;
     const tx = await tronweb.transactionBuilder.sendTrx(
       toAddress,
       params.value,
       fromAddress,
     );
-    try {
-      const signedTx = await tronweb.trx.sign(tx); // Step2
-      await tronweb.trx.sendRawTransaction(signedTx); // Step3
-    } catch (e) {
-      // error handling
-    }
+
+    const signedTx = await tronweb.trx.sign(tx); // Step2
+    const result = await tronweb.trx.sendRawTransaction(signedTx); // Step3
+    return result.txid;
   }
 }
 
