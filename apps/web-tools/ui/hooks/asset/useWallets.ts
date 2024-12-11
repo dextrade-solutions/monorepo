@@ -120,7 +120,7 @@ export function useWallets({
     get connected() {
       return connectedWallets[this.id];
     },
-    connect: async () => {
+    async connect() {
       select(item.adapter.name);
       await item.adapter.connect();
       const address = item.adapter.publicKey?.toBase58();

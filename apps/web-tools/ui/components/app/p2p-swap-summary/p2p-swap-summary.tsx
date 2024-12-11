@@ -107,12 +107,18 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
       </div>
       {showPaymentMethods && (
         <Box display="flex" marginTop={2}>
-          <Typography className="flex-grow">Payment methods</Typography>
-          {ad.paymentMethods.map((paymentMethod) => (
-            <Box marginLeft={1}>
-              <Chip size="small" label={paymentMethod.paymentMethod.name} />
-            </Box>
-          ))}
+          <Typography>Payment methods</Typography>
+          <Box className="flex-grow" />
+          <Box textAlign="right">
+            {ad.paymentMethods.map((paymentMethod, idx) => (
+              <Chip
+                key={idx}
+                sx={{ marginBottom: 1, marginLeft: 1 }}
+                size="small"
+                label={paymentMethod.paymentMethod.name}
+              />
+            ))}
+          </Box>
         </Box>
       )}
       {ad.exchangersPolicy && (
