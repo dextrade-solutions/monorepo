@@ -107,7 +107,7 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
 export const useDefaultFee = ({ asset, amount, from, to }: FeeParams) => {
   const { data: fee, isLoading } = useQuery({
     queryKey: ['estimate-fee', from, amount],
-    enabled: Boolean(from && to),
+    enabled: !asset.isFiat,
     queryFn: () =>
       P2PService.estimateFee({
         contractAddress: asset.contract ? asset.contract : undefined,
