@@ -11,6 +11,7 @@ import {
   formatCurrency,
   formatFundsAmount,
   P2P_STAGES,
+  shortenAddress,
   TRADE_ACTIVE_STATUSES,
   TradeStatus,
   TradeType,
@@ -329,8 +330,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       <Typography marginBottom={1} variant="h4">
         {headerText}
       </Typography>
-      <Typography variant="body2" marginBottom={4}>
-        Trade with <strong>{exchange.exchangerName}</strong>
+      <Typography variant="body2" marginBottom={4} alignItems="center">
+        Trade {shortenAddress(exchange.id)} with{' '}
+        <strong>{exchange.exchangerName}</strong>
       </Typography>
 
       <div className="status-icon">{statusImage}</div>
