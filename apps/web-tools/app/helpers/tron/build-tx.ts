@@ -1,3 +1,5 @@
+import { MINUTE } from 'dex-helpers';
+
 import { tronWeb } from './tronweb';
 
 export default async function buildTx(
@@ -22,7 +24,7 @@ export default async function buildTx(
           contract, // Contract address
           functionSelector, // Function to call
           {
-            feeLimit: 10000000, // Fee limit for transaction
+            // feeLimit: 30000000, // Fee limit for transaction
           },
           params,
           fromAddress, // Sender address
@@ -36,6 +38,11 @@ export default async function buildTx(
         fromAddress,
       );
     }
+
+    unsignedTx = await tronWeb.transactionBuilder.extendExpiration(
+      unsignedTx,
+      10 * 60, // 10 minutes
+    );
 
     return unsignedTx;
   } catch (error) {

@@ -1,3 +1,5 @@
+import { broadcastService } from 'dex-services';
+
 import { ConnectionProvider, TxParams } from './interface';
 import buildTx from '../../../../app/helpers/tron/build-tx';
 import { WalletConnectionType } from '../../constants/wallets';
@@ -45,11 +47,12 @@ class TronlinkExtensionProvider implements ConnectionProvider {
       tronweb,
     );
     const signedTx = await tronweb.trx.sign(tx); // Step2
-    const result = await tronweb.trx.sendRawTransaction(signedTx); // Step3
-    if (result.code) {
-      throw new Error(`txSend - Error with code ${result.code}`);
-    }
-    return result.txid;
+    // const result = await tronweb.trx.sendRawTransaction(signedTx); // Step3
+    await broadcastService.broadcastTrx({
+      tx: JSON.stringify(signedTx),
+      senderAddress: fromAddress,
+    });
+    return tx.txID;
   }
 }
 

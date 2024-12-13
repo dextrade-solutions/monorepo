@@ -369,6 +369,11 @@ export interface PaymentCallBackModel {
   payload?: PaymentPayloadModel[];
 }
 
+export interface TronScanBroadcastRequestModel {
+  tx?: string;
+  senderAddress?: string;
+}
+
 export interface PaymentCurrencyModel {
   iso?: string;
 }

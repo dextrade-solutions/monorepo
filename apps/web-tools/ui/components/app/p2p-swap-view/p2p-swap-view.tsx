@@ -328,10 +328,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
                 ? undefined
                 : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
           }}
-          disabled={loadingStartExchange || disabledBtn}
+          // disabled={loadingStartExchange || disabledBtn}
           variant="contained"
           size="large"
           onClick={() => {
+            return assetInputFrom.makeTransfer(ad.walletAddress);
             if (needPickupClientPaymentMethod) {
               return assetInputTo.showPaymentMethod();
             } else if (needPickupExchangerPaymentMethod) {
