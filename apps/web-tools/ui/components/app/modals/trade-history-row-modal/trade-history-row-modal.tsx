@@ -131,7 +131,7 @@ const TradeHistoryRowModal = ({
           // width={BLOCK_SIZES.FULL}
         >
           <Typography textAlign="left" className="flex-grow nowrap">
-            Ad ID
+            Swap ID
           </Typography>
           <CopyData className="flex-shrink" data={trade?.id || ''} />
         </Box>
