@@ -15,6 +15,9 @@ export const getWalletIcon = (walletName: string) => {
     case 'multiversx wallet': {
       return '/images/wallets/multiversx.webp';
     }
+    case 'tronlink': {
+      return '/images/wallets/tronlink.svg';
+    }
     default: {
       return null;
     }
