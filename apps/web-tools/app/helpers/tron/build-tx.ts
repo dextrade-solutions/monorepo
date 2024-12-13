@@ -13,21 +13,18 @@ export default async function buildTx(
     let unsignedTx;
 
     if (contract) {
-      // Interact with the contract to send value
       const functionSelector = 'transfer(address,uint256)';
       const params = [
-        { type: 'address', value: toAddress }, // Recipient address
-        { type: 'uint256', value }, // Amount to transfer
+        { type: 'address', value: toAddress },
+        { type: 'uint256', value },
       ];
       const { transaction } =
         await tronWeb.transactionBuilder.triggerSmartContract(
-          contract, // Contract address
-          functionSelector, // Function to call
-          {
-            // feeLimit: 30000000, // Fee limit for transaction
-          },
+          contract,
+          functionSelector,
+          {},
           params,
-          fromAddress, // Sender address
+          fromAddress,
         );
       unsignedTx = transaction;
     } else {
