@@ -18,11 +18,13 @@ import {
 import { Trade } from 'dex-helpers/types';
 import { CopyData, StepProgressBar, CountdownTimer } from 'dex-ui';
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
 import { SECOND } from '../../../../../app/constants/time';
 import { parseCoin } from '../../../../../app/helpers/p2p';
 import { determineTradeType } from '../../../../../app/helpers/utils';
+import { showModal } from '../../../../ducks/app/app';
 import {
   AWAITING_SWAP_ROUTE,
   EXCHANGE_VIEW_ROUTE,
@@ -42,6 +44,7 @@ const TradeHistoryRowModal = ({
   const navigate = useNavigate();
   const t = useI18nContext();
   const pairType = determineTradeType(trade);
+  const dispatch = useDispatch();
 
   const from = useMemo(
     () =>
@@ -62,7 +65,7 @@ const TradeHistoryRowModal = ({
     [trade],
   );
 
-  const { safe2, safe1, claimSwap, refundSwap } = useAtomicSwap(
+  const { safe2, safe1, claimSwapUsingWallet, refundSwap } = useAtomicSwap(
     trade,
     from,
     to,
@@ -237,7 +240,26 @@ const TradeHistoryRowModal = ({
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={() => refundSwap()}
+                      onClick={() =>
+                        refundSwap({
+                          onSuccess: (txHash: string) => {
+                            dispatch(
+                              showModal({
+                                name: 'ALERT_MODAL',
+                                text: `Swap successfully refunded with tx hash - ${txHash}`,
+                              }),
+                            );
+                          },
+                          onError: (e: unknown) => {
+                            dispatch(
+                              showModal({
+                                name: 'ALERT_MODAL',
+                                text: e.shortMessage,
+                              }),
+                            );
+                          },
+                        })
+                      }
                     >
                       Refund
                     </Button>
@@ -341,7 +363,26 @@ const TradeHistoryRowModal = ({
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => claimSwap({})}
+                  onClick={() =>
+                    claimSwapUsingWallet({
+                      onSuccess: (txHash: string) => {
+                        dispatch(
+                          showModal({
+                            name: 'ALERT_MODAL',
+                            text: `Swap successfully claimed with tx hash - ${txHash}`,
+                          }),
+                        );
+                      },
+                      onError: (e: unknown) => {
+                        dispatch(
+                          showModal({
+                            name: 'ALERT_MODAL',
+                            text: e.shortMessage,
+                          }),
+                        );
+                      },
+                    })
+                  }
                 >
                   Claim
                 </Button>

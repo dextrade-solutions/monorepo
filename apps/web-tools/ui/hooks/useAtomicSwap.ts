@@ -3,7 +3,12 @@ import { BUILT_IN_NETWORKS } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { atomicService } from 'dex-services';
 import { parseEther, parseUnits } from 'viem';
-import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
+import {
+  useReadContract,
+  useSwitchChain,
+  useWalletClient,
+  useWriteContract,
+} from 'wagmi';
 
 import useAsset from './asset/useAsset';
 import { ATOMIC_SWAP_ABI } from '../../app/constants/abi';
@@ -66,6 +71,7 @@ export const useAtomicSwap = (
     exchangerParams?.responderAmount ||
     BigInt(parseEther(exchange.amount2.toFixed(8)));
   const { hashLock: hashedPassword, password } = getTradeKeyPair(exchange.id);
+  const { switchChain } = useSwitchChain();
 
   const fromAtomicSwap =
     fromAtomicSwapContract &&
@@ -133,6 +139,38 @@ export const useAtomicSwap = (
     );
   };
 
+  function claimSwapUsingWallet(args: {
+    onSuccess?: (txHash: string) => void;
+    onError?: (e: unknown) => void;
+  }) {
+    const request = () =>
+      writeContract(
+        {
+          connector,
+          chainId: to.chainId,
+          address: toAtomicSwapContract,
+          abi: ATOMIC_SWAP_ABI,
+          functionName: 'claimSwap',
+          args: [toAtomicSwap.swapId, password],
+        },
+        {
+          onSuccess: args.onSuccess,
+          onError: args.onError,
+        },
+      );
+
+    return switchChain(
+      {
+        connector,
+        chainId: to.chainId,
+      },
+      {
+        onSuccess: () => request(),
+        onError: () => request(),
+      },
+    );
+  }
+
   const claimSwap = ({
     exchangerSafe,
     onSuccess,
@@ -174,10 +212,10 @@ export const useAtomicSwap = (
     }
   };
 
-  function refundSwap(
-    onSuccess?: (txHash: string) => void,
-    onError?: (e?: unknown) => void,
-  ) {
+  function refundSwap(args: {
+    onSuccess?: (txHash: string) => void;
+    onError?: (e?: unknown) => void;
+  }) {
     writeContract(
       {
         chainId: from.chainId,
@@ -187,8 +225,8 @@ export const useAtomicSwap = (
         args: [fromAtomicSwap.swapId],
       },
       {
-        onSuccess,
-        onError,
+        onSuccess: args.onSuccess,
+        onError: args.onError,
       },
     );
   }
@@ -200,6 +238,7 @@ export const useAtomicSwap = (
     claimSwap,
     refundSwap,
     initiateNewSwap,
+    claimSwapUsingWallet,
   };
 };
 
