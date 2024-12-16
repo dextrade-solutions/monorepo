@@ -124,16 +124,11 @@ const TradeHistoryRowModal = ({
           </Typography>
           <CopyData className="flex-shrink" data={trade?.exchangerName || ''} />
         </Box>
-        <Box
-          display="flex"
-          textAlign="right"
-          alignItems="center"
-          // width={BLOCK_SIZES.FULL}
-        >
+        <Box display="flex" textAlign="right" alignItems="center">
           <Typography textAlign="left" className="flex-grow nowrap">
             Swap ID
           </Typography>
-          <CopyData className="flex-shrink" data={trade?.id || ''} />
+          <CopyData shorten className="flex-shrink" data={trade?.id || ''} />
         </Box>
         <Box display="flex" marginTop={1}>
           <Typography className="flex-grow">{t('transactionFee')}</Typography>

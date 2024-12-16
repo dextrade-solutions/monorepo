@@ -7,7 +7,7 @@
     "platforms": [
       {
         "type": "TRC20",
-        "decimals": 18,
+        "decimals": 6,
         "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
         "symbol": "USDT"
       }
