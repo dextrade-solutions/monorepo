@@ -3,7 +3,7 @@ import { formatFundsAmount, BUILT_IN_NETWORKS, TradeStatus } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
 import { useEffect, useState } from 'react';
 import { formatUnits, parseEther } from 'viem';
-import { useReadContract, useWalletClient, useWriteContract } from 'wagmi';
+import { useReadContract, useSwitchChain, useWalletClient, useWriteContract } from 'wagmi';
 
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
@@ -25,6 +25,7 @@ export default function AllowanceStage({
   const { data: walletClient } = useWalletClient();
   const { connector } = useAsset(from);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
+  const { switchChain } = useSwitchChain();
 
   const toSpendAmount = BigInt(parseEther(String(trade.amount1)));
   const tokenApproval = useReadContract({
@@ -33,7 +34,7 @@ export default function AllowanceStage({
     address: from.contract,
     functionName: 'allowance',
     args: [
-      '0x8b71d2EEbfbf321B9CfBB313c71b887f1cfE71db' || trade.clientWalletAddress,
+      trade.clientWalletAddress,
       BUILT_IN_NETWORKS[from.network]?.atomicSwapContract,
     ],
   });
@@ -64,6 +65,20 @@ export default function AllowanceStage({
     );
   };
 
+  const initiate = () => {
+    return switchChain(
+      { connector, chainId: from.chainId },
+      {
+        onSuccess: approveSpendAmount,
+        onError: (e) => {
+          console.error(e);
+          // try execute makeTransaction without switching
+          approveSpendAmount();
+        },
+      },
+    );
+  };
+
   useEffect(() => {
     if (
       value !== StageStatuses.requested &&
@@ -73,7 +88,7 @@ export default function AllowanceStage({
       !tokenApproval.isLoading &&
       tokenApproval?.data < toSpendAmount
     ) {
-      approveSpendAmount();
+      initiate();
     }
 
     if (tokenApproval?.data >= toSpendAmount) {

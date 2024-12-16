@@ -80,7 +80,6 @@ export const useAtomicSwap = (
       expirationFrom,
       toSpendAmount,
     );
-
   const toAtomicSwap =
     toAtomicSwapContract &&
     expirationTo &&
