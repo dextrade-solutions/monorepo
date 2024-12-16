@@ -1,13 +1,14 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useWallets } from './useWallets';
-import { getAssetAccount } from '../../ducks/app/app';
+import { getAssetAccount, showModal } from '../../ducks/app/app';
 import useSendTxBitcoin from '../bitcoin/useSendTx';
 import useSendTxEvm from '../evm/useSendTx';
 import useSendTxSolana from '../solana/useSendTx';
 import useSendTxTron from '../tron/useSendTx';
+import { sendTransaction } from 'viem/actions';
 
 function getSendTxHook(asset: AssetModel) {
   if (asset.network === NetworkNames.bitcoin) {
@@ -32,6 +33,7 @@ function getSendTxHook(asset: AssetModel) {
 export function useSendTransaction(asset: AssetModel) {
   const useSendTx = getSendTxHook(asset);
   const txSend = useSendTx();
+  const dispatch = useDispatch();
 
   const assetAccount = useSelector((state) => getAssetAccount(state, asset));
   const walletConnections = useWallets();
@@ -39,6 +41,36 @@ export function useSendTransaction(asset: AssetModel) {
     ({ id }) =>
       id === `${assetAccount?.walletName}:${assetAccount?.connectionType}`,
   );
+
+  const depositWallet = (
+    recipient: string,
+    amount: number,
+    txSentHandlers: {
+      onSuccess: (txHash: string) => void;
+      onError: (e: unknown) => void;
+    },
+  ) => {
+    dispatch(
+      showModal({
+        name: 'DEPOSIT_WALLET',
+        asset,
+        awaitingDepositAmount: amount,
+        address: recipient,
+        manualConfirmation: true,
+        description: `Please send ${asset.symbol} to the address below using any wallet exact deposit amount, and then press the confirm button.`,
+        onSuccess: () => txSentHandlers.onSuccess('direct-transfer'),
+        onClose: () =>
+          txSentHandlers.onError(new Error('User rejected transfer')),
+      }),
+    );
+  };
+
+  if (!assetAccount) {
+    return {
+      sendTransaction: depositWallet,
+    };
+  }
+
   if (connection?.txSend) {
     return {
       sendTransaction: (

@@ -111,6 +111,7 @@ export default function P2PAds() {
       >
         <TextField
           value={providerName}
+          data-testid="p2p-ads__search-by-merchant"
           className="flex-grow"
           size="small"
           placeholder="Search by merchant name"
@@ -168,7 +169,12 @@ export default function P2PAds() {
             <Fade key={idx}>
               <Box>
                 {group.map((i) => (
-                  <Box id={i.id} marginTop={1} marginBottom={1} key={i.id}>
+                  <Box
+                    data-testid={i.id}
+                    marginTop={1}
+                    marginBottom={1}
+                    key={i.id}
+                  >
                     <AdPreview
                       ad={i}
                       fromTokenAmount={fromTokenInputValue}

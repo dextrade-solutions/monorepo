@@ -7,7 +7,6 @@ import { getAssetAccount, showModal } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 
 export default function useSendTx(asset: AssetModel) {
-  const dispatch = useDispatch();
   const assetAccount = useSelector((state) => getAssetAccount(state, asset));
 
   const txSend = async (
@@ -35,20 +34,6 @@ export default function useSendTx(asset: AssetModel) {
           }
         })
         .catch(txSentHandlers.onError);
-    } else {
-      dispatch(
-        showModal({
-          name: 'DEPOSIT_WALLET',
-          asset,
-          awaitingDepositAmount: amount,
-          address: recipient,
-          manualConfirmation: true,
-          description: `Please send ${asset.symbol} to the address below using any wallet exact deposit amount, and then press the confirm button.`,
-          onSuccess: () => txSentHandlers.onSuccess('direct-transfer'),
-          onClose: () =>
-            txSentHandlers.onError(new Error('User rejected transfer')),
-        }),
-      );
     }
   };
 

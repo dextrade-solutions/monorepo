@@ -44,7 +44,7 @@ const WalletsList = ({ hideModal }: ModalProps) => {
       <Box>
         <MenuList>
           {wallets.map((item, idx) => (
-            <Box key={idx} marginTop={1}>
+            <Box data-testid={item.id} key={idx} marginTop={1}>
               <ListItemButton
                 sx={{
                   backgroundcolor: 'secondary.dark',

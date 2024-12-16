@@ -31,11 +31,7 @@ import './index.scss';
 import WalletConnectButton from '../wallet-connect-button';
 
 export default function P2PSwap() {
-  const t = useI18nContext();
-  const navigate = useNavigate();
-  const auth = useAuthP2P();
   const dispatch = useDispatch();
-  const authData = useSelector(getAuth);
   const [isSticky, ref] = useDetectSticky();
   const wallets = useWallets();
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;
