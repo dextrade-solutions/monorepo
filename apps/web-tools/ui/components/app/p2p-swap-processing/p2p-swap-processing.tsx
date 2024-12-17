@@ -222,6 +222,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                   />
                 </Typography>
                 <Button
+                  data-testid="p2p-swap-processing__confirm-transfer"
                   onClick={async () => {
                     await P2PService.exchangeApprove(true, {
                       id: exchange.id,
@@ -281,6 +282,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                   Dispute
                 </Button>
                 <Button
+                  data-testid="p2p-swap-processing__confirm-payment"
                   variant="contained"
                   onClick={async () => {
                     await P2PService.confirmExchangeFiat(exchange.id);
