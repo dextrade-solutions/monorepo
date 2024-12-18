@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { ButtonIcon } from 'dex-ui';
+import { ButtonIcon, showModal } from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,6 @@ import { formatUnits } from 'viem';
 import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
-import { showModal } from '../../../ducks/app/app';
 import {
   createSwapP2P,
   getFromTokenInputValue,

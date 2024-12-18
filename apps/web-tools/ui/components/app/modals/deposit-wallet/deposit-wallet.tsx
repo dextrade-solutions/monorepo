@@ -1,15 +1,17 @@
-import '../styles.scss';
 import { Box, Typography, Divider, Alert, Button } from '@mui/material';
-import { formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, ButtonIcon, AssetItem } from 'dex-ui';
+import {
+  CopyData,
+  ButtonIcon,
+  AssetItem,
+  ModalProps,
+  withModalProps,
+} from 'dex-ui';
 import { useEffect } from 'react';
 import QRCode from 'react-qr-code';
 
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAssetBalance } from '../../../../hooks/asset/useAssetBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalProps } from '../types';
 
 const DepositWallet = ({
   asset,

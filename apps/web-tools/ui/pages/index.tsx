@@ -12,7 +12,6 @@ import SwapProcessing from './swap-processing';
 import SwapView from './swap-view';
 import SwapHistory from './trade-history';
 import engine from '../../app/engine';
-import { Modal } from '../components/app/modals';
 import SigningModal from '../components/app/modals/signing-modal';
 import PaymentMethods from '../components/app/payment-methods';
 import { getSessionSeed } from '../ducks/auth';
@@ -25,7 +24,9 @@ import {
   KYC_ROUTE,
   PAYMENT_METHODS_ROUTE,
   SETTINGS_GENERAL_ROUTE,
+  PLANS_ROUTE,
 } from '../helpers/constants/routes';
+import { Plans } from './settings/plans';
 
 export default function RoutesRoot() {
   const dispatch = useDispatch();
@@ -48,7 +49,6 @@ export default function RoutesRoot() {
   return (
     <>
       <SigningModal />
-      <Modal />
       <Routes>
         <Route path={HOME_ROUTE} element={<Home />} />
         <Route path={EXCHANGE_VIEW_ROUTE} element={<SwapView />} />
@@ -64,6 +64,7 @@ export default function RoutesRoot() {
             path={SETTINGS_GENERAL_ROUTE}
             element={<AppSettingsGeneral />}
           />
+          <Route path={PLANS_ROUTE} element={<Plans />} />
         </Route>
         <Route path="*" element={<NoMatchPage />} />
       </Routes>

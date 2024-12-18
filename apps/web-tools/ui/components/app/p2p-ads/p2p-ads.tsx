@@ -2,8 +2,8 @@ import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
-import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
-import { debounce, flatMap } from 'lodash';
+import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon, showModal } from 'dex-ui';
+import { flatMap } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,6 @@ import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
-import { showModal } from '../../../ducks/app/app';
 import {
   getFromTokenInputValue,
   setFromToken,

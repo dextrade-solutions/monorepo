@@ -1,4 +1,3 @@
-import '../styles.scss';
 import {
   Box,
   Typography,
@@ -10,12 +9,10 @@ import {
   ListItemSecondaryAction,
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import { UrlIcon, ButtonIcon } from 'dex-ui';
+import { UrlIcon, ButtonIcon, ModalProps, withModalProps } from 'dex-ui';
 import React from 'react';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalProps } from '../types';
 
 const WalletsList = ({ hideModal }: ModalProps) => {
   const t = useI18nContext();

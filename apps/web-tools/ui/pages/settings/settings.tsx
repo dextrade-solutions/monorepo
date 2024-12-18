@@ -13,14 +13,15 @@ import { useQuery } from '@tanstack/react-query';
 import { UserModel } from 'dex-helpers/types';
 import { userService } from 'dex-services';
 import { ButtonIcon, Icon, UserAvatar } from 'dex-ui';
+import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   HOME_ROUTE,
   KYC_ROUTE,
   PAYMENT_METHODS_ROUTE,
+  PLANS_ROUTE,
   SETTINGS_GENERAL_ROUTE,
-  SWAPS_HISTORY_ROUTE,
 } from '../../helpers/constants/routes';
 import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -152,6 +153,12 @@ export default function P2PSettings() {
                   <Icon name="info" color="secondary" />
                 </ListItemIcon>
                 <ListItemText>{t('kyc')}</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={() => navigate(PLANS_ROUTE)}>
+                <ListItemIcon>
+                  <Icon name="info" color="secondary" />
+                </ListItemIcon>
+                <ListItemText>{t('plans')}</ListItemText>
               </MenuItem>
             </MenuList>
           )}

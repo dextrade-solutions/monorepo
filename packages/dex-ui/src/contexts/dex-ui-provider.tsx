@@ -1,17 +1,20 @@
-import { ThemeProvider } from '@mui/material';
+import { Theme, ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../i18n';
+import { Modal } from '../components/app/modals';
 
 export const DexUiProvider = ({
+  extendedModals,
   children,
   theme,
   locale = 'en',
 }: {
+  extendedModals?: Record<string, React.ReactNode>;
   children: React.ReactNode;
-  theme: string;
+  theme: Theme;
   locale: string;
 }) => {
   const { i18n } = useTranslation();
@@ -21,6 +24,7 @@ export const DexUiProvider = ({
 
   return (
     <ThemeProvider theme={theme}>
+      <Modal extended={extendedModals} />
       <CssBaseline />
       {children}
     </ThemeProvider>

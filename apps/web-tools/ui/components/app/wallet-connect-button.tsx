@@ -1,11 +1,10 @@
 import { Box, Button, Menu, MenuItem } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import { ButtonIcon, PulseLoader, UrlIcon } from 'dex-ui';
+import { ButtonIcon, PulseLoader, showModal, UrlIcon } from 'dex-ui';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { showModal } from '../../ducks/app/app';
 import {
   SETTINGS_ROUTE,
   SWAPS_HISTORY_ROUTE,

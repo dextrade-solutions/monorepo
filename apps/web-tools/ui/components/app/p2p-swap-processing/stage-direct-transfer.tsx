@@ -7,8 +7,8 @@ import { useDispatch } from 'react-redux';
 import Stage from './stage';
 import { StageStatuses } from './stage-statuses';
 import { parseAddress } from '../../../../app/helpers/utils';
-import { hideModal } from '../../../ducks/app/app';
 import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
+import { hideModal } from 'dex-ui';
 
 export default function StageDirectTransfer({
   value,

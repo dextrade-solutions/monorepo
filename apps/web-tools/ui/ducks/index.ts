@@ -1,3 +1,4 @@
+import { modalsReducer } from 'dex-ui';
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -20,10 +21,10 @@ export default combineReducers({
     {
       key: 'app',
       storage,
-      blacklist: ['modal'],
     },
     appReducer,
   ),
+  modals: modalsReducer,
   swaps: swapsReducer,
   localeMessages: persistReducer(
     { key: 'localeMessages', storage, blacklist: ['current'] },

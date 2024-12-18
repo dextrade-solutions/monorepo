@@ -1,14 +1,14 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
+import { showModal } from 'dex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useWallets } from './useWallets';
-import { getAssetAccount, showModal } from '../../ducks/app/app';
+import { getAssetAccount } from '../../ducks/app/app';
 import useSendTxBitcoin from '../bitcoin/useSendTx';
 import useSendTxEvm from '../evm/useSendTx';
 import useSendTxSolana from '../solana/useSendTx';
 import useSendTxTron from '../tron/useSendTx';
-import { sendTransaction } from 'viem/actions';
 
 function getSendTxHook(asset: AssetModel) {
   if (asset.network === NetworkNames.bitcoin) {

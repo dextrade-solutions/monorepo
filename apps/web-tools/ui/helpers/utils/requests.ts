@@ -1,5 +1,5 @@
+import { showModal } from 'dex-ui';
 import { AuthStatus } from '../../../app/constants/auth';
-import { showModal } from '../../ducks/app/app';
 import { setStatus } from '../../ducks/auth';
 import { AppDispatch } from '../../store/store';
 

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { MessageItem } from './types';
 import { DEXTRADE_BASE_URL } from '../../../../app/helpers/constants';
-import { showModal } from '../../../ducks/app/app';
+import { showModal } from 'dex-ui';
 
 export const UserMessage = ({ isSender, value, type, cdt }: MessageItem) => {
   const dispatch = useDispatch();

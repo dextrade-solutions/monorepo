@@ -1,4 +1,3 @@
-import '../styles.scss';
 import {
   Box,
   Typography,
@@ -7,20 +6,23 @@ import {
   Divider,
   ListItemButton,
   ListItemAvatar,
-  ListItemSecondaryAction,
   Alert,
 } from '@mui/material';
-import { UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
+import {
+  UrlIcon,
+  ButtonIcon,
+  PulseLoader,
+  ModalProps,
+  withModalProps,
+} from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { clearAuthState } from '../../../../ducks/auth';
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalProps } from '../types';
 
 const LoginModal = ({ hideModal }: ModalProps) => {
   const t = useI18nContext();

@@ -165,7 +165,7 @@ export class HttpClient<SecurityDataType = unknown> {
     path,
     type,
     query,
-    format,
+    format = 'json',
     baseUrl,
     cancelToken,
     ...params

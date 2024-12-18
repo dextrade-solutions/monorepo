@@ -10,13 +10,11 @@ import { useSendTransaction } from './useSendTransaction';
 import { useWallets } from './useWallets';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import {
-  getAssetAccount,
-  setAssetAccount,
-  showModal,
-} from '../../ducks/app/app';
+import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
+import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
 import { useAuthWallet } from '../useAuthWallet';
+import { showModal } from 'dex-ui';
 
 export const useAssetInput = ({
   asset,
@@ -55,7 +53,7 @@ export const useAssetInput = ({
         asset,
         isToAsset,
         value: walletConnection,
-        onChange: (v) => {
+        onChange: (v: WalletConnection) => {
           dispatch(
             setAssetAccount({
               asset,

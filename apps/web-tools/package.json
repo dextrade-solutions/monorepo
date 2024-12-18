@@ -53,6 +53,7 @@
     "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.5.9",
     "dex-helpers": "workspace:^",
+    "dex-plans": "workspace:^",
     "dex-services": "workspace:^",
     "dex-ui": "workspace:^",
     "ecpair": "^3.0.0-rc.0",

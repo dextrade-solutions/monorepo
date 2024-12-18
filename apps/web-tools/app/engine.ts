@@ -50,7 +50,8 @@ class Engine {
     ServiceBridge.instance.init({
       baseUrl: DEXTRADE_BASE_URL,
       customFetch: (fetchUrl, config) => {
-        const url = `${DEXTRADE_BASE_URL}${new URL(fetchUrl).pathname}`;
+        const urlInstance = new URL(fetchUrl);
+        const url = `${DEXTRADE_BASE_URL}${urlInstance.pathname}${urlInstance.search}`;
         const { auth } = store.getState();
         const isPublicUrl = String(url).includes('public/');
         if (auth.authData.apikey && !isPublicUrl) {

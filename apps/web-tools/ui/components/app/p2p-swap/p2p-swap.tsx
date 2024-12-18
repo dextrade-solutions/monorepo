@@ -7,14 +7,14 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import classNames from 'classnames';
-import { ButtonIcon, Icon } from 'dex-ui';
+import { ButtonIcon, Icon, showModal } from 'dex-ui';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 import InputAmount from './input-amount';
-import { getCurrentTheme, setTheme, showModal } from '../../../ducks/app/app';
+import { getCurrentTheme, setTheme } from '../../../ducks/app/app';
 import { getAuth } from '../../../ducks/auth';
 import {
   SWAPS_HISTORY_ROUTE,

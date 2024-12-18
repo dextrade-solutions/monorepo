@@ -16,7 +16,7 @@ import {
   getBlockExplorerLink,
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
-import { CopyData, StepProgressBar, CountdownTimer } from 'dex-ui';
+import { CopyData, StepProgressBar, CountdownTimer, showModal, ModalProps, withModalProps } from 'dex-ui';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
@@ -24,16 +24,13 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 import { SECOND } from '../../../../../app/constants/time';
 import { parseCoin } from '../../../../../app/helpers/p2p';
 import { determineTradeType } from '../../../../../app/helpers/utils';
-import { showModal } from '../../../../ducks/app/app';
 import {
   AWAITING_SWAP_ROUTE,
   EXCHANGE_VIEW_ROUTE,
 } from '../../../../helpers/constants/routes';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useAtomicSwap } from '../../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import P2PDisplayStatus from '../../p2p-display-status';
-import { ModalProps } from '../types';
 
 const TradeHistoryRowModal = ({
   trade,
