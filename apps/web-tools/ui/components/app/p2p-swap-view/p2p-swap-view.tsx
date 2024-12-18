@@ -28,6 +28,7 @@ import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
+import { SwapFees } from './swap-fees';
 
 interface IProps {
   ad: AdItem;
@@ -271,44 +272,15 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">{slippage}%</Typography>
         </Box>
-        {outgoingFee && assetInputFrom.native ? (
-          <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Outgoing transaction fee</Typography>
-            <Box display="flex">
-              <Typography>
-                {outgoingFee < 0.00000001 && outgoingFee !== 0
-                  ? `< 0.00000001 ${assetInputFrom.native?.symbol}`
-                  : formatFundsAmount(
-                      outgoingFee,
-                      assetInputFrom.native?.symbol,
-                    )}
-              </Typography>
-              {assetInputFrom.native?.priceInUsdt && (
-                <Typography color="text.secondary" marginLeft={1}>
-                  {formatCurrency(
-                    outgoingFee * (assetInputFrom.native.priceInUsdt || 0),
-                    'usd',
-                  )}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        ) : null}
-        {incomingFee ? (
-          <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Transfer service fee</Typography>
-            <Box display="flex">
-              <Typography>
-                {formatFundsAmount(incomingFee, assetTo.symbol)}
-              </Typography>
-              {assetTo.priceInUsdt && (
-                <Typography color="text.secondary" marginLeft={1}>
-                  {formatCurrency(incomingFee * assetTo.priceInUsdt, 'usd')}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        ) : null}
+        <Box mt={2}>
+          <SwapFees
+            inbound={{
+              amount: incomingFee,
+              asset: assetTo,
+            }}
+            outbound={{ amount: outgoingFee, asset: assetInputFrom.native }}
+          />
+        </Box>
       </Box>
       <Box
         sx={{

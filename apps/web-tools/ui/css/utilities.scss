@@ -64,3 +64,12 @@
   border-color: var(--color-border-muted) !important;
   border-radius: 12px !important;
 }
+
+.arrow {
+  transform: rotate(0);
+  transition: 0.1s ease-in-out;
+
+  &-rotated {
+    transform: rotate(180deg);
+  }
+}

@@ -1,4 +1,3 @@
-import './index.scss';
 import {
   Box,
   Card,
