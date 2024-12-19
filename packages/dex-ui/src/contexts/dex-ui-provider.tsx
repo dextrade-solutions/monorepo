@@ -4,15 +4,15 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../i18n';
-import { Modal } from '../components/app/modals';
+import { ModalProvider } from '../components/app/modals';
 
 export const DexUiProvider = ({
-  extendedModals,
+  modals,
   children,
   theme,
   locale = 'en',
 }: {
-  extendedModals?: Record<string, React.ReactNode>;
+  modals?: Record<string, React.ReactNode>;
   children: React.ReactNode;
   theme: Theme;
   locale: string;
@@ -24,9 +24,7 @@ export const DexUiProvider = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <Modal extended={extendedModals} />
-      <CssBaseline />
-      {children}
+      <ModalProvider modals={modals}>{children}</ModalProvider>
     </ThemeProvider>
   );
 };

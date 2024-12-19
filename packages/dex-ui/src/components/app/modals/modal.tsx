@@ -1,8 +1,7 @@
 import './styles.scss';
 
 import { Box, Modal as ModalMui } from '@mui/material';
-import { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { createContext, useContext, useState } from 'react';
 
 import AlertModalComponent from './alert-modal';
 import ImageModalComponent from './image-modal';
@@ -10,60 +9,97 @@ import ItemPicker from './item-picker';
 import PayModal from './pay-modal';
 import SetPaymentMethod from './set-payment-method';
 import SlippageModal from './slippage-modal';
-import { hideModal, ModalState } from '../../../ducks/modals';
 
-const MODALS = {
-  ALERT_MODAL: <AlertModalComponent />,
-  IMAGE_MODAL: <ImageModalComponent />,
-  SET_PAYMENT_METHOD: <SetPaymentMethod />,
-  ITEM_PICKER: <ItemPicker />,
-  SLIPPAGE_MODAL: <SlippageModal />,
-  PAY_MODAL: <PayModal />,
-  DEFAULT: null,
+export const MODAL_TYPES = {
+  CREATE_MODAL: 'CREATE_MODAL',
+  DELETE_MODAL: 'DELETE_MODAL',
+  UPDATE_MODAL: 'UPDATE_MODAL',
 };
 
-function mapStateToProps(state: { modals: ModalState }) {
-  return {
-    modal: state.modals.modal,
+const MODAL_COMPONENTS = {
+  ALERT_MODAL: AlertModalComponent,
+  IMAGE_MODAL: ImageModalComponent,
+  SET_PAYMENT_METHOD: SetPaymentMethod,
+  ITEM_PICKER: ItemPicker,
+  SLIPPAGE_MODAL: SlippageModal,
+  PAY_MODAL: PayModal,
+  DEFAULT: null,
+};
+type ContextType = {
+  showModal: (modalType: string, modalProps?: any) => void;
+  hideModal: () => void;
+  store: any;
+};
+
+export interface ModalState {
+  open: boolean;
+  modalState: {
+    name: string | null;
+    props: Record<string, any>;
   };
 }
 
-function mapDispatchToProps(dispatch: () => void) {
-  return {
-    hideModal: (callback?: () => void) => {
-      dispatch(hideModal());
-      callback && callback();
+const initalState: ContextType = {
+  showModal: () => {},
+  hideModal: () => {},
+  store: {
+    open: false,
+    modalState: {
+      name: null,
+      props: {},
     },
-  };
-}
+  },
+};
 
-class Modal extends Component<ModalState> {
-  static defaultProps = {
-    extended: {}, // you can pass app-specific modals
+const GlobalModalContext = createContext(initalState);
+export const useGlobalModalContext = () => useContext(GlobalModalContext);
+
+export const ModalProvider = ({ children, modals }) => {
+  const [store, setStore] = useState<ModalState>(initalState.store);
+
+  const showModal = (newState: ModalState['modalState']) => {
+    setStore({
+      ...store,
+      ...{
+        open: true,
+        modalState: newState,
+      },
+    });
   };
 
-  render() {
+  const hideModal = () => {
+    setStore(initalState.store);
+  };
+
+  const renderComponent = () => {
     const allModals = {
-      ...MODALS,
-      ...this.props.extended,
+      ...MODAL_COMPONENTS,
+      ...modals,
     };
-    const modal = allModals[this.props.modal.modalState.name || 'DEFAULT'];
-
+    const ModalComponent = allModals[store.modalState.name];
+    if (!ModalComponent) {
+      return null;
+    }
+    console.info(store);
     return (
       <ModalMui
-        open={this.props.modal.open}
-        onClose={() =>
-          this.props.hideModal(this.props.modal.modalState.props.onClose)
-        }
+        key={store.modalState.name}
+        open={store.open}
+        onClose={() => hideModal()}
       >
         <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">
-          {modal}
+          <ModalComponent id="global-modal" {...store.modalState.props} />;
         </Box>
       </ModalMui>
     );
-  }
-}
+  };
 
-const WrappedModal = connect(mapStateToProps, mapDispatchToProps)(Modal);
+  return (
+    <GlobalModalContext.Provider value={{ store, showModal, hideModal }}>
+      {renderComponent()}
+      {children}
+    </GlobalModalContext.Provider>
+  );
+};
 
-export default WrappedModal;
+export default ModalProvider;

@@ -16,7 +16,13 @@ import {
   getBlockExplorerLink,
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
-import { CopyData, StepProgressBar, CountdownTimer, showModal, ModalProps, withModalProps } from 'dex-ui';
+import {
+  CopyData,
+  StepProgressBar,
+  CountdownTimer,
+  ModalProps,
+  withModalProps,
+} from 'dex-ui';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';

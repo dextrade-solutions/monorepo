@@ -9,5 +9,5 @@ export {
   showModal,
   hideModal,
 } from '../src/ducks/modals';
-export * from '../src/components/app/modals/types';
+export * from '../src/components/app/modals';
 export { withModalProps } from '../src/components/app/hoc';

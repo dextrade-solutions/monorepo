@@ -28,9 +28,7 @@ const slice = createSlice({
   reducers: () => ({
     clearAppState: () => initialState,
     showModal: (
-      state: {
-        modal: { open: boolean; modalState: { name: any; props: any } };
-      },
+      state: unknown,
       action: { payload: { [x: string]: any; name: any } },
     ) => {
       const { name, ...modalProps } = action.payload;
@@ -44,9 +42,7 @@ const slice = createSlice({
         // previousModalState: { ...state.modal.modalState },
       };
     },
-    hideModal: (state: {
-      modal: { open: boolean; modalState: { name: null; props: {} } };
-    }) => {
+    hideModal: (state: unknown) => {
       state.modal = {
         open: false,
         modalState: {
@@ -62,6 +58,10 @@ const slice = createSlice({
 const { actions, reducer } = slice;
 
 const { showModal, hideModal } = actions;
+
+export const getModalState = (state: { modals: ModalState }) => {
+  return state.modals.modal;
+};
 
 export { showModal, hideModal };
 

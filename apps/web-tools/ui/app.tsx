@@ -12,6 +12,7 @@ import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solan
 import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
+import { store } from './store/store';
 
 export function App() {
   const theme = useSelector(getCurrentTheme);
@@ -22,12 +23,13 @@ export function App() {
       <Web3ModalProvider>
         <Web3SolanaProvider>
           <DexUiProvider
-            extendedModals={{
-              SET_WALLET: <SetWalletComponent />,
-              LOGIN_MODAL: <LoginModalComponent />,
-              DEPOSIT_WALLET: <DepositWalletComponent />,
-              TRADE_HISTORY_ROW: <TradeHistoryRowModalComponent />,
-              WALLETS_LIST: <WalletsListComponent />,
+            store={store}
+            modals={{
+              SET_WALLET: SetWalletComponent,
+              LOGIN_MODAL: LoginModalComponent,
+              DEPOSIT_WALLET: DepositWalletComponent,
+              TRADE_HISTORY_ROW: TradeHistoryRowModalComponent,
+              WALLETS_LIST: WalletsListComponent,
             }}
             theme={muiTheme}
             locale={locale}

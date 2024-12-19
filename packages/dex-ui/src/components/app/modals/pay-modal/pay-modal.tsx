@@ -284,6 +284,6 @@ const PayModal = ({
   );
 };
 
-const AlertModalComponent = withModalProps(PayModal);
+const PayModalComponent = withModalProps(PayModal);
 
-export default AlertModalComponent;
+export default PayModalComponent;
