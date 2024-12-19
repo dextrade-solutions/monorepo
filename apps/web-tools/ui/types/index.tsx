@@ -23,14 +23,14 @@ export type PublicFeeParams = {
 };
 
 export type EstimatedFeeParamsToken = {
-  from: string;
+  from?: string;
   data: string;
   contractAddress: string;
   network: string;
 };
 
 export type EstimatedFeeParamsEth = {
-  from: string;
+  from?: string;
   to: string;
   network: string;
 };
