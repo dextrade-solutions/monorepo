@@ -6,13 +6,18 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
 import wasm from 'vite-plugin-wasm';
+import { VitePluginRadar } from 'vite-plugin-radar';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
-    // mkcert(),
+    VitePluginRadar({
+      analytics: {
+        id: 'G-TP5FLD97M4',
+      },
+    }),
     VitePWA({
       includeAssets: ['images/*'],
       manifest: {
