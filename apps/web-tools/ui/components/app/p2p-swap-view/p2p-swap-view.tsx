@@ -79,7 +79,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       if (!native) {
         throw new Error('calcIncomingFee - no native asset');
       }
-      if (toAmount > 0 && native) {
+      if (native) {
         const txParams = generateTxParams({
           asset: assetTo,
           amount: toAmount.toFixed(8),
@@ -113,30 +113,22 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   );
   const recalculateTo = useDebouncedCallback(async (fromAmount) => {
     let sumInCoin2 = Number(fromAmount) * exchangeRate;
-    if (sumInCoin2 > 0) {
-      const fee = await calcIncomingFee(sumInCoin2);
-      sumInCoin2 -= fee;
-      assetInputTo.setInputAmount(
-        sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
-      );
-    } else {
-      assetInputTo.setInputAmount(0);
-    }
+    const fee = await calcIncomingFee(sumInCoin2);
+    sumInCoin2 -= fee;
+    assetInputTo.setInputAmount(
+      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+    );
     assetInputTo.setLoading(false);
   }, RECALCULATE_DELAY);
 
   const recalculateFrom = useDebouncedCallback(async (toAmount) => {
     const sumInCoin2 = Number(toAmount);
     let sumInCoin1 = sumInCoin2 / exchangeRate;
-    if (sumInCoin1 > 0) {
-      const fee = await calcIncomingFee(sumInCoin2);
-      sumInCoin1 += fee / exchangeRate;
-      assetInputFrom.setInputAmount(
-        sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
-      );
-    } else {
-      assetInputFrom.setInputAmount(0);
-    }
+    const fee = await calcIncomingFee(sumInCoin2);
+    sumInCoin1 += fee / exchangeRate;
+    assetInputFrom.setInputAmount(
+      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+    );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
 
