@@ -115,11 +115,15 @@ const PayModal = ({
 
   const choosePaymentAsset = async (asset: ReservedAssetWithUsdt) => {
     try {
-      debugger;
-      const to = await paymentService.createAddress({
-        network: asset.coin.networkName,
-        currency: asset.coin.ticker,
-      });
+      const to = await paymentService.createAddress(
+        {
+          network: asset.coin.networkName,
+          currency: asset.coin.ticker,
+        },
+        {
+          format: 'text',
+        },
+      );
       setToSendAddress(to.data);
       setSelectedAsset(asset);
       const params = {
@@ -130,7 +134,16 @@ const PayModal = ({
         currency: asset.coin.ticker,
       };
       if (paymodalHandlers?.onChooseAsset) {
-        paymodalHandlers?.onChooseAsset(params);
+        paymodalHandlers?.onChooseAsset(params, {
+          successCallback: () =>
+            dispatch(
+              showModal({
+                name: 'ALERT_MODAL',
+                severity: 'success',
+                text: 'Payment successful completed',
+              }),
+            ),
+        });
       } else {
         const deeplinkParams = qs.stringify(params);
         setDeeplink(
