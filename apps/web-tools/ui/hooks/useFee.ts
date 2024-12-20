@@ -82,16 +82,14 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     from,
     to: to || NULLISH_TOKEN_ADDRESS,
   });
-  if (asset.contract) {
-    txParams.contractAddress = txParams.to;
-    delete txParams.to;
-  }
-
+  delete txParams.value;
   const { data: fee, isLoading } = useQuery({
-    queryKey: ['estimate-fee', from, amount],
+    queryKey: ['estimate-fee', txParams],
     queryFn: () =>
       P2PService.estimateFee({
-        ...txParams,
+        contractAddress: asset.contract,
+        from: txParams.from,
+        to: txParams.to,
         value: undefined,
         network: asset.network,
       }).then(({ data }) => {

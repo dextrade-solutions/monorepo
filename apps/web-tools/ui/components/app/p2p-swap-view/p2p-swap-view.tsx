@@ -27,6 +27,7 @@ import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import './index.scss';
+import { SwapFees } from './swap-fees';
 
 interface IProps {
   ad: AdItem;
@@ -78,7 +79,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       if (!native) {
         throw new Error('calcIncomingFee - no native asset');
       }
-      if (toAmount > 0 && native) {
+      if (native) {
         const txParams = generateTxParams({
           asset: assetTo,
           amount: toAmount.toFixed(8),
@@ -112,30 +113,22 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   );
   const recalculateTo = useDebouncedCallback(async (fromAmount) => {
     let sumInCoin2 = Number(fromAmount) * exchangeRate;
-    if (sumInCoin2 > 0) {
-      const fee = await calcIncomingFee(sumInCoin2);
-      sumInCoin2 -= fee;
-      assetInputTo.setInputAmount(
-        sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
-      );
-    } else {
-      assetInputTo.setInputAmount(0);
-    }
+    const fee = await calcIncomingFee(sumInCoin2);
+    sumInCoin2 -= fee;
+    assetInputTo.setInputAmount(
+      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+    );
     assetInputTo.setLoading(false);
   }, RECALCULATE_DELAY);
 
   const recalculateFrom = useDebouncedCallback(async (toAmount) => {
     const sumInCoin2 = Number(toAmount);
     let sumInCoin1 = sumInCoin2 / exchangeRate;
-    if (sumInCoin1 > 0) {
-      const fee = await calcIncomingFee(sumInCoin2);
-      sumInCoin1 += fee / exchangeRate;
-      assetInputFrom.setInputAmount(
-        sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
-      );
-    } else {
-      assetInputFrom.setInputAmount(0);
-    }
+    const fee = await calcIncomingFee(sumInCoin2);
+    sumInCoin1 += fee / exchangeRate;
+    assetInputFrom.setInputAmount(
+      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+    );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
 
@@ -269,44 +262,15 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           </Box>
           <Typography fontWeight="bold">{slippage}%</Typography>
         </Box>
-        {outgoingFee && assetInputFrom.native ? (
-          <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Outgoing transaction fee</Typography>
-            <Box display="flex">
-              <Typography>
-                {outgoingFee < 0.00000001 && outgoingFee !== 0
-                  ? `< 0.00000001 ${assetInputFrom.native?.symbol}`
-                  : formatFundsAmount(
-                      outgoingFee,
-                      assetInputFrom.native?.symbol,
-                    )}
-              </Typography>
-              {assetInputFrom.native?.priceInUsdt && (
-                <Typography color="text.secondary" marginLeft={1}>
-                  {formatCurrency(
-                    outgoingFee * (assetInputFrom.native.priceInUsdt || 0),
-                    'usd',
-                  )}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        ) : null}
-        {incomingFee ? (
-          <Box display="flex" justifyContent="space-between" marginTop={2}>
-            <Typography>Transfer service fee</Typography>
-            <Box display="flex">
-              <Typography>
-                {formatFundsAmount(incomingFee, assetTo.symbol)}
-              </Typography>
-              {assetTo.priceInUsdt && (
-                <Typography color="text.secondary" marginLeft={1}>
-                  {formatCurrency(incomingFee * assetTo.priceInUsdt, 'usd')}
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        ) : null}
+        <Box mt={2}>
+          <SwapFees
+            inbound={{
+              amount: incomingFee,
+              asset: assetTo,
+            }}
+            outbound={{ amount: outgoingFee, asset: assetInputFrom.native }}
+          />
+        </Box>
       </Box>
       <Box
         sx={{

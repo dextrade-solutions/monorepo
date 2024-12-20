@@ -1,4 +1,6 @@
+import { Typography } from '@mui/material';
 import { AdItem } from 'dex-helpers/types';
+import React from 'react';
 
 import type { useAssetInput } from './asset/useAssetInput';
 import { validateAddress } from '../../app/helpers/chain-helpers/validate-address';
@@ -10,13 +12,18 @@ type AdParams = {
   outgoingFee: number | undefined;
 };
 
+type ValidationParams = {
+  submitBtnText: string | React.ReactNode;
+  hasValidationErrors: boolean;
+  disabledBtn: boolean;
+};
+
 export function useAdValidation({
   assetInputFrom,
   assetInputTo,
-  outgoingFee,
   ad,
 }: AdParams) {
-  const params = {
+  const params: ValidationParams = {
     submitBtnText: 'Start Swap',
     hasValidationErrors: false,
     disabledBtn: false,
@@ -73,15 +80,6 @@ export function useAdValidation({
     params.disabledBtn = true;
     return params;
   }
-  // if (
-  //   outgoingFee &&
-  //   Number(assetInputFrom.balanceNative?.value) < outgoingFee
-  // ) {
-  //   params.submitBtnText = `${assetInputFrom.balanceNative?.formattedValue} is insufficient for outgoing transaction fee`;
-  //   // params.hasValidationErrors = true;
-  //   // params.disabledBtn = true;
-  //   return params;
-  // }
   if (
     assetInputTo.amount &&
     Number(ad.reserveInCoin2) < Number(assetInputTo.amount)
@@ -92,7 +90,11 @@ export function useAdValidation({
     return params;
   }
   if (!assetInputTo.asset.isFiat && !assetInputTo.account?.address) {
-    params.submitBtnText = 'Set recipient wallet';
+    params.submitBtnText = (
+      <Typography>
+        Set your <strong>{assetInputTo.asset.symbol}</strong> wallet
+      </Typography>
+    );
     return params;
   }
   if (
