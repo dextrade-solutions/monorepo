@@ -164,7 +164,7 @@ const PayModal = ({
       showModal({
         name: 'ALERT_MODAL',
         severity: 'error',
-        text: err.response?.data?.message || err.message,
+        text: err.response?.data?.message || err.error,
       });
     }
   };

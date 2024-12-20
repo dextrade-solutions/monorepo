@@ -21,8 +21,8 @@ export function PlanItem({
 
   return (
     <Card
-      variant="outlined"
       sx={{
+        boxShadow: 'none',
         bgcolor: 'primary.light',
         borderColor: value.recommended ? 'primary' : 'primary.light',
       }}

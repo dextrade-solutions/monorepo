@@ -26,8 +26,6 @@ export default function Dexpay({
     },
   });
 
-  console.log(plans);
-
   return (
     <Box>
       <Box>
