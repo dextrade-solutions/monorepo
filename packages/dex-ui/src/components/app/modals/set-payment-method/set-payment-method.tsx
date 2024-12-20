@@ -3,7 +3,6 @@ import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { AssetItem, ButtonIcon } from 'dex-ui';
 import { useTranslation } from 'react-i18next';
 
-import withModalProps from '../../hoc/with-modal-props';
 import PaymentMethods from '../../payment-methods';
 import { ModalProps } from '../types';
 
@@ -50,6 +49,4 @@ const SetPaymentMethod = ({
   );
 };
 
-const SetWalletComponent = withModalProps(SetPaymentMethod);
-
-export default SetWalletComponent;
+export default SetPaymentMethod;

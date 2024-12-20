@@ -18,7 +18,6 @@ import {
   ButtonIcon,
   AssetItem,
   PulseLoader,
-  withModalProps,
   ModalProps,
 } from 'dex-ui';
 import { useCallback, useState } from 'react';
@@ -229,6 +228,4 @@ const SetWallet = ({
   );
 };
 
-const SetWalletComponent = withModalProps(SetWallet);
-
-export default SetWalletComponent;
+export default SetWallet;

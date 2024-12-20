@@ -6,7 +6,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AuthData } from '../../app/types/auth';
 import { API_BASE_URL } from '../../helpers/constants/app';
-import DextradeService from '../../services/dextrade';
 import { HOME_ROUTE } from '../helpers/constants/routes';
 
 export default function AuthPage() {
@@ -32,7 +31,6 @@ export default function AuthPage() {
         theme,
       });
       i18n.changeLanguage(lang);
-      DextradeService.axios.defaults.baseURL = apiversion;
       navigate(HOME_ROUTE);
     }
   }, [

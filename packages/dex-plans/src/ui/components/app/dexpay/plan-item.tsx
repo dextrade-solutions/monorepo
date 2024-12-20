@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Tariff } from 'dex-helpers/types';
-import { PaymodalHandlers, showModal } from 'dex-ui';
+import { PaymodalHandlers, useGlobalModalContext } from 'dex-ui';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
@@ -17,8 +17,8 @@ export function PlanItem({
   value: Tariff;
   paymodalHandlers?: PaymodalHandlers;
 }) {
+  const { showModal } = useGlobalModalContext();
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
   return (
     <Card
@@ -30,13 +30,11 @@ export function PlanItem({
     >
       <CardActionArea
         onClick={() =>
-          dispatch(
-            showModal({
-              name: 'PAY_MODAL',
-              plan: value,
-              paymodalHandlers,
-            }),
-          )
+          showModal({
+            name: 'PAY_MODAL',
+            plan: value,
+            paymodalHandlers,
+          })
         }
       >
         <Box padding={1}>

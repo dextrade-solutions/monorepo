@@ -1,4 +1,4 @@
-import { NetworkNames, NetworkTypes } from "dex-helpers";
+import { NetworkNames, NetworkTypes } from 'dex-helpers';
 
 export type ModalState = {
   name: string | null;
@@ -16,11 +16,14 @@ export type ModalProps = ModalState & {
 
 export type PaymodalHandlers = {
   updateServerBalances?: () => Promise<void>;
-  onChooseAsset?: (params: {
-    to: string;
-    amount: number;
-    networkType: NetworkTypes;
-    networkName: NetworkNames;
-    currency: string;
-  }) => void;
+  onChooseAsset?: (
+    params: {
+      to: string;
+      amount: number;
+      networkType: NetworkTypes;
+      networkName: NetworkNames;
+      currency: string;
+    },
+    { successCallback }: { successCallback: () => void },
+  ) => void;
 };

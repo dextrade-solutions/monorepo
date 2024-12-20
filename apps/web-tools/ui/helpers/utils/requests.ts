@@ -1,4 +1,3 @@
-import { showModal } from 'dex-ui';
 import { AuthStatus } from '../../../app/constants/auth';
 import { setStatus } from '../../ducks/auth';
 import { AppDispatch } from '../../store/store';
@@ -25,13 +24,6 @@ export const handleRequest = async (
       message = e.message;
     }
 
-    dispatch(
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: message,
-      }),
-    );
-    throw new Error(e);
+    throw new Error(message);
   }
 };

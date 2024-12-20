@@ -7,7 +7,6 @@ import {
   Typography,
 } from '@mui/material';
 
-import withModalProps from '../../hoc/with-modal-props';
 import { ModalProps } from '../types';
 
 export const ItemPicker = ({
@@ -62,6 +61,4 @@ export const ItemPicker = ({
   );
 };
 
-const ItemPickerModalComponent = withModalProps(ItemPicker);
-
-export default ItemPickerModalComponent;
+export default ItemPicker;

@@ -1,7 +1,6 @@
 import { Alert, AlertProps, Box, Button, Typography } from '@mui/material';
 import { Component, ReactNode } from 'react';
 
-import withModalProps from '../../hoc/with-modal-props';
 import { ModalProps } from '../types';
 
 class AlertModal extends Component<
@@ -25,6 +24,4 @@ class AlertModal extends Component<
   }
 }
 
-const AlertModalComponent = withModalProps(AlertModal);
-
-export default AlertModalComponent;
+export default AlertModal;

@@ -17,14 +17,13 @@ import {
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
 import {
+  useGlobalModalContext,
   CopyData,
   StepProgressBar,
   CountdownTimer,
   ModalProps,
-  withModalProps,
 } from 'dex-ui';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
 import { SECOND } from '../../../../../app/constants/time';
@@ -44,10 +43,10 @@ const TradeHistoryRowModal = ({
 }: {
   trade: Trade;
 } & ModalProps) => {
+  const { showModal } = useGlobalModalContext();
   const navigate = useNavigate();
   const t = useI18nContext();
   const pairType = determineTradeType(trade);
-  const dispatch = useDispatch();
 
   const from = useMemo(
     () =>
@@ -246,20 +245,16 @@ const TradeHistoryRowModal = ({
                       onClick={() =>
                         refundSwap({
                           onSuccess: (txHash: string) => {
-                            dispatch(
-                              showModal({
-                                name: 'ALERT_MODAL',
-                                text: `Swap successfully refunded with tx hash - ${txHash}`,
-                              }),
-                            );
+                            showModal({
+                              name: 'ALERT_MODAL',
+                              text: `Swap successfully refunded with tx hash - ${txHash}`,
+                            });
                           },
                           onError: (e: unknown) => {
-                            dispatch(
-                              showModal({
-                                name: 'ALERT_MODAL',
-                                text: e.shortMessage,
-                              }),
-                            );
+                            showModal({
+                              name: 'ALERT_MODAL',
+                              text: e.shortMessage,
+                            });
                           },
                         })
                       }
@@ -369,20 +364,16 @@ const TradeHistoryRowModal = ({
                   onClick={() =>
                     claimSwapUsingWallet({
                       onSuccess: (txHash: string) => {
-                        dispatch(
-                          showModal({
-                            name: 'ALERT_MODAL',
-                            text: `Swap successfully claimed with tx hash - ${txHash}`,
-                          }),
-                        );
+                        showModal({
+                          name: 'ALERT_MODAL',
+                          text: `Swap successfully claimed with tx hash - ${txHash}`,
+                        });
                       },
                       onError: (e: unknown) => {
-                        dispatch(
-                          showModal({
-                            name: 'ALERT_MODAL',
-                            text: e.shortMessage,
-                          }),
-                        );
+                        showModal({
+                          name: 'ALERT_MODAL',
+                          text: e.shortMessage,
+                        });
                       },
                     })
                   }
@@ -419,6 +410,4 @@ const TradeHistoryRowModal = ({
   );
 };
 
-const TradeHistoryRowModalComponent = withModalProps(TradeHistoryRowModal);
-
-export default TradeHistoryRowModalComponent;
+export default TradeHistoryRowModal;

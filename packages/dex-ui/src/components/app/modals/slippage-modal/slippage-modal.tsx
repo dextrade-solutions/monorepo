@@ -8,7 +8,6 @@ import {
 import { Component, ReactNode } from 'react';
 import { NumericFormat } from 'react-number-format';
 
-import withModalProps from '../../hoc/with-modal-props';
 import { ModalProps } from '../types';
 
 const DEFAULT_SLIPPAGE = 0.5;
@@ -100,6 +99,4 @@ class SlippageModal extends Component<
   }
 }
 
-const SlippageModalComponent = withModalProps(SlippageModal);
-
-export default SlippageModalComponent;
+export default SlippageModal;

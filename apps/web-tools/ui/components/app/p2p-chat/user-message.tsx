@@ -1,13 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import { relativeFromCurrentDate } from 'dex-helpers';
-import { useDispatch } from 'react-redux';
+import { useGlobalModalContext } from 'dex-ui';
 
 import { MessageItem } from './types';
 import { DEXTRADE_BASE_URL } from '../../../../app/helpers/constants';
-import { showModal } from 'dex-ui';
 
 export const UserMessage = ({ isSender, value, type, cdt }: MessageItem) => {
-  const dispatch = useDispatch();
+  const { showModal } = useGlobalModalContext();
   const imgLink = `${DEXTRADE_BASE_URL}/public/image/${value}`;
   return (
     <Box
@@ -38,9 +37,7 @@ export const UserMessage = ({ isSender, value, type, cdt }: MessageItem) => {
               cursor: 'pointer',
               backgroundImage: `url(${imgLink})`,
             }}
-            onClick={() =>
-              dispatch(showModal({ name: 'IMAGE_MODAL', link: imgLink }))
-            }
+            onClick={() => showModal({ name: 'IMAGE_MODAL', link: imgLink })}
           />
         ) : (
           <Typography>{value}</Typography>

@@ -8,13 +8,7 @@ import {
   ListItemAvatar,
   Alert,
 } from '@mui/material';
-import {
-  UrlIcon,
-  ButtonIcon,
-  PulseLoader,
-  ModalProps,
-  withModalProps,
-} from 'dex-ui';
+import { UrlIcon, ButtonIcon, PulseLoader, ModalProps } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -117,6 +111,4 @@ const LoginModal = ({ hideModal }: ModalProps) => {
   );
 };
 
-const LoginModalComponent = withModalProps(LoginModal);
-
-export default LoginModalComponent;
+export default LoginModal;

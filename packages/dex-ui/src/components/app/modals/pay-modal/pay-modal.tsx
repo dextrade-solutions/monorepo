@@ -17,17 +17,16 @@ import {
   formatFundsAmount,
   getCoinIconByUid,
   NetworkNames,
+  NetworkTypes,
 } from 'dex-helpers';
 import { Tariff } from 'dex-helpers/types';
-import { exchangerService, paymentService } from 'dex-services';
+import { paymentService } from 'dex-services';
 import qs from 'qs';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
-import { showModal } from '../../../../ducks/modals';
+import { useGlobalModalContext } from '..';
 import { ButtonIcon, UrlIcon } from '../../../ui';
-import withModalProps from '../../hoc/with-modal-props';
 import { ModalProps, PaymodalHandlers } from '../types';
 
 const PAYMENT_SUPPORTED_NETWORKS = [
@@ -36,6 +35,20 @@ const PAYMENT_SUPPORTED_NETWORKS = [
   NetworkNames.ethereum,
   NetworkNames.bitcoin,
 ];
+
+type ReservedAsset = any;
+
+type PaymentParams = {
+  asset: ReservedAsset;
+  data: {
+    to: string;
+    amount: number;
+    networkType: NetworkTypes;
+    networkName: NetworkNames;
+    currency: string;
+  };
+  deeplink: string;
+};
 
 const PayModal = ({
   plan,
@@ -46,12 +59,10 @@ const PayModal = ({
   paymodalHandlers?: PaymodalHandlers;
 } & ModalProps &
   AlertProps) => {
+  const { showModal } = useGlobalModalContext();
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const [selectedAsset, setSelectedAsset] =
-    useState<ReservedAssetWithUsdt | null>(null);
-  const [deeplink, setDeeplink] = useState('');
-  const [toSendAddress, setToSendAddress] = useState<string>('');
+  const [paymentParams, setPaymentParams] = useState<PaymentParams>();
+  const selectedAsset = paymentParams?.asset;
   const { data: supportedCurrencies = [] } = useQuery({
     queryKey: ['dexpay-supportedCurrencies'],
     queryFn: () =>
@@ -101,11 +112,7 @@ const PayModal = ({
   );
   const paymentsBySelectedAsset = payment?.payments || [];
 
-  const toSendAmount = selectedAsset?.priceInUsdt
-    ? plan.price / selectedAsset.priceInUsdt
-    : null;
-
-  function redirectToTransfer() {
+  function redirectToTransfer(deeplink: string) {
     // Create a hidden iframe to trigger the deep link
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
@@ -113,7 +120,22 @@ const PayModal = ({
     document.body.appendChild(iframe);
   }
 
-  const choosePaymentAsset = async (asset: ReservedAssetWithUsdt) => {
+  const onPay = (args: PaymentParams) => {
+    if (paymodalHandlers?.onChooseAsset) {
+      paymodalHandlers?.onChooseAsset(args.data, {
+        successCallback: () =>
+          showModal({
+            name: 'ALERT_MODAL',
+            severity: 'success',
+            text: 'Payment successful completed',
+          }),
+      });
+    } else {
+      redirectToTransfer(args.deeplink);
+    }
+  };
+
+  const choosePaymentAsset = async (asset) => {
     try {
       const to = await paymentService.createAddress(
         {
@@ -124,43 +146,26 @@ const PayModal = ({
           format: 'text',
         },
       );
-      setToSendAddress(to.data);
-      setSelectedAsset(asset);
       const params = {
-        to: payment?.address,
-        amount: toSendAmount,
+        to: to.data,
+        amount: plan.price / asset.priceInUsdt,
         networkType: asset.coin.networkType,
         networkName: asset.coin.networkName,
         currency: asset.coin.ticker,
       };
-      if (paymodalHandlers?.onChooseAsset) {
-        paymodalHandlers?.onChooseAsset(params, {
-          successCallback: () =>
-            dispatch(
-              showModal({
-                name: 'ALERT_MODAL',
-                severity: 'success',
-                text: 'Payment successful completed',
-              }),
-            ),
-        });
-      } else {
-        const deeplinkParams = qs.stringify(params);
-        setDeeplink(
-          payment && selectedAsset
-            ? `com.dextrade://transfer?${deeplinkParams}`
-            : '',
-        );
-        redirectToTransfer();
-      }
+      const payInfo = {
+        data: params,
+        asset,
+        deeplink: qs.stringify(params),
+      };
+      setPaymentParams(payInfo);
+      onPay(payInfo);
     } catch (err: unknown) {
-      dispatch(
-        showModal({
-          name: 'ALERT_MODAL',
-          severity: 'error',
-          text: err.response?.data?.message || err.message,
-        }),
-      );
+      showModal({
+        name: 'ALERT_MODAL',
+        severity: 'error',
+        text: err.response?.data?.message || err.message,
+      });
     }
   };
   return (
@@ -178,17 +183,26 @@ const PayModal = ({
       <Box marginY={2}>
         <Divider />
       </Box>
-      {selectedAsset ? (
+      {paymentParams ? (
         <Box>
           <Typography variant="body2">
             {t('Please, send')}{' '}
             <strong>
-              {formatFundsAmount(toSendAmount, selectedAsset.coin.ticker)}{' '}
+              {formatFundsAmount(
+                paymentParams.data.amount,
+                selectedAsset.coin.ticker,
+              )}{' '}
               {selectedAsset.coin.networkType}
             </strong>{' '}
             {t('to')}{' '}
-            <Link href={deeplink} variant="body2">
-              {toSendAddress}
+            <Link
+              onClick={(e) => {
+                e.stopPropagation();
+                onPay(paymentParams);
+              }}
+              variant="body2"
+            >
+              {paymentParams.data.to}
             </Link>
           </Typography>
           <Typography variant="body2" marginTop={2}>
@@ -256,7 +270,6 @@ const PayModal = ({
                 </ListItemButton>
               </Box>
             ))}
-
             {isLoading && (
               <Box>
                 <Skeleton sx={{ mt: 1 }} height={60}></Skeleton>
@@ -264,14 +277,12 @@ const PayModal = ({
                 <Skeleton sx={{ mt: 1 }} height={60}></Skeleton>
               </Box>
             )}
-
             {!isLoading && !isError && !filteredAssets.length && (
               <Alert severity="info">
                 Assets not found. Please try deposit any asset in your wallet
                 and try again.
               </Alert>
             )}
-
             {isError && (
               <Alert severity="error">
                 Something went wrong. Try to reload the app
@@ -284,6 +295,4 @@ const PayModal = ({
   );
 };
 
-const PayModalComponent = withModalProps(PayModal);
-
-export default PayModalComponent;
+export default PayModal;

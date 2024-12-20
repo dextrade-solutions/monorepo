@@ -13,8 +13,7 @@ import {
   TRADE_ACTIVE_STATUSES,
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
-import { AssetItem, Icon, showModal } from 'dex-ui';
-import { useDispatch } from 'react-redux';
+import { AssetItem, Icon, useGlobalModalContext } from 'dex-ui';
 import { useNavigate } from 'react-router-dom';
 
 import { AWAITING_SWAP_ROUTE } from '../../../helpers/constants/routes';
@@ -22,18 +21,16 @@ import P2PDisplayStatus from '../p2p-display-status';
 
 export function TradePreview({ trade }: { trade: Trade }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { showModal } = useGlobalModalContext();
 
   const openTradeHistory = () => {
     if (TRADE_ACTIVE_STATUSES.includes(trade.status)) {
       navigate(`${AWAITING_SWAP_ROUTE}/${trade.id}`);
     } else {
-      dispatch(
-        showModal({
-          name: 'TRADE_HISTORY_ROW',
-          trade,
-        }),
-      );
+      showModal({
+        name: 'TRADE_HISTORY_ROW',
+        trade,
+      });
     }
   };
   return (

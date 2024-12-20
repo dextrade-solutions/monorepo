@@ -1,12 +1,6 @@
 import { Box, Typography, Divider, Alert, Button } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import {
-  CopyData,
-  ButtonIcon,
-  AssetItem,
-  ModalProps,
-  withModalProps,
-} from 'dex-ui';
+import { CopyData, ButtonIcon, AssetItem, ModalProps } from 'dex-ui';
 import { useEffect } from 'react';
 import QRCode from 'react-qr-code';
 
@@ -107,6 +101,4 @@ const DepositWallet = ({
   );
 };
 
-const DepositWalletComponent = withModalProps(DepositWallet);
-
-export default DepositWalletComponent;
+export default DepositWallet;

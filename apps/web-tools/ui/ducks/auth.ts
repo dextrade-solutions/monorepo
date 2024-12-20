@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { showModal } from 'dex-ui';
 import { bufferToHex } from 'ethereumjs-util';
 
 import { AuthStatus } from '../../app/constants/auth';
@@ -81,9 +80,7 @@ export const login = (keyring: any, signature: string, wallet: string) => {
     const publicKey = Buffer.from(keyring.hdWallet.pubKey).toString('hex');
     const masterPublicKey = recoverPubKeyFromSignature(signature, publicKey);
 
-    const mnemonicHash = await generateMnemonicHash(masterPublicKey).catch(
-      (e) => dispatch(showModal({ name: 'ALERT_MODAL', text: e.message })),
-    );
+    const mnemonicHash = await generateMnemonicHash(masterPublicKey);
 
     const authData = await P2PService.login({
       mnemonicHash,

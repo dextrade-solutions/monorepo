@@ -10,12 +10,6 @@ import PayModal from './pay-modal';
 import SetPaymentMethod from './set-payment-method';
 import SlippageModal from './slippage-modal';
 
-export const MODAL_TYPES = {
-  CREATE_MODAL: 'CREATE_MODAL',
-  DELETE_MODAL: 'DELETE_MODAL',
-  UPDATE_MODAL: 'UPDATE_MODAL',
-};
-
 const MODAL_COMPONENTS = {
   ALERT_MODAL: AlertModalComponent,
   IMAGE_MODAL: ImageModalComponent,
@@ -25,11 +19,6 @@ const MODAL_COMPONENTS = {
   PAY_MODAL: PayModal,
   DEFAULT: null,
 };
-type ContextType = {
-  showModal: (modalType: string, modalProps?: any) => void;
-  hideModal: () => void;
-  store: any;
-};
 
 export interface ModalState {
   open: boolean;
@@ -38,6 +27,17 @@ export interface ModalState {
     props: Record<string, any>;
   };
 }
+
+type ShowModalArgs = { name: keyof typeof MODAL_COMPONENTS | string } & Record<
+  string,
+  any
+>;
+
+type ContextType = {
+  showModal: (args: ShowModalArgs) => void;
+  hideModal: () => void;
+  store: any;
+};
 
 const initalState: ContextType = {
   showModal: () => {},
@@ -57,12 +57,15 @@ export const useGlobalModalContext = () => useContext(GlobalModalContext);
 export const ModalProvider = ({ children, modals }) => {
   const [store, setStore] = useState<ModalState>(initalState.store);
 
-  const showModal = (newState: ModalState['modalState']) => {
+  const showModal = ({ name, ...props }: ShowModalArgs) => {
     setStore({
       ...store,
       ...{
         open: true,
-        modalState: newState,
+        modalState: {
+          name,
+          props,
+        },
       },
     });
   };
@@ -88,7 +91,11 @@ export const ModalProvider = ({ children, modals }) => {
         onClose={() => hideModal()}
       >
         <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">
-          <ModalComponent id="global-modal" {...store.modalState.props} />;
+          <ModalComponent
+            id="global-modal"
+            hideModal={hideModal}
+            {...store.modalState.props}
+          />
         </Box>
       </ModalMui>
     );

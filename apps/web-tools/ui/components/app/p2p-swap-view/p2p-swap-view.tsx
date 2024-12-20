@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { ButtonIcon, showModal } from 'dex-ui';
+import { ButtonIcon, useGlobalModalContext } from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ interface IProps {
 const RECALCULATE_DELAY = 1000;
 
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
+  const { showModal } = useGlobalModalContext();
   const t = useI18nContext();
   const navigate = useNavigate();
   const [slippage, setSlippage] = useState(0.5);
@@ -196,25 +197,25 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       navigate(`${AWAITING_SWAP_ROUTE}/${result.data.id}`);
     } catch (e) {
       setLoadingStartExchange(false);
-      console.error(e);
-      // show swap error popup
-      throw new Error(e.message);
+      showModal({
+        name: 'ALERT_MODAL',
+        severity: 'error',
+        text: e.message,
+      });
     }
   };
 
   const pickupExchangerPaymentMethod = () => {
-    dispatch(
-      showModal({
-        name: 'ITEM_PICKER',
-        options: availablePaymentMethods,
-        title: 'Choose payment method',
-        getOptionLabel: (paymentMethod: UserPaymentMethod) =>
-          paymentMethod.paymentMethod.name,
-        getOptionKey: (paymentMethod: UserPaymentMethod) =>
-          paymentMethod.userPaymentMethodId,
-        onSelect: (v: number) => startExchange({ exchangerPaymentMethodId: v }),
-      }),
-    );
+    showModal({
+      name: 'ITEM_PICKER',
+      options: availablePaymentMethods,
+      title: 'Choose payment method',
+      getOptionLabel: (paymentMethod: UserPaymentMethod) =>
+        paymentMethod.paymentMethod.name,
+      getOptionKey: (paymentMethod: UserPaymentMethod) =>
+        paymentMethod.userPaymentMethodId,
+      onSelect: (v: number) => startExchange({ exchangerPaymentMethodId: v }),
+    });
   };
 
   return (
@@ -257,13 +258,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             <Typography marginRight={1}>Slippage Tolerance</Typography>
             <ButtonIcon
               onClick={() =>
-                dispatch(
-                  showModal({
-                    name: 'SLIPPAGE_MODAL',
-                    value: slippage,
-                    onChange: (v: number) => setSlippage(v),
-                  }),
-                )
+                showModal({
+                  name: 'SLIPPAGE_MODAL',
+                  value: slippage,
+                  onChange: (v: number) => setSlippage(v),
+                })
               }
               iconName="setting-dex"
             />

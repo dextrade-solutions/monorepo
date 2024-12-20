@@ -9,8 +9,9 @@ import {
   ListItemSecondaryAction,
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import { UrlIcon, ButtonIcon, ModalProps, withModalProps } from 'dex-ui';
+import { UrlIcon, ButtonIcon, ModalProps } from 'dex-ui';
 import React from 'react';
+
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -84,6 +85,4 @@ const WalletsList = ({ hideModal }: ModalProps) => {
   );
 };
 
-const WalletsListComponent = withModalProps(WalletsList);
-
-export default WalletsListComponent;
+export default WalletsList;

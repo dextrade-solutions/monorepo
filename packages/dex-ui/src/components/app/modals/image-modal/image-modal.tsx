@@ -1,7 +1,6 @@
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import { Component, ReactNode } from 'react';
 
-import withModalProps from '../../hoc/with-modal-props';
 import { ModalProps } from '../types';
 
 class ImageModal extends Component<
@@ -26,6 +25,4 @@ class ImageModal extends Component<
   }
 }
 
-const ImageModalComponent = withModalProps(ImageModal);
-
-export default ImageModalComponent;
+export default ImageModal;

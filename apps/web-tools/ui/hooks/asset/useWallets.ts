@@ -3,7 +3,6 @@ import { NetworkNames } from 'dex-helpers';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Wallet, { AddressPurpose } from 'sats-connect';
-import { useConnectors } from 'wagmi';
 
 import {
   getWalletConnections,
@@ -18,6 +17,7 @@ import tronlinkProvider from '../../helpers/utils/connections/tronlink';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
+import useEVMConnections from '../wallets/useEVMConnections';
 
 export type WalletItem = {
   icon?: string;
@@ -30,11 +30,7 @@ export type WalletItem = {
 export function useWallets({
   connectionType,
 }: { connectionType?: WalletConnectionType[] } = {}) {
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
-
   const { wallets, select } = useWallet();
-  const connectors = useConnectors();
   const dispatch = useDispatch();
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
@@ -43,38 +39,7 @@ export function useWallets({
 
   const connectedWallets = useSelector(getWalletConnections);
 
-  const eip6963wallets = connectors.map((item) => ({
-    connectionType: WalletConnectionType.eip6963,
-    icon: item.icon || getWalletIcon(item.name),
-    name: item.name,
-    get id() {
-      return `${this.name}:${this.connectionType}`;
-    },
-    get connected() {
-      return connectedWallets[this.id];
-    },
-    async connect() {
-      const result = await item.connect();
-      const [address] = result.accounts;
-      const walletConnection = {
-        connectionType: WalletConnectionType.eip6963,
-        address,
-        walletName: item.name,
-      };
-      dispatch(setWalletConnection(walletConnection));
-      return walletConnection;
-    },
-    async disconnect() {
-      const isConnected = await item.isAuthorized();
-      if (isConnected) {
-        await item.disconnect();
-        forceUpdate();
-      }
-      if (this.connected) {
-        dispatch(removeWalletConnection(this.connected));
-      }
-    },
-  }));
+  const eip6963wallets = useEVMConnections();
 
   const satsWallets = [
     {
