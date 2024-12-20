@@ -1,6 +1,7 @@
 import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
-import { BUILT_IN_NETWORKS, NetworkNames } from 'dex-helpers';
+import { BUILT_IN_NETWORKS } from 'dex-helpers';
+import { queryClient } from 'dex-helpers/shared';
 import {
   Trade,
   AdItem,
@@ -8,7 +9,6 @@ import {
   UserPaymentMethod,
 } from 'dex-helpers/types';
 
-import engine from '../../../app/engine';
 import { genKeyPair } from '../../../app/helpers/atomic-swaps';
 import { getRedeemAndRefundAddress } from '../../../app/helpers/bitcoin/utils';
 import { isBtcTypeAsset } from '../../../app/helpers/chain-helpers/is-btc-type-asset';
@@ -149,7 +149,9 @@ export const createSwapP2P = (props: {
       }
 
       if (isBtcTypeAsset(from.asset)) {
-        fromRefundAddress = getRedeemAndRefundAddress(from.asset.network).refundAddress;
+        fromRefundAddress = getRedeemAndRefundAddress(
+          from.asset.network,
+        ).refundAddress;
       } else {
         fromRefundAddress = remove0x(from.account?.address);
       }
@@ -185,10 +187,9 @@ export const createSwapP2P = (props: {
     if (exchange.isAtomicSwap) {
       window.localStorage.setItem(response.data.id, JSON.stringify(keypair));
     }
-    const activeTrades = (engine.queryClient.getQueryData(QUERY_KEY) ||
-      []) as Trade[];
+    const activeTrades = (queryClient.getQueryData(QUERY_KEY) || []) as Trade[];
     const { data: newTrade } = await P2PService.exchangeById(response.data.id);
-    engine.queryClient.setQueryData(QUERY_KEY, [newTrade, ...activeTrades]);
+    queryClient.setQueryData(QUERY_KEY, [newTrade, ...activeTrades]);
     return response;
   };
 };

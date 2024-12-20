@@ -18,7 +18,7 @@
     "@mui/x-date-pickers": "^7.12.1",
     "@reduxjs/toolkit": "^2.2.7",
     "@tanstack/query-sync-storage-persister": "^5.51.1",
-    "@tanstack/react-query": "^5.51.1",
+    "@tanstack/react-query": "5.62.8",
     "@tanstack/react-query-persist-client": "^5.51.1",
     "@types/punycode": "^2.1.4",
     "@uidotdev/usehooks": "^2.4.1",

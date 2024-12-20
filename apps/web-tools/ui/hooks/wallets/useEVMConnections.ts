@@ -1,7 +1,5 @@
-import { getAssetKey } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { useDispatch, useSelector } from 'react-redux';
-import { parseUnits } from 'viem';
 import { useConnectors, useSendTransaction, useSwitchChain } from 'wagmi';
 
 import { generateTxParams } from '../../../app/helpers/transactions';

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import '../i18n';
 import { ModalProvider } from '../components/app/modals';
-import queryClient from '../shared/query-client';
+import { queryClient } from 'dex-helpers/shared';
 
 export const DexUiProvider = ({
   modals,
@@ -16,7 +16,6 @@ export const DexUiProvider = ({
 }: {
   children: React.ReactNode;
   theme: Theme;
-  queryClient?: any;
   modals?: Record<string, React.ReactNode>;
   locale?: string;
 }) => {

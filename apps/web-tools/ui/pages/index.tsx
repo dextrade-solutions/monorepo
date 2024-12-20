@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { Kyc } from 'dex-ui';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +7,7 @@ import { NoMatchPage } from './404';
 import Home from './home';
 import AppSettings from './settings';
 import AppSettingsGeneral from './settings/general';
+import { Plans } from './settings/plans';
 import SwapProcessing from './swap-processing';
 import SwapView from './swap-view';
 import SwapHistory from './trade-history';
@@ -26,12 +26,10 @@ import {
   SETTINGS_GENERAL_ROUTE,
   PLANS_ROUTE,
 } from '../helpers/constants/routes';
-import { Plans } from './settings/plans';
 
 export default function RoutesRoot() {
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,7 +42,7 @@ export default function RoutesRoot() {
     // queryClient.removeQueries({ queryKey: ['p2pTradesActive'], exact: true });
     // queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
     // }
-  }, [dispatch, sessionSeed, queryClient, navigate]);
+  }, [dispatch, sessionSeed, navigate]);
 
   return (
     <>

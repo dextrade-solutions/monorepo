@@ -1,17 +1,14 @@
-import { QueryClient } from '@tanstack/react-query';
+import { queryClient } from 'dex-helpers/shared';
 
 import { store } from '../../ui/store/store';
 
 class SwapsController {
   private activeSwapsInterval: ReturnType<typeof setTimeout>;
 
-  private queryClient: QueryClient;
-
-  constructor({ queryClient }: { queryClient: QueryClient }) {
+  constructor() {
     this.activeSwapsInterval = setInterval(() => {
       this.refreshActiveSwaps();
     }, 4000);
-    this.queryClient = queryClient;
   }
 
   stop() {
@@ -23,7 +20,7 @@ class SwapsController {
       return;
     }
 
-    await this.queryClient.refetchQueries({ queryKey: ['p2pTradesActive'] });
+    await queryClient.refetchQueries({ queryKey: ['p2pTradesActive'] });
   }
 }
 

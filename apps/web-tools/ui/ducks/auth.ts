@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { queryClient } from 'dex-helpers/shared';
 import { bufferToHex } from 'ethereumjs-util';
 
 import { AuthStatus } from '../../app/constants/auth';
-import engine from '../../app/engine';
 import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
@@ -116,7 +116,6 @@ export const login = (keyring: any, signature: string, wallet: string) => {
 export const logout = () => {
   return (dispatch: AppDispatch): void => {
     dispatch(clearAuthState());
-    const { queryClient } = engine;
 
     queryClient.removeQueries({ queryKey: ['p2pTrades'], exact: true });
     queryClient.removeQueries({
