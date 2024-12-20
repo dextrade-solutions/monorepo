@@ -156,7 +156,7 @@ export default function P2PSettings() {
               </MenuItem>
               <MenuItem onClick={() => navigate(PLANS_ROUTE)}>
                 <ListItemIcon>
-                  <Icon name="info" color="secondary" />
+                  <Icon name="card" color="secondary" />
                 </ListItemIcon>
                 <ListItemText>{t('plans')}</ListItemText>
               </MenuItem>

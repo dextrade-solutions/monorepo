@@ -49,7 +49,8 @@ const slice = createSlice({
   name: 'auth',
   initialState,
   reducers: () => ({
-    clearAuthState: (state) => ({ ...initialState, session: state.session }),
+    // clearAuthState: (state) => ({ ...initialState, session: state.session }), // save session way
+    clearAuthState: () => initialState,
     setAuthData: (state, action) => {
       state.authData = action.payload;
     },

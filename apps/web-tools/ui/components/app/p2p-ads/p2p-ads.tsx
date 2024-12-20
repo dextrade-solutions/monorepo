@@ -88,7 +88,6 @@ export default function P2PAds() {
       refetchInterval: 10 * SECOND,
     });
 
-  console.info({ isFetchingNextPage, isFetching, isLoading, fetchNextPage, data })
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
       pathname: EXCHANGE_VIEW_ROUTE,

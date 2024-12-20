@@ -83,7 +83,6 @@ export const ModalProvider = ({ children, modals }) => {
     if (!ModalComponent) {
       return null;
     }
-    console.info(store);
     return (
       <ModalMui
         key={store.modalState.name}
