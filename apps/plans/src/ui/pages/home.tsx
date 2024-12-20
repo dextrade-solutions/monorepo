@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
 
-import Dexpay from '../components/app/dexpay';
+import { DexPlans } from 'dex-ui';
 
 export default function Home() {
   return (
     <Box>
-      <Dexpay />
+      <DexPlans />
     </Box>
   );
 }

@@ -1,14 +1,15 @@
 import { getBalance, multicall } from '@wagmi/core';
 import { getAssetKey, NetworkNames } from 'dex-helpers';
+import { DexPlans } from 'dex-ui';
 import assetList from 'dex-helpers/assets-list';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
-import Dexpay from 'dex-plans';
 import { exchangerService } from 'dex-services';
 import { flatMap, groupBy } from 'lodash';
 import { useMemo } from 'react';
 import { erc20Abi, formatUnits } from 'viem';
 import { useConfig } from 'wagmi';
 
+import engine from '../../../app/engine';
 import { parseCoinByTickerAndNetwork } from '../../../app/helpers/p2p';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
 
@@ -105,7 +106,7 @@ export function Plans() {
   }
 
   return (
-    <Dexpay
+    <DexPlans
       paymodalHandlers={{
         async updateServerBalances() {
           if (!authWalletAddress) {

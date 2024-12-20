@@ -6,9 +6,8 @@ import {
   Typography,
 } from '@mui/material';
 import { Tariff } from 'dex-helpers/types';
-import { PaymodalHandlers, useGlobalModalContext } from 'dex-ui';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { PaymodalHandlers, useGlobalModalContext } from '../modals';
 
 export function PlanItem({
   paymodalHandlers,

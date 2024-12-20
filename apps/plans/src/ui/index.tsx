@@ -3,11 +3,8 @@ import {
   Container,
   ThemeProvider,
   CssBaseline,
-  useMediaQuery,
 } from '@mui/material';
-import { enUS } from '@mui/material/locale';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { ServiceBridge } from 'dex-services';
@@ -25,26 +22,22 @@ import { AuthData } from '../app/types/auth';
 
 log.setLevel(log.levels.DEBUG);
 
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
-});
-
-const queryClient = new QueryClient();
+// const persister = createSyncStoragePersister({
+//   storage: window.localStorage,
+// });
 
 export function UI() {
   const [auth] = useLocalStorage<AuthData | null>('auth');
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const paletteMode = auth?.theme || (prefersDarkMode ? 'dark' : 'light');
-  const { muiTheme } = useDexUI({ theme: paletteMode });
+  const { muiTheme } = useDexUI({ theme: auth?.theme });
 
   ServiceBridge.instance.init({
     customFetch: (fetchUrl, config) => {
-      if (!auth) {
-        throw new Error('no authenticated user');
-      }
       const url = `${auth.apiversion}${new URL(fetchUrl).pathname}`;
       const isPublicUrl = String(url).includes('public/');
       if (!isPublicUrl) {
+        if (!auth) {
+          throw new Error('no authenticated user');
+        }
         config.headers['X-API-KEY'] = auth.apikey;
       }
       return fetch(url, config);
@@ -60,21 +53,15 @@ export function UI() {
       </Container>
     </>
   );
-
   return (
     <HashRouter>
       <Provider store={store}>
-        <PersistQueryClientProvider
-          persistOptions={{ persister }}
-          client={queryClient}
-        >
-          <ThemeProvider theme={muiTheme}>
-            <CssBaseline />
-            <DexUiProvider theme={muiTheme} locale={auth?.lang}>
-              {renderBody()}
-            </DexUiProvider>
-          </ThemeProvider>
-        </PersistQueryClientProvider>
+        <ThemeProvider theme={muiTheme}>
+          <CssBaseline />
+          <DexUiProvider theme={muiTheme} locale={auth?.lang}>
+            {renderBody()}
+          </DexUiProvider>
+        </ThemeProvider>
       </Provider>
     </HashRouter>
   );

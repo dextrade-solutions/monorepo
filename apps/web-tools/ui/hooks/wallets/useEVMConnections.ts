@@ -6,7 +6,6 @@ import { useConnectors, useSendTransaction, useSwitchChain } from 'wagmi';
 
 import { generateTxParams } from '../../../app/helpers/transactions';
 import {
-  getAssetAccounts,
   getWalletConnections,
   removeWalletConnection,
   setWalletConnection,
@@ -18,79 +17,87 @@ export default function useEVMConnections() {
   const connectors = useConnectors();
   const dispatch = useDispatch();
   const connectedWallets = useSelector(getWalletConnections);
-  const assetAccounts = useSelector(getAssetAccounts);
   const { sendTransaction } = useSendTransaction();
   const { switchChainAsync } = useSwitchChain();
 
-  return connectors.map((item) => ({
-    connectionType: WalletConnectionType.eip6963,
-    icon: item.icon || getWalletIcon(item.name),
-    name: item.name,
-    get id() {
-      return `${this.name}:${this.connectionType}`;
-    },
-    get connected() {
-      return connectedWallets[this.id];
-    },
-    async connect() {
-      const result = await item.connect();
-      const [address] = result.accounts;
-      const walletConnection = {
-        connectionType: WalletConnectionType.eip6963,
-        address,
-        walletName: item.name,
-      };
-      dispatch(setWalletConnection(walletConnection));
-      return walletConnection;
-    },
-    async disconnect() {
-      const isConnected = await item.isAuthorized();
-      if (isConnected) {
-        await item.disconnect();
-      }
-      dispatch(removeWalletConnection(this.connected));
-    },
-    async txSend({
-      asset,
-      amount,
-      recipient,
-      txSentHandlers,
-    }: {
-      asset: AssetModel;
-      recipient: string;
-      amount: number;
-      txSentHandlers: {
-        onSuccess: (txHash: string) => void;
-        onError: (e: unknown) => void;
-      };
-    }) {
-      const isConnected = await item.isAuthorized();
+  const getIdWallet = (name: string) => {
+    return `${name}:${WalletConnectionType.eip6963}`;
+  };
 
-      if (!isConnected) {
-        await item.connect();
-      }
-
-      const approveTx = async () => {
-        if (!asset.chainId) {
-          throw new Error('Asset chainid not found');
+  return connectors.map(function (item) {
+    return {
+      connectionType: WalletConnectionType.eip6963,
+      icon: item.icon || getWalletIcon(item.name),
+      name: item.name,
+      id: getIdWallet(item.name),
+      get connected() {
+        return connectedWallets[getIdWallet(item.name)];
+      },
+      async connect() {
+        const result = await item.connect();
+        const [address] = result.accounts;
+        const walletConnection = {
+          connectionType: WalletConnectionType.eip6963,
+          address,
+          walletName: item.name,
+        };
+        dispatch(setWalletConnection(walletConnection));
+        return walletConnection;
+      },
+      async disconnect() {
+        const isLocalConnected = connectedWallets[getIdWallet(item.name)];
+        const isConnected = (await item.isAuthorized()) && isLocalConnected;
+        if (isConnected) {
+          await item.disconnect();
         }
-        const txParams = generateTxParams({
-          asset,
-          amount,
-          to: recipient,
-        });
-        try {
-          await switchChainAsync({ connector: item, chainId: asset.chainId });
-        } catch {
-          // do nothing
+        if (isLocalConnected) {
+          dispatch(
+            removeWalletConnection(connectedWallets[getIdWallet(item.name)]),
+          );
         }
-        return sendTransaction(
-          { connector: item, chainId: asset.chainId, ...txParams },
-          txSentHandlers,
-        );
-      };
+      },
+      async txSend({
+        asset,
+        amount,
+        recipient,
+        txSentHandlers,
+      }: {
+        asset: AssetModel;
+        recipient: string;
+        amount: number;
+        txSentHandlers: {
+          onSuccess: (txHash: string) => void;
+          onError: (e: unknown) => void;
+        };
+      }) {
+        const isConnected = await item.isAuthorized();
 
-      return approveTx();
-    },
-  }));
+        if (!isConnected) {
+          await item.connect();
+        }
+
+        const approveTx = async () => {
+          if (!asset.chainId) {
+            throw new Error('Asset chainid not found');
+          }
+          const txParams = generateTxParams({
+            asset,
+            amount,
+            to: recipient,
+          });
+          try {
+            await switchChainAsync({ connector: item, chainId: asset.chainId });
+          } catch {
+            // do nothing
+          }
+          return sendTransaction(
+            { connector: item, chainId: asset.chainId, ...txParams },
+            txSentHandlers,
+          );
+        };
+
+        return approveTx();
+      },
+    };
+  });
 }

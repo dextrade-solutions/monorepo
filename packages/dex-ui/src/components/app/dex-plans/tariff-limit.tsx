@@ -7,8 +7,9 @@ export function TariffLimit() {
   const { t } = useTranslation();
   const { data = {} } = useQuery({
     queryKey: ['tariffLimit'],
-    queryFn: () =>
-      tariffService.getTariffLimit().then((response) => response.data),
+    queryFn: () => {
+      return tariffService.limit().then((response) => response.data);
+    },
   });
   const buyedList = [];
 

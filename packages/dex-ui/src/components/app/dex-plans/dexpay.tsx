@@ -2,13 +2,13 @@ import { Box, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Tariff } from 'dex-helpers/types';
 import { tariffService } from 'dex-services';
-import { PaymodalHandlers } from 'dex-ui';
 import { useTranslation } from 'react-i18next';
 
 import CompareTypes from './compare-types';
 import { PlanCompare } from './plan-compare';
 import { PlanItem } from './plan-item';
 import { TariffLimit } from './tariff-limit';
+import { PaymodalHandlers } from '../modals';
 
 export default function Dexpay({
   paymodalHandlers,
@@ -19,11 +19,14 @@ export default function Dexpay({
 
   const { data: plans = [] } = useQuery<Tariff[]>({
     queryKey: ['plans'],
-    queryFn: () =>
-      tariffService.listAll().then((response) => {
+    queryFn: () => {
+      return tariffService.listAll().then((response) => {
         return response.data;
-      }),
+      });
+    },
   });
+
+  console.log(plans);
 
   return (
     <Box>

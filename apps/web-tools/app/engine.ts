@@ -1,5 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { ServiceBridge } from 'dex-services';
+import { queryClient } from 'dex-ui/shared';
 
 import KeyringController from './controllers/keyring';
 import SwapsController from './controllers/swaps';
@@ -19,7 +20,7 @@ class Engine {
 
   private constructor() {
     this.keyringController = new KeyringController();
-    this.queryClient = new QueryClient();
+    this.queryClient = queryClient;
     this.swapsController = new SwapsController({
       queryClient: this.queryClient,
     });

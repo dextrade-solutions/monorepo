@@ -46,6 +46,7 @@
     ".": {
       "import": "./lib/main.tsx",
       "require": "./lib/main.tsx"
-    }
+    },
+    "./shared": "./src/shared/index.ts"
   }
 }

@@ -13,6 +13,7 @@ import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
 import { store } from './store/store';
+import engine from '../app/engine';
 
 export function App() {
   const theme = useSelector(getCurrentTheme);
@@ -23,6 +24,7 @@ export function App() {
       <Web3ModalProvider>
         <Web3SolanaProvider>
           <DexUiProvider
+            queryClient={engine.queryClient}
             store={store}
             modals={{
               SET_WALLET: SetWalletComponent,
