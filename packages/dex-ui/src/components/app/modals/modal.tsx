@@ -4,6 +4,7 @@ import { Box, Modal as ModalMui } from '@mui/material';
 import React, { createContext, useContext, useState } from 'react';
 
 import AlertModalComponent from './alert-modal';
+import BuyPlan from './buy-plan';
 import ImageModalComponent from './image-modal';
 import ItemPicker from './item-picker';
 import PayModal from './pay-modal';
@@ -17,6 +18,7 @@ const MODAL_COMPONENTS = {
   ITEM_PICKER: ItemPicker,
   SLIPPAGE_MODAL: SlippageModal,
   PAY_MODAL: PayModal,
+  BUY_PLAN: BuyPlan,
   DEFAULT: null,
 };
 

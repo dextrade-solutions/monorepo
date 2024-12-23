@@ -1,67 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
-import { NetworkNames } from 'dex-helpers';
-import { hexToNumber, formatUnits } from 'viem';
-import { useEstimateFeesPerGas, useEstimateGas } from 'wagmi';
+import { formatUnits } from 'viem';
 
 import { NULLISH_TOKEN_ADDRESS } from '../../app/helpers/atomic-swaps';
-import { generateERC20TransferData } from '../../app/helpers/send.utils';
 import { generateTxParams } from '../../app/helpers/transactions';
 import P2PService from '../../app/services/p2p-service';
-import {
-  FeeParams,
-  PublicFeeParams,
-  EstimatedFeeParamsToken,
-  EstimatedFeeParamsEth,
-} from '../types';
+import { FeeParams, PublicFeeParams } from '../types';
 
 // Deprecated, useEstimatedFee
-const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
-  const chainId = asset.chainId ? hexToNumber(asset.chainId) : undefined;
-  const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
+// const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
+//   const chainId = asset.chainId ? hexToNumber(asset.chainId) : undefined;
+//   const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
 
-  const txParams = generateTxParams({
-    asset,
-    amount,
-    from,
-    to,
-  });
+//   const txParams = generateTxParams({
+//     asset,
+//     amount,
+//     from,
+//     to,
+//   });
 
-  let bufferMultiplier = 1;
-  if (txParams.data) {
-    bufferMultiplier = 2;
-  }
+//   let bufferMultiplier = 1;
+//   if (txParams.data) {
+//     bufferMultiplier = 2;
+//   }
 
-  const estimateGas = useEstimateGas({
-    chainId,
-    account: txParams.from,
-    to: txParams.to,
-    data: txParams.data,
-    value: txParams.value,
-  });
+//   const estimateGas = useEstimateGas({
+//     chainId,
+//     account: txParams.from,
+//     to: txParams.to,
+//     data: txParams.data,
+//     value: txParams.value,
+//   });
 
-  if (estimateGas.data && estimateFeePerGas.data) {
-    const fee =
-      Number(
-        formatUnits(estimateGas.data * estimateFeePerGas.data.maxFeePerGas, 18),
-      ) * bufferMultiplier;
+//   if (estimateGas.data && estimateFeePerGas.data) {
+//     const fee =
+//       Number(
+//         formatUnits(estimateGas.data * estimateFeePerGas.data.maxFeePerGas, 18),
+//       ) * bufferMultiplier;
 
-    return {
-      fee,
-      loading: false,
-    };
-  }
+//     return {
+//       fee,
+//       loading: false,
+//     };
+//   }
 
-  return {
-    loading: true,
-  };
-};
-
-const useSolFee = (params: FeeParams) => {
-  return {
-    fee: 0,
-    loading: false,
-  };
-};
+//   return {
+//     loading: true,
+//   };
+// };
 
 export const useDexTradeFee = (params: PublicFeeParams) => {
   const { data, isLoading } = useQuery({
@@ -82,7 +67,7 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     from,
     to: to || NULLISH_TOKEN_ADDRESS,
   });
-  delete txParams.value;
+  txParams.value = undefined;
   const { data: fee, isLoading } = useQuery({
     queryKey: ['estimate-fee', txParams],
     queryFn: () =>
@@ -90,7 +75,6 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
         contractAddress: asset.contract,
         from: txParams.from,
         to: txParams.to,
-        value: undefined,
         network: asset.network,
       }).then(({ data }) => {
         return Number(formatUnits(BigInt(data), 18));

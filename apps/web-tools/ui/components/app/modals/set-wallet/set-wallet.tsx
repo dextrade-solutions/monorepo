@@ -20,7 +20,7 @@ import {
   PulseLoader,
   ModalProps,
 } from 'dex-ui';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
@@ -96,8 +96,8 @@ const SetWallet = ({
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={hideModal}
           ariaLabel={t('close')}
+          onClick={hideModal}
         />
       </Box>
 

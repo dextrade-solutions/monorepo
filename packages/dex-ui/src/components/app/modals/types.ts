@@ -16,14 +16,11 @@ export type ModalProps = ModalState & {
 
 export type PaymodalHandlers = {
   updateServerBalances?: () => Promise<void>;
-  onChooseAsset?: (
-    params: {
-      to: string;
-      amount: number;
-      networkType: NetworkTypes;
-      networkName: NetworkNames;
-      currency: string;
-    },
-    { successCallback }: { successCallback: () => void },
-  ) => void;
+  onChooseAsset?: (params: {
+    to: string;
+    amount: number;
+    networkType: NetworkTypes;
+    networkName: NetworkNames;
+    currency: string;
+  }) => string;
 };

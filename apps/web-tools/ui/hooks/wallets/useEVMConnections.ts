@@ -15,7 +15,7 @@ export default function useEVMConnections() {
   const connectors = useConnectors();
   const dispatch = useDispatch();
   const connectedWallets = useSelector(getWalletConnections);
-  const { sendTransaction } = useSendTransaction();
+  const { sendTransactionAsync } = useSendTransaction();
   const { switchChainAsync } = useSwitchChain();
 
   const getIdWallet = (name: string) => {
@@ -85,13 +85,24 @@ export default function useEVMConnections() {
           });
           try {
             await switchChainAsync({ connector: item, chainId: asset.chainId });
-          } catch {
+          } catch (e) {
             // do nothing
           }
-          return sendTransaction(
-            { connector: item, chainId: asset.chainId, ...txParams },
-            txSentHandlers,
-          );
+          try {
+            const hash = await sendTransactionAsync({
+              connector: item,
+              chainId: asset.chainId,
+              ...txParams,
+            });
+            return txSentHandlers?.onSuccess
+              ? txSentHandlers.onSuccess(hash)
+              : hash;
+          } catch (e) {
+            if (txSentHandlers?.onError) {
+              return txSentHandlers.onError(e);
+            }
+            throw e;
+          }
         };
 
         return approveTx();

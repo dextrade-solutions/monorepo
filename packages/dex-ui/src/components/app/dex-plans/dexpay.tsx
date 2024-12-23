@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { Tariff } from 'dex-helpers/types';
 import { tariffService } from 'dex-services';
+import { range } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CompareTypes from './compare-types';
@@ -9,6 +10,7 @@ import { PlanCompare } from './plan-compare';
 import { PlanItem } from './plan-item';
 import { TariffLimit } from './tariff-limit';
 import { PaymodalHandlers } from '../modals';
+import { PlanItemSkeleton } from './plan-item-skeleton';
 
 export default function Dexpay({
   paymodalHandlers,
@@ -17,7 +19,7 @@ export default function Dexpay({
 }) {
   const { t } = useTranslation();
 
-  const { data: plans = [] } = useQuery<Tariff[]>({
+  const { data: plans = [], isLoading } = useQuery<Tariff[]>({
     queryKey: ['plans'],
     queryFn: () => {
       return tariffService.listAll().then((response) => {
@@ -51,6 +53,12 @@ export default function Dexpay({
             />
           </Grid>
         ))}
+        {isLoading &&
+          range(3).map((idx) => (
+            <Grid item key={idx} xs={12}>
+              <PlanItemSkeleton />
+            </Grid>
+          ))}
       </Grid>
       <Typography margin={1} marginTop={5} alignItems="flex-end">
         <Typography as="span" variant="h6">
@@ -71,6 +79,9 @@ export default function Dexpay({
             plans={plans}
             type={CompareTypes.check}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <PlanCompare keyToCompare="refillGasRequests" plans={plans} />
         </Grid>
       </Grid>
     </Box>

@@ -26,7 +26,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalModalContext } from '..';
-import { ButtonIcon, UrlIcon } from '../../../ui';
+import { TxStageStatuses } from '../../../../constants';
+import { ButtonIcon, CopyData, TxSendStage, UrlIcon } from '../../../ui';
 import { ModalProps, PaymodalHandlers } from '../types';
 
 const PAYMENT_SUPPORTED_NETWORKS = [
@@ -62,6 +63,12 @@ const PayModal = ({
   const { showModal } = useGlobalModalContext();
   const { t } = useTranslation();
   const [paymentParams, setPaymentParams] = useState<PaymentParams>();
+  const [paymentResult, setPaymentResult] = useState<{
+    status: TxStageStatuses;
+    hash?: string;
+    error?: string;
+  }>();
+  const [paymentAddressLoading, setPaymentAddressLoading] = useState(false);
   const selectedAsset = paymentParams?.asset;
   const { data: supportedCurrencies = [] } = useQuery({
     queryKey: ['dexpay-supportedCurrencies'],
@@ -120,22 +127,30 @@ const PayModal = ({
     document.body.appendChild(iframe);
   }
 
-  const onPay = (args: PaymentParams) => {
+  const onPay = async (args: PaymentParams) => {
+    setPaymentResult({
+      status: TxStageStatuses.requested,
+    });
     if (paymodalHandlers?.onChooseAsset) {
-      paymodalHandlers?.onChooseAsset(args.data, {
-        successCallback: () =>
-          showModal({
-            name: 'ALERT_MODAL',
-            severity: 'success',
-            text: 'Payment successful completed',
-          }),
-      });
+      try {
+        const hash = await paymodalHandlers?.onChooseAsset(args.data);
+        setPaymentResult({
+          status: TxStageStatuses.success,
+          hash,
+        });
+      } catch (e) {
+        setPaymentResult({
+          status: TxStageStatuses.failed,
+          error: e.shortMessage || e.message,
+        });
+      }
     } else {
       redirectToTransfer(args.deeplink);
     }
   };
 
   const choosePaymentAsset = async (asset) => {
+    setPaymentAddressLoading(true);
     try {
       const to = await paymentService.createAddress(
         {
@@ -167,6 +182,7 @@ const PayModal = ({
         text: err.response?.data?.message || err.error,
       });
     }
+    setPaymentAddressLoading(false);
   };
   return (
     <Box padding={3}>
@@ -177,73 +193,95 @@ const PayModal = ({
       <Typography color="text.secondary" marginBottom={2}>
         {plan.description}
       </Typography>
-      <Typography variant="h5" fontWeight="bold">
-        {t('Total')} {formatCurrency(plan.price, 'usd')}
-      </Typography>
+      <Box display="flex">
+        <Typography className="flex-grow" variant="h5">
+          {t('Total')}
+        </Typography>
+        {selectedAsset && (
+          <Typography color="text.secondary" variant="h5" mr={1}>
+            {formatFundsAmount(
+              plan.price / selectedAsset.priceInUsdt,
+              selectedAsset.coin.ticker,
+            )}{' '}
+          </Typography>
+        )}
+        <Typography variant="h5" fontWeight="bold">
+          {formatCurrency(plan.price, 'usd')}
+        </Typography>
+      </Box>
       <Box marginY={2}>
         <Divider />
       </Box>
       {paymentParams ? (
         <Box>
-          <Typography variant="body2">
-            {t('Please, send')}{' '}
-            <strong>
-              {formatFundsAmount(
-                paymentParams.data.amount,
-                selectedAsset.coin.ticker,
-              )}{' '}
-              {selectedAsset.coin.networkType}
-            </strong>{' '}
-            {t('to')}{' '}
-            <Link
-              onClick={(e) => {
-                e.stopPropagation();
-                onPay(paymentParams);
-              }}
-              variant="body2"
-            >
-              {paymentParams.data.to}
-            </Link>
+          <Typography color="text.secondary">
+            Recepient wallet address
           </Typography>
-          <Typography variant="body2" marginTop={2}>
-            {t('Payments history')}:
+          <Typography marginBottom={2}>
+            <Typography variant="body2">{paymentParams.data.to}</Typography>
           </Typography>
-          <List>
-            {paymentsBySelectedAsset.map((p) => (
-              <ListItemText
-                primary={
-                  <Alert severity="success">
-                    <Typography>
-                      {p.amount} {p.currency}{' '}
+          <Box>
+            <TxSendStage
+              onRequest={() => onPay(paymentParams)}
+              subtitle={
+                paymentResult?.hash ? (
+                  <Box display="flex" alignItems="center">
+                    <Typography color="text.secondary" className="flex-grow">
+                      Your tx hash
                     </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {t('From')}: {p.fromAddress}
-                    </Typography>
-                  </Alert>
-                }
-              />
-            ))}
-            {paymentsBySelectedAsset.length === 0 && (
-              <ListItemText
-                secondary={t(
-                  'Payments not found, please wait blockchain confirmation or contact support',
-                )}
-              />
-            )}
-          </List>
+                    <CopyData
+                      className="flex-shrink"
+                      shorten
+                      data={paymentResult.hash}
+                    />
+                  </Box>
+                ) : null
+              }
+              status={paymentResult?.status}
+              successText="Payment has been approved, wait for blockchain confirmation"
+              failtureText={paymentResult?.error}
+            />
+          </Box>
+          <Box>
+            <Typography variant="body2" marginTop={2}>
+              {t('Payments history')}:
+            </Typography>
+            <List>
+              {paymentsBySelectedAsset.map((p) => (
+                <ListItemText
+                  primary={
+                    <Alert severity="success">
+                      <Typography>
+                        {p.amount} {p.currency}{' '}
+                      </Typography>
+                      <Typography color="text.secondary" variant="body2">
+                        {t('From')}: {p.fromAddress}
+                      </Typography>
+                    </Alert>
+                  }
+                />
+              ))}
+              {paymentsBySelectedAsset.length === 0 && (
+                <ListItemText
+                  secondary={t(
+                    'Payments not found, please wait blockchain confirmation or contact support',
+                  )}
+                />
+              )}
+            </List>
+          </Box>
         </Box>
       ) : (
         <>
           <Typography>{t('Select asset and pay')}</Typography>
           <List>
             {filteredAssets.map((asset, idx) => (
-              <Box
-                sx={{ backgroundColor: 'secondary.dark' }}
-                borderRadius={1}
-                key={idx}
-                marginTop={1}
-              >
-                <ListItemButton onClick={() => choosePaymentAsset(asset)}>
+              <Box key={idx} marginTop={1}>
+                <ListItemButton
+                  disabled={paymentAddressLoading}
+                  className="bordered"
+                  onClick={() => choosePaymentAsset(asset)}
+                >
                   <ListItemAvatar>
                     <UrlIcon
                       size={40}

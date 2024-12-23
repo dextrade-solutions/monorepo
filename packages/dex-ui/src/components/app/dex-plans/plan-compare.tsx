@@ -1,9 +1,9 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { Tariff } from 'dex-helpers/types';
-import { Icon } from 'dex-ui';
 import { useTranslation } from 'react-i18next';
 
 import CompareTypes from './compare-types';
+import { Icon } from '../../ui';
 
 function PlanContent({
   plan,
@@ -24,7 +24,7 @@ function PlanContent({
     case CompareTypes.check:
       return (
         <Icon
-          color={plan[keyToCompare] ? 'success.main' : null}
+          color={plan[keyToCompare] ? 'success.main' : 'text.secondary'}
           name={plan[keyToCompare] ? 'check' : 'close'}
         />
       );

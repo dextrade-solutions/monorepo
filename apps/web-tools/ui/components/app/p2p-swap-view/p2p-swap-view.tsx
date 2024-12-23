@@ -1,8 +1,8 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { NetworkTypes } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { ButtonIcon, useGlobalModalContext } from 'dex-ui';
+import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,8 +26,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
-import './index.scss';
 import { SwapFees } from './swap-fees';
+import './index.scss';
 
 interface IProps {
   ad: AdItem;
@@ -264,6 +264,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Box>
         <Box mt={2}>
           <SwapFees
+            superFee={assetFrom.standard === NetworkTypes.trc20}
             inbound={{
               amount: incomingFee,
               asset: assetTo,
@@ -288,7 +289,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             backgroundImage:
               loadingStartExchange || disabledBtn
                 ? undefined
-                : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
+                : bgPrimaryGradient,
           }}
           disabled={loadingStartExchange || disabledBtn}
           variant="contained"
