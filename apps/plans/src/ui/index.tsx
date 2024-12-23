@@ -1,9 +1,4 @@
-import {
-  Box,
-  Container,
-  ThemeProvider,
-  CssBaseline,
-} from '@mui/material';
+import { Box, Container, ThemeProvider, CssBaseline } from '@mui/material';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useLocalStorage } from '@uidotdev/usehooks';
