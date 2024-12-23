@@ -127,7 +127,7 @@ const TradeHistoryRowModal = ({
           <Typography textAlign="left" className="flex-grow nowrap">
             Provider
           </Typography>
-          <CopyData className="flex-shrink" data={trade?.exchangerName || ''} />
+          <CopyData width="100%" className="flex-shrink" data={trade?.exchangerName || ''} />
         </Box>
         <Box display="flex" textAlign="right" alignItems="center">
           <Typography textAlign="left" className="flex-grow nowrap">
