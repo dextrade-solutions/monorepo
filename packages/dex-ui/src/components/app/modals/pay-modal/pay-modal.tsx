@@ -20,7 +20,7 @@ import {
   NetworkTypes,
 } from 'dex-helpers';
 import { Tariff } from 'dex-helpers/types';
-import { paymentService } from 'dex-services';
+import { exchangerService, paymentService } from 'dex-services';
 import qs from 'qs';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -87,10 +87,17 @@ const PayModal = ({
     queryKey: ['dexpay-assets'],
     queryFn: async () => {
       // TODO: reserve in response does not exist
-      // return exchangerService.reserveList().then((response) => response.data);
-      return paymodalHandlers
-        .updateServerBalances()
-        .then((response: any) => response.data);
+      if (paymodalHandlers?.updateServerBalances) {
+        return paymodalHandlers
+          .updateServerBalances()
+          .then((response: any) => response.data);
+      }
+
+      return exchangerService
+        .reserveList()
+        .then((response) =>
+          response.data.map((i) => ({ ...i, reservedAmount: i.reserveInCoin2 })),
+        );
     },
   });
   const { data: payments = [] } = useQuery({

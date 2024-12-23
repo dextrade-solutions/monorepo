@@ -33,7 +33,7 @@ export function TariffLimit() {
       </Alert>,
     );
   }
-  if (data.includeKyc) {
+  if (data?.includeKyc) {
     buyedList.push(<Alert>KYC: {t('Included')}</Alert>);
   } else {
     buyedList.push(

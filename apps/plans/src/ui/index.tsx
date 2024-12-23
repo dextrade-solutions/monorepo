@@ -22,17 +22,14 @@ import { AuthData } from '../app/types/auth';
 
 log.setLevel(log.levels.DEBUG);
 
-// const persister = createSyncStoragePersister({
-//   storage: window.localStorage,
-// });
-
 export function UI() {
   const [auth] = useLocalStorage<AuthData | null>('auth');
   const { muiTheme } = useDexUI({ theme: auth?.theme });
 
   ServiceBridge.instance.init({
     customFetch: (fetchUrl, config) => {
-      const url = `${auth.apiversion}${new URL(fetchUrl).pathname}`;
+      const urlInstance = new URL(fetchUrl);
+      const url = `${auth.apiversion}${urlInstance.pathname}${urlInstance.search}`;
       const isPublicUrl = String(url).includes('public/');
       if (!isPublicUrl) {
         if (!auth) {

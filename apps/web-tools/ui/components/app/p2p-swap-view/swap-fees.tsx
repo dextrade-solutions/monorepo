@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import classNames from 'classnames';
-import { formatCurrency, formatFundsAmount, NetworkNames } from 'dex-helpers';
+import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { bgPrimaryGradient, Icon, useGlobalModalContext } from 'dex-ui';
 import React, { useState } from 'react';
