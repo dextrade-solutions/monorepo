@@ -35,7 +35,9 @@ const LoginModal = ({ hideModal }: ModalProps) => {
     async (item: (typeof wallets)[number]) => {
       setLoadingWallet(item);
       try {
-        await item.disconnect();
+        if (item.name === 'Wallet Connect') {
+          await item.disconnect();
+        }
         dispatch(clearAuthState());
         await login({
           walletId: item.id,

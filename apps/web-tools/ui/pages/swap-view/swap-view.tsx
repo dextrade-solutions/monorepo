@@ -10,15 +10,14 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { AdItem } from 'dex-helpers/types';
 import { Icon } from 'dex-ui';
+import { sumBy } from 'lodash';
 import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
 import P2PSwapView from '../../components/app/p2p-swap-view';
-import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { sumBy } from 'lodash';
 
 export default function AdView() {
   const t = useI18nContext();
@@ -133,7 +132,7 @@ export default function AdView() {
               startIcon={<Icon name="arrow-left-dex" />}
               color="secondary"
               variant="contained"
-              onClick={() => navigate(HOME_ROUTE)}
+              onClick={() => navigate(-1)}
             >
               {t('back')}
             </Button>
