@@ -74,7 +74,7 @@ export default function P2PAds() {
     }),
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
-  const { isFetchingNextPage, isFetching, isLoading, fetchNextPage, data } =
+  const { isFetching, isLoading, fetchNextPage, data, hasNextPage } =
     useInfiniteQuery<AdItem[]>({
       queryKey: ['p2pAds', filterModel],
       queryFn: ({ pageParam }) =>
@@ -100,9 +100,9 @@ export default function P2PAds() {
       })}`,
     });
   };
+  const renderList = flatMap(data?.pages || []);
 
-  const isEmptyResult =
-    data && !isLoading && !isFetching && !flatMap(data?.pages || []).length;
+  const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
 
   return (
     <Box className="p2p-ads">
@@ -169,49 +169,36 @@ export default function P2PAds() {
           </Alert>
         )}
         <TransitionGroup>
-          {(data?.pages || []).map((group, idx) => (
-            <Fade key={idx}>
-              <Box>
-                {group.map((i) => (
-                  <Box
-                    data-testid={i.id}
-                    marginTop={1}
-                    marginBottom={1}
-                    key={i.id}
-                  >
-                    <AdPreview
-                      ad={i}
-                      fromTokenAmount={fromTokenInputValue}
-                      onClick={() => handleAdPreviewClick(i)}
-                    />
-                  </Box>
-                ))}
+          {renderList.map((i) => (
+            <Fade key={i.id}>
+              <Box data-testid={i.id} marginTop={1} marginBottom={1}>
+                <AdPreview
+                  ad={i}
+                  fromTokenAmount={fromTokenInputValue}
+                  onClick={() => handleAdPreviewClick(i)}
+                />
               </Box>
             </Fade>
           ))}
-          <Fade>
-            <div>
-              <InView
-                as="div"
-                onChange={(inView) => {
-                  if (inView && !isLoading && !isFetchingNextPage) {
-                    fetchNextPage();
-                  }
-                }}
-              >
-                {isLoading || isFetchingNextPage ? (
-                  [...Array(3)].map((_, idx) => (
-                    <Box key={idx} marginTop={1} marginBottom={1}>
-                      <AdPreviewSkeleton />
-                    </Box>
-                  ))
-                ) : (
-                  <Box padding={4}></Box>
-                )}
-              </InView>
-            </div>
-          </Fade>
         </TransitionGroup>
+
+        <InView
+          onChange={(inView) => {
+            if (inView && !isLoading && hasNextPage) {
+              fetchNextPage();
+            }
+          }}
+        >
+          {isLoading || hasNextPage ? (
+            [...Array(3)].map((_, idx) => (
+              <Box key={idx} marginTop={1} marginBottom={1}>
+                <AdPreviewSkeleton />
+              </Box>
+            ))
+          ) : (
+            <Box padding={4}></Box>
+          )}
+        </InView>
       </Box>
     </Box>
   );

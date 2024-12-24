@@ -1,7 +1,7 @@
 import { Kyc } from 'dex-ui';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { NoMatchPage } from './404';
 import Home from './home';
@@ -31,6 +31,12 @@ export default function RoutesRoot() {
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  // Automatically scrolls to top whenever pathname changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   useEffect(() => {
     const { keyringController } = engine;

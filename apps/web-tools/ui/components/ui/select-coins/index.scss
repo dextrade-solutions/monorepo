@@ -102,8 +102,7 @@
           pointer-events: auto;
           width: calc(100% + 32px);
           height: auto;
-          //min-height: 400px;
-          max-height: calc((100vh - 90px) / 2);
+          max-height: 400px;
           opacity: 1;
           transition: all .18s ease, min-height .12s ease .18s, max-height .12s ease .18s;
         }
