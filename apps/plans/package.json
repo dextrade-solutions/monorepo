@@ -29,7 +29,6 @@
     "classnames": "^2.5.1",
     "currency-formatter": "^1.5.9",
     "date-fns": "^3.6.0",
-    "dex-helpers": "workspace:^",
     "dex-services": "workspace:^",
     "dex-ui": "workspace:^",
     "i18next": "^23.15.1",
