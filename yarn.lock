@@ -37965,7 +37965,6 @@ __metadata:
     classnames: "npm:^2.5.1"
     currency-formatter: "npm:^1.5.9"
     date-fns: "npm:^3.6.0"
-    dex-helpers: "workspace:^"
     dex-services: "workspace:^"
     dex-ui: "workspace:^"
     globals: "npm:^15.9.0"
