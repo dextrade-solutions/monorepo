@@ -45,6 +45,7 @@ export function PlanCompare({
   const { t } = useTranslation();
   return (
     <Card
+      variant="outlined"
       sx={{ border: 1, borderColor: 'text.secondary', bgcolor: 'transparent' }}
     >
       <CardContent>

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -7,6 +8,7 @@ import {
 } from '@mui/material';
 import { Tariff } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
+
 import { PaymodalHandlers, useGlobalModalContext } from '../modals';
 
 export function PlanItem({
@@ -85,6 +87,9 @@ export function PlanItem({
                 </Typography>
               </Box>
             )}
+            {/* <Button sx={{ mt: 2 }} variant="contained" fullWidth size="large">
+              {value.price > 0 ? t('Buy now') : t('Get it now')}
+            </Button> */}
           </CardContent>
         </Box>
       </CardActionArea>
