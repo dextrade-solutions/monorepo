@@ -54,6 +54,12 @@ class TronlinkExtensionProvider implements ConnectionProvider {
     });
     return tx.txID;
   }
+
+  signMessage(message: string) {
+    const tronweb = this.provider.tronWeb;
+    const messageHex = tronweb.toHex(message);
+    return tronweb.trx.sign(messageHex);
+  }
 }
 
 const tronlinkProvider = new TronlinkExtensionProvider();

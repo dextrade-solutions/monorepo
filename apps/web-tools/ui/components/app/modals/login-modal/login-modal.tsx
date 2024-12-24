@@ -23,7 +23,10 @@ const LoginModal = ({ hideModal }: ModalProps) => {
   const [loadingWallet, setLoadingWallet] = useState();
   const dispatch = useDispatch();
   const wallets = useWallets({
-    connectionType: [WalletConnectionType.eip6963],
+    connectionType: [
+      WalletConnectionType.eip6963,
+      WalletConnectionType.tronlink,
+    ],
   });
   const { login } = useAuthP2P();
 
@@ -85,7 +88,7 @@ const LoginModal = ({ hideModal }: ModalProps) => {
           </Box>
         ) : (
           <MenuList>
-            {wallets.map((item, idx) => (
+            {renderList.map((item, idx) => (
               <Box data-testid={item.id} key={idx} marginTop={1}>
                 <ListItemButton
                   sx={{

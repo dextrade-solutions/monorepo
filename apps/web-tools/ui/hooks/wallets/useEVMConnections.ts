@@ -1,6 +1,6 @@
 import { AssetModel } from 'dex-helpers/types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useConnectors, useSendTransaction, useSwitchChain } from 'wagmi';
+import { useConnectors, useSendTransaction, useSignMessage, useSwitchChain } from 'wagmi';
 
 import { generateTxParams } from '../../../app/helpers/transactions';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 import { getWalletIcon } from '../../helpers/utils/util';
+import { signMessage } from 'tronweb/utils';
 
 export default function useEVMConnections() {
   const connectors = useConnectors();
@@ -17,6 +18,7 @@ export default function useEVMConnections() {
   const connectedWallets = useSelector(getWalletConnections);
   const { sendTransactionAsync } = useSendTransaction();
   const { switchChainAsync } = useSwitchChain();
+  const { signMessageAsync } = useSignMessage();
 
   const getIdWallet = (name: string) => {
     return `${name}:${WalletConnectionType.eip6963}`;
@@ -106,6 +108,9 @@ export default function useEVMConnections() {
         };
 
         return approveTx();
+      },
+      signMessage(message: string) {
+        return signMessageAsync({ connector: item, message });
       },
     };
   });

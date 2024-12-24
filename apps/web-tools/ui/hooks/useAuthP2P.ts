@@ -28,7 +28,10 @@ export function useAuthP2P() {
   const authWallet = useAuthWallet();
   const { signMessage } = useSignMessage();
   const wallets = useWallets({
-    connectionType: [WalletConnectionType.eip6963],
+    connectionType: [
+      WalletConnectionType.eip6963,
+      WalletConnectionType.tronlink,
+    ],
   });
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
@@ -66,7 +69,7 @@ export function useAuthP2P() {
         return onSuccess && onSuccess();
       };
 
-      const processSign = () => {
+      const processSign = async () => {
         if (loginWallet.name === 'Keypair Wallet') {
           // const sign = engine.keyringController.signDER(
           //   engine.keyringController.publicKey,
@@ -78,30 +81,22 @@ export function useAuthP2P() {
           );
           return onSignedMessage(result.signature);
         }
+        debugger;
 
-        // try to sign via EVM wallet
-        return new Promise((resolve, reject) => {
-          if (inProgress) {
-            return null;
-          }
-          dispatch(setStatus(AuthStatus.signing));
-          const connector = connectors.find((i) => i.name === loginWallet.name);
-          signMessage(
-            {
-              connector,
-              message: engine.keyringController.publicKey,
-            },
-            {
-              onSuccess: (result: string) => {
-                resolve(onSignedMessage(result));
-              },
-              onError: (e) => {
-                dispatch(setStatus(AuthStatus.failed));
-                reject(e);
-              },
-            },
+        if (inProgress) {
+          return null;
+        }
+        dispatch(setStatus(AuthStatus.signing));
+        // const connector = connectors.find((i) => i.name === loginWallet.name);
+        try {
+          const result = await loginWallet.signMessage(
+            engine.keyringController.publicKey,
           );
-        });
+          return onSignedMessage(result);
+        } catch (e) {
+          dispatch(setStatus(AuthStatus.failed));
+          throw e;
+        }
       };
 
       if (apikey && authStatus !== AuthStatus.failed) {
