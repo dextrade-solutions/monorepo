@@ -9,13 +9,13 @@ import {
   sepolia,
   xdc as defaultXdc,
 } from 'wagmi/chains';
-import { coinbaseWallet, walletConnect, injected } from 'wagmi/connectors';
+import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
 
 // // 2. Create wagmiConfig
-const metadata = {
+export const metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Example',
   url: 'https://web3modal.com', // origin must match your domain & subdomain
@@ -38,23 +38,25 @@ const xdc = {
 
 const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
 
-const WC_PARAMS = {
+export const WC_PARAMS = {
   projectId,
   qrModalOptions: {
     themeVariables: {
       '--wcm-font-family': '"Open-sans", sans-serif',
-      '--wcm-z-index': '10000',
+      '--wcm-z-index': '1000',
     },
   },
 };
+
+export const walletConnectInstance = walletConnect({
+  ...WC_PARAMS,
+});
 
 export const config = createConfig({
   chains,
   metadata,
   connectors: [
-    walletConnect({
-      ...WC_PARAMS,
-    }),
+    walletConnectInstance,
     coinbaseWallet({
       appName: 'Dextrade',
       // CB SDK doesn't pass the parent origin context to their passkey site

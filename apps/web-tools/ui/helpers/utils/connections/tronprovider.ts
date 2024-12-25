@@ -1,20 +1,24 @@
-import { TronLinkAdapter } from '@tronweb3/tronwallet-adapters';
 import { broadcastService } from 'dex-services';
 
 import { ConnectionProvider, TxParams } from './interface';
 import buildTx from '../../../../app/helpers/tron/build-tx';
-import { tronWeb } from '../../../../app/helpers/tron/tronweb';
 import { WalletConnectionType } from '../../constants/wallets';
 
-class TronlinkExtensionProvider implements ConnectionProvider {
-  provider: TronLinkAdapter;
+export default class TronProvider implements ConnectionProvider {
+  provider: any;
 
   type = WalletConnectionType.tronlink;
 
-  name = 'TronLink';
+  constructor(provider: any) {
+    this.provider = provider;
+  }
 
-  constructor() {
-    this.provider = new TronLinkAdapter();
+  get icon() {
+    return this.provider.icon;
+  }
+
+  get name() {
+    return this.provider.name;
   }
 
   get isConnected() {
@@ -62,7 +66,3 @@ class TronlinkExtensionProvider implements ConnectionProvider {
     return this.provider.signMessage(message);
   }
 }
-
-const tronlinkProvider = new TronlinkExtensionProvider();
-
-export default tronlinkProvider;

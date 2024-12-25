@@ -43,7 +43,7 @@ export const ItemPicker = ({
           onChange={(v) => {
             onSelect(v.target.value);
             hideModal();
-            onClose();
+            onClose && onClose();
           }}
         >
           {renderOptions.map((item, idx) => (

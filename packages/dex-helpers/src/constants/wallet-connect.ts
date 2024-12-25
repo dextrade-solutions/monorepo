@@ -6,7 +6,7 @@ export enum WalletConnectionType {
   ledgerBtc = 'ledger-btc',
   sats = 'sats-connect', // only for btc wallet extensions
   multiversxExtension = 'multiversx-extension',
-  tronlink = 'tronlink',
+  tronlink = 'tron',
   manual = 'manual', // just pasted address from clipboard
   keypair = 'keypair', // local generated private key
 }

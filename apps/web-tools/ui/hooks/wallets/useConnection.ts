@@ -19,7 +19,7 @@ export default function useConnection(instance) {
 
   return {
     connectionType: instance.type,
-    icon: getWalletIcon(instance.name),
+    icon: instance.icon || getWalletIcon(instance.name),
     name: instance.name,
     get id() {
       return `${this.name}:${this.connectionType}`;

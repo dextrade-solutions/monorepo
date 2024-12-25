@@ -26,6 +26,9 @@ export function useDexUI({
         shape: {
           borderRadius: 17,
         },
+        zIndex: {
+          modal: 999,
+        },
         components: {
           MuiCard: {
             styleOverrides: {

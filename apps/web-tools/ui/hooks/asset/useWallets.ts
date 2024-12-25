@@ -13,11 +13,11 @@ import { WalletConnectionType } from '../../helpers/constants/wallets';
 import keypairWalletConnection from '../../helpers/utils/connections/keypair';
 import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
 import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
-import tronlinkProvider from '../../helpers/utils/connections/tronlink';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
 import useEVMConnections from '../wallets/useEVMConnections';
+import useTronConnection from '../wallets/useTronConnections';
 
 export type WalletItem = {
   icon?: string;
@@ -35,11 +35,11 @@ export function useWallets({
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
-  const tronlinkConnection = useConnection(tronlinkProvider);
 
   const connectedWallets = useSelector(getWalletConnections);
 
   const eip6963wallets = useEVMConnections();
+  const tronWallets = useTronConnection();
 
   const satsWallets = [
     {
@@ -108,19 +108,6 @@ export function useWallets({
   }));
   const ledger = [
     {
-      connectionType: WalletConnectionType.ledgerTron,
-      icon: ledgerConnection.icon,
-      name: ledgerConnection.name,
-      get id() {
-        return `${this.name}:${this.connectionType}`;
-      },
-      get connected() {
-        return connectedWallets[this.id];
-      },
-      connect: () => ledgerConnection.connect(NetworkNames.tron),
-      disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
-    },
-    {
       connectionType: WalletConnectionType.ledgerSol,
       icon: ledgerConnection.icon,
       name: ledgerConnection.name,
@@ -139,9 +126,9 @@ export function useWallets({
     ...solanaWallets,
     ...satsWallets,
     ...ledger,
+    ...tronWallets,
     multiversxConnection,
     keypairConnection,
-    tronlinkConnection,
   ];
   if (connectionType) {
     return result.filter((w) => connectionType.includes(w.connectionType));
