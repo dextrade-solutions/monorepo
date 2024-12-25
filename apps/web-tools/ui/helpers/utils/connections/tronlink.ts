@@ -1,41 +1,44 @@
+import { TronLinkAdapter } from '@tronweb3/tronwallet-adapters';
 import { broadcastService } from 'dex-services';
 
 import { ConnectionProvider, TxParams } from './interface';
 import buildTx from '../../../../app/helpers/tron/build-tx';
+import { tronWeb } from '../../../../app/helpers/tron/tronweb';
 import { WalletConnectionType } from '../../constants/wallets';
 
 class TronlinkExtensionProvider implements ConnectionProvider {
-  provider;
+  provider: TronLinkAdapter;
 
   type = WalletConnectionType.tronlink;
 
   name = 'TronLink';
 
   constructor() {
-    this.provider = window.tronLink;
+    this.provider = new TronLinkAdapter();
   }
 
   get isConnected() {
-    return Boolean(this.provider?.tronWeb?.defaultAddress?.base58);
+    return this.provider.connected;
+  }
+
+  async getCurrentAddress() {
+    return this.provider.address;
   }
 
   async connect() {
-    await this.provider.request({
-      method: 'tron_requestAccounts',
-      params: {
-        websiteIcon: 'https://p2p.dextrade.com/images/desktop-logo.png',
-        websiteName: 'https://p2p.dextrade.com',
-      },
-    });
-    return this.provider.tronWeb.defaultAddress.base58;
+    await this.provider.connect();
+    if (!this.provider.address) {
+      throw new Error('Connection error: No address');
+    }
+    return this.provider.address;
   }
 
-  disconnect(): Promise<void> {}
+  disconnect(): Promise<void> {
+    return this.provider.disconnect();
+  }
 
   async txSend(params: TxParams) {
-    await this.connect();
-    const tronweb = this.provider.tronWeb;
-    const fromAddress = tronweb.defaultAddress.base58;
+    const fromAddress = await this.connect();
     const toAddress = params.recipient;
 
     // Step1
@@ -44,9 +47,9 @@ class TronlinkExtensionProvider implements ConnectionProvider {
       toAddress,
       params.value,
       params.contractAddress,
-      tronweb,
     );
-    const signedTx = await tronweb.trx.sign(tx); // Step2
+    // const signedTx = await tronweb.trx.sign(tx); // Step2
+    const signedTx = await this.provider.signTransaction(tx);
     // const result = await tronweb.trx.sendRawTransaction(signedTx); // Step3
     await broadcastService.broadcastTrx({
       tx: JSON.stringify(signedTx),
@@ -56,9 +59,8 @@ class TronlinkExtensionProvider implements ConnectionProvider {
   }
 
   signMessage(message: string) {
-    const tronweb = this.provider.tronWeb;
-    const messageHex = tronweb.toHex(message);
-    return tronweb.trx.sign(messageHex);
+    const messageHex = tronWeb.toHex(message);
+    return this.provider.signMessage(messageHex);
   }
 }
 

@@ -81,7 +81,6 @@ export function useAuthP2P() {
           );
           return onSignedMessage(result.signature);
         }
-        debugger;
 
         if (inProgress) {
           return null;

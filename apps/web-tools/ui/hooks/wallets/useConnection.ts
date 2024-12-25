@@ -44,6 +44,8 @@ export default function useConnection(instance) {
       await instance.disconnect();
       dispatch(removeWalletConnection(this.connected));
     },
+    getCurrentAddress: instance.getCurrentAddress.bind(instance),
+    signMessage: instance.signMessage.bind(instance),
     async txSend({
       asset,
       amount,
@@ -53,17 +55,17 @@ export default function useConnection(instance) {
       asset: AssetModel;
       recipient: string;
       amount: number;
-      txSentHandlers: {
+      txSentHandlers?: {
         onSuccess: (txHash: string) => void;
         onError: (e: unknown) => void;
       };
     }) {
-      const key = getAssetKey(asset);
-      const assetAccount = assetAccounts[key];
+      // const key = getAssetKey(asset);
+      // const assetAccount = assetAccounts[key];
       const value = parseUnits(String(amount), asset.decimals);
-      if (!assetAccount) {
-        throw new Error('txSend - No address provided');
-      }
+      // if (!assetAccount) {
+      //   throw new Error('txSend - No address provided');
+      // }
 
       if (!instance.isConnected) {
         await instance.connect();
@@ -72,12 +74,12 @@ export default function useConnection(instance) {
       return instance
         .txSend({
           contractAddress: asset.contract,
-          sender: assetAccount.address,
+          // sender: assetAccount.address,
           recipient,
           value,
         })
-        .then(txSentHandlers.onSuccess)
-        .catch(txSentHandlers.onError);
+        .then(txSentHandlers?.onSuccess)
+        .catch(txSentHandlers?.onError);
     },
   };
 }

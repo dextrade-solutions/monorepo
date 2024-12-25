@@ -3,3 +3,4 @@ export * from './labels';
 export * from './dextrade';
 export * from './validators';
 export * from './time';
+export * from './wallet-connect';

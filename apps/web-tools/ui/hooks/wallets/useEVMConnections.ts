@@ -33,6 +33,10 @@ export default function useEVMConnections() {
       get connected() {
         return connectedWallets[getIdWallet(item.name)];
       },
+      async getCurrentAddress() {
+        const [address] = await item.getAccounts();
+        return address;
+      },
       async connect() {
         const result = await item.connect();
         const [address] = result.accounts;

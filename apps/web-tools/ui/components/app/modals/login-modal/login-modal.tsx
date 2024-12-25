@@ -18,7 +18,10 @@ import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-const LoginModal = ({ hideModal }: ModalProps) => {
+const LoginModal = ({
+  hideModal,
+  onSuccess,
+}: { onSuccess: () => void } & ModalProps) => {
   const t = useI18nContext();
   const [loadingWallet, setLoadingWallet] = useState();
   const dispatch = useDispatch();
@@ -42,12 +45,13 @@ const LoginModal = ({ hideModal }: ModalProps) => {
           walletId: item.id,
         });
         hideModal();
+        onSuccess && onSuccess();
       } catch (e) {
         console.error(e);
         setLoadingWallet(null);
       }
     },
-    [hideModal, login, dispatch],
+    [hideModal, login, dispatch, onSuccess],
   );
   const renderList = loadingWallet
     ? wallets.filter((i) => i.name === loadingWallet.name)

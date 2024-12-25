@@ -40,6 +40,7 @@
     "@tanstack/query-sync-storage-persister": "^5.40.0",
     "@tanstack/react-query": "5.62.8",
     "@tanstack/react-query-persist-client": "^5.40.1",
+    "@tronweb3/tronwallet-adapters": "^1.2.6",
     "add": "^2.0.6",
     "axios": "^1.6.8",
     "bignumber.js": "^9.1.2",

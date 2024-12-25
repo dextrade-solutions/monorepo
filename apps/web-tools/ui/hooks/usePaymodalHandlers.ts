@@ -1,4 +1,4 @@
-import { getBalance, multicall } from '@wagmi/core';
+import { getBalance as wagmiGetBalance, multicall } from '@wagmi/core';
 import { getAssetKey, NetworkNames } from 'dex-helpers';
 import assetList from 'dex-helpers/assets-list';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
@@ -6,24 +6,39 @@ import { exchangerService } from 'dex-services';
 import { flatMap, groupBy } from 'lodash';
 import { useMemo } from 'react';
 import { erc20Abi, formatUnits } from 'viem';
-import { useConfig } from 'wagmi';
 
 import { useAuthWallet } from './useAuthWallet';
 import { parseCoinByTickerAndNetwork } from '../../app/helpers/p2p';
+import getBalance from '../../app/helpers/tron/get-balance';
+import { config } from '../../app/helpers/web3-client-configuration';
+import {
+  NETOWORK_BY_CONNECTION_TYPE,
+  PAYMENT_ASSETS,
+} from '../helpers/constants/wallets';
+
+const getAssetBalance = async (asset: AssetModel, address: string) => {
+  switch (asset.network) {
+    case NetworkNames.tron:
+      return getBalance({ address, contract: asset.contract });
+    case NetworkNames.ethereum:
+    case NetworkNames.binance: {
+      const result = await wagmiGetBalance(config, {
+        chainId: asset.chainId,
+        address: address as `0x${string}`,
+      });
+      return result.value;
+    }
+    default:
+      throw new Error('No supported asset network found');
+  }
+};
 
 export default function usePaymodalHandlers() {
   const { wallet } = useAuthWallet();
-  const authWalletAddress = wallet?.connected.address;
-  const config = useConfig();
 
-  const suppportedNetworks = [NetworkNames.binance, NetworkNames.ethereum];
-  const tokens = useMemo(() => {
-    return assetList.filter(
-      (coin) =>
-        (coin.isNative && suppportedNetworks.includes(coin.network)) ||
-        (coin.symbol === 'USDT' && coin.chainId),
-    );
-  }, []);
+  const tokens = PAYMENT_ASSETS.filter((asset) =>
+    NETOWORK_BY_CONNECTION_TYPE[asset.network].includes(wallet?.connectionType),
+  );
 
   async function fetchBalances(walletAddress: string) {
     const balances: Record<
@@ -44,16 +59,13 @@ export default function usePaymodalHandlers() {
         networkType: token.standard,
       } as CoinModel;
 
-      if (token.isNative) {
+      if (token.isNative || !token.chainId) {
         // Fetch Native Token Balance
         nativePromises.push(
-          getBalance(config, {
-            chainId: token.chainId,
-            address: walletAddress as `0x${string}`,
-          }).then((balance) => {
+          getAssetBalance(token, walletAddress).then((balance) => {
             balances[getAssetKey(token)] = {
-              value: balance.value,
-              formatted: balance.formatted,
+              value: balance,
+              formatted: formatUnits(balance, token.decimals),
               coin,
               token,
             };
@@ -105,11 +117,11 @@ export default function usePaymodalHandlers() {
 
   return {
     async updateServerBalances() {
-      if (!authWalletAddress) {
-        throw new Error(
-          'handleSyncBalancesWithServer - No authenticated via wallet address',
-        );
+      if (!wallet) {
+        throw new Error('handleSyncBalancesWithServer - No wallet');
       }
+      const authWalletAddress = await wallet.getCurrentAddress();
+
       const result = await fetchBalances(authWalletAddress);
       const data = Object.values(result).map((i) => ({
         coin: i.coin,

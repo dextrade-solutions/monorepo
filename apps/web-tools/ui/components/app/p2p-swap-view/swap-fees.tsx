@@ -12,8 +12,9 @@ import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { bgPrimaryGradient, Icon, useGlobalModalContext } from 'dex-ui';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
+import { useAuthWallet } from '../../../hooks/useAuthWallet';
 import usePaymodalHandlers from '../../../hooks/usePaymodalHandlers';
 
 const TRX_ENERGY_SAVE_FEE = 8; // currently is 8 TRX
@@ -23,9 +24,11 @@ export function SwapFees(fees: {
   inbound: { amount?: number; asset?: AssetModel };
   outbound: { amount?: number; asset?: AssetModel };
 }) {
+  const { isAuthenticated } = useAuthWallet();
   const paymodalHandlers = usePaymodalHandlers();
   const { showModal } = useGlobalModalContext();
   const [expanded, setExpanded] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const usdtOutbound =
     (fees.outbound.amount || 0) * (fees.outbound.asset?.priceInUsdt || 0);
   const usdtInbound =
@@ -35,6 +38,22 @@ export function SwapFees(fees: {
   const reducableFeeOutbound =
     fees.superFee &&
     TRX_ENERGY_SAVE_FEE * (fees.outbound.asset?.priceInUsdt || 0);
+
+  const buyPlan = useCallback(() => {
+    showModal({
+      name: 'BUY_PLAN',
+      planId: 1,
+      paymodalHandlers,
+    });
+  }, [showModal, paymodalHandlers]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      buyPlan();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
+
   return (
     <Card sx={{ bgcolor: 'secondary.dark' }} variant="outlined">
       <CardActionArea onClick={() => setExpanded(!expanded)}>
@@ -66,13 +85,16 @@ export function SwapFees(fees: {
                           sx={{ backgroundImage: bgPrimaryGradient }}
                           icon={<Icon name="info" />}
                           label="Activate"
-                          onClick={() =>
-                            showModal({
-                              name: 'BUY_PLAN',
-                              planId: 1,
-                              paymodalHandlers,
-                            })
-                          }
+                          onClick={() => {
+                            if (isAuthenticated) {
+                              buyPlan();
+                            } else {
+                              showModal({
+                                name: 'LOGIN_MODAL',
+                                onSuccess: () => setLoggedIn(true),
+                              });
+                            }
+                          }}
                         ></Chip>
                       </Box>
                     </Box>

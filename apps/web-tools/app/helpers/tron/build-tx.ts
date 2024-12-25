@@ -1,5 +1,3 @@
-import { MINUTE } from 'dex-helpers';
-
 import { tronWeb } from './tronweb';
 
 export default async function buildTx(
@@ -7,7 +5,7 @@ export default async function buildTx(
   toAddress: string,
   value: string,
   contract?: string,
-  tronwebInstance = tronWeb,
+  // tronwebInstance = tronWeb,
 ) {
   try {
     let unsignedTx;
@@ -29,7 +27,7 @@ export default async function buildTx(
       unsignedTx = transaction;
     } else {
       // Create raw TRX transaction
-      unsignedTx = await tronwebInstance.transactionBuilder.sendTrx(
+      unsignedTx = await tronWeb.transactionBuilder.sendTrx(
         toAddress,
         Number(value),
         fromAddress,
