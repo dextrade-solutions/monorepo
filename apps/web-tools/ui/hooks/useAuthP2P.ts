@@ -24,9 +24,7 @@ export function useAuthP2P() {
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
   const keypairConnection = useConnection(keypairWalletConnection);
-  const connectors = useConnectors();
   const authWallet = useAuthWallet();
-  const { signMessage } = useSignMessage();
   const wallets = useWallets({
     connectionType: [
       WalletConnectionType.eip6963,
@@ -64,8 +62,8 @@ export function useAuthP2P() {
       if (!isConnected) {
         await loginWallet.connect();
       }
-      const onSignedMessage = async (result: string) => {
-        await dispatch(login(keyring, result, loginWallet.name));
+      const onSignedMessage = async (sign: string) => {
+        await dispatch(login(keyring, sign, loginWallet.id));
         return onSuccess && onSuccess();
       };
 

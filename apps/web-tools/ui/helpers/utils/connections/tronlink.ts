@@ -59,8 +59,7 @@ class TronlinkExtensionProvider implements ConnectionProvider {
   }
 
   signMessage(message: string) {
-    const messageHex = tronWeb.toHex(message);
-    return this.provider.signMessage(messageHex);
+    return this.provider.signMessage(message);
   }
 }
 

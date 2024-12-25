@@ -1,10 +1,8 @@
-import { getAssetKey } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
 
 import {
-  getAssetAccounts,
   getWalletConnections,
   removeWalletConnection,
   setWalletConnection,
@@ -14,7 +12,6 @@ import { getWalletIcon } from '../../helpers/utils/util';
 export default function useConnection(instance) {
   const dispatch = useDispatch();
   const connectedWallets = useSelector(getWalletConnections);
-  const assetAccounts = useSelector(getAssetAccounts);
 
   if (!instance) {
     throw new Error('Connection not found');

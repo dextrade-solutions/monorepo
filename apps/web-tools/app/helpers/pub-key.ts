@@ -7,10 +7,8 @@ export const recoverPubKeyFromSignature = (
   signature: string,
   message: string,
 ) => {
-  const messageHash = web3.utils.keccak256(
-    `\x19Ethereum Signed Message:\n${message.length}${message}`,
-  );
-
+  const messageHash = web3.utils.keccak256(message);
+  console.info(message);
   // Extract r, s, v from the signature
   const sig = signature.slice(2);
   const r = Buffer.from(sig.slice(0, 64), 'hex');

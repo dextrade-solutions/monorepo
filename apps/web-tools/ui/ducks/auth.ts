@@ -6,6 +6,7 @@ import { AuthStatus } from '../../app/constants/auth';
 import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
+import { prefixSignMessageByConnectionType } from '../helpers/utils/wallets';
 import { AppDispatch, RootState } from '../store/store';
 
 export const getAuth = (state: RootState) => state.auth.authData;
@@ -71,7 +72,7 @@ export { clearAuthState, setStatus };
 
 export default reducer;
 
-export const login = (keyring: any, signature: string, wallet: string) => {
+export const login = (keyring: any, signature: string, walletId: string) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setStatus(AuthStatus.authenticating));
     const mnemonicString = await keyring
@@ -79,7 +80,11 @@ export const login = (keyring: any, signature: string, wallet: string) => {
       .then((v) => Buffer.from(v.mnemonic).toString());
 
     const publicKey = Buffer.from(keyring.hdWallet.pubKey).toString('hex');
-    const masterPublicKey = recoverPubKeyFromSignature(signature, publicKey);
+    const [, walletConnectionType] = walletId.split(':');
+    const masterPublicKey = recoverPubKeyFromSignature(
+      signature,
+      prefixSignMessageByConnectionType(walletConnectionType, publicKey),
+    );
 
     const mnemonicHash = await generateMnemonicHash(masterPublicKey);
 
@@ -106,7 +111,7 @@ export const login = (keyring: any, signature: string, wallet: string) => {
     );
     dispatch(
       setAuthData({
-        wallet,
+        wallet: walletId,
         ...authData.data,
       }),
     );
