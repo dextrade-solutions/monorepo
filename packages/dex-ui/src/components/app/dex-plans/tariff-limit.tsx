@@ -22,7 +22,7 @@ export function TariffLimit() {
   if (data?.refillGasRequests > 0) {
     buyedList.push(
       <Alert>
-        {t('Left')}: {data.amlRequests} {t('Super fees')}
+        {t('Left')}: {data.refillGasRequests} {t('Super fees')}
       </Alert>,
     );
   }

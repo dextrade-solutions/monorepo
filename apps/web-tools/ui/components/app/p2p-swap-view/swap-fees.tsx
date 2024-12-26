@@ -8,9 +8,11 @@ import {
   Collapse,
   Typography,
 } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
-import { AssetModel } from 'dex-helpers/types';
+import { AssetModel, Tariff } from 'dex-helpers/types';
+import { tariffService } from 'dex-services';
 import { bgPrimaryGradient, Icon, useGlobalModalContext } from 'dex-ui';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -24,13 +26,25 @@ export function SwapFees(fees: {
   inbound: { amount?: number; asset?: AssetModel };
   outbound: { amount?: number; asset?: AssetModel };
 }) {
+
   const { isAuthenticated } = useAuthWallet();
   const paymodalHandlers = usePaymodalHandlers();
   const { showModal } = useGlobalModalContext();
   const [expanded, setExpanded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const { data: tariffLimits } = useQuery<Tariff>({
+    queryKey: ['tariffLimit'],
+    enabled: fees.superFee,
+    queryFn: () => {
+      return tariffService.limit().then((response) => response.data as Tariff);
+    },
+  });
+  const isSuperFeeApplied = tariffLimits && tariffLimits.refillGasRequests > 0;
+
+  let outboundAmount = fees.outbound.amount;
   const usdtOutbound =
-    (fees.outbound.amount || 0) * (fees.outbound.asset?.priceInUsdt || 0);
+    (outboundAmount || 0) * (fees.outbound.asset?.priceInUsdt || 0);
   const usdtInbound =
     (fees.inbound.amount || 0) * (fees.inbound.asset?.priceInUsdt || 0);
   const total = usdtOutbound + usdtInbound;
@@ -38,6 +52,10 @@ export function SwapFees(fees: {
   const reducableFeeOutbound =
     fees.superFee &&
     TRX_ENERGY_SAVE_FEE * (fees.outbound.asset?.priceInUsdt || 0);
+
+  if (isSuperFeeApplied && typeof reducableFeeOutbound === 'number') {
+    outboundAmount = TRX_ENERGY_SAVE_FEE;
+  }
 
   const buyPlan = useCallback(() => {
     showModal({
@@ -61,42 +79,54 @@ export function SwapFees(fees: {
           title={
             <Box display="flex" alignItems="center">
               <Box className="flex-grow">
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Typography>Total fee</Typography>
-                  <Typography fontWeight="bold" marginRight={2}>
-                    {formatCurrency(total, 'usd')}
-                  </Typography>
-                </Box>
+                {!isSuperFeeApplied && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    mb={1}
+                  >
+                    <Typography>Total fee</Typography>
+                    <Typography fontWeight="bold" marginRight={2}>
+                      {formatCurrency(total, 'usd')}
+                    </Typography>
+                  </Box>
+                )}
                 {typeof reducableFeeOutbound === 'number' && (
                   <Box
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    mt={1}
                   >
                     <Box display="flex" alignItems="center">
                       <Typography mr={1}>Super fee</Typography>
-                      <Box display="flex" alignItems="center">
-                        <Chip
-                          sx={{ backgroundImage: bgPrimaryGradient }}
-                          icon={<Icon name="info" />}
-                          label="Activate"
-                          onClick={() => {
-                            if (isAuthenticated) {
-                              buyPlan();
-                            } else {
-                              showModal({
-                                name: 'LOGIN_MODAL',
-                                onSuccess: () => setLoggedIn(true),
-                              });
-                            }
-                          }}
-                        ></Chip>
-                      </Box>
+                      {isSuperFeeApplied && (
+                        <>
+                          <Typography color="success.light" mr={0.5}>
+                            Applied
+                          </Typography>
+                          <Icon color="success.light" name="check" />
+                        </>
+                      )}
+                      {!isSuperFeeApplied && (
+                        <Box display="flex" alignItems="center">
+                          <Chip
+                            sx={{ backgroundImage: bgPrimaryGradient }}
+                            icon={<Icon name="info" />}
+                            label="Activate"
+                            onClick={() => {
+                              if (isAuthenticated) {
+                                buyPlan();
+                              } else {
+                                showModal({
+                                  name: 'LOGIN_MODAL',
+                                  onSuccess: () => setLoggedIn(true),
+                                });
+                              }
+                            }}
+                          ></Chip>
+                        </Box>
+                      )}
                     </Box>
                     <Typography fontWeight="bold" marginRight={2}>
                       {formatCurrency(
@@ -121,7 +151,7 @@ export function SwapFees(fees: {
       </CardActionArea>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {fees.outbound.asset && fees.outbound.amount !== undefined && (
+          {fees.outbound.asset && typeof outboundAmount === 'number' && (
             <Box display="flex" justifyContent="space-between" marginTop={1}>
               <Typography>
                 {fees.outbound.asset.isFiat
@@ -131,14 +161,14 @@ export function SwapFees(fees: {
               <Box display="flex">
                 <Typography>
                   {formatFundsAmount(
-                    fees.outbound.amount,
+                    outboundAmount,
                     fees.outbound.asset.symbol,
                   )}
                 </Typography>
                 {fees.outbound.asset.priceInUsdt && (
                   <Typography color="text.secondary" marginLeft={1}>
                     {formatCurrency(
-                      fees.outbound.amount * fees.outbound.asset.priceInUsdt,
+                      outboundAmount * fees.outbound.asset.priceInUsdt,
                       'usd',
                     )}
                   </Typography>
