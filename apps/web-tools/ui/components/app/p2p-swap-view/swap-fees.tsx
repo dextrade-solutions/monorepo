@@ -26,7 +26,6 @@ export function SwapFees(fees: {
   inbound: { amount?: number; asset?: AssetModel };
   outbound: { amount?: number; asset?: AssetModel };
 }) {
-
   const { isAuthenticated } = useAuthWallet();
   const paymodalHandlers = usePaymodalHandlers();
   const { showModal } = useGlobalModalContext();
@@ -60,7 +59,7 @@ export function SwapFees(fees: {
   const buyPlan = useCallback(() => {
     showModal({
       name: 'BUY_PLAN',
-      planId: 1,
+      planName: 'tron energy',
       paymodalHandlers,
     });
   }, [showModal, paymodalHandlers]);

@@ -8,14 +8,16 @@ import { PlanItem } from '../dex-plans/plan-item';
 import { PlanItemSkeleton } from '../dex-plans/plan-item-skeleton';
 
 export default function BuyPlan({
-  planId,
+  planName,
   paymodalHandlers,
-}: { planId: number; paymodalHandlers: PaymodalHandlers } & ModalProps) {
+}: { planName: string; paymodalHandlers: PaymodalHandlers } & ModalProps) {
   const { data: plan, isLoading } = useQuery<Tariff[]>({
-    queryKey: ['plans', planId],
+    queryKey: ['plans', planName],
     queryFn: () => {
       return tariffService.listAll().then((response) => {
-        return response.data.find((p) => p.id === planId);
+        return response.data.find((p) =>
+          p.name.toLowerCase().includes(planName.toLowerCase()),
+        );
       });
     },
   });
