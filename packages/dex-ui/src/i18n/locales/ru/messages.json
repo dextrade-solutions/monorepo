@@ -21,5 +21,6 @@
   "Personal plans": "Пакеты",
   "Payments not found, please wait blockchain confirmation or contact support": "Платежи не найдены. Если вы отправили средства, дождитесь подтвеждения транзакции в блокчейне или напишите в тех. поддержку",
   "Payments history": "История платежей",
-  "refillGasRequests": "Супер комиссия"
+  "refillGasRequests": "Супер комиссия",
+  "Super fees": "Супер комиссия"
 }

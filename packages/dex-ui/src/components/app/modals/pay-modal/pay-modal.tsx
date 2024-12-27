@@ -51,6 +51,25 @@ type PaymentParams = {
   deeplink: string;
 };
 
+function redirect(url: string) {
+  const ua = navigator.userAgent.toLowerCase();
+  const isIE = ua.indexOf('msie') !== -1;
+  const version = parseInt(ua.substr(4, 2), 10);
+
+  // Internet Explorer 8 and lower
+  if (isIE && version < 9) {
+    const link = document.createElement('a');
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+  }
+
+  // All other browsers can use the standard window.location.href (they don't lose HTTP_REFERER like Internet Explorer 8 & lower does)
+  else {
+    window.location.href = url;
+  }
+}
+
 const PayModal = ({
   plan,
   hideModal,
@@ -64,7 +83,7 @@ const PayModal = ({
   const { t } = useTranslation();
   const [paymentParams, setPaymentParams] = useState<PaymentParams>();
   const [paymentResult, setPaymentResult] = useState<{
-    status: TxStageStatuses;
+    status: TxStageStatuses | null;
     hash?: string;
     error?: string;
   }>();
@@ -93,11 +112,12 @@ const PayModal = ({
           .then((response: any) => response.data);
       }
 
-      return exchangerService
-        .reserveList()
-        .then((response) =>
-          response.data.map((i) => ({ ...i, reservedAmount: i.reserveInCoin2 })),
-        );
+      return exchangerService.reserveList().then((response) =>
+        response.data.map((i) => ({
+          ...i,
+          reservedAmount: i.reserveInCoin2,
+        })),
+      );
     },
   });
   const { data: payments = [] } = useQuery({
@@ -126,33 +146,21 @@ const PayModal = ({
   );
   const paymentsBySelectedAsset = payment?.payments || [];
 
-  function redirectToTransfer(deeplink: string) {
-    // Create a hidden iframe to trigger the deep link
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = deeplink;
-    document.body.appendChild(iframe);
-  }
-
-  const onPay = async (args: PaymentParams) => {
+  const onPay = async (args: PaymentParams, payCallback: () => void) => {
     setPaymentResult({
       status: TxStageStatuses.requested,
     });
-    if (paymodalHandlers?.onChooseAsset) {
-      try {
-        const hash = await paymodalHandlers?.onChooseAsset(args.data);
-        setPaymentResult({
-          status: TxStageStatuses.success,
-          hash,
-        });
-      } catch (e) {
-        setPaymentResult({
-          status: TxStageStatuses.failed,
-          error: e.shortMessage || e.message,
-        });
-      }
-    } else {
-      redirectToTransfer(args.deeplink);
+    try {
+      const hash = await payCallback();
+      setPaymentResult({
+        status: TxStageStatuses.success,
+        hash,
+      });
+    } catch (e) {
+      setPaymentResult({
+        status: TxStageStatuses.failed,
+        error: e.shortMessage || e.message,
+      });
     }
   };
 
@@ -178,10 +186,12 @@ const PayModal = ({
       const payInfo = {
         data: params,
         asset,
-        deeplink: qs.stringify(params),
+        deeplink: `com.dextrade://transfer?${qs.stringify(params)}`,
       };
       setPaymentParams(payInfo);
-      onPay(payInfo);
+      if (paymodalHandlers?.onChooseAsset) {
+        onPay(payInfo, paymodalHandlers?.onChooseAsset);
+      }
     } catch (err: unknown) {
       showModal({
         name: 'ALERT_MODAL',
@@ -229,7 +239,9 @@ const PayModal = ({
           </Typography>
           <Box>
             <TxSendStage
-              onRequest={() => onPay(paymentParams)}
+              onRequest={() =>
+                onPay(paymentParams, () => redirect(paymentParams.deeplink))
+              }
               subtitle={
                 paymentResult?.hash ? (
                   <Box display="flex" alignItems="center">
