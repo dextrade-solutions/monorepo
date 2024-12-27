@@ -83,7 +83,6 @@ export function SwapFees(fees: {
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
-                    mb={1}
                   >
                     <Typography>Total fee</Typography>
                     <Typography fontWeight="bold" marginRight={2}>
