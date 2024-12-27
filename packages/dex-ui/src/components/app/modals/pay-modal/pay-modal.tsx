@@ -147,7 +147,7 @@ const PayModal = ({
   );
   const paymentsBySelectedAsset = payment?.payments || [];
 
-  const onPay = async (payCallback: () => void) => {
+  const onPay = async (payCallback: () => Promise<string>) => {
     setPaymentResult({
       status: TxStageStatuses.requested,
     });
