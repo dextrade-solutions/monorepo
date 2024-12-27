@@ -48,15 +48,15 @@ export const WC_PARAMS = {
   },
 };
 
-export const walletConnectInstance = walletConnect({
-  ...WC_PARAMS,
-});
+// export const walletConnectInstance = walletConnect({
+//   ...WC_PARAMS,
+// });
 
 export const config = createConfig({
   chains,
   metadata,
   connectors: [
-    walletConnectInstance,
+    // walletConnectInstance,
     coinbaseWallet({
       appName: 'Dextrade',
       // CB SDK doesn't pass the parent origin context to their passkey site

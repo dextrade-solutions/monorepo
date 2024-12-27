@@ -18,6 +18,8 @@ import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
 import useEVMConnections from '../wallets/useEVMConnections';
 import useTronConnection from '../wallets/useTronConnections';
+import wcTron from '../../helpers/utils/connections/wc/wc-tron';
+import wcEvm from '../../helpers/utils/connections/wc/wc-evm';
 
 export type WalletItem = {
   icon?: string;
@@ -35,6 +37,8 @@ export function useWallets({
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
+  const wcTronConnection = useConnection(wcTron);
+  const wcEvmConnection = useConnection(wcEvm);
 
   const connectedWallets = useSelector(getWalletConnections);
 
@@ -122,6 +126,8 @@ export function useWallets({
     },
   ];
   const result = [
+    wcTronConnection,
+    wcEvmConnection,
     ...eip6963wallets,
     ...solanaWallets,
     ...satsWallets,
