@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 import AlertModalComponent from './alert-modal';
 import BuyPlan from './buy-plan';
+import ConfirmModal from './confirm-modal';
 import ImageModalComponent from './image-modal';
 import ItemPicker from './item-picker';
 import PayModal from './pay-modal';
@@ -19,6 +20,7 @@ const MODAL_COMPONENTS = {
   SLIPPAGE_MODAL: SlippageModal,
   PAY_MODAL: PayModal,
   BUY_PLAN: BuyPlan,
+  CONFIRM_MODAL: ConfirmModal,
   DEFAULT: null,
 };
 
