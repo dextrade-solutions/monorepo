@@ -94,14 +94,14 @@ const PayModal = ({
     queryFn: () =>
       paymentService.listAllCurrencies().then((response) => response.data),
   });
-  const { data: paymentPrices = {} } = useQuery({
+  const { data: paymentPrices = {}, isLoading: isLoadingPrices } = useQuery({
     queryKey: ['dexpay-paymentPrices'],
     queryFn: () => paymentService.getPrices().then((response) => response.data),
   });
   const {
     data: assets = [],
     isError,
-    isLoading,
+    isLoading: isLoadingReserves,
   } = useQuery<ReservedAsset[]>({
     queryKey: ['dexpay-assets'],
     queryFn: async () => {
@@ -120,6 +120,7 @@ const PayModal = ({
       );
     },
   });
+  const isLoading = isLoadingPrices || isLoadingReserves;
   const { data: payments = [] } = useQuery({
     queryKey: ['dexpay-payments'],
     queryFn: () =>
@@ -298,39 +299,40 @@ const PayModal = ({
         <>
           <Typography>{t('Select asset and pay')}</Typography>
           <List>
-            {filteredAssets.map((asset, idx) => (
-              <Box key={idx} marginTop={1}>
-                <ListItemButton
-                  disabled={paymentAddressLoading}
-                  className="bordered"
-                  onClick={() => choosePaymentAsset(asset)}
-                >
-                  <ListItemAvatar>
-                    <UrlIcon
-                      size={40}
-                      url={getCoinIconByUid(asset.coin.uuid)}
-                    />
-                  </ListItemAvatar>
+            {!isLoading &&
+              filteredAssets.map((asset, idx) => (
+                <Box key={idx} marginTop={1}>
+                  <ListItemButton
+                    disabled={paymentAddressLoading}
+                    className="bordered"
+                    onClick={() => choosePaymentAsset(asset)}
+                  >
+                    <ListItemAvatar>
+                      <UrlIcon
+                        size={40}
+                        url={getCoinIconByUid(asset.coin.uuid)}
+                      />
+                    </ListItemAvatar>
 
-                  <ListItemText
-                    primary={
-                      <>
-                        <Typography as="span">
-                          {formatFundsAmount(
-                            asset.reservedAmount,
-                            asset.coin.ticker,
-                          )}{' '}
-                        </Typography>
-                        <Typography as="span" color="text.secondary">
-                          {asset.coin.networkType}
-                        </Typography>
-                      </>
-                    }
-                    secondary={formatCurrency(asset.balanceInUsdt, 'usd')}
-                  />
-                </ListItemButton>
-              </Box>
-            ))}
+                    <ListItemText
+                      primary={
+                        <>
+                          <Typography as="span">
+                            {formatFundsAmount(
+                              asset.reservedAmount,
+                              asset.coin.ticker,
+                            )}{' '}
+                          </Typography>
+                          <Typography as="span" color="text.secondary">
+                            {asset.coin.networkType}
+                          </Typography>
+                        </>
+                      }
+                      secondary={formatCurrency(asset.balanceInUsdt, 'usd')}
+                    />
+                  </ListItemButton>
+                </Box>
+              ))}
             {isLoading && (
               <Box>
                 <Skeleton sx={{ mt: 1 }} height={60}></Skeleton>
