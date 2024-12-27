@@ -146,7 +146,7 @@ const PayModal = ({
   );
   const paymentsBySelectedAsset = payment?.payments || [];
 
-  const onPay = async (args: PaymentParams, payCallback: () => void) => {
+  const onPay = async (payCallback: () => void) => {
     setPaymentResult({
       status: TxStageStatuses.requested,
     });
@@ -190,7 +190,7 @@ const PayModal = ({
       };
       setPaymentParams(payInfo);
       if (paymodalHandlers?.onChooseAsset) {
-        onPay(payInfo, paymodalHandlers?.onChooseAsset);
+        onPay(() => paymodalHandlers.onChooseAsset(payInfo.data));
       }
     } catch (err: unknown) {
       showModal({
@@ -240,7 +240,11 @@ const PayModal = ({
           <Box>
             <TxSendStage
               onRequest={() =>
-                onPay(paymentParams, () => redirect(paymentParams.deeplink))
+                onPay(
+                  paymodalHandlers?.onChooseAsset
+                    ? () => paymodalHandlers.onChooseAsset(paymentParams.data)
+                    : () => redirect(paymentParams.deeplink),
+                )
               }
               subtitle={
                 paymentResult?.hash ? (
