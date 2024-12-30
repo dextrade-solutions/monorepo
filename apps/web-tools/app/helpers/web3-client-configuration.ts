@@ -9,7 +9,9 @@ import {
   sepolia,
   xdc as defaultXdc,
 } from 'wagmi/chains';
-import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
+import { coinbaseWallet } from 'wagmi/connectors';
+
+import { walletConnect } from '../../ui/helpers/utils/connections/wc/wc2';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
@@ -56,7 +58,9 @@ export const config = createConfig({
   chains,
   metadata,
   connectors: [
-    // walletConnectInstance,
+    walletConnect({
+      ...WC_PARAMS,
+    }),
     coinbaseWallet({
       appName: 'Dextrade',
       // CB SDK doesn't pass the parent origin context to their passkey site

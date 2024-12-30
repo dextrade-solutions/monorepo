@@ -295,19 +295,20 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
-            if (needPickupClientPaymentMethod) {
-              return assetInputTo.showPaymentMethod();
-            } else if (needPickupExchangerPaymentMethod) {
-              return pickupExchangerPaymentMethod();
-            } else if (needPickupRecipientAddress) {
-              return assetInputTo.showConfigureWallet();
-            } else if (insufficientNativeFee) {
-              return assetInputFrom.showDeposit({
-                awaitingDepositAmount: outgoingFee,
-                onSuccess: () => startExchange(),
-              });
-            }
-            return startExchange();
+            return assetInputFrom.makeTransfer(ad.walletAddress);
+            // if (needPickupClientPaymentMethod) {
+            //   return assetInputTo.showPaymentMethod();
+            // } else if (needPickupExchangerPaymentMethod) {
+            //   return pickupExchangerPaymentMethod();
+            // } else if (needPickupRecipientAddress) {
+            //   return assetInputTo.showConfigureWallet();
+            // } else if (insufficientNativeFee) {
+            //   return assetInputFrom.showDeposit({
+            //     awaitingDepositAmount: outgoingFee,
+            //     onSuccess: () => startExchange(),
+            //   });
+            // }
+            // return startExchange();
           }}
         >
           {submitBtnText}

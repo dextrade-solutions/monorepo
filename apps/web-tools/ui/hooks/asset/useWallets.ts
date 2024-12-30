@@ -38,7 +38,7 @@ export function useWallets({
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
   // const wcTronConnection = useConnection(wcTron);
-  const wcEvmConnection = useConnection(wcEvm);
+  // const wcEvmConnection = useConnection(wcEvm);
 
   const connectedWallets = useSelector(getWalletConnections);
 
@@ -127,7 +127,7 @@ export function useWallets({
   ];
   const result = [
     // wcTronConnection,
-    wcEvmConnection,
+    // wcEvmConnection,
     ...eip6963wallets,
     ...solanaWallets,
     ...satsWallets,

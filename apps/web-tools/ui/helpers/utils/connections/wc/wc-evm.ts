@@ -1,11 +1,7 @@
 import { WalletConnectionType } from 'dex-helpers';
-import { AssetModel } from 'dex-helpers/types';
 
 import WcProvider from './wc';
-import {
-  generateEvmTxParams,
-  generateTxParams,
-} from '../../../../../app/helpers/transactions';
+import { generateEvmTxParams } from '../../../../../app/helpers/transactions';
 
 const wcEip155 = new WcProvider({
   type: WalletConnectionType.wcEip155,
@@ -46,17 +42,12 @@ const wcEip155 = new WcProvider({
         to: recipient,
         value,
       });
-
+      debugger;
       await client.request({
-        chainId: 'eip155:1',
         topic: session.topic,
         request: {
           method: 'eth_sendTransaction',
-          params: [
-            {
-              ...txParams,
-            },
-          ],
+          params: [txParams],
         },
       });
     };

@@ -29,8 +29,6 @@ export function useAuthP2P() {
     connectionType: [
       WalletConnectionType.eip6963,
       WalletConnectionType.tronlink,
-      WalletConnectionType.wcEip155,
-      WalletConnectionType.wcTron,
     ],
   });
 

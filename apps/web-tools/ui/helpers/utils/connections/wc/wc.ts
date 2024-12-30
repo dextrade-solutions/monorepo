@@ -11,7 +11,7 @@ import { WC_PARAMS } from '../../../../../app/helpers/web3-client-configuration'
 import { WalletConnectionType } from '../../../constants/wallets';
 
 export default class WcProvider implements ConnectionProvider {
-  client: WalletConnectClient;
+  provider: WalletConnectClient;
 
   session: any;
 
@@ -57,7 +57,7 @@ export default class WcProvider implements ConnectionProvider {
     });
   }
 
-  async initClient() {
+  async getProvider() {
     const { client } = await UniversalProvider.init({
       relayUrl: 'wss://relay.walletconnect.com',
       projectId: WC_PARAMS.projectId,
@@ -69,16 +69,16 @@ export default class WcProvider implements ConnectionProvider {
       },
       client: undefined,
     });
-    this.client = client;
+    this.provider = client;
     return client;
   }
 
   get isConnected() {
-    return this.client;
+    return this.provider;
   }
 
   async getCurrentAddress() {
-    return this.client.address;
+    return this.provider.address;
   }
 
   // async connect() {
@@ -156,7 +156,7 @@ export default class WcProvider implements ConnectionProvider {
   }
 
   async connect() {
-    const client = this.client ?? (await this.initClient());
+    const client = this.provider ?? (await this.getProvider());
 
     const { uri, approval } = await client.connect({
       requiredNamespaces: this.requiredNamespaces,
@@ -177,7 +177,7 @@ export default class WcProvider implements ConnectionProvider {
         .then((session) => {
           this.session = session;
           // We assign this variable only after we're sure we've received approval
-          this.client = client;
+          this.provider = client;
           const accounts = Object.values(this.session.namespaces)
             .map((namespace) => namespace.accounts)
             .flat();
@@ -245,5 +245,67 @@ export default class WcProvider implements ConnectionProvider {
     const session = this.getLastSession();
     const result = await this.txSendRequest(this.client, session, params);
     return result;
+  }
+
+  async getAccounts() {
+    const provider = await this.getProvider();
+    return provider.accounts.map((x) => getAddress(x));
+  }
+
+  // async getProvider({ chainId } = {}) {
+  //   async function initProvider() {
+  //     const optionalChains = config.chains.map((x) => x.id) as [number]
+  //     if (!optionalChains.length) return
+  //     const { EthereumProvider } = await import(
+  //       '@walletconnect/ethereum-provider'
+  //     )
+  //     return await EthereumProvider.init({
+  //       ...parameters,
+  //       disableProviderPing: true,
+  //       optionalChains,
+  //       projectId: parameters.projectId,
+  //       rpcMap: Object.fromEntries(
+  //         config.chains.map((chain) => {
+  //           const [url] = extractRpcUrls({
+  //             chain,
+  //             transports: config.transports,
+  //           })
+  //           return [chain.id, url]
+  //         }),
+  //       ),
+  //     })
+  //   }
+
+  //   if (!provider_) {
+  //     if (!providerPromise) providerPromise = initProvider()
+  //     provider_ = await providerPromise
+  //     provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
+  //   }
+  //   if (chainId) await this.switchChain?.({ chainId })
+  //   return provider_!
+  // }
+
+  async isAuthorized() {
+    try {
+      const [accounts, provider] = await Promise.all([
+        this.getAccounts(),
+        this.getProvider(),
+      ]);
+
+      // If an account does not exist on the session, then the connector is unauthorized.
+      if (!accounts.length) {
+        return false;
+      }
+
+      // If the chains are stale on the session, then the connector is unauthorized.
+      const isChainsStale = await this.isChainsStale();
+      if (isChainsStale && provider.session) {
+        await provider.disconnect().catch(() => {});
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
