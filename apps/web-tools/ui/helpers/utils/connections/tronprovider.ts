@@ -2,6 +2,7 @@ import { broadcastService } from 'dex-services';
 
 import { ConnectionProvider, TxParams } from './interface';
 import buildTx from '../../../../app/helpers/tron/build-tx';
+import { tronWeb } from '../../../../app/helpers/tron/tronweb';
 import { WalletConnectionType } from '../../constants/wallets';
 
 export default class TronProvider implements ConnectionProvider {
@@ -54,11 +55,15 @@ export default class TronProvider implements ConnectionProvider {
     );
     // const signedTx = await tronweb.trx.sign(tx); // Step2
     const signedTx = await this.provider.signTransaction(tx);
-    // const result = await tronweb.trx.sendRawTransaction(signedTx); // Step3
-    await broadcastService.broadcastTrx({
-      tx: JSON.stringify(signedTx),
-      senderAddress: fromAddress,
-    });
+
+    try {
+      await broadcastService.broadcastTrx({
+        tx: JSON.stringify(signedTx),
+        senderAddress: fromAddress,
+      });
+    } catch (err) {
+      await tronWeb.trx.sendRawTransaction(signedTx); // Step3
+    }
     return tx.txID;
   }
 
