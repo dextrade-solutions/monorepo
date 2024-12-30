@@ -1,13 +1,14 @@
 import { WalletConnectionType } from 'dex-helpers';
+
 import WcProvider from './wc';
 
-enum WalletConnectChainID {
+export enum WalletConnectChainID {
   Mainnet = 'tron:0x2b6653dc',
   Shasta = 'tron:0x94a9059e',
   Nile = 'tron:0xcd8690dc',
 }
 export type ChainID = WalletConnectChainID | `tron:${string}`;
-enum WalletConnectMethods {
+export enum WalletConnectMethods {
   signTransaction = 'tron_signTransaction',
   signMessage = 'tron_signMessage',
 }
@@ -29,6 +30,19 @@ const wcTron = new WcProvider({
       ],
       events: [],
     },
+  },
+  async signMsgRequest(client: any, session: any, message: string) {
+    return client.request({
+      chainId: WalletConnectChainID.Mainnet,
+      topic: session.topic,
+      request: {
+        method: WalletConnectMethods.signMessage,
+        params: {
+          // address: this.address,
+          message,
+        },
+      },
+    });
   },
 });
 

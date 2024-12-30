@@ -1,7 +1,11 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import { encodeFunctionData, parseEther, parseUnits } from 'viem';
 
-import { NULLISH_TOKEN_ADDRESS, genKeyPair, generateAtomicSwapParams } from './atomic-swaps';
+import {
+  NULLISH_TOKEN_ADDRESS,
+  genKeyPair,
+  generateAtomicSwapParams,
+} from './atomic-swaps';
 import { generateERC20TransferData } from './send.utils';
 import { AssetModel } from '../types/p2p-swaps';
 
@@ -57,3 +61,20 @@ export function generateTxParams({
     data,
   };
 }
+
+export const generateEvmTxParams = ({ contractAddress, from, to, value }) => {
+  let data;
+  if (contractAddress) {
+    data = generateERC20TransferData({
+      toAddress: to,
+      amount: addHexPrefix(value.toString(16)),
+    });
+    return { from, to, data };
+  }
+  return {
+    from,
+    to,
+    value,
+    data,
+  };
+};

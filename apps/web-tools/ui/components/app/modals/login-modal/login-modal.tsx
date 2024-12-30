@@ -29,6 +29,8 @@ const LoginModal = ({
     connectionType: [
       WalletConnectionType.eip6963,
       WalletConnectionType.tronlink,
+      WalletConnectionType.wcEip155,
+      // WalletConnectionType.wcTron,
     ],
   });
   const { login } = useAuthP2P();
@@ -104,7 +106,10 @@ const LoginModal = ({
                   <ListItemAvatar>
                     <UrlIcon size={40} url={item.icon} />
                   </ListItemAvatar>
-                  <ListItemText primary={item.name} />
+                  <ListItemText
+                    primary={item.name}
+                    secondary={item.connectionType}
+                  />
                 </ListItemButton>
               </Box>
             ))}

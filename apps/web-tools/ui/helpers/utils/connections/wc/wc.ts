@@ -1,15 +1,19 @@
 import { WalletConnectModal } from '@walletconnect/modal';
 import WalletConnectClient from '@walletconnect/sign-client';
 import { UniversalProvider } from '@walletconnect/universal-provider';
+import { address } from 'bitcoinjs-lib';
 import { broadcastService } from 'dex-services';
 
 import { ConnectionProvider, TxParams } from './interface';
 // import buildTx from '../../../../app/helpers/tron/build-tx';
+import { WalletConnectChainID, WalletConnectMethods } from './wc-tron';
 import { WC_PARAMS } from '../../../../../app/helpers/web3-client-configuration';
 import { WalletConnectionType } from '../../../constants/wallets';
 
 export default class WcProvider implements ConnectionProvider {
-  client: any;
+  client: WalletConnectClient;
+
+  session: any;
 
   web3Modal: any;
 
@@ -19,6 +23,10 @@ export default class WcProvider implements ConnectionProvider {
 
   requiredNamespaces;
 
+  signMsgRequest: any;
+
+  txSendRequest: any;
+
   chains;
 
   constructor({
@@ -26,13 +34,19 @@ export default class WcProvider implements ConnectionProvider {
     type,
     explorerRecommendedWalletIds,
     requiredNamespaces,
+    signMsgRequest,
+    txSendRequest,
   }: {
     chains: string[];
     requiredNamespaces: any;
     type: WalletConnectionType;
     explorerRecommendedWalletIds?: string[];
+    signMsgRequest: (...args: any) => string;
+    txSendRequest: (...args: any) => string;
   }) {
     this.type = type;
+    this.signMsgRequest = signMsgRequest;
+    this.txSendRequest = txSendRequest;
     this.requiredNamespaces = requiredNamespaces;
     this.chains = chains;
     this.web3Modal = new WalletConnectModal({
@@ -120,25 +134,29 @@ export default class WcProvider implements ConnectionProvider {
   //   return this.provider.address;
   // }
 
+  getLastSession() {
+    const { client } = this;
+    const sessions = client
+      .find({ requiredNamespaces: this.requiredNamespaces })
+      .filter((s) => s.acknowledged);
+
+    if (sessions.length) {
+      // select last matching session
+      return sessions[sessions.length - 1];
+    }
+    return null;
+  }
+
+  getAddressFromSession(session) {
+    const accounts = Object.values(session.namespaces)
+      .map((namespace) => namespace.accounts)
+      .flat();
+    const addr = accounts[0].split(':')[2];
+    return addr;
+  }
+
   async connect() {
-    const client = this._client ?? (await this.initClient());
-    // const sessions = client
-    //   .find(getConnectParams(this._network))
-    //   .filter((s) => s.acknowledged);
-    // if (sessions.length) {
-    //   // select last matching session
-    //   this._session = sessions[sessions.length - 1];
-    //   // We assign this variable only after we're sure we've received approval
-    //   this._client = client;
-    //   this._client = client;
-    //   const accounts = Object.values(this._session.namespaces)
-    //     .map((namespace) => namespace.accounts)
-    //     .flat();
-    //   this.address = accounts[0].split(':')[2];
-    //   return {
-    //     address: this.address,
-    //   };
-    // }
+    const client = this.client ?? (await this.initClient());
 
     const { uri, approval } = await client.connect({
       requiredNamespaces: this.requiredNamespaces,
@@ -157,13 +175,12 @@ export default class WcProvider implements ConnectionProvider {
       }
       approval()
         .then((session) => {
-          this._session = session;
+          this.session = session;
           // We assign this variable only after we're sure we've received approval
-          this._client = client;
-          const accounts = Object.values(this._session.namespaces)
+          this.client = client;
+          const accounts = Object.values(this.session.namespaces)
             .map((namespace) => namespace.accounts)
             .flat();
-          debugger;
           this.address = accounts[0].split(':')[2];
           resolve(this.address);
         })
@@ -176,12 +193,12 @@ export default class WcProvider implements ConnectionProvider {
 
   async disconnect() {
     return;
-    if (this._client && this._session) {
-      await this._client.disconnect({
-        topic: this._session.topic,
+    if (this.client && this._session) {
+      await this.client.disconnect({
+        topic: this.session.topic,
         reason: getSdkError('USER_DISCONNECTED'),
       });
-      this._session = undefined;
+      this.session = undefined;
     } else {
       throw new ClientNotInitializedError();
     }
@@ -208,11 +225,25 @@ export default class WcProvider implements ConnectionProvider {
   //   return tx.txID;
   // }
 
-  signMessage(message: string) {
-    return this.provider.signMessage(message);
+  async signMessage(message: string) {
+    if (!this.client) {
+      await this.connect();
+    }
+    const session = this.getLastSession();
+    const { signature } = await this.signMsgRequest(
+      this.client,
+      session,
+      message,
+    );
+    return signature;
+  }
+
+  async txSend(params) {
+    if (!this.client) {
+      await this.connect();
+    }
+    const session = this.getLastSession();
+    const result = await this.txSendRequest(this.client, session, params);
+    return result;
   }
 }
-
-// const wcProvider = new WcProvider();
-
-// export default wcProvider;

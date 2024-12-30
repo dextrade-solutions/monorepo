@@ -85,6 +85,7 @@ export const login = (keyring: any, signature: string, walletId: string) => {
       signature,
       prefixSignMessageByConnectionType(walletConnectionType, publicKey),
     );
+    console.info(bufferToHex(masterPublicKey));
 
     const mnemonicHash = await generateMnemonicHash(masterPublicKey);
 
