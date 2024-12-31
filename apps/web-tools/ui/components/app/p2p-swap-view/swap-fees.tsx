@@ -109,9 +109,14 @@ export function SwapFees(fees: {
                       {!isSuperFeeApplied && (
                         <Box display="flex" alignItems="center">
                           <Chip
+                            clickable
                             sx={{ backgroundImage: bgPrimaryGradient }}
-                            icon={<Icon name="info" />}
-                            label="Activate"
+                            icon={<Icon name="info" color="white" />}
+                            label={
+                              <Typography variant="body2" color="white">
+                                Activate
+                              </Typography>
+                            }
                             onClick={() => {
                               if (isAuthenticated) {
                                 buyPlan();
