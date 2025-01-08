@@ -13,8 +13,6 @@ import { WalletConnectionType } from '../../helpers/constants/wallets';
 import keypairWalletConnection from '../../helpers/utils/connections/keypair';
 import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
 import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
-import wcEvm from '../../helpers/utils/connections/wc/wc-evm';
-import wcTron from '../../helpers/utils/connections/wc/wc-tron';
 import { getWalletIcon } from '../../helpers/utils/util';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
@@ -37,8 +35,6 @@ export function useWallets({
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
-  // const wcTronConnection = useConnection(wcTron);
-  // const wcEvmConnection = useConnection(wcEvm);
 
   const connectedWallets = useSelector(getWalletConnections);
 
