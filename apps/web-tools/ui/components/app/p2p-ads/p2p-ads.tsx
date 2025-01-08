@@ -22,6 +22,8 @@ import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useQueryAds } from '../../../hooks/useQueryAds';
 
+const PER_PAGE_SIZE = 8;
+
 export default function P2PAds() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -66,7 +68,7 @@ export default function P2PAds() {
       toNetworkName: toToken?.network,
       toTicker: toToken?.symbol,
       name: providerName,
-      size: 8,
+      size: PER_PAGE_SIZE,
     }),
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
@@ -79,6 +81,9 @@ export default function P2PAds() {
         ),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length < PER_PAGE_SIZE) {
+          return null;
+        }
         return lastPage.length ? allPages.length + 1 : null;
       },
       refetchInterval: 10 * SECOND,
@@ -180,12 +185,12 @@ export default function P2PAds() {
 
         <InView
           onChange={(inView) => {
-            if (inView && !isLoading && hasNextPage) {
+            if (inView && hasNextPage) {
               fetchNextPage();
             }
           }}
         >
-          {isLoading || hasNextPage ? (
+          {isLoading || (!isLoading && hasNextPage) ? (
             [...Array(3)].map((_, idx) => (
               <Box key={idx} marginTop={1} marginBottom={1}>
                 <AdPreviewSkeleton />
