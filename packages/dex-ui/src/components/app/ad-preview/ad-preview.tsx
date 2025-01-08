@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
-import { sumBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { AssetItem, Icon } from '../../ui';
@@ -33,7 +32,7 @@ const AdPreview = ({
   onClick,
 }: IProps) => {
   const { t } = useTranslation();
-  const reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
+  const reserveInCoin2 = ad.reserveSum;
   return (
     <Card
       variant="outlined"

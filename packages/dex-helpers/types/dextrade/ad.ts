@@ -106,4 +106,5 @@ export type AdItem = {
   timeToRefund: number;
   provider?: string;
   transactionFee?: number;
+  reserveSum: number;
 };
