@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { SECOND } from 'dex-helpers';
 
 import getBalance from '../../../app/helpers/tron/get-balance';
 import getTokenBalance from '../../../app/helpers/tron/get-token-balance';
-import { tronWeb } from '../../../app/helpers/tron/tronweb';
 
 export default function useTronBalance(address: string, contract?: string) {
   const { data } = useQuery({
@@ -17,6 +16,7 @@ export default function useTronBalance(address: string, contract?: string) {
       const result = await getBalance(address);
       return BigInt(result || 0);
     },
+    refetchInterval: 5 * SECOND,
   });
   return data;
 }

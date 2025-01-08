@@ -1,43 +1,34 @@
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { SECOND } from 'dex-helpers';
 
 import { getAssociatedTokenAccount } from '../../../app/helpers/solana/get-associated-token-account';
 
 export default function useSolanaBalance(address: string, contract?: string) {
-  const [balance, setBalance] = useState(0n);
   const { connection } = useConnection();
 
-  useEffect(() => {
-    const updateBalance = async () => {
+  const { data } = useQuery({
+    queryKey: ['useSolanaBalance', address, contract],
+    enabled: Boolean(address),
+    queryFn: async () => {
       if (!connection || !address) {
-        console.error('Wallet not connected or connection unavailable');
-        return;
+        throw new Error('Wallet not connected or connection unavailable');
       }
       const publicKey = new PublicKey(address);
 
-      try {
-        if (contract) {
-          try {
-            const associatedAccount = await getAssociatedTokenAccount(
-              connection,
-              new PublicKey(contract),
-              publicKey,
-            );
-            setBalance(associatedAccount.amount);
-          } catch {
-            setBalance(0n);
-          }
-        } else {
-          const accountInfo = await connection.getAccountInfo(publicKey);
-          setBalance(BigInt(accountInfo?.lamports || 0));
-        }
-      } catch (error) {
-        console.error('Failed to retrieve account info:', error);
+      if (contract) {
+        const associatedAccount = await getAssociatedTokenAccount(
+          connection,
+          new PublicKey(contract),
+          publicKey,
+        );
+        return associatedAccount.amount;
       }
-    };
-
-    updateBalance();
-  }, [connection, address, contract]);
-  return balance;
+      const accountInfo = await connection.getAccountInfo(publicKey);
+      return BigInt(accountInfo?.lamports || 0);
+    },
+    refetchInterval: 5 * SECOND,
+  });
+  return data;
 }

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { SECOND } from 'dex-helpers';
 
 import { bitcoinInfo } from '../../../app/services/bitcoininfo';
 
@@ -11,6 +12,7 @@ export default function useBalance(address: string) {
       const result = await response.json();
       return result;
     },
+    refetchInterval: 30 * SECOND,
   });
 
   return data?.final_balance ? BigInt(data.final_balance) : null;

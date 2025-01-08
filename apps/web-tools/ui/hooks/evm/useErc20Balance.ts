@@ -1,3 +1,4 @@
+import { SECOND } from 'dex-helpers';
 import { erc20Abi } from 'viem';
 import { useReadContracts } from 'wagmi';
 
@@ -29,6 +30,9 @@ export default function useErc20Balance(
         functionName: 'decimals',
       },
     ],
+    query: {
+      refetchInterval: 5 * SECOND,
+    },
   });
   if (result.data) {
     const [balance] = result.data;

@@ -9,7 +9,7 @@ export default function useAccountBalance(
     address,
     chainId,
     query: {
-      refetchInterval: 4 * SECOND,
+      refetchInterval: 5 * SECOND,
     },
   });
 
