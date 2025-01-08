@@ -7,7 +7,7 @@ import { useWallets } from './asset/useWallets';
 export function useAuthWallet() {
   const wallets = useWallets();
   const authData = useSelector(getAuth);
-  const wallet = wallets.find((i) => i.name === authData.wallet);
+  const wallet = wallets.find((i) => i.id === authData.wallet);
   const { apikey } = authData;
 
   return {

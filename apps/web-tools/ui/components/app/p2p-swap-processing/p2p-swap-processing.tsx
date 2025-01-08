@@ -19,7 +19,6 @@ import {
 import { AssetModel, Trade } from 'dex-helpers/types';
 import {
   AssetItem,
-  CopyData,
   CountdownTimer,
   Icon,
   PaymentMethodDisplay,

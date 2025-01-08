@@ -9,13 +9,15 @@ import {
   sepolia,
   xdc as defaultXdc,
 } from 'wagmi/chains';
-import { coinbaseWallet, walletConnect } from 'wagmi/connectors';
+import { coinbaseWallet } from 'wagmi/connectors';
+
+import { walletConnect } from '../../ui/helpers/utils/wc-connector';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
 
 // // 2. Create wagmiConfig
-const metadata = {
+export const metadata = {
   name: 'Web3Modal',
   description: 'Web3Modal Example',
   url: 'https://web3modal.com', // origin must match your domain & subdomain
@@ -38,12 +40,12 @@ const xdc = {
 
 const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
 
-const WC_PARAMS = {
+export const WC_PARAMS = {
   projectId,
   qrModalOptions: {
     themeVariables: {
       '--wcm-font-family': '"Open-sans", sans-serif',
-      '--wcm-z-index': '10000',
+      '--wcm-z-index': '1000',
     },
   },
 };

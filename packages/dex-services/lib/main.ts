@@ -2,8 +2,10 @@ import { Aml } from './Aml';
 import { Atomic } from './Atomic';
 import { Broadcast } from './Broadcast';
 import { Exchange } from './Exchange';
+import { Exchanger } from './Exchanger';
 import { Kyc } from './Kyc';
 import { Payment } from './Payment';
+import { Tariff } from './Tariff';
 import { User } from './User';
 
 export class ServiceBridge {
@@ -26,7 +28,7 @@ export class ServiceBridge {
     baseUrl,
     customFetch,
   }: {
-    baseUrl: string;
+    baseUrl?: string;
     customFetch: typeof fetch;
   }) {
     this.baseUrl = baseUrl;
@@ -49,3 +51,5 @@ export const exchangeService = new Exchange(opts);
 export const userService = new User(opts);
 export const atomicService = new Atomic(opts);
 export const broadcastService = new Broadcast(opts);
+export const tariffService = new Tariff(opts);
+export const exchangerService = new Exchanger(opts);

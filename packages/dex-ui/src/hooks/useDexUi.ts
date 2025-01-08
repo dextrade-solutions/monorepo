@@ -3,7 +3,11 @@ import React from 'react';
 
 import Palette from '../palette';
 
-export function useDexUI({ theme }) {
+export function useDexUI({
+  theme,
+}: {
+  theme?: 'dark' | 'light' | 'system';
+} = {}) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const paletteMode =
@@ -21,6 +25,9 @@ export function useDexUI({ theme }) {
         },
         shape: {
           borderRadius: 17,
+        },
+        zIndex: {
+          modal: 999,
         },
         components: {
           MuiCard: {

@@ -1,0 +1,11 @@
+@import url('fonts.scss');
+@import url('reset.scss');
+@import url('utilities.scss');
+@import url('colors.scss');
+
+canvas {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	z-index: -1;
+}

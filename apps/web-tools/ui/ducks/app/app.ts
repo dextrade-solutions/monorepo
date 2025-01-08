@@ -5,26 +5,12 @@ import { AssetModel } from 'dex-helpers/types';
 import { WalletConnection } from '../../types';
 
 interface AppState {
-  modal: {
-    open: boolean;
-    modalState: {
-      name: string | null;
-      props: Record<string, any>;
-    };
-  };
   theme: string;
   assetAccounts: Record<string, WalletConnection | null>;
   walletConnections: Record<string, WalletConnection>;
 }
 
 const initialState: AppState = {
-  modal: {
-    open: false,
-    modalState: {
-      name: null,
-      props: {},
-    },
-  },
   theme: 'system',
   assetAccounts: {},
   walletConnections: {},
@@ -35,38 +21,12 @@ const slice = createSlice({
   initialState,
   reducers: () => ({
     clearAppState: () => initialState,
-
-    showModal: (state, action) => {
-      const { name, ...modalProps } = action.payload;
-
-      state.modal = {
-        open: true,
-        modalState: {
-          name,
-          props: { ...modalProps },
-        },
-        // previousModalState: { ...state.modal.modalState },
-      };
-    },
-    hideModal: (state) => {
-      state.modal = {
-        open: false,
-        modalState: {
-          name: null,
-          props: {},
-        },
-        // previousModalState: { ...state.modal.modalState },
-      };
-    },
     setTheme: (state, action) => {
       state.theme = action.payload;
     },
     setAssetAccount: (state, action) => {
       const { asset, assetAccount } = action.payload;
       state.assetAccounts[getAssetKey(asset)] = assetAccount;
-    },
-    disconnectAssetWallet: (state, action) => {
-      const walletName = action.payload;
     },
     setWalletConnection: (state, action) => {
       const newConnection = action.payload as WalletConnection;
@@ -98,21 +58,15 @@ const slice = createSlice({
 const { actions, reducer } = slice;
 
 const {
-  showModal,
-  hideModal,
   setTheme,
   setAssetAccount,
-  disconnectAssetWallet,
   setWalletConnection,
   removeWalletConnection,
 } = actions;
 
 export {
-  showModal,
-  hideModal,
   setTheme,
   setAssetAccount,
-  disconnectAssetWallet,
   setWalletConnection,
   removeWalletConnection,
 };

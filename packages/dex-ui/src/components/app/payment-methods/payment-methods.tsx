@@ -18,6 +18,8 @@ import React, { useState } from 'react';
 
 // import { UserPaymentMethod } from '../../../../app/types/dextrade';
 // import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTranslation } from 'react-i18next';
+
 import Icon from '../../ui/icon';
 import PaymentMethodForm from '../payment-method-form';
 
@@ -36,9 +38,9 @@ export const PaymentMethods = ({
   onSelect,
   onClose,
   removePaymentMethod = (id) => paymentService.delete1({ id }),
-  getUserPaymentMethods = () => paymentService.listAll1(),
+  getUserPaymentMethods = () => paymentService.listAll1().then((r) => r.data),
 }: IProps) => {
-  // const t = useI18nContext();
+  const { t } = useTranslation();
   const [createMode, setCreateMode] = useState(false);
 
   const toggleCreateMode = () => {
@@ -71,7 +73,7 @@ export const PaymentMethods = ({
     );
     if (item) {
       onSelect(item);
-      onClose();
+      onClose && onClose();
     }
   };
   return (

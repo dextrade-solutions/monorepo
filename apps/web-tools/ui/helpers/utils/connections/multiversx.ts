@@ -47,6 +47,10 @@ export class MultiverseExtension implements ConnectionProvider {
     verifyNativeAuthToken(nativeAuthToken);
   }
 
+  getCurrentAddress() {
+    return this.provider.getAddress();
+  }
+
   async txSend({
     sender: address,
     recipient,

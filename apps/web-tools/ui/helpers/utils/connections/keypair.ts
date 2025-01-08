@@ -14,6 +14,15 @@ class KeypairConnection {
   async disconnect() {
     // do nothing
   }
+
+  signMessage() {
+    // TODO: implement
+  }
+
+  getCurrentAddress() {
+    // TODO: implement
+    return engine.keyringController.publicKey;
+  }
 }
 
 const keypairConnection = new KeypairConnection();

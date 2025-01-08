@@ -1,4 +1,3 @@
-import '../styles.scss';
 import {
   Box,
   Typography,
@@ -13,16 +12,21 @@ import {
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, UrlIcon, ButtonIcon, AssetItem, PulseLoader } from 'dex-ui';
-import { useCallback, useState } from 'react';
+import {
+  CopyData,
+  UrlIcon,
+  ButtonIcon,
+  AssetItem,
+  PulseLoader,
+  ModalProps,
+} from 'dex-ui';
+import React, { useCallback, useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
-import { ModalProps } from '../types';
 
 type ConfiguredWallet = { address: string; icon: string };
 
@@ -92,8 +96,8 @@ const SetWallet = ({
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={hideModal}
           ariaLabel={t('close')}
+          onClick={hideModal}
         />
       </Box>
 
@@ -224,6 +228,4 @@ const SetWallet = ({
   );
 };
 
-const SetWalletComponent = withModalProps(SetWallet);
-
-export default SetWalletComponent;
+export default SetWallet;

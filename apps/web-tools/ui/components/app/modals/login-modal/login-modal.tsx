@@ -1,4 +1,3 @@
-import '../styles.scss';
 import {
   Box,
   Typography,
@@ -7,27 +6,32 @@ import {
   Divider,
   ListItemButton,
   ListItemAvatar,
-  ListItemSecondaryAction,
   Alert,
 } from '@mui/material';
-import { UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
+import { UrlIcon, ButtonIcon, PulseLoader, ModalProps } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { clearAuthState } from '../../../../ducks/auth';
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalProps } from '../types';
 
-const LoginModal = ({ hideModal }: ModalProps) => {
+const LoginModal = ({
+  hideModal,
+  onSuccess,
+}: { onSuccess: () => void } & ModalProps) => {
   const t = useI18nContext();
   const [loadingWallet, setLoadingWallet] = useState();
   const dispatch = useDispatch();
   const wallets = useWallets({
-    connectionType: [WalletConnectionType.eip6963],
+    connectionType: [
+      WalletConnectionType.eip6963,
+      WalletConnectionType.tronlink,
+      WalletConnectionType.wcEip155,
+      // WalletConnectionType.wcTron,
+    ],
   });
   const { login } = useAuthP2P();
 
@@ -43,12 +47,13 @@ const LoginModal = ({ hideModal }: ModalProps) => {
           walletId: item.id,
         });
         hideModal();
+        onSuccess && onSuccess();
       } catch (e) {
         console.error(e);
         setLoadingWallet(null);
       }
     },
-    [hideModal, login, dispatch],
+    [hideModal, login, dispatch, onSuccess],
   );
   const renderList = loadingWallet
     ? wallets.filter((i) => i.name === loadingWallet.name)
@@ -89,7 +94,7 @@ const LoginModal = ({ hideModal }: ModalProps) => {
           </Box>
         ) : (
           <MenuList>
-            {wallets.map((item, idx) => (
+            {renderList.map((item, idx) => (
               <Box data-testid={item.id} key={idx} marginTop={1}>
                 <ListItemButton
                   sx={{
@@ -101,7 +106,10 @@ const LoginModal = ({ hideModal }: ModalProps) => {
                   <ListItemAvatar>
                     <UrlIcon size={40} url={item.icon} />
                   </ListItemAvatar>
-                  <ListItemText primary={item.name} />
+                  <ListItemText
+                    primary={item.name}
+                    secondary={item.connectionType}
+                  />
                 </ListItemButton>
               </Box>
             ))}
@@ -117,6 +125,4 @@ const LoginModal = ({ hideModal }: ModalProps) => {
   );
 };
 
-const LoginModalComponent = withModalProps(LoginModal);
-
-export default LoginModalComponent;
+export default LoginModal;

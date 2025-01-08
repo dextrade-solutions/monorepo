@@ -1,10 +1,9 @@
-import '../styles.scss';
 import { Modal, Box, Typography } from '@mui/material';
+import { PulseLoader } from 'dex-ui';
 import { useSelector } from 'react-redux';
 
 import { AuthStatus } from '../../../../../app/constants/auth';
 import { getAuthStatus } from '../../../../ducks/auth';
-import { PulseLoader } from 'dex-ui';
 
 export const SigningModal = () => {
   const authStatus = useSelector(getAuthStatus);
@@ -13,7 +12,6 @@ export const SigningModal = () => {
     <Modal open={showSigningModal}>
       <Box
         sx={{ bgcolor: 'background.default' }}
-        className="modal-generic"
         display="flex"
         flexDirection="column"
         alignItems="center"

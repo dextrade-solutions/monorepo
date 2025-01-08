@@ -1,8 +1,8 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { NetworkTypes } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { ButtonIcon } from 'dex-ui';
+import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,6 @@ import { formatUnits } from 'viem';
 import { NULLISH_TOKEN_ADDRESS } from '../../../../app/helpers/atomic-swaps';
 import { generateTxParams } from '../../../../app/helpers/transactions';
 import P2PService from '../../../../app/services/p2p-service';
-import { showModal } from '../../../ducks/app/app';
 import {
   createSwapP2P,
   getFromTokenInputValue,
@@ -27,8 +26,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AppDispatch } from '../../../store/store';
 import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
-import './index.scss';
 import { SwapFees } from './swap-fees';
+import './index.scss';
 
 interface IProps {
   ad: AdItem;
@@ -39,6 +38,7 @@ interface IProps {
 const RECALCULATE_DELAY = 1000;
 
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
+  const { showModal } = useGlobalModalContext();
   const t = useI18nContext();
   const navigate = useNavigate();
   const [slippage, setSlippage] = useState(0.5);
@@ -190,25 +190,25 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
       navigate(`${AWAITING_SWAP_ROUTE}/${result.data.id}`);
     } catch (e) {
       setLoadingStartExchange(false);
-      console.error(e);
-      // show swap error popup
-      throw new Error(e.message);
+      showModal({
+        name: 'ALERT_MODAL',
+        severity: 'error',
+        text: e.message,
+      });
     }
   };
 
   const pickupExchangerPaymentMethod = () => {
-    dispatch(
-      showModal({
-        name: 'ITEM_PICKER',
-        options: availablePaymentMethods,
-        title: 'Choose payment method',
-        getOptionLabel: (paymentMethod: UserPaymentMethod) =>
-          paymentMethod.paymentMethod.name,
-        getOptionKey: (paymentMethod: UserPaymentMethod) =>
-          paymentMethod.userPaymentMethodId,
-        onSelect: (v: number) => startExchange({ exchangerPaymentMethodId: v }),
-      }),
-    );
+    showModal({
+      name: 'ITEM_PICKER',
+      options: availablePaymentMethods,
+      title: 'Choose payment method',
+      getOptionLabel: (paymentMethod: UserPaymentMethod) =>
+        paymentMethod.paymentMethod.name,
+      getOptionKey: (paymentMethod: UserPaymentMethod) =>
+        paymentMethod.userPaymentMethodId,
+      onSelect: (v: number) => startExchange({ exchangerPaymentMethodId: v }),
+    });
   };
 
   return (
@@ -251,13 +251,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             <Typography marginRight={1}>Slippage Tolerance</Typography>
             <ButtonIcon
               onClick={() =>
-                dispatch(
-                  showModal({
-                    name: 'SLIPPAGE_MODAL',
-                    value: slippage,
-                    onChange: (v: number) => setSlippage(v),
-                  }),
-                )
+                showModal({
+                  name: 'SLIPPAGE_MODAL',
+                  value: slippage,
+                  onChange: (v: number) => setSlippage(v),
+                })
               }
               iconName="setting-dex"
             />
@@ -266,6 +264,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         </Box>
         <Box mt={2}>
           <SwapFees
+            superFee={assetFrom.standard === NetworkTypes.trc20}
             inbound={{
               amount: incomingFee,
               asset: assetTo,
@@ -290,12 +289,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             backgroundImage:
               loadingStartExchange || disabledBtn
                 ? undefined
-                : 'linear-gradient(-68deg, #00C283 12%, #3C76FF 87%)',
+                : bgPrimaryGradient,
           }}
           disabled={loadingStartExchange || disabledBtn}
           variant="contained"
           size="large"
           onClick={() => {
+            // return assetInputFrom.makeTransfer(ad.walletAddress);
             if (needPickupClientPaymentMethod) {
               return assetInputTo.showPaymentMethod();
             } else if (needPickupExchangerPaymentMethod) {

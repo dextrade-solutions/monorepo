@@ -9,7 +9,8 @@
     "lib"
   ],
   "packages": {
-    "dex-services": "workspace:^"
+    "dex-services": "workspace:^",
+    "@tanstack/react-query": "5.62.8"
   },
   "main": "./dist/dex-helpers.umd.cjs",
   "module": "./lib/main.ts",
@@ -19,7 +20,8 @@
       "require": "./dist/dex-helpers.umd.cjs"
     },
     "./assets-list": "./assets-list.json",
-    "./types": "./types/index.ts"
+    "./types": "./types/index.ts",
+    "./shared": "./src/shared/index.ts"
   },
   "devDependencies": {
     "vite": "^5.2.0"

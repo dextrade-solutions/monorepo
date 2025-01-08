@@ -1,11 +1,14 @@
 import { Box, Button, Menu, MenuItem } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import { ButtonIcon, PulseLoader, UrlIcon } from 'dex-ui';
+import {
+  ButtonIcon,
+  PulseLoader,
+  useGlobalModalContext,
+  UrlIcon,
+} from 'dex-ui';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { showModal } from '../../ducks/app/app';
 import {
   SETTINGS_ROUTE,
   SWAPS_HISTORY_ROUTE,
@@ -14,8 +17,8 @@ import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
 
 export default function WalletConnectButton() {
+  const { showModal } = useGlobalModalContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { wallet, isAuthenticated } = useAuthWallet();
   const { logout } = useAuthP2P();
 
@@ -29,7 +32,7 @@ export default function WalletConnectButton() {
     if (isAuthenticated) {
       setAnchorEl(event.currentTarget);
     } else {
-      dispatch(showModal({ name: 'LOGIN_MODAL' }));
+      showModal({ name: 'LOGIN_MODAL' });
     }
   };
 

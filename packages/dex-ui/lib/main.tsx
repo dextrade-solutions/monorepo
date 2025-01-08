@@ -3,3 +3,6 @@ export * from '../src/components/ui';
 export * from '../src/components/app';
 export { DexUiProvider } from '../src/contexts/dex-ui-provider';
 export { useDexUI } from '../src/hooks/useDexUi';
+
+export * from '../src/components/app/modals';
+export * from '../src/constants';

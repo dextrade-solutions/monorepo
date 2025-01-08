@@ -5,5 +5,6 @@ export const SWAPS_ERROR_ROUTE = '/swap-error';
 export const SWAPS_HISTORY_ROUTE = '/swaps-history';
 export const SETTINGS_ROUTE = '/settings';
 export const KYC_ROUTE = '/settings/kyc';
+export const PLANS_ROUTE = '/settings/plans';
 export const SETTINGS_GENERAL_ROUTE = '/settings/general';
 export const PAYMENT_METHODS_ROUTE = '/settings/payment-methods';

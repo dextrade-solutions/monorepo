@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { queryClient } from 'dex-helpers/shared';
 import { bufferToHex } from 'ethereumjs-util';
 
 import { AuthStatus } from '../../app/constants/auth';
-import engine from '../../app/engine';
 import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
+import { prefixSignMessageByConnectionType } from '../helpers/utils/wallets';
 import { AppDispatch, RootState } from '../store/store';
-import { showModal } from './app/app';
 
 export const getAuth = (state: RootState) => state.auth.authData;
 export const getAuthStatus = (state: RootState) => state.auth.authStatus;
@@ -50,7 +50,8 @@ const slice = createSlice({
   name: 'auth',
   initialState,
   reducers: () => ({
-    clearAuthState: (state) => ({ ...initialState, session: state.session }),
+    // clearAuthState: (state) => ({ ...initialState, session: state.session }), // save session way
+    clearAuthState: () => initialState,
     setAuthData: (state, action) => {
       state.authData = action.payload;
     },
@@ -71,7 +72,7 @@ export { clearAuthState, setStatus };
 
 export default reducer;
 
-export const login = (keyring: any, signature: string, wallet: string) => {
+export const login = (keyring: any, signature: string, walletId: string) => {
   return async (dispatch: AppDispatch) => {
     dispatch(setStatus(AuthStatus.authenticating));
     const mnemonicString = await keyring
@@ -79,11 +80,14 @@ export const login = (keyring: any, signature: string, wallet: string) => {
       .then((v) => Buffer.from(v.mnemonic).toString());
 
     const publicKey = Buffer.from(keyring.hdWallet.pubKey).toString('hex');
-    const masterPublicKey = recoverPubKeyFromSignature(signature, publicKey);
-
-    const mnemonicHash = await generateMnemonicHash(masterPublicKey).catch(
-      (e) => dispatch(showModal({ name: 'ALERT_MODAL', text: e.message })),
+    const [, walletConnectionType] = walletId.split(':');
+    const masterPublicKey = recoverPubKeyFromSignature(
+      signature,
+      prefixSignMessageByConnectionType(walletConnectionType, publicKey),
     );
+    console.info(bufferToHex(masterPublicKey));
+
+    const mnemonicHash = await generateMnemonicHash(masterPublicKey);
 
     const authData = await P2PService.login({
       mnemonicHash,
@@ -108,7 +112,7 @@ export const login = (keyring: any, signature: string, wallet: string) => {
     );
     dispatch(
       setAuthData({
-        wallet,
+        wallet: walletId,
         ...authData.data,
       }),
     );
@@ -119,7 +123,6 @@ export const login = (keyring: any, signature: string, wallet: string) => {
 export const logout = () => {
   return (dispatch: AppDispatch): void => {
     dispatch(clearAuthState());
-    const { queryClient } = engine;
 
     queryClient.removeQueries({ queryKey: ['p2pTrades'], exact: true });
     queryClient.removeQueries({
