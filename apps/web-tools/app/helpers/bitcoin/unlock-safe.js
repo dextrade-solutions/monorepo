@@ -31,7 +31,7 @@ export const unlockSafe = async ({
   tx.version = 2;
   tx.addInput(idToHash(utxo.txId), 0, 0xfffffffe);
   // TODO: change to p2wpkh
-  const alicePayment = bitcoin.payments.p2pkh({
+  const alicePayment = bitcoin.payments.p2wpkh({
     address: recipientAddress,
     network,
   });
