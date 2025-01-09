@@ -2,6 +2,7 @@ import {
   Box,
   ListItemAvatar,
   ListItemButton,
+  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   MenuList,
@@ -10,6 +11,7 @@ import {
 import { isMobileWeb, shortenAddress, WalletConnectionType } from 'dex-helpers';
 import {
   ButtonIcon,
+  Icon,
   PulseLoader,
   UrlIcon,
   useGlobalModalContext,
@@ -19,15 +21,17 @@ import React from 'react';
 import { useWallets, WalletItem } from '../../hooks/asset/useWallets';
 
 export default function WalletList({
+  onlyConnected,
   connectingWallet,
   connectingWalletLabel = 'Connecting',
   connectionType,
   onSelectWallet,
 }: {
-  connectingWallet: WalletItem;
+  onlyConnected?: boolean;
+  connectingWallet?: WalletItem;
   connectionType?: WalletConnectionType[];
   connectingWalletLabel?: string;
-  onSelectWallet: (item: WalletItem) => void;
+  onSelectWallet?: (item: WalletItem) => void;
 }) {
   const { showModal } = useGlobalModalContext();
   const wallets = useWallets({
@@ -49,6 +53,10 @@ export default function WalletList({
       },
     });
   };
+
+  const renderList = onlyConnected
+    ? wallets.filter((i) => i.connected)
+    : wallets;
   return (
     <>
       {connectingWallet ? (
@@ -66,7 +74,7 @@ export default function WalletList({
         </Box>
       ) : (
         <MenuList>
-          {wallets.map((item, idx) => (
+          {renderList.map((item, idx) => (
             <Box data-testid={item.id} key={idx} marginTop={1}>
               <ListItemButton
                 sx={{
@@ -74,9 +82,13 @@ export default function WalletList({
                 }}
                 className="bordered"
                 href={isMobileWeb ? item.metadata?.deepLink : undefined}
-                onClick={() => onSelectWallet(item)}
+                onClick={() => onSelectWallet && onSelectWallet(item)}
               >
-                <div>{isMobileWeb}</div>
+                {item.metadata && !item.metadata.isSupported && (
+                  <ListItemIcon>
+                    <Icon name="alert" />
+                  </ListItemIcon>
+                )}
                 <ListItemAvatar>
                   <UrlIcon size={40} url={item.icon} />
                 </ListItemAvatar>

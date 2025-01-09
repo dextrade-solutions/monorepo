@@ -29,7 +29,7 @@ export default function useEVMConnections() {
   };
 
   return connectors
-    .filter(({ id }) => id !== 'io.metamask')
+    .filter(({ id }) => !['io.metamask', 'com.trustwallet.app'].includes(id))
     .map(function (item) {
       return {
         connectionType: WalletConnectionType.eip6963,

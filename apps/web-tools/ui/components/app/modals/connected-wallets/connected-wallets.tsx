@@ -14,6 +14,7 @@ import React from 'react';
 
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import WalletList from '../../wallet-list';
 
 const WalletsList = ({ hideModal }: ModalProps) => {
   const { showModal } = useGlobalModalContext();
@@ -52,48 +53,7 @@ const WalletsList = ({ hideModal }: ModalProps) => {
       <Box marginY={1}>
         <Divider />
       </Box>
-      <Box>
-        <MenuList>
-          {wallets.map((item, idx) => (
-            <Box data-testid={item.id} key={idx} marginTop={1}>
-              <ListItemButton
-                sx={{
-                  backgroundcolor: 'secondary.dark',
-                }}
-                className="bordered"
-                onClick={() => onDisconnect(item)}
-              >
-                <ListItemAvatar>
-                  <UrlIcon size={40} url={item.icon} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={item.name}
-                  secondary={
-                    item.connected ? shortenAddress(item.connected.address) : ''
-                  }
-                />
-                {item.connected && (
-                  <ListItemSecondaryAction>
-                    <ButtonIcon
-                      size="lg"
-                      iconName="disconnect"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDisconnect(item);
-                      }}
-                    />
-                  </ListItemSecondaryAction>
-                )}
-              </ListItemButton>
-            </Box>
-          ))}
-          {!wallets.length && (
-            <Typography color="text.secondary">
-              No connected wallets detected...
-            </Typography>
-          )}
-        </MenuList>
-      </Box>
+      <WalletList onlyConnected />
     </Box>
   );
 };

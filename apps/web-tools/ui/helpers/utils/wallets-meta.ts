@@ -1,47 +1,7 @@
-export function getTrustWalletProvider(): any | undefined {
-  const isTrustWallet = (ethereum: NonNullable<Window['ethereum']>) => {
-    // Identify if Trust Wallet injected provider is present.
-    const trustWallet = Boolean(ethereum.isTrust);
+import { isChrome, isMobileWeb, isSafari } from 'dex-helpers';
 
-    return trustWallet;
-  };
+import { getTrustWalletProvider } from './wagmi-connectors/trust';
 
-  const injectedProviderExist =
-    typeof window !== 'undefined' &&
-    window !== null &&
-    typeof window.ethereum !== 'undefined' &&
-    window.ethereum !== null;
-
-  // No injected providers exist.
-  if (!injectedProviderExist) {
-    return;
-  }
-
-  // Trust Wallet was injected into window.ethereum.
-  if (isTrustWallet(window.ethereum as NonNullable<Window['ethereum']>)) {
-    return window.ethereum;
-  }
-
-  let trustWalletProvider;
-
-  if (window.ethereum?.providers?.length) {
-    // Trust Wallet provider might be replaced by another
-    // injected provider, check the providers array.
-    trustWalletProvider = window.ethereum.providers.find(
-      (provider: any) => provider && isTrustWallet(provider),
-    );
-  }
-
-  if (!trustWalletProvider) {
-    // In some cases injected providers can replace window.ethereum
-    // without updating the providers array. In those instances the Trust Wallet
-    // can be installed and its provider instance can be retrieved by
-    // looking at the global `trustwallet` object.
-    trustWalletProvider = window.trustwallet;
-  }
-
-  return trustWalletProvider;
-}
 const isMetamaskInstalled = () => {
   if (typeof window === 'undefined') {
     return false;
@@ -62,22 +22,35 @@ export const WALLETS_META = [
   {
     name: 'walletconnect',
     icon: '/images/wallets/wallet-connect.svg',
+    isSupported: true,
   },
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
+    get isSupported() {
+      return !isMobileWeb;
+    },
   },
   {
     name: 'coinbase wallet',
     icon: '/images/wallets/coinbase.webp',
+    get isSupported() {
+      return true;
+    },
   },
   {
     name: 'multiversx wallet',
     icon: '/images/wallets/multiversx.webp',
+    get isSupported() {
+      return !isMobileWeb;
+    },
   },
   {
     name: 'ledgerlive',
     icon: '/images/wallets/ledgerlive.webp',
+    get isSupported() {
+      return isChrome;
+    },
   },
   {
     name: 'metamask',
@@ -87,10 +60,13 @@ export const WALLETS_META = [
     },
     deepLink: 'https://metamask.app.link/dapp/p2p.dextrade.com/',
     downloadLink: 'https://metamask.app.link/dapp/p2p.dextrade.com/',
+    get isSupported() {
+      return true; // TODO: only chrome, firefox, opera
+    },
   },
   {
-    name: 'trust wallet',
-    icon: `/images/wallets/trust.svg`,
+    name: 'trustwallet',
+    icon: `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTgiIGhlaWdodD0iNjUiIHZpZXdCb3g9IjAgMCA1OCA2NSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgOS4zODk0OUwyOC44OTA3IDBWNjUuMDA0MkM4LjI1NDUgNTYuMzM2OSAwIDM5LjcyNDggMCAzMC4zMzUzVjkuMzg5NDlaIiBmaWxsPSIjMDUwMEZGIi8+CjxwYXRoIGQ9Ik01Ny43ODIyIDkuMzg5NDlMMjguODkxNSAwVjY1LjAwNDJDNDkuNTI3NyA1Ni4zMzY5IDU3Ljc4MjIgMzkuNzI0OCA1Ny43ODIyIDMwLjMzNTNWOS4zODk0OVoiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl8yMjAxXzY5NDIpIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMjIwMV82OTQyIiB4MT0iNTEuMzYxNSIgeTE9Ii00LjE1MjkzIiB4Mj0iMjkuNTM4NCIgeTI9IjY0LjUxNDciIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agb2Zmc2V0PSIwLjAyMTEyIiBzdG9wLWNvbG9yPSIjMDAwMEZGIi8+CjxzdG9wIG9mZnNldD0iMC4wNzYyNDIzIiBzdG9wLWNvbG9yPSIjMDA5NEZGIi8+CjxzdG9wIG9mZnNldD0iMC4xNjMwODkiIHN0b3AtY29sb3I9IiM0OEZGOTEiLz4KPHN0b3Agb2Zmc2V0PSIwLjQyMDA0OSIgc3RvcC1jb2xvcj0iIzAwOTRGRiIvPgo8c3RvcCBvZmZzZXQ9IjAuNjgyODg2IiBzdG9wLWNvbG9yPSIjMDAzOEZGIi8+CjxzdG9wIG9mZnNldD0iMC45MDI0NjUiIHN0b3AtY29sb3I9IiMwNTAwRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K`,
     get installed() {
       return Boolean(getTrustWalletProvider());
     },
@@ -100,6 +76,9 @@ export const WALLETS_META = [
     guide: {
       desktop: 'https://trustwallet.com/browser-extension',
       mobile: 'https://trustwallet.com/',
+    },
+    get isSupported() {
+      return true; // TODO: only chrome
     },
   },
   {
@@ -114,6 +93,9 @@ export const WALLETS_META = [
       desktop: 'https://www.okx.com/web3',
       mobile: 'https://www.okx.com/web3',
     },
+    get isSupported() {
+      return true; // TODO: only chrome
+    },
   },
   {
     name: 'rabby wallet',
@@ -126,6 +108,9 @@ export const WALLETS_META = [
     },
     downloadLink: {
       desktop: 'https://rabby.io/',
+    },
+    get isSupported() {
+      return !isMobileWeb;
     },
   },
 ];

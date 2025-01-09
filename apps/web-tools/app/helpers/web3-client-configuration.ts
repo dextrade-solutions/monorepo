@@ -12,6 +12,7 @@ import {
 import { coinbaseWallet, metaMask } from 'wagmi/connectors';
 
 import { walletConnect } from '../../ui/helpers/utils/wc-connector';
+import { trustWalletConnect } from '../../ui/helpers/utils/wagmi-connectors/trust';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
@@ -55,6 +56,7 @@ export const config = createConfig({
   metadata,
   connectors: [
     metaMask(),
+    trustWalletConnect(),
     walletConnect({
       ...WC_PARAMS,
     }),

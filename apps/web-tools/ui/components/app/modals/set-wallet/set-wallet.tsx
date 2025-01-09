@@ -27,6 +27,7 @@ import { determineConnectionType } from '../../../../helpers/utils/determine-con
 import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
+import WalletList from '../../wallet-list';
 
 type ConfiguredWallet = { address: string; icon: string };
 
@@ -48,7 +49,6 @@ const SetWallet = ({
   const connectionType = determineConnectionType(asset);
 
   const t = useI18nContext();
-  const wallets = useWallets({ connectionType });
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
   const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
@@ -62,7 +62,7 @@ const SetWallet = ({
     hideModal();
   };
 
-  const onSelectWallet = async (item: (typeof wallets)[number]) => {
+  const onSelectWallet = async (item) => {
     let result: WalletConnection;
     setLoadingWallet(item);
     try {
@@ -77,16 +77,6 @@ const SetWallet = ({
       setLoadingWallet(null);
     }
   };
-  const onDisconnect = useCallback(
-    async (item: WalletItem) => {
-      if (item.name === savedValue?.walletName) {
-        onChange(null);
-        hideModal();
-      }
-      await item.disconnect();
-    },
-    [hideModal, onChange, savedValue],
-  );
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -127,69 +117,11 @@ const SetWallet = ({
       ) : (
         <Box>
           {canConnectExternalWallet && (
-            <>
-              {loadingWallet ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <UrlIcon size={40} url={loadingWallet.icon} />
-                  <Typography my={2}>
-                    {loadingWallet.name} connecting
-                  </Typography>
-                  <PulseLoader />
-                </Box>
-              ) : (
-                <MenuList>
-                  <Typography variant="h6">Connect wallet</Typography>
-                  {wallets.map((item, idx) => (
-                    <Box data-testid={item.id} key={idx} marginTop={1}>
-                      <ListItemButton
-                        sx={{
-                          backgroundcolor: 'secondary.dark',
-                          borderWidth:
-                            savedValue?.walletName === item.name ? 1 : 0,
-                        }}
-                        className="bordered"
-                        onClick={() => onSelectWallet(item)}
-                      >
-                        <ListItemAvatar>
-                          <UrlIcon size={40} url={item.icon} />
-                        </ListItemAvatar>
-
-                        <ListItemText
-                          primary={item.name}
-                          secondary={
-                            item.connected
-                              ? shortenAddress(item.connected.address)
-                              : ''
-                          }
-                        />
-                        {item.connected && (
-                          <ListItemSecondaryAction>
-                            <ButtonIcon
-                              size="lg"
-                              iconName="disconnect"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onDisconnect(item);
-                              }}
-                            />
-                          </ListItemSecondaryAction>
-                        )}
-                      </ListItemButton>
-                    </Box>
-                  ))}
-                  {!wallets.length && (
-                    <Typography color="text.secondary">
-                      No supported wallets detected...
-                    </Typography>
-                  )}
-                </MenuList>
-              )}
-            </>
+            <WalletList
+              connectingWallet={loadingWallet}
+              connectionType={connectionType}
+              onSelectWallet={onSelectWallet}
+            />
           )}
           {canPasteAddress && canConnectExternalWallet && (
             <Typography color="text.secondary" marginY={3}>
