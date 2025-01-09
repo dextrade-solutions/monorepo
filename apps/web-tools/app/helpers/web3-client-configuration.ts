@@ -9,7 +9,7 @@ import {
   sepolia,
   xdc as defaultXdc,
 } from 'wagmi/chains';
-import { coinbaseWallet } from 'wagmi/connectors';
+import { coinbaseWallet, metaMask } from 'wagmi/connectors';
 
 import { walletConnect } from '../../ui/helpers/utils/wc-connector';
 
@@ -54,6 +54,7 @@ export const config = createConfig({
   chains,
   metadata,
   connectors: [
+    metaMask(),
     walletConnect({
       ...WC_PARAMS,
     }),

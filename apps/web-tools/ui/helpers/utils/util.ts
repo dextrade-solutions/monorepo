@@ -1,25 +1,8 @@
+import { WALLETS_META } from './wallets-meta';
+
 export const getWalletIcon = (walletName: string) => {
-  switch (walletName.toLowerCase()) {
-    case 'walletconnect': {
-      return '/images/wallets/wallet-connect.svg';
-    }
-    case 'xverse': {
-      return '/images/wallets/xverse.svg';
-    }
-    case 'ledgerlive': {
-      return '/images/wallets/ledgerlive.webp';
-    }
-    case 'coinbase wallet': {
-      return '/images/wallets/coinbase.webp';
-    }
-    case 'multiversx wallet': {
-      return '/images/wallets/multiversx.webp';
-    }
-    case 'tronlink': {
-      return '/images/wallets/tronlink.svg';
-    }
-    default: {
-      return null;
-    }
-  }
+  const walletMeta = WALLETS_META.find(
+    ({ name }) => name.toLowerCase() === walletName.toLowerCase(),
+  );
+  return walletMeta?.icon;
 };

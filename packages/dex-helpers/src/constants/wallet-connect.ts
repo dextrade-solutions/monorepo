@@ -1,6 +1,5 @@
 export enum WalletConnectionType {
   wcTron = 'walletconnect-tron',
-  wcEip155 = 'walletconnect-eip155',
   eip6963 = 'eip6963',
   solana = 'solana',
   ledgerSol = 'ledger-solana',

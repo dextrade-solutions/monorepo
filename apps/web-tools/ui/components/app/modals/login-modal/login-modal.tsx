@@ -1,14 +1,5 @@
-import {
-  Box,
-  Typography,
-  MenuList,
-  ListItemText,
-  Divider,
-  ListItemButton,
-  ListItemAvatar,
-  Alert,
-} from '@mui/material';
-import { UrlIcon, ButtonIcon, PulseLoader, ModalProps } from 'dex-ui';
+import { Box, Typography, Divider, Alert } from '@mui/material';
+import { ButtonIcon, ModalProps } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -17,6 +8,7 @@ import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import WalletList from '../../wallet-list';
 
 const LoginModal = ({
   hideModal,
@@ -29,8 +21,6 @@ const LoginModal = ({
     connectionType: [
       WalletConnectionType.eip6963,
       WalletConnectionType.tronlink,
-      WalletConnectionType.wcEip155,
-      // WalletConnectionType.wcTron,
     ],
   });
   const { login } = useAuthP2P();
@@ -55,9 +45,6 @@ const LoginModal = ({
     },
     [hideModal, login, dispatch, onSuccess],
   );
-  const renderList = loadingWallet
-    ? wallets.filter((i) => i.name === loadingWallet.name)
-    : wallets;
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -81,45 +68,15 @@ const LoginModal = ({
             Make sure you have the latest version of Metamask app
           </Alert>
         </Box>
-        {loadingWallet ? (
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <UrlIcon size={40} url={loadingWallet.icon} />
-            <Typography my={2}>Signing in via {loadingWallet.name}</Typography>
-            <PulseLoader />
-          </Box>
-        ) : (
-          <MenuList>
-            {renderList.map((item, idx) => (
-              <Box data-testid={item.id} key={idx} marginTop={1}>
-                <ListItemButton
-                  sx={{
-                    backgroundcolor: 'secondary.dark',
-                  }}
-                  className="bordered"
-                  onClick={() => onSelectWallet(item)}
-                >
-                  <ListItemAvatar>
-                    <UrlIcon size={40} url={item.icon} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={item.name}
-                    secondary={item.connectionType}
-                  />
-                </ListItemButton>
-              </Box>
-            ))}
-            {!wallets.length && (
-              <Typography color="text.secondary">
-                No wallets detected...
-              </Typography>
-            )}
-          </MenuList>
-        )}
+        <WalletList
+          connectingWallet={loadingWallet}
+          connectingWalletLabel="Login via"
+          connectionType={[
+            WalletConnectionType.eip6963,
+            WalletConnectionType.tronlink,
+          ]}
+          onSelectWallet={onSelectWallet}
+        />
       </Box>
     </Box>
   );

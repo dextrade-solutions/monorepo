@@ -54,7 +54,7 @@ export default function P2PSwap() {
           {Boolean(connectedWalletsLength) && (
             <Button
               color="inherit"
-              onClick={() => showModal({ name: 'WALLETS_LIST' })}
+              onClick={() => showModal({ name: 'CONNECTED_WALLETS_LIST' })}
             >
               <Typography fontWeight="bold" marginRight={1} variant="h6">
                 {connectedWalletsLength}

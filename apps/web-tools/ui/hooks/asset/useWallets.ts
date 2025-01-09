@@ -14,6 +14,7 @@ import keypairWalletConnection from '../../helpers/utils/connections/keypair';
 import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
 import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
 import { getWalletIcon } from '../../helpers/utils/util';
+import { WALLETS_META } from '../../helpers/utils/wallets-meta';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
 import useEVMConnections from '../wallets/useEVMConnections';
@@ -121,7 +122,7 @@ export function useWallets({
       disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
     },
   ];
-  const result = [
+  let result = [
     // wcTronConnection,
     // wcEvmConnection,
     ...eip6963wallets,
@@ -133,7 +134,12 @@ export function useWallets({
     keypairConnection,
   ];
   if (connectionType) {
-    return result.filter((w) => connectionType.includes(w.connectionType));
+    result = result.filter((w) => connectionType.includes(w.connectionType));
   }
-  return result;
+  return result.map((w) => ({
+    ...w,
+    metadata: WALLETS_META.find(
+      ({ name }) => name.toLowerCase() === w.name.toLowerCase(),
+    ),
+  }));
 }
