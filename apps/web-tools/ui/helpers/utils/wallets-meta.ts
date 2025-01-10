@@ -61,7 +61,7 @@ export const WALLETS_META = [
   {
     name: 'metamask',
     icon: `/images/wallets/metamask.png`,
-    deepLink: 'https://metamask.app.link/dapp/https://10.4.7.7:5173/',
+    deepLink: 'https://metamask.app.link/dapp/p2p-staging.dextrade.com/',
     downloadLink: 'https://metamask.app.link/dapp/p2p-staging.dextrade.com/',
     get isSupported() {
       return true; // TODO: only chrome, firefox, opera
