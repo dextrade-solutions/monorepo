@@ -1,4 +1,4 @@
-import { isChrome, isMobileWeb, isSafari } from 'dex-helpers';
+import { isChrome, isMobileWeb } from 'dex-helpers';
 
 import { getTrustWalletProvider } from './wagmi-connectors/trust';
 
@@ -23,6 +23,7 @@ export const WALLETS_META = [
     name: 'walletconnect',
     icon: '/images/wallets/wallet-connect.svg',
     isSupported: true,
+    installed: true,
   },
   {
     name: 'xverse',
@@ -37,12 +38,17 @@ export const WALLETS_META = [
     get isSupported() {
       return true;
     },
+    installed: true,
   },
   {
     name: 'multiversx wallet',
     icon: '/images/wallets/multiversx.webp',
+    downloadLink: 'https://wallet.multiversx.com/',
     get isSupported() {
       return !isMobileWeb;
+    },
+    get installed() {
+      return true;
     },
   },
   {
@@ -55,13 +61,13 @@ export const WALLETS_META = [
   {
     name: 'metamask',
     icon: `/images/wallets/metamask.png`,
-    get installed() {
-      return isMetamaskInstalled();
-    },
-    deepLink: 'https://metamask.app.link/dapp/p2p.dextrade.com/',
-    downloadLink: 'https://metamask.app.link/dapp/p2p.dextrade.com/',
+    deepLink: 'https://metamask.app.link/dapp/https://10.4.7.7:5173/',
+    downloadLink: 'https://metamask.app.link/dapp/p2p-staging.dextrade.com/',
     get isSupported() {
       return true; // TODO: only chrome, firefox, opera
+    },
+    get installed() {
+      return isMetamaskInstalled();
     },
   },
   {
@@ -71,7 +77,7 @@ export const WALLETS_META = [
       return Boolean(getTrustWalletProvider());
     },
     deepLink:
-      'https://link.trustwallet.com/open_url?coin_id=20000714&url=https://p2p.dextrade.com/',
+      'https://link.trustwallet.com/open_url?coin_id=20000714&url=https://p2p-staging.dextrade.com/',
     downloadLink: 'https://trustwallet.com/browser-extension',
     guide: {
       desktop: 'https://trustwallet.com/browser-extension',
@@ -83,18 +89,18 @@ export const WALLETS_META = [
   },
   {
     name: 'okx wallet',
-    get installed() {
-      return typeof window !== 'undefined' && Boolean(window.okxwallet);
-    },
     downloadLink: 'https://www.okx.com/download',
     deepLink:
-      'https://www.okx.com/download?deeplink=okx%3A%2F%2Fwallet%2Fdapp%2Furl%3FdappUrl%3Dhttps%253A%252F%252Fp2p.dextrade.com',
+      'https://www.okx.com/download?deeplink=okx%3A%2F%2Fwallet%2Fdapp%2Furl%3FdappUrl%3Dhttps%253A%252F%252Fp2p-staging.dextrade.com',
     guide: {
       desktop: 'https://www.okx.com/web3',
       mobile: 'https://www.okx.com/web3',
     },
     get isSupported() {
       return true; // TODO: only chrome
+    },
+    get installed() {
+      return typeof window !== 'undefined' && Boolean(window.okxwallet);
     },
   },
   {

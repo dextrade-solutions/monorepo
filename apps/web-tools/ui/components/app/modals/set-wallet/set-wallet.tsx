@@ -1,35 +1,13 @@
-import {
-  Box,
-  Typography,
-  Button,
-  MenuList,
-  ListItemText,
-  TextField,
-  ListItemSecondaryAction,
-  Divider,
-  ListItemButton,
-  ListItemAvatar,
-} from '@mui/material';
-import { shortenAddress } from 'dex-helpers';
+import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import {
-  CopyData,
-  UrlIcon,
-  ButtonIcon,
-  AssetItem,
-  PulseLoader,
-  ModalProps,
-} from 'dex-ui';
-import React, { useCallback, useState } from 'react';
+import { CopyData, ButtonIcon, AssetItem, ModalProps } from 'dex-ui';
+import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
-import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
 import WalletList from '../../wallet-list';
-
-type ConfiguredWallet = { address: string; icon: string };
 
 const SetWallet = ({
   asset,
@@ -39,7 +17,7 @@ const SetWallet = ({
   hideModal,
 }: {
   asset: AssetModel;
-  value: WalletConnection | null;
+  value?: WalletConnection;
   open: boolean;
   isToAsset?: boolean;
   onChange: (v: WalletConnection | null) => void;
@@ -51,7 +29,7 @@ const SetWallet = ({
   const t = useI18nContext();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
-  const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
+  const [value, setValue] = useState<WalletConnection>(savedValue);
 
   const onSetInputWallet = () => {
     onChange({
@@ -118,6 +96,7 @@ const SetWallet = ({
         <Box>
           {canConnectExternalWallet && (
             <WalletList
+              value={savedValue}
               connectingWallet={loadingWallet}
               connectionType={connectionType}
               onSelectWallet={onSelectWallet}

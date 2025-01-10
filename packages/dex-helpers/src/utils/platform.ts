@@ -22,6 +22,10 @@ export const isMobileWeb: boolean =
   typeof navigator !== 'undefined' &&
   /iPhone|iPad|iPod|Android|Mobi/i.test(navigator.userAgent);
 
+export const isMetamaskWebView =
+  typeof navigator !== 'undefined' &&
+  /WebView MetaMaskMobile/i.test(navigator.userAgent);
+
 // Operating System
 // via https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
 export const isWebIOS: boolean =

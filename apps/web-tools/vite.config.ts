@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
-// import mkcert from 'vite-plugin-mkcert';
+import mkcert from 'vite-plugin-mkcert';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -12,6 +12,7 @@ import { VitePluginRadar } from 'vite-plugin-radar';
 export default defineConfig({
   base: '/',
   plugins: [
+    mkcert(),
     react(),
     VitePluginRadar({
       analytics: {

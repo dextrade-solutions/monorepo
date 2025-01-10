@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   ListItemAvatar,
   ListItemButton,
   ListItemIcon,
@@ -8,7 +9,12 @@ import {
   MenuList,
   Typography,
 } from '@mui/material';
-import { isMobileWeb, shortenAddress, WalletConnectionType } from 'dex-helpers';
+import {
+  isMetamaskWebView,
+  isMobileWeb,
+  shortenAddress,
+  WalletConnectionType,
+} from 'dex-helpers';
 import {
   ButtonIcon,
   Icon,
@@ -16,23 +22,28 @@ import {
   UrlIcon,
   useGlobalModalContext,
 } from 'dex-ui';
-import React from 'react';
+import { isEqual } from 'lodash';
+import React, { useState } from 'react';
 
 import { useWallets, WalletItem } from '../../hooks/asset/useWallets';
+import { WalletConnection } from '../../types';
 
 export default function WalletList({
+  value,
   onlyConnected,
   connectingWallet,
   connectingWalletLabel = 'Connecting',
   connectionType,
   onSelectWallet,
 }: {
+  value: WalletConnection; // selected item
   onlyConnected?: boolean;
   connectingWallet?: WalletItem;
   connectionType?: WalletConnectionType[];
   connectingWalletLabel?: string;
   onSelectWallet?: (item: WalletItem) => void;
 }) {
+  const [toInstallWallet, setToInstallWallet] = useState<WalletItem>();
   const { showModal } = useGlobalModalContext();
   const wallets = useWallets({
     connectionType,
@@ -54,35 +65,88 @@ export default function WalletList({
     });
   };
 
+  const showWalletsList = !toInstallWallet && !connectingWallet;
+
   const renderList = onlyConnected
     ? wallets.filter((i) => i.connected)
     : wallets;
+
+  const pickWallet = (item: WalletItem) => {
+    // eslint-disable-next-line no-restricted-syntax
+    const hasInstalledProp = 'installed' in (item.metadata || {});
+    if (!isMobileWeb && hasInstalledProp && !item.metadata.installed) {
+      return setToInstallWallet(item);
+    }
+    return onSelectWallet && onSelectWallet(item);
+  };
   return (
     <>
-      {connectingWallet ? (
+      {!showWalletsList && (
         <Box
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
+          my={2}
         >
-          <UrlIcon size={40} url={connectingWallet.icon} />
-          <Typography my={2}>
-            {connectingWalletLabel} {connectingWallet.name}
-          </Typography>
-          <PulseLoader />
+          {connectingWallet && (
+            <>
+              <UrlIcon size={40} url={connectingWallet.icon} />
+              <Typography my={2}>
+                {connectingWalletLabel} {connectingWallet.name}
+              </Typography>
+              <PulseLoader />
+            </>
+          )}
+          {toInstallWallet && (
+            <>
+              <UrlIcon size={40} url={toInstallWallet.icon} />
+              <Typography my={2}>
+                {toInstallWallet.name} is not detected
+              </Typography>
+              {toInstallWallet.metadata.guide && (
+                <Button
+                  href={toInstallWallet.metadata.guide.desktop}
+                  target="_blank"
+                  variant="outlined"
+                >
+                  Setup guide
+                </Button>
+              )}
+              {toInstallWallet.metadata.downloadLink && (
+                <Button
+                  sx={{ my: 1 }}
+                  variant="contained"
+                  href={toInstallWallet.metadata.downloadLink}
+                  target="_blank"
+                >
+                  Install
+                </Button>
+              )}
+            </>
+          )}
         </Box>
-      ) : (
+      )}
+      {showWalletsList && (
         <MenuList>
+          <ListItemButton>{navigator.userAgent}</ListItemButton>
           {renderList.map((item, idx) => (
             <Box data-testid={item.id} key={idx} marginTop={1}>
               <ListItemButton
                 sx={{
-                  backgroundcolor: 'secondary.dark',
+                  bgcolor:
+                    item.connected && isEqual(item.connected, value)
+                      ? 'secondary.dark'
+                      : undefined,
                 }}
                 className="bordered"
-                href={isMobileWeb ? item.metadata?.deepLink : undefined}
-                onClick={() => onSelectWallet && onSelectWallet(item)}
+                href={
+                  isMobileWeb && !isMetamaskWebView
+                    ? item.metadata?.deepLink
+                    : undefined
+                }
+                target="_blank"
+                onClick={() => pickWallet(item)}
               >
                 {item.metadata && !item.metadata.isSupported && (
                   <ListItemIcon>
