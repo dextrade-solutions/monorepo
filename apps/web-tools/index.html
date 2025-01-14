@@ -57,10 +57,24 @@
 
       <!-- Loading Screen -->
       <div id="loading-container">
-        <video width="150px" autoplay loop muted>
+        <video width="150px" autoplay loop muted playsinline>
+          <source id="safariPreloaderSource" src="/images/logo/logo-animated.mov">
           <source src="/images/logo/logo-animated.webm" type="video/webm">
         </video>
       </div>
+      <script>
+      function supportsHEVCAlpha() {
+            const navigator = window.navigator;
+            const ua = navigator.userAgent.toLowerCase()
+            const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
+            const isSafari = ((ua.indexOf('safari') != -1) && (!(ua.indexOf('chrome')!= -1) && (ua.indexOf('version/')!= -1)))
+            return isSafari && hasMediaCapabilities;
+        }
+
+        if (!supportsHEVCAlpha()) {
+          document.getElementById('safariPreloaderSource').remove();
+        }
+      </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
