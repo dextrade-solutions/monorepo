@@ -26,8 +26,10 @@ import {
   SETTINGS_GENERAL_ROUTE,
   PLANS_ROUTE,
 } from '../helpers/constants/routes';
+import { useAuthP2P } from '../hooks/useAuthP2P';
 
 export default function RoutesRoot() {
+  const { login } = useAuthP2P();
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
   const navigate = useNavigate();
@@ -41,6 +43,7 @@ export default function RoutesRoot() {
   useEffect(() => {
     const { keyringController } = engine;
     keyringController.init({ sessionSeed });
+    login();
     // if (!isConnected) {
     // clear cache on disconnect
     // dispatch(clearAuthState());

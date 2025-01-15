@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Card,
-  Switch,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Button, Card, Typography, useMediaQuery } from '@mui/material';
 import classNames from 'classnames';
-import { Icon, useGlobalModalContext } from 'dex-ui';
+import { ButtonIcon, Icon, useGlobalModalContext } from 'dex-ui';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
@@ -20,6 +13,7 @@ import SelectCoins from '../../ui/select-coins';
 import P2PExchangers from '../p2p-ads';
 import WalletConnectButton from '../wallet-connect-button';
 import './index.scss';
+import ButtonAppConfig from '../button-app-config';
 
 export default function P2PSwap() {
   const { showModal } = useGlobalModalContext();
@@ -28,14 +22,6 @@ export default function P2PSwap() {
   const wallets = useWallets();
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;
 
-  const currentTheme = useSelector(getCurrentTheme);
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const isDarkMode =
-    currentTheme === 'system' ? prefersDarkMode : currentTheme === 'dark';
-  const toggleDarkMode = () => {
-    const toggleValue = isDarkMode ? 'light' : 'dark';
-    dispatch(setTheme(toggleValue));
-  };
   return (
     <Box>
       <Box
@@ -49,7 +35,7 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        <WalletConnectButton />
+        {/* <WalletConnectButton /> */}
         <Box marginLeft={2}>
           {Boolean(connectedWalletsLength) && (
             <Button
@@ -63,13 +49,8 @@ export default function P2PSwap() {
             </Button>
           )}
         </Box>
-        <Box marginLeft={2} paddingTop={1}>
-          <DarkModeSwitch
-            checked={isDarkMode}
-            onChange={toggleDarkMode}
-            moonColor="white"
-            sunColor="dark"
-          />
+        <Box ml={2}>
+          <ButtonAppConfig />
         </Box>
       </Box>
       <Card

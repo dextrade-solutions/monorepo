@@ -80,7 +80,7 @@ export function PlanItem({
             )}
             {Boolean(value.refillGasRequests) && (
               <Box display="flex" justifyContent="space-between">
-                <Typography>Super fees</Typography>
+                <Typography>Super fees for TRC20 network</Typography>
                 <Typography color="text.secondary">
                   {value.refillGasRequests} requests
                 </Typography>

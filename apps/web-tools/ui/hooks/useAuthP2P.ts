@@ -20,7 +20,6 @@ import { WalletConnectionType } from '../helpers/constants/wallets';
 import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
 export function useAuthP2P() {
-  const { keyring } = engine.keyringController;
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
   const keypairConnection = useConnection(keypairWalletConnection);
@@ -30,6 +29,7 @@ export function useAuthP2P() {
       WalletConnectionType.eip6963,
       WalletConnectionType.tronlink,
     ],
+    includeKeypairWallet: true,
   });
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
@@ -47,7 +47,7 @@ export function useAuthP2P() {
     }: {
       walletId?: string | null;
       onSuccess?: (...args: any) => any;
-    }) => {
+    } = {}) => {
       const { apikey } = getAuth(store.getState());
       const { signature } = getSession(store.getState());
       let loginWallet =
@@ -63,7 +63,9 @@ export function useAuthP2P() {
         await loginWallet.connect();
       }
       const onSignedMessage = async (sign: string) => {
-        await dispatch(login(keyring, sign, loginWallet.id));
+        await dispatch(
+          login(engine.keyringController.keyring, sign, loginWallet.id),
+        );
         return onSuccess && onSuccess();
       };
 

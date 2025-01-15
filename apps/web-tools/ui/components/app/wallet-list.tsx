@@ -129,7 +129,6 @@ export default function WalletList({
       )}
       {showWalletsList && (
         <MenuList>
-          <ListItemButton>{navigator.userAgent}</ListItemButton>
           {renderList.map((item, idx) => (
             <Box data-testid={item.id} key={idx} marginTop={1}>
               <ListItemButton
