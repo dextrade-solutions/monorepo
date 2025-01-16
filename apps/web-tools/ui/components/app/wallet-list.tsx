@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   ListItemAvatar,
@@ -91,6 +92,13 @@ export default function WalletList({
         >
           {connectingWallet && (
             <>
+              {connectingWallet.name === 'MetaMask' && (
+                <Box>
+                  <Alert severity="info">
+                    Make sure you have the latest version of Metamask app
+                  </Alert>
+                </Box>
+              )}
               <UrlIcon size={40} url={connectingWallet.icon} />
               <Typography my={2}>
                 {connectingWalletLabel} {connectingWallet.name}
@@ -173,7 +181,7 @@ export default function WalletList({
                     <ButtonIcon
                       size="lg"
                       iconName="disconnect"
-                      onClick={(e) => {
+                      onClick={(e: Event) => {
                         e.stopPropagation();
                         onDisconnect(item);
                       }}

@@ -63,11 +63,6 @@ const LoginModal = ({
         <Divider />
       </Box>
       <Box>
-        <Box>
-          <Alert severity="info">
-            Make sure you have the latest version of Metamask app
-          </Alert>
-        </Box>
         <WalletList
           connectingWallet={loadingWallet}
           connectingWalletLabel="Login via"

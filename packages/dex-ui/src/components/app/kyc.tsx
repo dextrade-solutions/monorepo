@@ -47,7 +47,7 @@ export default function KycIndentification({
   switch (!isError && kycInfo?.status) {
     case KycStatuses.unused:
       alert = (
-        <Alert severity="warning">
+        <Alert severity="info">
           Status:
           <Typography fontWeight="bold">In progress</Typography>
           Please, complete all KYC stages
