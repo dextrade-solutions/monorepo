@@ -35,10 +35,8 @@ export function App() {
             locale={locale}
           >
             <CssBaseline />
-            <Container maxWidth="sm">
-              <Box>
-                <Pages />
-              </Box>
+            <Container sx={{ py: 2 }} maxWidth="sm">
+              <Pages />
             </Container>
           </DexUiProvider>
         </Web3SolanaProvider>

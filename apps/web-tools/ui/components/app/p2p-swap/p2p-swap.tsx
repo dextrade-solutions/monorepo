@@ -18,7 +18,7 @@ export default function P2PSwap() {
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;
 
   return (
-    <Box>
+    <>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -62,6 +62,6 @@ export default function P2PSwap() {
         </Box>
       </Card>
       <P2PExchangers />
-    </Box>
+    </>
   );
 }
