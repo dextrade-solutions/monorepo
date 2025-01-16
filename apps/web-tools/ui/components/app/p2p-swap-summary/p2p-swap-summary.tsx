@@ -49,44 +49,42 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           />
         </Box>
         <Divider />
-        <AssetPriceOutput
-          price={ad.coinPair.price}
-          tickerFrom={ad.fromCoin.ticker}
-          tickerTo={ad.toCoin.ticker}
-        />
+        <Box mb={1}>
+          <AssetPriceOutput
+            price={ad.coinPair.price}
+            tickerFrom={ad.fromCoin.ticker}
+            tickerTo={ad.toCoin.ticker}
+          />
+        </Box>
         {ad.minimumExchangeAmountCoin1 > 0 && (
-          <>
-            <Typography display="flex">
-              <span className="flex-grow">{t('min')}</span>
-              <span className="row-summary__value">
-                {formatFundsAmount(
-                  ad.minimumExchangeAmountCoin1,
-                  fromCoin.ticker,
-                )}
-                {` (${formatFundsAmount(
-                  ad.minimumExchangeAmountCoin2,
-                  toCoin.ticker,
-                )})`}
-              </span>
-            </Typography>
-          </>
+          <Typography display="flex">
+            <span className="flex-grow">{t('min')}</span>
+            <span className="row-summary__value">
+              {formatFundsAmount(
+                ad.minimumExchangeAmountCoin1,
+                fromCoin.ticker,
+              )}
+              {` (${formatFundsAmount(
+                ad.minimumExchangeAmountCoin2,
+                toCoin.ticker,
+              )})`}
+            </span>
+          </Typography>
         )}
         {ad.maximumExchangeAmountCoin1 > 0 && (
-          <>
-            <Typography display="flex">
-              <span className="flex-grow">{t('max')}</span>
-              <span className="row-summary__value">
-                {formatFundsAmount(
-                  ad.maximumExchangeAmountCoin1,
-                  fromCoin.ticker,
-                )}
-                {` (${formatFundsAmount(
-                  ad.maximumExchangeAmountCoin2,
-                  toCoin.ticker,
-                )})`}
-              </span>
-            </Typography>
-          </>
+          <Typography mb={1} display="flex">
+            <span className="flex-grow">{t('max')}</span>
+            <span className="row-summary__value">
+              {formatFundsAmount(
+                ad.maximumExchangeAmountCoin1,
+                fromCoin.ticker,
+              )}
+              {` (${formatFundsAmount(
+                ad.maximumExchangeAmountCoin2,
+                toCoin.ticker,
+              )})`}
+            </span>
+          </Typography>
         )}
         {/* Should we display user exchangerFee?
               {exchangerFeeCalulated > 0 && (

@@ -1,23 +1,18 @@
-import { Box, Button, Card, Typography, useMediaQuery } from '@mui/material';
+import { Box, Button, Card, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { ButtonIcon, Icon, useGlobalModalContext } from 'dex-ui';
+import { Icon, useGlobalModalContext } from 'dex-ui';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 import InputAmount from './input-amount';
-import { getCurrentTheme, setTheme } from '../../../ducks/app/app';
 import { useWallets } from '../../../hooks/asset/useWallets';
 import { useDetectSticky } from '../../../hooks/useDetectStycky';
 import SelectCoins from '../../ui/select-coins';
-import P2PExchangers from '../p2p-ads';
-import WalletConnectButton from '../wallet-connect-button';
-import './index.scss';
 import ButtonAppConfig from '../button-app-config';
+import P2PExchangers from '../p2p-ads';
+import './index.scss';
 
 export default function P2PSwap() {
   const { showModal } = useGlobalModalContext();
-  const dispatch = useDispatch();
   const [isSticky, ref] = useDetectSticky();
   const wallets = useWallets();
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;

@@ -249,7 +249,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">
             <Typography marginRight={1}>Slippage Tolerance</Typography>
+          </Box>
+          <Typography fontWeight="bold">
+            {slippage}%{' '}
             <ButtonIcon
+              iconProps={{
+                color: 'text.primary',
+              }}
               onClick={() =>
                 showModal({
                   name: 'SLIPPAGE_MODAL',
@@ -259,8 +265,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
               }
               iconName="setting-dex"
             />
-          </Box>
-          <Typography fontWeight="bold">{slippage}%</Typography>
+          </Typography>
         </Box>
         <Box mt={2}>
           <SwapFees

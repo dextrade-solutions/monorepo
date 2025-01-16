@@ -2,12 +2,18 @@ import { Box, Link } from '@mui/material';
 import { formatFundsAmount } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
 
-export default function AssetPriceOutput({ price, tickerFrom, tickerTo }) {
-  const [output, setOutput] = useState<{
-    price: number;
-    tickerFrom: string;
-    tickerTo: string;
-  }>({
+type Output = {
+  price: number;
+  tickerFrom: string;
+  tickerTo: string;
+};
+
+export default function AssetPriceOutput({
+  price,
+  tickerFrom,
+  tickerTo,
+}: Output) {
+  const [output, setOutput] = useState<Output>({
     price,
     tickerFrom,
     tickerTo,
@@ -39,7 +45,7 @@ export default function AssetPriceOutput({ price, tickerFrom, tickerTo }) {
       marginTop={1}
     >
       <Link
-        sx={{ cursor: 'alias' }}
+        sx={{ cursor: 'pointer' }}
         variant="body1"
         onClick={onClick}
         color="inherit"
@@ -47,7 +53,7 @@ export default function AssetPriceOutput({ price, tickerFrom, tickerTo }) {
         Per 1 {output.tickerFrom}
       </Link>
       <Link
-        sx={{ cursor: 'alias' }}
+        sx={{ cursor: 'pointer' }}
         variant="body1"
         fontWeight="bold"
         color="inherit"
