@@ -1,11 +1,60 @@
+import { Box, Link } from '@mui/material';
 import { formatFundsAmount } from 'dex-helpers';
+import React, { useEffect, useState } from 'react';
 
 export default function AssetPriceOutput({ price, tickerFrom, tickerTo }) {
-  let outputPrice = price;
-  let outputTicker = tickerFrom;
-  if (price < 1) {
-    outputPrice = 1 / price;
-    outputTicker = tickerTo;
-  }
-  return formatFundsAmount(outputPrice, outputTicker);
+  const [output, setOutput] = useState<{
+    price: number;
+    tickerFrom: string;
+    tickerTo: string;
+  }>({
+    price,
+    tickerFrom,
+    tickerTo,
+  });
+
+  const togglePrice = () => {
+    setOutput((v) => ({
+      price: 1 / v.price,
+      tickerFrom: v.tickerTo,
+      tickerTo: v.tickerFrom,
+    }));
+  };
+  useEffect(() => {
+    if (price < 1) {
+      togglePrice();
+    }
+  }, []);
+
+  const onClick = (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    togglePrice();
+  };
+  return (
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignContent="center"
+      marginTop={1}
+    >
+      <Link
+        sx={{ cursor: 'alias' }}
+        variant="body1"
+        onClick={onClick}
+        color="inherit"
+      >
+        Per 1 {output.tickerFrom}
+      </Link>
+      <Link
+        sx={{ cursor: 'alias' }}
+        variant="body1"
+        fontWeight="bold"
+        color="inherit"
+        onClick={onClick}
+      >
+        {formatFundsAmount(output.price, output.tickerTo)}
+      </Link>
+    </Box>
+  );
 }

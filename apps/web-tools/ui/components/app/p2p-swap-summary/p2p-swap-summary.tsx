@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { NetworkNames, formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
-import { ExchangerUserPreview } from 'dex-ui';
+import { ExchangerUserPreview, AssetPriceOutput } from 'dex-ui';
 import React from 'react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -49,18 +49,11 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           />
         </Box>
         <Divider />
-        <Typography marginTop={3} display="flex">
-          <span className="flex-grow">Price per 1 {fromCoin.ticker}</span>
-          <span className="row-summary__value">
-            {formatFundsAmount(ad.priceInCoin2, toCoin.ticker)}
-          </span>
-        </Typography>
-        <Typography display="flex">
-          <span className="flex-grow">Price per 1 {toCoin.ticker}</span>
-          <span className="row-summary__value">
-            {formatFundsAmount(1 / ad.priceInCoin2, fromCoin.ticker)}
-          </span>
-        </Typography>
+        <AssetPriceOutput
+          price={ad.coinPair.price}
+          tickerFrom={ad.fromCoin.ticker}
+          tickerTo={ad.toCoin.ticker}
+        />
         {ad.minimumExchangeAmountCoin1 > 0 && (
           <>
             <Typography display="flex">

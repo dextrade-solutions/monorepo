@@ -118,14 +118,7 @@ export function SwapFees(fees: {
                               </Typography>
                             }
                             onClick={() => {
-                              if (isAuthenticated) {
-                                buyPlan();
-                              } else {
-                                showModal({
-                                  name: 'LOGIN_MODAL',
-                                  onSuccess: () => setLoggedIn(true),
-                                });
-                              }
+                              buyPlan();
                             }}
                           ></Chip>
                         </Box>

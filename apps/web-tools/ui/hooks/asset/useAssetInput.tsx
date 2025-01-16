@@ -65,19 +65,15 @@ export const useAssetInput = ({
   };
 
   const showPaymentMethod = () => {
-    if (isAuthenticated) {
-      login({
-        onSuccess: () =>
-          showModal({
-            name: 'SET_PAYMENT_METHOD',
-            asset,
-            value: paymentMethod,
-            onChange: (v) => setPaymentMethod(v),
-          }),
-      });
-    } else {
-      showModal({ name: 'LOGIN_MODAL' });
-    }
+    login({
+      onSuccess: () =>
+        showModal({
+          name: 'SET_PAYMENT_METHOD',
+          asset,
+          value: paymentMethod,
+          onChange: (v) => setPaymentMethod(v),
+        }),
+    });
   };
 
   const makeTransfer = (recipient: string) => {
