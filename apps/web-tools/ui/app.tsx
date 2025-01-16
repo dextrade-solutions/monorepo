@@ -36,7 +36,7 @@ export function App() {
           >
             <CssBaseline />
             <Container maxWidth="sm">
-              <Box paddingY={3}>
+              <Box>
                 <Pages />
               </Box>
             </Container>

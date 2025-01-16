@@ -34,7 +34,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
       <div>
         <Box display="flex">
           <ExchangerUserPreview
-            marginBottom={3}
+            marginBottom={2}
             avatarUrl={getUserAvatarUrl(ad.avatar)}
             name={ad.name}
             isActive={ad.isExchangerActive}
@@ -48,7 +48,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             }}
           />
         </Box>
-        <Divider />
+        {/* <Divider /> */}
         <Box mb={1}>
           <AssetPriceOutput
             price={ad.coinPair.price}

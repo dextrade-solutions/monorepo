@@ -244,7 +244,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           onChange={onInputAmountTo}
         />
       </Box>
-      <Box padding={2}>
+      <Box
+        sx={{
+          px: { xs: 1, lg: 2 },
+        }}
+        pt={1}
+        pb={2}
+      >
         <P2PSwapSummary exchange={ad} />
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">

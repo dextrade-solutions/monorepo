@@ -42,7 +42,7 @@ const AdPreview = ({
     >
       <CardActionArea>
         <CardContent>
-          <Box display="flex" justifyContent="space-between" marginBottom={2}>
+          <Box display="flex" justifyContent="space-between" marginBottom={1}>
             <ExchangerUserPreview
               avatarUrl={getAvatarLink(ad.avatar)}
               name={ad.name}
