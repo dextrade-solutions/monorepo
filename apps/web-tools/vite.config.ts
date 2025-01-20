@@ -15,7 +15,7 @@ export default defineConfig({
     react(),
     VitePluginRadar({
       analytics: {
-        id: 'G-TP5FLD97M4',
+        id: 'G-ZD7TS07S52',
       },
     }),
     VitePWA({
