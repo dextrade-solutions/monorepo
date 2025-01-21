@@ -149,7 +149,7 @@ export default function WalletList({
                 className="bordered"
                 href={
                   isMobileWeb && !isMetamaskWebView
-                    ? item.metadata?.deepLink
+                    ? item.metadata?.deepLink + window.location.href
                     : undefined
                 }
                 target="_blank"
@@ -182,6 +182,7 @@ export default function WalletList({
                       size="lg"
                       iconName="disconnect"
                       onClick={(e: Event) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         onDisconnect(item);
                       }}

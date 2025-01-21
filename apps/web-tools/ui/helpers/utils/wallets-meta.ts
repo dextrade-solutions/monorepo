@@ -61,8 +61,8 @@ export const WALLETS_META = [
   {
     name: 'metamask',
     icon: `/images/wallets/metamask.png`,
-    deepLink: 'https://metamask.app.link/dapp/p2p-staging.dextrade.com/',
-    downloadLink: 'https://metamask.app.link/dapp/p2p-staging.dextrade.com/',
+    deepLink: 'https://metamask.app.link/dapp/',
+    downloadLink: 'https://metamask.app.link/dapp/',
     get isSupported() {
       return true; // TODO: only chrome, firefox, opera
     },
@@ -76,8 +76,7 @@ export const WALLETS_META = [
     get installed() {
       return Boolean(getTrustWalletProvider());
     },
-    deepLink:
-      'https://link.trustwallet.com/open_url?coin_id=20000714&url=https://p2p-staging.dextrade.com/',
+    deepLink: 'https://link.trustwallet.com/open_url?coin_id=20000714&url=',
     downloadLink: 'https://trustwallet.com/browser-extension',
     guide: {
       desktop: 'https://trustwallet.com/browser-extension',
@@ -91,7 +90,7 @@ export const WALLETS_META = [
     name: 'okx wallet',
     downloadLink: 'https://www.okx.com/download',
     deepLink:
-      'https://www.okx.com/download?deeplink=okx%3A%2F%2Fwallet%2Fdapp%2Furl%3FdappUrl%3Dhttps%253A%252F%252Fp2p-staging.dextrade.com',
+      'https://www.okx.com/download?deeplink=okx%3A%2F%2Fwallet%2Fdapp%2Furl%3FdappUrl%3D',
     guide: {
       desktop: 'https://www.okx.com/web3',
       mobile: 'https://www.okx.com/web3',
