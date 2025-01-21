@@ -1,7 +1,9 @@
 import {
+  Alert,
   Box,
   Button,
   Card,
+  CardContent,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -12,24 +14,29 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { UserModel } from 'dex-helpers/types';
 import { userService } from 'dex-services';
-import { ButtonIcon, Icon, UserAvatar } from 'dex-ui';
+import { ButtonIcon, Icon, useGlobalModalContext, UserAvatar } from 'dex-ui';
+import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   HOME_ROUTE,
   KYC_ROUTE,
   PAYMENT_METHODS_ROUTE,
+  PLANS_ROUTE,
   SETTINGS_GENERAL_ROUTE,
-  SWAPS_HISTORY_ROUTE,
 } from '../../helpers/constants/routes';
 import { useAuthP2P } from '../../hooks/useAuthP2P';
+import { useAuthWallet } from '../../hooks/useAuthWallet';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function P2PSettings() {
   const t = useI18nContext();
+  const { showModal } = useGlobalModalContext();
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuthP2P();
+
+  const { wallet } = useAuthWallet();
 
   const { isLoading, data: user } = useQuery<UserModel>({
     queryKey: ['dextradeUser'],
@@ -41,6 +48,10 @@ export default function P2PSettings() {
   const onLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const login = () => {
+    showModal({ name: 'LOGIN_MODAL' });
   };
 
   return (
@@ -63,37 +74,53 @@ export default function P2PSettings() {
         sx={{ bgcolor: 'primary.light' }}
       >
         <Box padding={2}>
-          <Box margin={2}>
-            {isLoading ? (
-              <Box display="flex">
-                <Skeleton variant="circular" width={40} height={40} />
-                <Box display="flex" marginLeft={1}>
-                  <Skeleton width={100} />
+          {wallet ? (
+            <Box margin={1}>
+              {isLoading ? (
+                <Box display="flex">
+                  <Skeleton variant="circular" width={40} height={40} />
+                  <Box display="flex" marginLeft={1}>
+                    <Skeleton width={100} />
+                  </Box>
+                  <Box className="flex-grow" />
+                  <Skeleton width={70} />
+                  <Box display="flex" marginLeft={1}>
+                    <Skeleton width={30} />
+                  </Box>
                 </Box>
-                <Box className="flex-grow" />
-                <Skeleton width={70} />
-                <Box display="flex" marginLeft={1}>
-                  <Skeleton width={30} />
+              ) : (
+                <Box display="flex" alignItems="center">
+                  <UserAvatar name={user?.name} />
+                  <Typography marginLeft={1} fontWeight="bold">
+                    {user?.name}
+                  </Typography>
+                  <Box className="flex-grow" />
+                  <Box marginLeft={1}>
+                    <ButtonIcon
+                      iconName="logout"
+                      size="lg"
+                      color="primary"
+                      onClick={onLogout}
+                    />
+                  </Box>
                 </Box>
-              </Box>
-            ) : (
-              <Box display="flex" alignItems="center">
-                <UserAvatar name={user?.name} />
-                <Typography marginLeft={1} fontWeight="bold">
-                  {user?.name}
-                </Typography>
-                <Box className="flex-grow" />
-                <Box marginLeft={1}>
-                  <ButtonIcon
-                    iconName="logout"
-                    size="lg"
-                    color="primary"
-                    onClick={onLogout}
-                  />
-                </Box>
-              </Box>
-            )}
-          </Box>
+              )}
+            </Box>
+          ) : (
+            <Box margin={1}>
+              <Alert
+                severity="warning"
+                action={
+                  <Button variant="outlined" onClick={login}>
+                    Auth wallet
+                  </Button>
+                }
+              >
+                Your personal data is stored locally in the web browser. You can
+                assign it to your own wallet.
+              </Alert>
+            </Box>
+          )}
           <Box display="flex" alignItems="center" marginTop={3}>
             {pathnames.map((value, index) => {
               const to = `/${pathnames.slice(0, index + 1).join('/')}`;
@@ -152,6 +179,12 @@ export default function P2PSettings() {
                   <Icon name="info" color="secondary" />
                 </ListItemIcon>
                 <ListItemText>{t('kyc')}</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={() => navigate(PLANS_ROUTE)}>
+                <ListItemIcon>
+                  <Icon name="card" color="secondary" />
+                </ListItemIcon>
+                <ListItemText>{t('plans')}</ListItemText>
               </MenuItem>
             </MenuList>
           )}

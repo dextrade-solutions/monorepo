@@ -1,4 +1,3 @@
-import { QueryClient } from '@tanstack/react-query';
 import { ServiceBridge } from 'dex-services';
 
 import KeyringController from './controllers/keyring';
@@ -15,14 +14,9 @@ class Engine {
 
   swapsController: SwapsController;
 
-  queryClient: QueryClient;
-
   private constructor() {
     this.keyringController = new KeyringController();
-    this.queryClient = new QueryClient();
-    this.swapsController = new SwapsController({
-      queryClient: this.queryClient,
-    });
+    this.swapsController = new SwapsController();
 
     this.initP2PService();
   }
@@ -50,7 +44,8 @@ class Engine {
     ServiceBridge.instance.init({
       baseUrl: DEXTRADE_BASE_URL,
       customFetch: (fetchUrl, config) => {
-        const url = `${DEXTRADE_BASE_URL}${new URL(fetchUrl).pathname}`;
+        const urlInstance = new URL(fetchUrl);
+        const url = `${DEXTRADE_BASE_URL}${urlInstance.pathname}${urlInstance.search}`;
         const { auth } = store.getState();
         const isPublicUrl = String(url).includes('public/');
         if (auth.authData.apikey && !isPublicUrl) {

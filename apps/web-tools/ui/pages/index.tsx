@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { Kyc } from 'dex-ui';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,11 +7,11 @@ import { NoMatchPage } from './404';
 import Home from './home';
 import AppSettings from './settings';
 import AppSettingsGeneral from './settings/general';
+import { Plans } from './settings/plans';
 import SwapProcessing from './swap-processing';
 import SwapView from './swap-view';
 import SwapHistory from './trade-history';
 import engine from '../../app/engine';
-import { Modal } from '../components/app/modals';
 import SigningModal from '../components/app/modals/signing-modal';
 import PaymentMethods from '../components/app/payment-methods';
 import { getSessionSeed } from '../ducks/auth';
@@ -25,12 +24,14 @@ import {
   KYC_ROUTE,
   PAYMENT_METHODS_ROUTE,
   SETTINGS_GENERAL_ROUTE,
+  PLANS_ROUTE,
 } from '../helpers/constants/routes';
+import { useAuthP2P } from '../hooks/useAuthP2P';
 
 export default function RoutesRoot() {
+  const { login } = useAuthP2P();
   const dispatch = useDispatch();
   const sessionSeed = useSelector(getSessionSeed);
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -42,6 +43,7 @@ export default function RoutesRoot() {
   useEffect(() => {
     const { keyringController } = engine;
     keyringController.init({ sessionSeed });
+    login();
     // if (!isConnected) {
     // clear cache on disconnect
     // dispatch(clearAuthState());
@@ -49,12 +51,11 @@ export default function RoutesRoot() {
     // queryClient.removeQueries({ queryKey: ['p2pTradesActive'], exact: true });
     // queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
     // }
-  }, [dispatch, sessionSeed, queryClient, navigate]);
+  }, [dispatch, sessionSeed, navigate]);
 
   return (
     <>
       <SigningModal />
-      <Modal />
       <Routes>
         <Route path={HOME_ROUTE} element={<Home />} />
         <Route path={EXCHANGE_VIEW_ROUTE} element={<SwapView />} />
@@ -70,6 +71,7 @@ export default function RoutesRoot() {
             path={SETTINGS_GENERAL_ROUTE}
             element={<AppSettingsGeneral />}
           />
+          <Route path={PLANS_ROUTE} element={<Plans />} />
         </Route>
         <Route path="*" element={<NoMatchPage />} />
       </Routes>

@@ -94,6 +94,13 @@ class LedgerConnection {
       console.error('Error disconnecting from Ledger:', error);
     }
   }
+
+  signMessage() {
+    // TODO: implement
+  }
+  getCurrentAddress() {
+    // TODO: implement
+  }
 }
 
 const ledgerWalletConnection = new LedgerConnection();

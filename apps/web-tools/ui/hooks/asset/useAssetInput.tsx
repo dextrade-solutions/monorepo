@@ -1,5 +1,6 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
+import { useGlobalModalContext } from 'dex-ui';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,11 +11,8 @@ import { useSendTransaction } from './useSendTransaction';
 import { useWallets } from './useWallets';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import {
-  getAssetAccount,
-  setAssetAccount,
-  showModal,
-} from '../../ducks/app/app';
+import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
+import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
 import { useAuthWallet } from '../useAuthWallet';
 
@@ -25,6 +23,7 @@ export const useAssetInput = ({
   asset: AssetModel;
   isToAsset?: boolean;
 }) => {
+  const { showModal } = useGlobalModalContext();
   const { isAuthenticated } = useAuthWallet();
   const dispatch = useDispatch();
   const { login } = useAuthP2P();
@@ -49,46 +48,38 @@ export const useAssetInput = ({
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
-    dispatch(
-      showModal({
-        name: 'SET_WALLET',
-        asset,
-        isToAsset,
-        value: walletConnection,
-        onChange: (v) => {
-          dispatch(
-            setAssetAccount({
-              asset,
-              assetAccount: v,
-            }),
-          );
-        },
-      }),
-    );
+    showModal({
+      name: 'SET_WALLET',
+      asset,
+      isToAsset,
+      value: walletConnection,
+      onChange: (v: WalletConnection) => {
+        dispatch(
+          setAssetAccount({
+            asset,
+            assetAccount: v,
+          }),
+        );
+      },
+    });
   };
 
   const showPaymentMethod = () => {
-    if (isAuthenticated) {
-      login({
-        onSuccess: () =>
-          dispatch(
-            showModal({
-              name: 'SET_PAYMENT_METHOD',
-              asset,
-              value: paymentMethod,
-              onChange: (v) => setPaymentMethod(v),
-            }),
-          ),
-      });
-    } else {
-      dispatch(showModal({ name: 'LOGIN_MODAL' }));
-    }
+    login({
+      onSuccess: () =>
+        showModal({
+          name: 'SET_PAYMENT_METHOD',
+          asset,
+          value: paymentMethod,
+          onChange: (v) => setPaymentMethod(v),
+        }),
+    });
   };
 
   const makeTransfer = (recipient: string) => {
     sendTransaction(recipient, Number(inputAmount), {
       onSuccess: (txHash) => {
-        debugger;
+        console.info(txHash);
       },
       onError: (err) => {},
     });
@@ -125,16 +116,14 @@ export const useAssetInput = ({
     awaitingDepositAmount?: number;
     onSuccess: () => void;
   }) => {
-    dispatch(
-      showModal({
-        name: 'DEPOSIT_WALLET',
-        asset: native,
-        awaitingDepositAmount,
-        description: 'To start the swap, you need to deposit the native token',
-        address: walletConnection?.address,
-        onSuccess,
-      }),
-    );
+    showModal({
+      name: 'DEPOSIT_WALLET',
+      asset: native,
+      awaitingDepositAmount,
+      description: 'To start the swap, you need to deposit the native token',
+      address: walletConnection?.address,
+      onSuccess,
+    });
   };
 
   const onSetAmount = (v: string | number | null) => {

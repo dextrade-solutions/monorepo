@@ -1,33 +1,27 @@
-import '../styles.scss';
-import {
-  Box,
-  Typography,
-  MenuList,
-  ListItemText,
-  Divider,
-  ListItemButton,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  Alert,
-} from '@mui/material';
-import { UrlIcon, ButtonIcon, PulseLoader } from 'dex-ui';
+import { Box, Typography, Divider, Alert } from '@mui/material';
+import { ButtonIcon, ModalProps } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { clearAuthState } from '../../../../ducks/auth';
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalProps } from '../types';
+import WalletList from '../../wallet-list';
 
-const LoginModal = ({ hideModal }: ModalProps) => {
+const LoginModal = ({
+  hideModal,
+  onSuccess,
+}: { onSuccess: () => void } & ModalProps) => {
   const t = useI18nContext();
   const [loadingWallet, setLoadingWallet] = useState();
   const dispatch = useDispatch();
   const wallets = useWallets({
-    connectionType: [WalletConnectionType.eip6963],
+    connectionType: [
+      WalletConnectionType.eip6963,
+      WalletConnectionType.tronlink,
+    ],
   });
   const { login } = useAuthP2P();
 
@@ -43,16 +37,14 @@ const LoginModal = ({ hideModal }: ModalProps) => {
           walletId: item.id,
         });
         hideModal();
+        onSuccess && onSuccess();
       } catch (e) {
         console.error(e);
         setLoadingWallet(null);
       }
     },
-    [hideModal, login, dispatch],
+    [hideModal, login, dispatch, onSuccess],
   );
-  const renderList = loadingWallet
-    ? wallets.filter((i) => i.name === loadingWallet.name)
-    : wallets;
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -71,52 +63,18 @@ const LoginModal = ({ hideModal }: ModalProps) => {
         <Divider />
       </Box>
       <Box>
-        <Box>
-          <Alert severity="info">
-            Make sure you have the latest version of Metamask app
-          </Alert>
-        </Box>
-        {loadingWallet ? (
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <UrlIcon size={40} url={loadingWallet.icon} />
-            <Typography my={2}>Signing in via {loadingWallet.name}</Typography>
-            <PulseLoader />
-          </Box>
-        ) : (
-          <MenuList>
-            {wallets.map((item, idx) => (
-              <Box data-testid={item.id} key={idx} marginTop={1}>
-                <ListItemButton
-                  sx={{
-                    backgroundcolor: 'secondary.dark',
-                  }}
-                  className="bordered"
-                  onClick={() => onSelectWallet(item)}
-                >
-                  <ListItemAvatar>
-                    <UrlIcon size={40} url={item.icon} />
-                  </ListItemAvatar>
-                  <ListItemText primary={item.name} />
-                </ListItemButton>
-              </Box>
-            ))}
-            {!wallets.length && (
-              <Typography color="text.secondary">
-                No wallets detected...
-              </Typography>
-            )}
-          </MenuList>
-        )}
+        <WalletList
+          connectingWallet={loadingWallet}
+          connectingWalletLabel="Login via"
+          connectionType={[
+            WalletConnectionType.eip6963,
+            WalletConnectionType.tronlink,
+          ]}
+          onSelectWallet={onSelectWallet}
+        />
       </Box>
     </Box>
   );
 };
 
-const LoginModalComponent = withModalProps(LoginModal);
-
-export default LoginModalComponent;
+export default LoginModal;

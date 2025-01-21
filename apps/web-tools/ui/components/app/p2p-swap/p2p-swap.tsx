@@ -1,51 +1,24 @@
-import {
-  Box,
-  Button,
-  Card,
-  Switch,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Button, Card, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { ButtonIcon, Icon } from 'dex-ui';
+import { Icon, useGlobalModalContext } from 'dex-ui';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 import InputAmount from './input-amount';
-import { getCurrentTheme, setTheme, showModal } from '../../../ducks/app/app';
-import { getAuth } from '../../../ducks/auth';
-import {
-  SWAPS_HISTORY_ROUTE,
-  SETTINGS_ROUTE,
-} from '../../../helpers/constants/routes';
 import { useWallets } from '../../../hooks/asset/useWallets';
-import { useAuthP2P } from '../../../hooks/useAuthP2P';
 import { useDetectSticky } from '../../../hooks/useDetectStycky';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import SelectCoins from '../../ui/select-coins';
+import ButtonAppConfig from '../button-app-config';
 import P2PExchangers from '../p2p-ads';
-
 import './index.scss';
-import WalletConnectButton from '../wallet-connect-button';
 
 export default function P2PSwap() {
-  const dispatch = useDispatch();
+  const { showModal } = useGlobalModalContext();
   const [isSticky, ref] = useDetectSticky();
   const wallets = useWallets();
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;
 
-  const currentTheme = useSelector(getCurrentTheme);
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const isDarkMode =
-    currentTheme === 'system' ? prefersDarkMode : currentTheme === 'dark';
-  const toggleDarkMode = () => {
-    const toggleValue = isDarkMode ? 'light' : 'dark';
-    dispatch(setTheme(toggleValue));
-  };
   return (
-    <Box>
+    <>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -57,12 +30,12 @@ export default function P2PSwap() {
           P2P
         </Typography>
         <div className="flex-grow" />
-        <WalletConnectButton />
+        {/* <WalletConnectButton /> */}
         <Box marginLeft={2}>
           {Boolean(connectedWalletsLength) && (
             <Button
               color="inherit"
-              onClick={() => dispatch(showModal({ name: 'WALLETS_LIST' }))}
+              onClick={() => showModal({ name: 'CONNECTED_WALLETS_LIST' })}
             >
               <Typography fontWeight="bold" marginRight={1} variant="h6">
                 {connectedWalletsLength}
@@ -71,13 +44,8 @@ export default function P2PSwap() {
             </Button>
           )}
         </Box>
-        <Box marginLeft={2} paddingTop={1}>
-          <DarkModeSwitch
-            checked={isDarkMode}
-            onChange={toggleDarkMode}
-            moonColor="white"
-            sunColor="dark"
-          />
+        <Box ml={2}>
+          <ButtonAppConfig />
         </Box>
       </Box>
       <Card
@@ -94,6 +62,6 @@ export default function P2PSwap() {
         </Box>
       </Card>
       <P2PExchangers />
-    </Box>
+    </>
   );
 }

@@ -72,8 +72,8 @@ export const PaymentMethodForm = ({
   currency = null,
   onCancel,
   onCreated,
-  paymentMethodCurrencies = () => paymentService.listAllCurrency(),
-  paymentMethodList = () => paymentService.listAllBanks(),
+  paymentMethodCurrencies = () => paymentService.listAllCurrency().then((r) => r.data),
+  paymentMethodList = () => paymentService.listAllBanks().then((r) => r.data),
   paymentMethodCreateOrUpdate = (data) =>
     paymentService.save(data, { method: data.id ? 'PUT' : 'POST' }),
 }) => {

@@ -21,5 +21,18 @@
   "ACCOUNT_OPENING_DEPARTMENT": "Bank account opening department",
   "BAN": "Bank account",
   "BANK_TRANSFER": "Bank transfer",
-  "WIRE_TRANSFER": "Wire transfer"
+  "WIRE_TRANSFER": "Wire transfer",
+  "amlRequests": "AML Compliance",
+  "includeKyc": "KYC",
+  "aml": "AML Compliance",
+  "customerSupport": "Customer Support",
+  "apiAccess": "API Access",
+  "selfCustodianProcessing": "Self-Custodian Processing",
+  "basic": "Basic",
+  "optimal": "Optimal",
+  "pro": "Pro",
+  "essential": "Essential",
+  "standard": "Standard",
+  "premium": "Premium",
+  "refillGasRequests": "Super fees"
 }

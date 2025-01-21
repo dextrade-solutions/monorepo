@@ -1,5 +1,6 @@
 
 {
+  "plans": { "message": "Plans" },
   "viewAllTrades": { "message": "View all trades" },
   "ADDITIONAL_INFO": {
     "message": "Additional info"

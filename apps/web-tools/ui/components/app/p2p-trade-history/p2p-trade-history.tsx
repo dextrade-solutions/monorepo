@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Typography } from '@mui/material';
+import { Box, Button, Divider, Skeleton, Typography } from '@mui/material';
 import { Icon } from 'dex-ui';
 import { flatMap, groupBy } from 'lodash';
 import { InView } from 'react-intersection-observer';
@@ -16,7 +16,13 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   const { isFetching, isLoading, fetchNextPage, data } = useTrades();
 
   if (isLoading || isLoadingTradesActive) {
-    return <Box>Loading...</Box>;
+    return (
+      <Box>
+        <Skeleton height={100} />
+        <Skeleton height={100} />
+        <Skeleton height={100} />
+      </Box>
+    );
   }
   const allTrades = flatMap(data?.pages);
   const activeTradesById = groupBy(tradesActive, ({ id }) => id);
@@ -91,5 +97,11 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
       </Box>
     );
   }
-  return <Box>Trades not found...</Box>;
+  return (
+    <Box display="flex" alignContent="center">
+      <Typography color="text.secondary">Trades not found...</Typography>
+      <div className="flex-grow" />
+      {backbutton}
+    </Box>
+  );
 };

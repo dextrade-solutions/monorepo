@@ -1,9 +1,9 @@
 import { AssetModel } from 'dex-helpers/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Wallet from 'sats-connect';
 import { parseUnits } from 'viem';
 
-import { getAssetAccount, showModal } from '../../ducks/app/app';
+import { getAssetAccount } from '../../ducks/app/app';
 import { WalletConnectionType } from '../../helpers/constants/wallets';
 
 export default function useSendTx(asset: AssetModel) {

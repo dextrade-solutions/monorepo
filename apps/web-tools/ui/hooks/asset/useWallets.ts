@@ -1,9 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { NetworkNames } from 'dex-helpers';
-import { useCallback, useState } from 'react';
+import { isMetamaskWebView, NetworkNames } from 'dex-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import Wallet, { AddressPurpose } from 'sats-connect';
-import { useConnectors } from 'wagmi';
 
 import {
   getWalletConnections,
@@ -14,10 +12,12 @@ import { WalletConnectionType } from '../../helpers/constants/wallets';
 import keypairWalletConnection from '../../helpers/utils/connections/keypair';
 import ledgerWalletConnection from '../../helpers/utils/connections/ledger';
 import multiversxWalletConnection from '../../helpers/utils/connections/multiversx';
-import tronlinkProvider from '../../helpers/utils/connections/tronlink';
 import { getWalletIcon } from '../../helpers/utils/util';
+import { WALLETS_META } from '../../helpers/utils/wallets-meta';
 import { WalletConnection } from '../../types';
 import useConnection from '../wallets/useConnection';
+import useEVMConnections from '../wallets/useEVMConnections';
+import useTronConnection from '../wallets/useTronConnections';
 
 export type WalletItem = {
   icon?: string;
@@ -25,56 +25,26 @@ export type WalletItem = {
   connected: WalletConnection | null;
   connect: () => Promise<WalletConnection>;
   disconnect: () => Promise<void>;
+  metadata?: any;
 };
 
 export function useWallets({
   connectionType,
-}: { connectionType?: WalletConnectionType[] } = {}) {
-  const [, updateState] = useState();
-  const forceUpdate = useCallback(() => updateState({}), []);
-
+  includeKeypairWallet,
+}: {
+  connectionType?: WalletConnectionType[];
+  includeKeypairWallet?: boolean;
+} = {}) {
   const { wallets, select } = useWallet();
-  const connectors = useConnectors();
   const dispatch = useDispatch();
   const keypairConnection = useConnection(keypairWalletConnection);
   const multiversxConnection = useConnection(multiversxWalletConnection);
   const ledgerConnection = useConnection(ledgerWalletConnection);
-  const tronlinkConnection = useConnection(tronlinkProvider);
 
   const connectedWallets = useSelector(getWalletConnections);
 
-  const eip6963wallets = connectors.map((item) => ({
-    connectionType: WalletConnectionType.eip6963,
-    icon: item.icon || getWalletIcon(item.name),
-    name: item.name,
-    get id() {
-      return `${this.name}:${this.connectionType}`;
-    },
-    get connected() {
-      return connectedWallets[this.id];
-    },
-    async connect() {
-      const result = await item.connect();
-      const [address] = result.accounts;
-      const walletConnection = {
-        connectionType: WalletConnectionType.eip6963,
-        address,
-        walletName: item.name,
-      };
-      dispatch(setWalletConnection(walletConnection));
-      return walletConnection;
-    },
-    async disconnect() {
-      const isConnected = await item.isAuthorized();
-      if (isConnected) {
-        await item.disconnect();
-        forceUpdate();
-      }
-      if (this.connected) {
-        dispatch(removeWalletConnection(this.connected));
-      }
-    },
-  }));
+  const eip6963wallets = useEVMConnections();
+  const tronWallets = useTronConnection();
 
   const satsWallets = [
     {
@@ -143,19 +113,6 @@ export function useWallets({
   }));
   const ledger = [
     {
-      connectionType: WalletConnectionType.ledgerTron,
-      icon: ledgerConnection.icon,
-      name: ledgerConnection.name,
-      get id() {
-        return `${this.name}:${this.connectionType}`;
-      },
-      get connected() {
-        return connectedWallets[this.id];
-      },
-      connect: () => ledgerConnection.connect(NetworkNames.tron),
-      disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
-    },
-    {
       connectionType: WalletConnectionType.ledgerSol,
       icon: ledgerConnection.icon,
       name: ledgerConnection.name,
@@ -169,17 +126,29 @@ export function useWallets({
       disconnect: ledgerConnection.disconnect.bind(ledgerConnection),
     },
   ];
-  const result = [
+  let result = [
+    // wcTronConnection,
+    // wcEvmConnection,
     ...eip6963wallets,
     ...solanaWallets,
     ...satsWallets,
     ...ledger,
+    ...tronWallets,
     multiversxConnection,
-    keypairConnection,
-    tronlinkConnection,
   ];
   if (connectionType) {
-    return result.filter((w) => connectionType.includes(w.connectionType));
+    result = result.filter((w) => connectionType.includes(w.connectionType));
   }
-  return result;
+  if (isMetamaskWebView) {
+    result = result.filter((w) => w.name.toLowerCase() === 'metamask');
+  }
+  if (includeKeypairWallet) {
+    result.push(keypairConnection);
+  }
+  return result.map((w) => ({
+    ...w,
+    metadata: WALLETS_META.find(
+      ({ name }) => name.toLowerCase() === w.name.toLowerCase(),
+    ),
+  }));
 }

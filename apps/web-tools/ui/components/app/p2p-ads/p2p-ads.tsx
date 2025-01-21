@@ -2,7 +2,13 @@ import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
-import { AdPreview, AdPreviewSkeleton, ButtonIcon, Icon } from 'dex-ui';
+import {
+  AdPreview,
+  AdPreviewSkeleton,
+  ButtonIcon,
+  Icon,
+  useGlobalModalContext,
+} from 'dex-ui';
 import { flatMap } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
@@ -12,7 +18,6 @@ import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import P2PService from '../../../../app/services/p2p-service';
-import { showModal } from '../../../ducks/app/app';
 import {
   getFromTokenInputValue,
   setFromToken,
@@ -25,6 +30,7 @@ import { useQueryAds } from '../../../hooks/useQueryAds';
 const PER_PAGE_SIZE = 8;
 
 export default function P2PAds() {
+  const { showModal } = useGlobalModalContext();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,18 +42,16 @@ export default function P2PAds() {
   const [sortDesc, setSortDesc] = useState(false);
 
   const toggleSortPicker = () => {
-    dispatch(
-      showModal({
-        name: 'ITEM_PICKER',
-        title: 'Sort by',
-        value: sortBy,
-        options: Object.values(SortTypes).map((value) => ({
-          text: t(value),
-          value,
-        })),
-        onSelect: (v) => setSortBy(v),
-      }),
-    );
+    showModal({
+      name: 'ITEM_PICKER',
+      title: 'Sort by',
+      value: sortBy,
+      options: Object.values(SortTypes).map((value) => ({
+        text: t(value),
+        value,
+      })),
+      onSelect: (v) => setSortBy(v),
+    });
   };
 
   const cleanFilter = () => {

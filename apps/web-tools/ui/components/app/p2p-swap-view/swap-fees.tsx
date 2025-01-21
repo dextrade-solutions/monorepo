@@ -4,57 +4,150 @@ import {
   CardActionArea,
   CardContent,
   CardHeader,
+  Chip,
   Collapse,
   Typography,
 } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
-import { AssetModel } from 'dex-helpers/types';
-import { Icon } from 'dex-ui';
-import { useState } from 'react';
+import { AssetModel, Tariff } from 'dex-helpers/types';
+import { tariffService } from 'dex-services';
+import { bgPrimaryGradient, Icon, useGlobalModalContext } from 'dex-ui';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import { useAuthWallet } from '../../../hooks/useAuthWallet';
+import usePaymodalHandlers from '../../../hooks/usePaymodalHandlers';
+
+const TRX_ENERGY_SAVE_FEE = 8; // currently is 8 TRX
 
 export function SwapFees(fees: {
+  superFee: boolean;
   inbound: { amount?: number; asset?: AssetModel };
   outbound: { amount?: number; asset?: AssetModel };
 }) {
+  const { isAuthenticated } = useAuthWallet();
+  const paymodalHandlers = usePaymodalHandlers();
+  const { showModal } = useGlobalModalContext();
   const [expanded, setExpanded] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const { data: tariffLimits } = useQuery<Tariff>({
+    queryKey: ['tariffLimit'],
+    enabled: fees.superFee,
+    queryFn: () => {
+      return tariffService.limit().then((response) => response.data as Tariff);
+    },
+  });
+  const isSuperFeeApplied = tariffLimits && tariffLimits.refillGasRequests > 0;
+
+  let outboundAmount = fees.outbound.amount;
+  const usdtOutbound =
+    (outboundAmount || 0) * (fees.outbound.asset?.priceInUsdt || 0);
   const usdtInbound =
     (fees.inbound.amount || 0) * (fees.inbound.asset?.priceInUsdt || 0);
-  const usdtOutbound =
-    (fees.outbound.amount || 0) * (fees.outbound.asset?.priceInUsdt || 0);
   const total = usdtOutbound + usdtInbound;
+
+  const reducableFeeOutbound =
+    fees.superFee &&
+    TRX_ENERGY_SAVE_FEE * (fees.outbound.asset?.priceInUsdt || 0);
+
+  if (isSuperFeeApplied && typeof reducableFeeOutbound === 'number') {
+    outboundAmount = TRX_ENERGY_SAVE_FEE;
+  }
+
+  const buyPlan = useCallback(() => {
+    showModal({
+      name: 'BUY_PLAN',
+      planName: 'tron energy',
+      paymodalHandlers,
+    });
+  }, [showModal, paymodalHandlers]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      buyPlan();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
 
   return (
     <Card sx={{ bgcolor: 'secondary.dark' }} variant="outlined">
       <CardActionArea onClick={() => setExpanded(!expanded)}>
         <CardHeader
-          sx={{ height: 50 }}
           title={
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Box>
-                <Typography>Total fee</Typography>
+            <Box display="flex" alignItems="center">
+              <Box className="flex-grow">
+                {!isSuperFeeApplied && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Typography>Total fee</Typography>
+                    <Typography fontWeight="bold" marginRight={2}>
+                      {formatCurrency(total, 'usd')}
+                    </Typography>
+                  </Box>
+                )}
+                {typeof reducableFeeOutbound === 'number' && (
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
+                    <Box display="flex" alignItems="center">
+                      <Typography mr={1}>Super fee</Typography>
+                      {isSuperFeeApplied && (
+                        <>
+                          <Typography color="success.light" mr={0.5}>
+                            Applied
+                          </Typography>
+                          <Icon color="success.light" name="check" />
+                        </>
+                      )}
+                      {!isSuperFeeApplied && (
+                        <Box display="flex" alignItems="center">
+                          <Chip
+                            clickable
+                            sx={{ backgroundImage: bgPrimaryGradient }}
+                            icon={<Icon name="info" color="white" />}
+                            label={
+                              <Typography variant="body2" color="white">
+                                Activate
+                              </Typography>
+                            }
+                            onClick={() => {
+                              buyPlan();
+                            }}
+                          ></Chip>
+                        </Box>
+                      )}
+                    </Box>
+                    <Typography fontWeight="bold" marginRight={2}>
+                      {formatCurrency(
+                        reducableFeeOutbound + usdtInbound,
+                        'usd',
+                      )}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
-              <Box display="flex">
-                <Typography fontWeight="bold" marginRight={2}>
-                  {formatCurrency(total, 'usd')}
-                </Typography>
-                <Icon
-                  className={classNames('arrow', { 'arrow-rotated': expanded })}
-                  name="arrow-down"
-                  color="text.secondary"
-                />
-              </Box>
+
+              <Icon
+                className={classNames('arrow', {
+                  'arrow-rotated': expanded,
+                })}
+                name="arrow-down"
+                color="text.secondary"
+              />
             </Box>
           }
         />
       </CardActionArea>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {fees.outbound.asset && fees.outbound.amount !== undefined && (
+          {fees.outbound.asset && typeof outboundAmount === 'number' && (
             <Box display="flex" justifyContent="space-between" marginTop={1}>
               <Typography>
                 {fees.outbound.asset.isFiat
@@ -64,14 +157,14 @@ export function SwapFees(fees: {
               <Box display="flex">
                 <Typography>
                   {formatFundsAmount(
-                    fees.outbound.amount,
+                    outboundAmount,
                     fees.outbound.asset.symbol,
                   )}
                 </Typography>
                 {fees.outbound.asset.priceInUsdt && (
                   <Typography color="text.secondary" marginLeft={1}>
                     {formatCurrency(
-                      fees.outbound.amount * fees.outbound.asset.priceInUsdt,
+                      outboundAmount * fees.outbound.asset.priceInUsdt,
                       'usd',
                     )}
                   </Typography>

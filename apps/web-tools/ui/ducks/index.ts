@@ -20,7 +20,6 @@ export default combineReducers({
     {
       key: 'app',
       storage,
-      blacklist: ['modal'],
     },
     appReducer,
   ),

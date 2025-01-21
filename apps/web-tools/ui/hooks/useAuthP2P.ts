@@ -20,15 +20,16 @@ import { WalletConnectionType } from '../helpers/constants/wallets';
 import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
 export function useAuthP2P() {
-  const { keyring } = engine.keyringController;
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
   const keypairConnection = useConnection(keypairWalletConnection);
-  const connectors = useConnectors();
   const authWallet = useAuthWallet();
-  const { signMessage } = useSignMessage();
   const wallets = useWallets({
-    connectionType: [WalletConnectionType.eip6963],
+    connectionType: [
+      WalletConnectionType.eip6963,
+      WalletConnectionType.tronlink,
+    ],
+    includeKeypairWallet: true,
   });
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
@@ -46,7 +47,7 @@ export function useAuthP2P() {
     }: {
       walletId?: string | null;
       onSuccess?: (...args: any) => any;
-    }) => {
+    } = {}) => {
       const { apikey } = getAuth(store.getState());
       const { signature } = getSession(store.getState());
       let loginWallet =
@@ -61,12 +62,14 @@ export function useAuthP2P() {
       if (!isConnected) {
         await loginWallet.connect();
       }
-      const onSignedMessage = async (result: string) => {
-        await dispatch(login(keyring, result, loginWallet.name));
+      const onSignedMessage = async (sign: string) => {
+        await dispatch(
+          login(engine.keyringController.keyring, sign, loginWallet.id),
+        );
         return onSuccess && onSuccess();
       };
 
-      const processSign = () => {
+      const processSign = async () => {
         if (loginWallet.name === 'Keypair Wallet') {
           // const sign = engine.keyringController.signDER(
           //   engine.keyringController.publicKey,
@@ -79,29 +82,20 @@ export function useAuthP2P() {
           return onSignedMessage(result.signature);
         }
 
-        // try to sign via EVM wallet
-        return new Promise((resolve, reject) => {
-          if (inProgress) {
-            return null;
-          }
-          dispatch(setStatus(AuthStatus.signing));
-          const connector = connectors.find((i) => i.name === loginWallet.name);
-          signMessage(
-            {
-              connector,
-              message: engine.keyringController.publicKey,
-            },
-            {
-              onSuccess: (result: string) => {
-                resolve(onSignedMessage(result));
-              },
-              onError: (e) => {
-                dispatch(setStatus(AuthStatus.failed));
-                reject(e);
-              },
-            },
+        if (inProgress) {
+          return null;
+        }
+        dispatch(setStatus(AuthStatus.signing));
+        // const connector = connectors.find((i) => i.name === loginWallet.name);
+        try {
+          const result = await loginWallet.signMessage(
+            engine.keyringController.publicKey,
           );
-        });
+          return onSignedMessage(result);
+        } catch (e) {
+          dispatch(setStatus(AuthStatus.failed));
+          throw e;
+        }
       };
 
       if (apikey && authStatus !== AuthStatus.failed) {

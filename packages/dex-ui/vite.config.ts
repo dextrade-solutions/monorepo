@@ -32,6 +32,8 @@ export default defineConfig({
           react: 'React',
           classnames: 'ClassNames',
           'react-dom': 'React-dom',
+          'react-redux': 'react-redux',
+          '@reduxjs/toolkit': '@reduxjs/toolkit',
           '@mui/material': '@mui/material',
           '@mui/styles': '@mui/styles',
           '@tanstack/react-query': '@tanstack/react-query',

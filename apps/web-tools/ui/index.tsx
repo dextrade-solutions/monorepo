@@ -1,45 +1,17 @@
-import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
-import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
 import React from 'react';
-import { Provider, useSelector } from 'react-redux';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import Web3ModalProvider from './components/app/web3-modal-provider';
-import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solana-provider';
-import { I18nProvider } from './contexts/i18n';
-import { getCurrentTheme } from './ducks/app/app';
-import { getCurrentLocale } from './ducks/locale/locale';
-import Pages from './pages';
+// eslint-disable-next-line import/order
 import { persistor, store } from './store/store';
+import { App } from './app';
+import { I18nProvider } from './contexts/i18n';
 
 import './css/index.scss';
 
 log.setLevel(log.levels.DEBUG);
-
-export function ContentUi() {
-  const theme = useSelector(getCurrentTheme);
-  const locale = useSelector(getCurrentLocale);
-  const { muiTheme } = useDexUI({ theme });
-  return (
-    <ThemeProvider theme={muiTheme}>
-      <DexUiProvider theme={muiTheme} locale={locale}>
-        <Web3ModalProvider>
-          <Web3SolanaProvider>
-            <CssBaseline />
-            <Container maxWidth="sm">
-              {/* {!hideHeader && <AppHeader />} */}
-              <Box paddingY={3}>
-                <Pages />
-              </Box>
-            </Container>
-          </Web3SolanaProvider>
-        </Web3ModalProvider>
-      </DexUiProvider>
-    </ThemeProvider>
-  );
-}
 
 export function Ui() {
   return (
@@ -47,7 +19,7 @@ export function Ui() {
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <I18nProvider>
-            <ContentUi />
+            <App />
           </I18nProvider>
         </BrowserRouter>
       </PersistGate>

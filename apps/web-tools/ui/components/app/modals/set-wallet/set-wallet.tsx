@@ -1,30 +1,13 @@
-import '../styles.scss';
-import {
-  Box,
-  Typography,
-  Button,
-  MenuList,
-  ListItemText,
-  TextField,
-  ListItemSecondaryAction,
-  Divider,
-  ListItemButton,
-  ListItemAvatar,
-} from '@mui/material';
-import { shortenAddress } from 'dex-helpers';
+import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, UrlIcon, ButtonIcon, AssetItem, PulseLoader } from 'dex-ui';
-import { useCallback, useState } from 'react';
+import { CopyData, ButtonIcon, AssetItem, ModalProps } from 'dex-ui';
+import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import withModalProps from '../../../../helpers/hoc/with-modal-props';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
-import { WalletItem, useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
-import { ModalProps } from '../types';
-
-type ConfiguredWallet = { address: string; icon: string };
+import WalletList from '../../wallet-list';
 
 const SetWallet = ({
   asset,
@@ -34,7 +17,7 @@ const SetWallet = ({
   hideModal,
 }: {
   asset: AssetModel;
-  value: WalletConnection | null;
+  value?: WalletConnection;
   open: boolean;
   isToAsset?: boolean;
   onChange: (v: WalletConnection | null) => void;
@@ -44,10 +27,9 @@ const SetWallet = ({
   const connectionType = determineConnectionType(asset);
 
   const t = useI18nContext();
-  const wallets = useWallets({ connectionType });
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
-  const [value, setValue] = useState<ConfiguredWallet | null>(savedValue);
+  const [value, setValue] = useState<WalletConnection>(savedValue);
 
   const onSetInputWallet = () => {
     onChange({
@@ -58,7 +40,7 @@ const SetWallet = ({
     hideModal();
   };
 
-  const onSelectWallet = async (item: (typeof wallets)[number]) => {
+  const onSelectWallet = async (item) => {
     let result: WalletConnection;
     setLoadingWallet(item);
     try {
@@ -73,16 +55,6 @@ const SetWallet = ({
       setLoadingWallet(null);
     }
   };
-  const onDisconnect = useCallback(
-    async (item: WalletItem) => {
-      if (item.name === savedValue?.walletName) {
-        onChange(null);
-        hideModal();
-      }
-      await item.disconnect();
-    },
-    [hideModal, onChange, savedValue],
-  );
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -92,8 +64,8 @@ const SetWallet = ({
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={hideModal}
           ariaLabel={t('close')}
+          onClick={hideModal}
         />
       </Box>
 
@@ -123,69 +95,12 @@ const SetWallet = ({
       ) : (
         <Box>
           {canConnectExternalWallet && (
-            <>
-              {loadingWallet ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <UrlIcon size={40} url={loadingWallet.icon} />
-                  <Typography my={2}>
-                    {loadingWallet.name} connecting
-                  </Typography>
-                  <PulseLoader />
-                </Box>
-              ) : (
-                <MenuList>
-                  <Typography variant="h6">Connect wallet</Typography>
-                  {wallets.map((item, idx) => (
-                    <Box data-testid={item.id} key={idx} marginTop={1}>
-                      <ListItemButton
-                        sx={{
-                          backgroundcolor: 'secondary.dark',
-                          borderWidth:
-                            savedValue?.walletName === item.name ? 1 : 0,
-                        }}
-                        className="bordered"
-                        onClick={() => onSelectWallet(item)}
-                      >
-                        <ListItemAvatar>
-                          <UrlIcon size={40} url={item.icon} />
-                        </ListItemAvatar>
-
-                        <ListItemText
-                          primary={item.name}
-                          secondary={
-                            item.connected
-                              ? shortenAddress(item.connected.address)
-                              : ''
-                          }
-                        />
-                        {item.connected && (
-                          <ListItemSecondaryAction>
-                            <ButtonIcon
-                              size="lg"
-                              iconName="disconnect"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onDisconnect(item);
-                              }}
-                            />
-                          </ListItemSecondaryAction>
-                        )}
-                      </ListItemButton>
-                    </Box>
-                  ))}
-                  {!wallets.length && (
-                    <Typography color="text.secondary">
-                      No supported wallets detected...
-                    </Typography>
-                  )}
-                </MenuList>
-              )}
-            </>
+            <WalletList
+              value={savedValue}
+              connectingWallet={loadingWallet}
+              connectionType={connectionType}
+              onSelectWallet={onSelectWallet}
+            />
           )}
           {canPasteAddress && canConnectExternalWallet && (
             <Typography color="text.secondary" marginY={3}>
@@ -224,6 +139,4 @@ const SetWallet = ({
   );
 };
 
-const SetWalletComponent = withModalProps(SetWallet);
-
-export default SetWalletComponent;
+export default SetWallet;
