@@ -72,14 +72,23 @@ export default function WalletList({
     ? wallets.filter((i) => i.connected)
     : wallets;
 
-  const pickWallet = (item: WalletItem) => {
+  const pickOrInstallWallet = (item: WalletItem) => {
     // eslint-disable-next-line no-restricted-syntax
     const hasInstalledProp = 'installed' in (item.metadata || {});
     if (!isMobileWeb && hasInstalledProp && !item.metadata.installed) {
       return setToInstallWallet(item);
     }
+
     return onSelectWallet && onSelectWallet(item);
   };
+
+  const onSelect = (e: Event, wallet: WalletItem) => {
+    if (!isMobileWeb || wallet.metadata.isWebView) {
+      e.preventDefault();
+      pickOrInstallWallet(wallet);
+    }
+  };
+
   return (
     <>
       {!showWalletsList && (
@@ -148,18 +157,18 @@ export default function WalletList({
                 }}
                 className="bordered"
                 href={
-                  isMobileWeb && !isMetamaskWebView
-                    ? item.metadata?.deepLink + window.location.href
+                  item.metadata?.deepLink
+                    ? item.metadata.deepLink + window.location.href
                     : undefined
                 }
                 target="_blank"
-                onClick={() => pickWallet(item)}
+                onClick={(e) => onSelect(e, item)}
               >
-                {item.metadata && !item.metadata.isSupported && (
+                {/* {item.metadata && !item.metadata.isSupported && (
                   <ListItemIcon>
                     <Icon name="alert" />
                   </ListItemIcon>
-                )}
+                )} */}
                 <ListItemAvatar>
                   <UrlIcon size={40} url={item.icon} />
                 </ListItemAvatar>
