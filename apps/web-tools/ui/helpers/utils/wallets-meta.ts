@@ -22,7 +22,6 @@ export const WALLETS_META = [
   {
     name: 'walletconnect',
     icon: '/images/wallets/wallet-connect.svg',
-    isSupported: true,
     installed: true,
   },
   {
@@ -35,18 +34,12 @@ export const WALLETS_META = [
   {
     name: 'coinbase wallet',
     icon: '/images/wallets/coinbase.webp',
-    get isSupported() {
-      return true;
-    },
     installed: true,
   },
   {
     name: 'multiversx wallet',
     icon: '/images/wallets/multiversx.webp',
     downloadLink: 'https://wallet.multiversx.com/',
-    get isSupported() {
-      return !isMobileWeb;
-    },
     get installed() {
       return true;
     },
@@ -54,20 +47,20 @@ export const WALLETS_META = [
   {
     name: 'ledgerlive',
     icon: '/images/wallets/ledgerlive.webp',
-    get isSupported() {
-      return isChrome;
-    },
   },
   {
     name: 'metamask',
     icon: `/images/wallets/metamask.png`,
     deepLink: 'https://metamask.app.link/dapp/',
     downloadLink: 'https://metamask.app.link/dapp/',
-    get isSupported() {
-      return true; // TODO: only chrome, firefox, opera
-    },
     get installed() {
       return isMetamaskInstalled();
+    },
+    get isWebView() {
+      return (
+        typeof navigator !== 'undefined' &&
+        /WebView MetaMaskMobile/i.test(navigator.userAgent)
+      );
     },
   },
   {
@@ -82,8 +75,8 @@ export const WALLETS_META = [
       desktop: 'https://trustwallet.com/browser-extension',
       mobile: 'https://trustwallet.com/',
     },
-    get isSupported() {
-      return true; // TODO: only chrome
+    get isWebView() {
+      return isMobileWeb && this.installed;
     },
   },
   {
@@ -94,9 +87,6 @@ export const WALLETS_META = [
     guide: {
       desktop: 'https://www.okx.com/web3',
       mobile: 'https://www.okx.com/web3',
-    },
-    get isSupported() {
-      return true; // TODO: only chrome
     },
     get installed() {
       return typeof window !== 'undefined' && Boolean(window.okxwallet);
@@ -113,9 +103,6 @@ export const WALLETS_META = [
     },
     downloadLink: {
       desktop: 'https://rabby.io/',
-    },
-    get isSupported() {
-      return !isMobileWeb;
     },
   },
 ];

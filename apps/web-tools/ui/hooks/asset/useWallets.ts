@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { isMetamaskWebView, NetworkNames } from 'dex-helpers';
+import { NetworkNames } from 'dex-helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import Wallet, { AddressPurpose } from 'sats-connect';
 
@@ -139,16 +139,19 @@ export function useWallets({
   if (connectionType) {
     result = result.filter((w) => connectionType.includes(w.connectionType));
   }
-  if (isMetamaskWebView) {
-    result = result.filter((w) => w.name.toLowerCase() === 'metamask');
-  }
   if (includeKeypairWallet) {
     result.push(keypairConnection);
   }
-  return result.map((w) => ({
+  result = result.map((w) => ({
     ...w,
     metadata: WALLETS_META.find(
       ({ name }) => name.toLowerCase() === w.name.toLowerCase(),
     ),
   }));
+
+  const webViewWallet = result.filter((i) => i.metadata?.isWebView);
+  if (webViewWallet.length) {
+    return webViewWallet;
+  }
+  return result;
 }
