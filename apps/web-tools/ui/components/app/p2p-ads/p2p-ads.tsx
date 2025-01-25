@@ -123,7 +123,7 @@ export default function P2PAds() {
           data-testid="p2p-ads__search-by-merchant"
           className="flex-grow"
           size="small"
-          placeholder="Search by merchant name"
+          placeholder="Search"
           fullWidth
           InputProps={{
             startAdornment: (
