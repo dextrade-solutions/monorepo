@@ -55,6 +55,7 @@
     "classnames": "^2.5.1",
     "copy-to-clipboard": "^3.3.3",
     "currency-formatter": "^1.5.9",
+    "dex-connect": "workspace:^",
     "dex-helpers": "workspace:^",
     "dex-services": "workspace:^",
     "dex-ui": "workspace:^",
@@ -72,7 +73,7 @@
     "prop-types": "^15.8.1",
     "punycode": "^2.3.1",
     "react": "^18.2.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.10.1",
     "react-number-format": "^5.4.0",
     "react-qr-code": "^2.0.15",
@@ -91,7 +92,7 @@
     "viem": "^2.21.18",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-wasm": "^3.3.0",
-    "wagmi": "^2.12.11",
+    "wagmi": "2.14.9",
     "web3": "^4.8.0"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@ export default function UrlIcon({
   fallbackClassName,
 }: {
   url: string;
-  size: number;
+  size?: number;
   className?: string;
   name?: string;
   fallbackClassName?: string;

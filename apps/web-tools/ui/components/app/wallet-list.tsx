@@ -4,18 +4,12 @@ import {
   Button,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   MenuList,
   Typography,
 } from '@mui/material';
-import {
-  isMetamaskWebView,
-  isMobileWeb,
-  shortenAddress,
-  WalletConnectionType,
-} from 'dex-helpers';
+import { isMobileWeb, shortenAddress } from 'dex-helpers';
 import {
   ButtonIcon,
   Icon,

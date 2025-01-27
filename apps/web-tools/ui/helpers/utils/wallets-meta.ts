@@ -1,4 +1,4 @@
-import { isChrome, isMobileWeb } from 'dex-helpers';
+import { isMobileWeb } from 'dex-helpers';
 
 import { getTrustWalletProvider } from './wagmi-connectors/trust';
 

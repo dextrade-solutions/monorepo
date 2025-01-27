@@ -26,6 +26,7 @@ export default defineConfig({
         'classnames',
         '@tanstack/react-query',
         'dex-services',
+        'wagmi',
       ],
       output: {
         globals: {
@@ -38,6 +39,7 @@ export default defineConfig({
           '@mui/styles': '@mui/styles',
           '@tanstack/react-query': '@tanstack/react-query',
           'dex-services': 'dex-services',
+          wagmi: 'wagmi',
         },
       },
     },

@@ -1,0 +1,22 @@
+{
+  "name": "dex-connect",
+  "version": "1.0.0",
+  "dependencies": {
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@tronweb3/tronwallet-adapters": "^1.2.6",
+    "@uidotdev/usehooks": "^2.4.1",
+    "dex-helpers": "workspace:^",
+    "wagmi": "2.14.9"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./lib/main.ts",
+  "module": "./lib/main.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/main.ts",
+      "require": "./lib/main.ts"
+    }
+  }
+}

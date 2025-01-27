@@ -13,9 +13,11 @@ import { PaymodalHandlers, useGlobalModalContext } from '../modals';
 export function PlanItem({
   paymodalHandlers,
   value,
+  onBuyPlan,
 }: {
   value: Tariff;
   paymodalHandlers?: PaymodalHandlers;
+  onBuyPlan?: (plan: Tariff) => void;
 }) {
   const { showModal } = useGlobalModalContext();
   const { t } = useTranslation();
@@ -33,6 +35,7 @@ export function PlanItem({
           showModal({
             name: 'PAY_MODAL',
             plan: value,
+            onBuyPlan,
             paymodalHandlers,
           })
         }

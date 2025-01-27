@@ -11,3 +11,4 @@ export { default as CountdownTimer } from './countdown-timer';
 export { default as UserAvatar } from './user-avatar';
 export { default as TxSendStage } from './tx-send-stage';
 export { default as AssetPriceOutput } from './asset-price-output';
+export * from './select-coins';

@@ -96,12 +96,29 @@ const serializeTokensPlugin = () => ({
     const result = REGISTRIES.map((registry) => {
       return registry.serializer(registry.filename);
     });
-    const assetList = JSON.stringify(
-      _.flatMap(result)
-        .sort((a, b) => a.weight - b.weight)
-        .reverse(),
+    const assetList = _.flatMap(result)
+      .map((asset) => {
+        let iso;
+        if (asset.isNative) {
+          iso = `${BUILT_IN_NETWORKS[asset.network].iso}`;
+          if (asset.network === NetworkNames.binance) {
+            iso = `BNB_${iso}`; // exception only of bnb network
+          }
+        } else if (asset.isFiat) {
+          iso = `${asset.symbol}_FIAT`;
+        } else {
+          iso = `${asset.symbol}_${BUILT_IN_NETWORKS[asset.network].iso}`;
+        }
+        return { ...asset, iso };
+      })
+      .sort((a, b) => a.weight - b.weight)
+      .reverse();
+
+    fsPromises.writeFile(`./assets-list.json`, JSON.stringify(assetList));
+    fsPromises.writeFile(
+      `./assets-dict.json`,
+      JSON.stringify(_.keyBy(assetList, 'iso')),
     );
-    fsPromises.writeFile(`./assets-list.json`, assetList);
   },
 });
 

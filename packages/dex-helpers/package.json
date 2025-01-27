@@ -20,6 +20,7 @@
       "require": "./dist/dex-helpers.umd.cjs"
     },
     "./assets-list": "./assets-list.json",
+    "./assets-dict": "./assets-dict.json",
     "./types": "./types/index.ts",
     "./shared": "./src/shared/index.ts"
   },
@@ -27,6 +28,10 @@
     "vite": "^5.2.0"
   },
   "dependencies": {
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0",
+    "ethers": "^6.13.5",
+    "tronweb": "^6.0.1",
     "viem": "^2.21.17"
   }
 }

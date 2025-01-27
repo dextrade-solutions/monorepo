@@ -13,8 +13,10 @@ import { PaymodalHandlers } from '../modals';
 import { PlanItemSkeleton } from './plan-item-skeleton';
 
 export default function Dexpay({
+  onBuyPlan,
   paymodalHandlers,
 }: {
+  onBuyPlan?: (plan: Tariff) => void;
   paymodalHandlers?: PaymodalHandlers;
 }) {
   const { t } = useTranslation();
@@ -30,14 +32,14 @@ export default function Dexpay({
 
   return (
     <Box>
-      <Box>
+      {/* <Box>
         <Typography variant="h3" fontWeight="bold">
           DexPay
         </Typography>
         <Typography color="text.secondary">
           {t('Self custodian payment gateway')}
         </Typography>
-      </Box>
+      </Box> */}
       <TariffLimit />
       <Typography variant="h6" margin={1} marginTop={5}>
         {t('Personal plans')}
@@ -50,6 +52,7 @@ export default function Dexpay({
               value={{
                 ...value,
               }}
+              onBuyPlan={onBuyPlan}
             />
           </Grid>
         ))}

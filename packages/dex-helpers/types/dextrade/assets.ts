@@ -21,6 +21,7 @@ export type AssetModel = {
   standard?: string;
   isFiat: boolean;
   isNative: boolean;
+  iso: string;
   priceInUsdt?: number;
 };
 

@@ -1,6 +1,8 @@
-import { NetworkNames, WalletConnectionType } from 'dex-helpers';
+import { NetworkNames } from 'dex-helpers';
 
-export { WalletConnectionType } from 'dex-helpers';
+import { WalletConnectionType } from 'dex-connect';
+
+export { WalletConnectionType } from 'dex-connect';
 
 export const NETOWORK_BY_CONNECTION_TYPE = {
   [NetworkNames.bitcoin]: [

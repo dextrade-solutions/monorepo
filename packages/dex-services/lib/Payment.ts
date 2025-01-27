@@ -285,4 +285,24 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
       query: query,
       ...params,
     });
+  /**
+   * No description
+   *
+   * @tags payments-controller
+   * @name CreateInvoice
+   * @request GET:/api/payment/address
+   */
+  createInvoice = (
+    query: {
+      network: "ethereum" | "binance_smart_chain" | "tron" | "bitcoin";
+      currency: "ETH" | "BNB" | "TRX" | "BTC" | "USDT";
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<string, Record<string, string>>({
+      path: `/api/payment/address`,
+      method: "GET",
+      query: query,
+      ...params,
+    });
 }

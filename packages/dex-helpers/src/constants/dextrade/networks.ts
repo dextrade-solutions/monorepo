@@ -49,11 +49,13 @@ export const BUILT_IN_NETWORKS = {
   // EVM
   [NetworkNames.ethereum]: {
     ...mainnetConfig,
+    iso: 'ETH',
     key: NetworkNames.ethereum,
     uid: 'ethereum',
   },
   [NetworkNames.binance]: {
     ...bscConfig,
+    iso: 'BSC',
     key: NetworkNames.binance,
     uid: 'binancecoin',
     atomicSwapContract: '0x49007eaa009b59d5478e1609e0de54838788e05d',
@@ -61,21 +63,25 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.arbitrum]: {
     ...arbitrumConfig,
+    iso: 'ARBITRUM',
     key: NetworkNames.arbitrum,
     uid: 'aeneas',
   },
   [NetworkNames.polygon]: {
     ...polygonConfig,
+    iso: 'POLY',
     key: NetworkNames.polygon,
     uid: 'matic',
   },
   [NetworkNames.gnosis]: {
     ...gnosisConfig,
+    iso: 'GNOSIS',
     key: NetworkNames.gnosis,
     uid: 'gnosis',
   },
   [NetworkNames.base]: {
     ...baseConfig,
+    iso: 'BASE',
     key: NetworkNames.base,
     uid: 'base',
   },
@@ -88,6 +94,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.xdc]: {
     ...xdcConfig,
+    iso: 'XDC',
     key: NetworkNames.xdc,
     uid: 'xdce-crowd-sale',
   },
@@ -96,6 +103,7 @@ export const BUILT_IN_NETWORKS = {
   [NetworkNames.ton]: {
     id: null,
     key: NetworkNames.ton,
+    iso: 'TON',
     uid: 'ton',
     name: 'The Open Network',
     nativeCurrency: { name: 'Ton Coin', symbol: 'TONCOIN', decimals: 9 },
@@ -103,12 +111,14 @@ export const BUILT_IN_NETWORKS = {
   [NetworkNames.tron]: {
     id: null,
     key: NetworkNames.tron,
+    iso: 'TRX',
     uid: 'tron',
     name: 'Tron',
     nativeCurrency: { name: 'Tron', symbol: 'TRX', decimals: 6 },
   },
   [NetworkNames.bitcoin]: {
     id: null,
+    iso: 'BTC',
     key: NetworkNames.bitcoin,
     uid: 'bitcoin',
     name: 'Bitcoin',
@@ -116,6 +126,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.litecoin]: {
     id: null,
+    iso: 'LTC',
     key: NetworkNames.litecoin,
     uid: 'litecoin',
     name: 'Litecoin',
@@ -124,6 +135,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.solana]: {
     id: null,
+    iso: 'SOL',
     key: NetworkNames.solana,
     uid: 'solana',
     name: 'Solana',
@@ -131,6 +143,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.multiversx]: {
     id: null,
+    iso: 'EGLD',
     key: NetworkNames.multiversx,
     uid: 'elrond-erd-2',
     name: 'Multiversx',

@@ -64,7 +64,6 @@ export default function ButtonAppConfig() {
     const toggleValue = isDarkMode ? 'light' : 'dark';
     dispatch(setTheme(toggleValue));
   };
-
   return (
     <>
       <ButtonIcon

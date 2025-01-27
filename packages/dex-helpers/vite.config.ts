@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
+import path from 'path';
 import { defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
-import path from 'path';
 
 import serializeTokensPlugin from './plugins/serializeTokensPlugin.ts';
 
@@ -36,5 +36,13 @@ export default defineConfig({
       fileName: (format) => `dex-helpers.${format}.js`,
     },
     target: 'esnext',
+    rollupOptions: {
+      external: ['ethers'],
+      output: {
+        globals: {
+          ethers: 'ethers',
+        },
+      },
+    },
   },
 });

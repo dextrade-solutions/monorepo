@@ -25,8 +25,10 @@ import {
   PAYMENT_METHODS_ROUTE,
   SETTINGS_GENERAL_ROUTE,
   PLANS_ROUTE,
+  INVOICE_ROUTE,
 } from '../helpers/constants/routes';
 import { useAuthP2P } from '../hooks/useAuthP2P';
+import InvoicePage from './invoice';
 
 export default function RoutesRoot() {
   const { login } = useAuthP2P();
@@ -64,6 +66,7 @@ export default function RoutesRoot() {
           element={<SwapProcessing />}
         />
         <Route path={SWAPS_HISTORY_ROUTE} element={<SwapHistory />} />
+        <Route path={INVOICE_ROUTE} element={<InvoicePage />} />
         <Route path={SETTINGS_ROUTE} element={<AppSettings />}>
           <Route path={KYC_ROUTE} element={<Kyc />} />
           <Route path={PAYMENT_METHODS_ROUTE} element={<PaymentMethods />} />

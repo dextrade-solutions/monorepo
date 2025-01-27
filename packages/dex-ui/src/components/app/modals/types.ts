@@ -1,7 +1,7 @@
 import { NetworkNames, NetworkTypes } from 'dex-helpers';
 
 export type ModalState = {
-  name: string | null;
+  name: string;
   props: Record<string, any>;
 };
 
@@ -23,4 +23,14 @@ export type PaymodalHandlers = {
     networkName: NetworkNames;
     currency: string;
   }) => string;
+};
+
+export type ShowModalArgs = {
+  name: string;
+} & Record<string, any>;
+
+export type ModalContext = {
+  showModal: (args: ShowModalArgs) => void;
+  hideModal: () => void;
+  store: any;
 };

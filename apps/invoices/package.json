@@ -11,13 +11,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@solana/wallet-adapter-react": "^0.15.35",
     "@uidotdev/usehooks": "^2.4.1",
+    "dex-connect": "workspace:^",
     "dex-services": "workspace:^",
     "dex-ui": "workspace:^",
+    "ethers": "^6.13.5",
     "ky": "^1.7.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-i18next": "^15.4.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite-plugin-node-polyfills": "^0.23.0",
+    "wagmi": "^2.14.9"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.4",

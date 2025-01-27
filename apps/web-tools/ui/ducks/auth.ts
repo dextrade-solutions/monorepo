@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { prefixSignMessageByConnectionType } from 'dex-connect';
 import { queryClient } from 'dex-helpers/shared';
 import { bufferToHex } from 'ethereumjs-util';
 
@@ -6,7 +7,6 @@ import { AuthStatus } from '../../app/constants/auth';
 import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
-import { prefixSignMessageByConnectionType } from '../helpers/utils/wallets';
 import { AppDispatch, RootState } from '../store/store';
 
 export const getAuth = (state: RootState) => state.auth.authData;
