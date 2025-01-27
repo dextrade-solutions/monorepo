@@ -23,7 +23,7 @@ export default function WalletList({
   connectingWalletLabel = 'Connecting',
   onSelectWallet,
 }: {
-  value: WalletConnection; // selected item
+  value?: WalletConnection; // selected item
   onlyConnected?: boolean;
   connectingWallet?: WalletItem;
   wallets?: any[];

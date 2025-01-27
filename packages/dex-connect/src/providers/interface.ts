@@ -3,7 +3,6 @@ import { AssetModel } from 'dex-helpers/types';
 
 export type TxParams = {
   asset: AssetModel;
-  sender?: string;
   recipient: string;
   amount: number | string;
 };
@@ -15,7 +14,7 @@ export interface ConnectionProvider {
 
   name: string;
 
-  isAuthorized(): Promise<boolean>;
+  isAuthorized(): Promise<boolean> | boolean;
 
   connect(): Promise<string>;
 

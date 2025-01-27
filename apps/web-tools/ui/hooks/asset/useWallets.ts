@@ -1,5 +1,8 @@
 import { useConnections, WalletConnectionType } from 'dex-connect';
+import { useDispatch } from 'react-redux';
 import { useConfig } from 'wagmi';
+
+import { removeWalletConnection } from '../../ducks/app/app';
 
 export function useWallets({
   connectionType,
@@ -8,10 +11,14 @@ export function useWallets({
   connectionType?: WalletConnectionType[];
   includeKeypairWallet?: boolean;
 } = {}) {
+  const dispatch = useDispatch();
   const config = useConfig();
-  const { data: connections = [] } = useConnections({
+  const { connections, hub } = useConnections({
     connectionType,
     wagmiConfig: config,
   });
-  return connections;
+  hub.on('disconnected', (i) => {
+    dispatch(removeWalletConnection(i));
+  });
+  return connections?.data || [];
 }

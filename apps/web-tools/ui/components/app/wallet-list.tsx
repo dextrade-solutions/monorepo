@@ -34,7 +34,6 @@ export default function WalletList({
   value: WalletConnection; // selected item
   onlyConnected?: boolean;
   connectingWallet?: WalletItem;
-  connectionType?: WalletConnectionType[];
   connectingWalletLabel?: string;
   onSelectWallet?: (item: WalletItem) => void;
 }) {

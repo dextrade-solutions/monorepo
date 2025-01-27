@@ -1,7 +1,10 @@
 import { AssetModel } from 'dex-helpers/types';
+import EventEmitter from 'events';
 import { useQuery } from 'wagmi/query';
 
 import { WalletConnectionType } from '../constants';
+import { MultiverseExtension } from '../providers/multiversx-provider';
+import { SatsConnectProvider } from '../providers/sats-connect-provider';
 import { useEVMProviders } from '../providers/useEVMProviders';
 import { useTronProviders } from '../providers/useTronProviders';
 import { getWalletIcon } from '../utils';
@@ -17,7 +20,15 @@ export function useConnections({
   const solanaProviders = useSolanaProviders();
   const tronProviders = useTronProviders();
 
-  let providers = [...evmProviders, ...tronProviders, ...solanaProviders];
+  const hub = new EventEmitter();
+
+  let providers = [
+    ...evmProviders,
+    ...tronProviders,
+    ...solanaProviders,
+    new SatsConnectProvider(),
+    new MultiverseExtension(),
+  ];
   if (connectionType) {
     providers = providers.filter((provider) =>
       connectionType.includes(provider.type),
@@ -43,11 +54,13 @@ export function useConnections({
           address,
         };
         connectState.addWalletConnection(walletConnection);
+        hub.emit('connected', walletConnection);
         return walletConnection;
       },
       async disconnect() {
-        await instance.disconnect();
         connectState.removeWalletConnection(id);
+        hub.emit('disconnected', connectState.walletConnections[id]);
+        await instance.disconnect();
       },
       signMessage: instance.signMessage.bind(instance),
       async txSend({
@@ -81,8 +94,11 @@ export function useConnections({
       },
     };
   });
-  return useQuery({
-    queryKey: ['dex-connect', connectionType, connectState.walletConnections],
-    queryFn: () => connections,
-  });
+  return {
+    connections: useQuery({
+      queryKey: ['dex-connect', connectionType, connectState.walletConnections],
+      queryFn: () => connections,
+    }),
+    hub,
+  };
 }

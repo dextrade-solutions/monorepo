@@ -16,7 +16,6 @@ import {
 import { AppDispatch, store } from '../store/store';
 import { useWallets } from './asset/useWallets';
 import useConnection from './wallets/useConnection';
-import { WalletConnectionType } from '../helpers/constants/wallets';
 import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
 export function useAuthP2P() {
@@ -25,10 +24,6 @@ export function useAuthP2P() {
   const keypairConnection = useConnection(keypairWalletConnection);
   const authWallet = useAuthWallet();
   const wallets = useWallets({
-    connectionType: [
-      WalletConnectionType.eip6963,
-      WalletConnectionType.tronlink,
-    ],
     includeKeypairWallet: true,
   });
 

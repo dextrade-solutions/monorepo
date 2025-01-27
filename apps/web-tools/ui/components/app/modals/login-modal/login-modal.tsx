@@ -1,14 +1,13 @@
-import { Box, Typography, Divider, Alert } from '@mui/material';
-import { ButtonIcon, ModalProps } from 'dex-ui';
+import { Box, Typography, Divider } from '@mui/material';
+import { ButtonIcon, ModalProps, WalletList } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { clearAuthState } from '../../../../ducks/auth';
-import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import WalletList from '../../wallet-list';
+// import WalletList from '../../wallet-list';
 
 const LoginModal = ({
   hideModal,
@@ -17,12 +16,7 @@ const LoginModal = ({
   const t = useI18nContext();
   const [loadingWallet, setLoadingWallet] = useState();
   const dispatch = useDispatch();
-  const wallets = useWallets({
-    connectionType: [
-      WalletConnectionType.eip6963,
-      WalletConnectionType.tronlink,
-    ],
-  });
+  const wallets = useWallets();
   const { login } = useAuthP2P();
 
   const onSelectWallet = useCallback(
@@ -64,12 +58,9 @@ const LoginModal = ({
       </Box>
       <Box>
         <WalletList
+          wallets={wallets}
           connectingWallet={loadingWallet}
           connectingWalletLabel="Login via"
-          connectionType={[
-            WalletConnectionType.eip6963,
-            WalletConnectionType.tronlink,
-          ]}
           onSelectWallet={onSelectWallet}
         />
       </Box>

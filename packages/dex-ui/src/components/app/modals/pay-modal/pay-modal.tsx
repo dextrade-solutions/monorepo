@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { ModalProps, PaymodalHandlers } from '../types';
 import { PayModalProcessing } from './pay-modal-processing';
 import { ButtonIcon } from '../../../ui';
-import { paymentService } from 'dex-services';
 
 const PayModal = ({
   plan,

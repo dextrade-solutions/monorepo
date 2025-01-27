@@ -65,7 +65,9 @@ export default function Invoice() {
   const connectionType = paymentAsset
     ? determineConnectionType(paymentAsset)
     : [];
-  const { data: connections = [] } = useConnections({
+  const {
+    connections: { data: connections = [] },
+  } = useConnections({
     wagmiConfig: config,
     connectionType,
   });

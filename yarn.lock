@@ -7799,12 +7799,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@multiversx/sdk-core@npm:^13.17.1":
+  version: 13.17.1
+  resolution: "@multiversx/sdk-core@npm:13.17.1"
+  dependencies:
+    "@multiversx/sdk-bls-wasm": "npm:0.3.5"
+    "@multiversx/sdk-transaction-decoder": "npm:1.0.2"
+    "@noble/ed25519": "npm:1.7.3"
+    "@noble/hashes": "npm:1.3.0"
+    axios: "npm:^1.7.4"
+    bech32: "npm:1.1.4"
+    bip39: "npm:3.1.0"
+    blake2b: "npm:2.1.3"
+    buffer: "npm:6.0.3"
+    ed25519-hd-key: "npm:1.1.2"
+    ed2curve: "npm:0.3.0"
+    json-bigint: "npm:1.0.0"
+    keccak: "npm:3.0.2"
+    scryptsy: "npm:2.1.0"
+    tweetnacl: "npm:1.0.3"
+    uuid: "npm:8.3.2"
+  peerDependencies:
+    bignumber.js: ^9.0.1
+    protobufjs: ^7.2.6
+  dependenciesMeta:
+    "@multiversx/sdk-bls-wasm":
+      optional: true
+    axios:
+      optional: true
+    bip39:
+      optional: true
+  checksum: 10/1abcc7ea99c4fcf3bf7549892a7a90547ef855bc6510f331d4f043de5566e1ba8fc1a5df4f86425b120a33a643842e3c7d4671ec9dee4f06e027ba7cfaf8e0a2
+  languageName: node
+  linkType: hard
+
 "@multiversx/sdk-extension-provider@npm:^4.0.0":
   version: 4.0.0
   resolution: "@multiversx/sdk-extension-provider@npm:4.0.0"
   peerDependencies:
     "@multiversx/sdk-core": ">= 13.5.0"
   checksum: 10/fe22d8fb9c6fe8ab999699629c4c708998d3ae49243cfb176dc0ebcd16563b2ed1cfd99ffb2c645387e34637d7803e9c69ac643afb8c17789e53a904af8a9beb
+  languageName: node
+  linkType: hard
+
+"@multiversx/sdk-extension-provider@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@multiversx/sdk-extension-provider@npm:4.0.1"
+  peerDependencies:
+    "@multiversx/sdk-core": ">= 13.5.0"
+  checksum: 10/992dcd3347e60c9ff7025e2e0881950289f228623673196c1491db07bbc71d34ba1241dcc21cec22286e652278cbce3735f370ebd19cc012509305b3e6f117c0
   languageName: node
   linkType: hard
 
@@ -13629,6 +13672,13 @@ __metadata:
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
   checksum: 10/9d35d475095199c23e05b431bcdd1f6fec7380612aed068b14b2a08aa70494de8a9026765a5a91b1073f636fb0368f6d8973f518a31391d519e20c59388ed88d
+  languageName: node
+  linkType: hard
+
+"@types/events@npm:^3":
+  version: 3.0.3
+  resolution: "@types/events@npm:3.0.3"
+  checksum: 10/50af9312fab001fd6bd4bb3ff65830f940877e6778de140a92481a0d9bf5f4853d44ec758a8800ef60e0598ac43ed1b5688116a3c65906ae54e989278d6c7c82
   languageName: node
   linkType: hard
 
@@ -23295,10 +23345,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dex-connect@workspace:packages/dex-connect"
   dependencies:
+    "@multiversx/sdk-core": "npm:^13.17.1"
+    "@multiversx/sdk-extension-provider": "npm:^4.0.1"
     "@solana/wallet-adapter-react": "npm:^0.15.35"
     "@tronweb3/tronwallet-adapters": "npm:^1.2.6"
+    "@types/events": "npm:^3"
     "@uidotdev/usehooks": "npm:^2.4.1"
     dex-helpers: "workspace:^"
+    events: "npm:^3.3.0"
     wagmi: "npm:2.14.9"
   languageName: unknown
   linkType: soft

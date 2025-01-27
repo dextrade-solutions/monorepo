@@ -14,7 +14,6 @@ import { fetchRates } from '../../../app/helpers/rates';
 import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
-import { useAuthWallet } from '../useAuthWallet';
 
 export const useAssetInput = ({
   asset,
@@ -24,7 +23,6 @@ export const useAssetInput = ({
   isToAsset?: boolean;
 }) => {
   const { showModal } = useGlobalModalContext();
-  const { isAuthenticated } = useAuthWallet();
   const dispatch = useDispatch();
   const { login } = useAuthP2P();
   const wallets = useWallets();
