@@ -20,10 +20,6 @@ const PayModal = ({
 } & ModalProps &
   AlertProps) => {
   const { t } = useTranslation();
-  const { data: paymentPrices = {}, isLoading: isLoadingPrices } = useQuery({
-    queryKey: ['dexpay-paymentPrices'],
-    queryFn: () => paymentService.getPrices().then((response) => response.data),
-  });
 
   const onBuyBtnClick = () => {
     // create invoice
