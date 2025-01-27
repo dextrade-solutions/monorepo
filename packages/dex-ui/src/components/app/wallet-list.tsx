@@ -6,9 +6,9 @@ import {
   ListItemButton,
   ListItemSecondaryAction,
   ListItemText,
-  MenuList,
   Typography,
 } from '@mui/material';
+import { WalletConnection, WalletItem } from 'dex-connect';
 import { isMobileWeb, shortenAddress } from 'dex-helpers';
 import { isEqual } from 'lodash';
 import React, { useState } from 'react';
@@ -62,7 +62,11 @@ export default function WalletList({
   };
 
   const onSelect = (e: Event, wallet: WalletItem) => {
-    if (!isMobileWeb || wallet.meta?.isWebView) {
+    if (
+      !isMobileWeb ||
+      wallet.meta?.isWebView ||
+      wallet.meta?.supportMobileBrowser
+    ) {
       e.preventDefault();
       pickOrInstallWallet(wallet);
     }

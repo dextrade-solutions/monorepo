@@ -28,6 +28,7 @@ export function useDexUI({
         },
         zIndex: {
           modal: 999,
+          drawer: 999,
         },
         components: {
           MuiCard: {

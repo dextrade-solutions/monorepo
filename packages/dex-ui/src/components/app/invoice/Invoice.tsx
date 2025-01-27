@@ -15,13 +15,15 @@ type SolanaConfig = {
 export default function Invoice({
   wagmiConfig,
   solana,
+  id,
 }: {
   wagmiConfig: any;
   solana: SolanaConfig;
+  id: string;
 }) {
   return (
     <DexConnectProvider wagmiConfig={wagmiConfig} solanaConfig={solana}>
-      <InvoiceView />
+      <InvoiceView id={id} />
     </DexConnectProvider>
   );
 }

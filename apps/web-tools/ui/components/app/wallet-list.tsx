@@ -12,7 +12,6 @@ import {
 import { isMobileWeb, shortenAddress } from 'dex-helpers';
 import {
   ButtonIcon,
-  Icon,
   PulseLoader,
   UrlIcon,
   useGlobalModalContext,
@@ -31,7 +30,7 @@ export default function WalletList({
   connectionType,
   onSelectWallet,
 }: {
-  value: WalletConnection; // selected item
+  value: WalletConnection; // selected itemp
   onlyConnected?: boolean;
   connectingWallet?: WalletItem;
   connectingWalletLabel?: string;

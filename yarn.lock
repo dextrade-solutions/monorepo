@@ -23780,6 +23780,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.5.0"
     punycode: "npm:^2.3.1"
+    qr-code-styling: "npm:^1.9.1"
     react-i18next: "npm:^15.0.2"
     react-number-format: "npm:^5.4.2"
     typescript: "npm:^5.5.3"
@@ -39938,6 +39939,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qr-code-styling@npm:^1.9.1":
+  version: 1.9.1
+  resolution: "qr-code-styling@npm:1.9.1"
+  dependencies:
+    qrcode-generator: "npm:^1.4.4"
+  checksum: 10/8bbed5e1136331aae8791df0879794d598b3cd81d596f25965f65485bd598f56849f785154a00bb27e6623ea8c6a46e4c7acad0e02e6f3cedf17ec96dba2ee43
+  languageName: node
+  linkType: hard
+
 "qr.js@npm:0.0.0":
   version: 0.0.0
   resolution: "qr.js@npm:0.0.0"
@@ -39949,6 +39959,13 @@ __metadata:
   version: 1.4.1
   resolution: "qrcode-generator@npm:1.4.1"
   checksum: 10/fc62250ce5baad65ce97063e78876d66ccb4bca2dace50e195d0a6cd65a429b99710b8fcb3b435399d5e3c56e3c5014d7491f6ebf2b24d0ad36ddb26a35f8783
+  languageName: node
+  linkType: hard
+
+"qrcode-generator@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "qrcode-generator@npm:1.4.4"
+  checksum: 10/65b2bba237d1f230eba0d08ae4267d04f326859c2265775ade99191be1b522158b623fcc0b613bbfc9d4edbbafb928fc41c66d61053b333f2eb0bcedb2ebadca
   languageName: node
   linkType: hard
 

@@ -5,6 +5,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { NoMatchPage } from './404';
 import Home from './home';
+import InvoicePage from './invoice';
 import AppSettings from './settings';
 import AppSettingsGeneral from './settings/general';
 import { Plans } from './settings/plans';
@@ -28,7 +29,6 @@ import {
   INVOICE_ROUTE,
 } from '../helpers/constants/routes';
 import { useAuthP2P } from '../hooks/useAuthP2P';
-import InvoicePage from './invoice';
 
 export default function RoutesRoot() {
   const { login } = useAuthP2P();
@@ -46,13 +46,6 @@ export default function RoutesRoot() {
     const { keyringController } = engine;
     keyringController.init({ sessionSeed });
     login();
-    // if (!isConnected) {
-    // clear cache on disconnect
-    // dispatch(clearAuthState());
-    // queryClient.removeQueries({ queryKey: ['p2pTrades'], exact: true });
-    // queryClient.removeQueries({ queryKey: ['p2pTradesActive'], exact: true });
-    // queryClient.removeQueries({ queryKey: ['kycInfo'], exact: true });
-    // }
   }, [dispatch, sessionSeed, navigate]);
 
   return (
@@ -65,8 +58,8 @@ export default function RoutesRoot() {
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}
         />
+        <Route path={`${INVOICE_ROUTE}/:id`} element={<InvoicePage />} />
         <Route path={SWAPS_HISTORY_ROUTE} element={<SwapHistory />} />
-        <Route path={INVOICE_ROUTE} element={<InvoicePage />} />
         <Route path={SETTINGS_ROUTE} element={<AppSettings />}>
           <Route path={KYC_ROUTE} element={<Kyc />} />
           <Route path={PAYMENT_METHODS_ROUTE} element={<PaymentMethods />} />

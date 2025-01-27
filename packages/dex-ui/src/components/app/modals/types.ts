@@ -1,7 +1,8 @@
 import { NetworkNames, NetworkTypes } from 'dex-helpers';
+import React from 'react';
 
 export type ModalState = {
-  name: string;
+  name?: string;
   props: Record<string, any>;
 };
 
@@ -26,7 +27,7 @@ export type PaymodalHandlers = {
 };
 
 export type ShowModalArgs = {
-  name: string;
+  name?: string;
 } & Record<string, any>;
 
 export type ModalContext = {

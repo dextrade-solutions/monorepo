@@ -22,24 +22,22 @@ export const WALLETS_META = [
   {
     name: 'walletconnect',
     icon: '/images/wallets/wallet-connect.svg',
-    installed: true,
+    supportMobileBrowser: true,
   },
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
+    deepLink: 'https://xverse.app/dapp/',
   },
   {
     name: 'coinbase wallet',
     icon: '/images/wallets/coinbase.webp',
-    installed: true,
+    supportMobileBrowser: true,
   },
   {
     name: 'multiversx wallet',
     icon: '/images/wallets/multiversx.webp',
     downloadLink: 'https://wallet.multiversx.com/',
-    get installed() {
-      return true;
-    },
   },
   {
     name: 'ledgerlive',
@@ -101,5 +99,13 @@ export const WALLETS_META = [
     downloadLink: {
       desktop: 'https://rabby.io/',
     },
+    deepLink: 'https://rabby.io/dapp?url=',
+  },
+  {
+    name: 'phantom',
+    get installed() {
+      return '';
+    },
+    deepLink: 'https://phantom.app/ul/v1/connect?uri=',
   },
 ];

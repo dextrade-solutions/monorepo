@@ -5,19 +5,13 @@ import {
   Divider,
   ListItemAvatar,
   ListItemButton,
-  ListItemSecondaryAction,
   ListItemText,
   MenuList,
   Skeleton,
   Typography,
 } from '@mui/material';
 // import assetsDict from 'dex-helpers/assets-dict';
-import {
-  determineConnectionType,
-  useConnections,
-  useEVMConnections,
-  useTronConnections,
-} from 'dex-connect';
+import { determineConnectionType, useConnections } from 'dex-connect';
 import { formatCurrency, formatFundsAmount, shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
@@ -26,14 +20,17 @@ import { useConfig } from 'wagmi';
 
 import { InvoicePayBtn } from './InvoicePayBtn';
 import InvoicePreloader from './InvoicePreloader';
-import { Icon, UrlIcon, SelectCoinsItem, ButtonIcon } from '../../ui';
+import { Icon, UrlIcon, SelectCoinsItem, CopyData } from '../../ui';
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
+import { useGlobalModalContext } from '../modals';
+import { useShowQr } from './hooks/use-show-qr';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import usePayment from './react-queries/queries/usePayment';
+import { Invoice as InvoiceNamespace } from './types/invoices';
 
-export default function Invoice() {
+export default function Invoice({ id }: { id: string }) {
   const [assetsDict, setAssetDict] = useState(null);
   const [loadingWallet, setLoadingWallet] = useState(null);
   const [connectedWallet, setConnectedWallet] = useState(null);
@@ -45,12 +42,59 @@ export default function Invoice() {
   useEffect(() => {
     loadJson();
   }, []);
-  const queryId =
-    'ee15e1a4-3914-473e-be28-9210b66ebde8-f2986e9ec85616f783304f241b6a9f38';
-  const payment = usePayment({ id: queryId });
+  const { showModal } = useGlobalModalContext();
+  const payment = usePayment({ id });
   const currencies = useCurrencies();
   const changeAddress = usePaymentAddress();
   const config = useConfig();
+  const showQr = useShowQr();
+
+  const showCopy = (item: InvoiceNamespace.View.Response) => {
+    showModal({
+      component: () => (
+        <Box margin={3}>
+          <Box display="flex">
+            <Typography
+              variant="h5"
+              textAlign="left"
+              className="flex-grow nowrap"
+            >
+              Amount
+            </Typography>
+            <Typography variant="h5">
+              {item.amount_requested_f} {item.coin?.iso}
+            </Typography>
+          </Box>
+          <Box display="flex">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Network
+            </Typography>
+            <Typography fontWeight="bold">
+              {item.currency.network_name}
+            </Typography>
+          </Box>
+          <Box my={2}>
+            <Divider />
+          </Box>
+          <Box display="flex" textAlign="right" alignItems="center">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Address
+            </Typography>
+            <CopyData data={item.address} />
+          </Box>
+          <Box display="flex" textAlign="right" alignItems="center">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Link
+            </Typography>
+            <CopyData data={item.payment_page_url} title="Payment link" />
+          </Box>
+          <Alert sx={{ mt: 2 }} severity="info">
+            Please send the exact amount to the provided address.
+          </Alert>
+        </Box>
+      ),
+    });
+  };
 
   const paymentAssetId = payment.data?.currency.iso_with_network;
   const isLoading = payment.isLoading || currencies.isLoading;
@@ -77,7 +121,7 @@ export default function Invoice() {
     if (!currency) {
       throw new Error('onChangeAsset - Currency not found');
     }
-    await changeAddress.mutateAsync({ id: queryId, currency_id: currency.id });
+    await changeAddress.mutateAsync({ id, currency_id: currency.id });
     setConnectedWallet(null);
   };
 
@@ -106,6 +150,14 @@ export default function Invoice() {
     }
     return [];
   }, [currencies.data, assetsDict]);
+
+  if (payment.isError) {
+    return (
+      <Alert severity="info">
+        Invoice with id <strong>{id}</strong> cannot be loaded
+      </Alert>
+    );
+  }
 
   if (isLoading || !payment.data) {
     return <InvoicePreloader />;
@@ -225,7 +277,10 @@ export default function Invoice() {
                 </>
               ) : (
                 <>
-                  <ListItemButton className="bordered">
+                  <ListItemButton
+                    className="bordered"
+                    onClick={() => showQr(payment.data)}
+                  >
                     <ListItemAvatar>
                       <Icon name="scan" />
                     </ListItemAvatar>
@@ -234,7 +289,10 @@ export default function Invoice() {
                       secondary="Scan qr code using any wallet"
                     />
                   </ListItemButton>
-                  <ListItemButton className="bordered">
+                  <ListItemButton
+                    className="bordered"
+                    onClick={() => showCopy(payment.data)}
+                  >
                     <ListItemAvatar>
                       <Icon name="copy" />
                     </ListItemAvatar>

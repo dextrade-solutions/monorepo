@@ -40,9 +40,7 @@ export function useConnections({
     const id = `${name}:${type}`;
     return {
       id,
-      meta: WALLETS_META.find(
-        (i) => i.name.toLowerCase() === name.toLowerCase(),
-      ),
+      meta: WALLETS_META.find((i) => i.name.includes(name.toLowerCase())),
       connectionType: instance.type,
       icon,
       name,

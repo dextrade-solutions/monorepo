@@ -1,11 +1,14 @@
 import { Button, AlertProps, Box, Divider, Typography } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
 import { formatCurrency } from 'dex-helpers';
 import { Tariff } from 'dex-helpers/types';
+import { paymentService } from 'dex-services';
 import { useTranslation } from 'react-i18next';
 
 import { ModalProps, PaymodalHandlers } from '../types';
 import { PayModalProcessing } from './pay-modal-processing';
 import { ButtonIcon } from '../../../ui';
+import { useGlobalModalContext } from '../modal-context';
 
 const PayModal = ({
   plan,
@@ -15,16 +18,25 @@ const PayModal = ({
 }: {
   plan: Tariff;
   paymodalHandlers?: PaymodalHandlers;
-  onBuyPlan?: (plan: Tariff) => void;
+  onBuyPlan?: (plan: Tariff, invoiceId: string) => void;
 } & ModalProps &
   AlertProps) => {
   const { t } = useTranslation();
-
-  const onBuyBtnClick = () => {
-    // create invoice
-    onBuyPlan && onBuyPlan(plan);
-    hideModal();
-  };
+  const { showModal } = useGlobalModalContext();
+  const createInvoice = useMutation<{ id: string }, unknown, { id: number }>({
+    mutationFn: (params) => paymentService.createInvoice(params),
+    onSuccess: (response) => {
+      onBuyPlan && onBuyPlan(plan, response.id);
+      hideModal();
+    },
+    onError: (e) => {
+      showModal({
+        name: 'ALERT_MODAL',
+        severity: 'error',
+        text: e.message,
+      });
+    },
+  });
 
   return (
     <Box padding={3}>
@@ -48,10 +60,11 @@ const PayModal = ({
       </Box>
       {onBuyPlan ? (
         <Button
-          onClick={onBuyBtnClick}
+          onClick={() => createInvoice.mutate(plan.id)}
           fullWidth
           variant="contained"
           size="large"
+          disabled={createInvoice.isPending}
         >
           Buy
         </Button>

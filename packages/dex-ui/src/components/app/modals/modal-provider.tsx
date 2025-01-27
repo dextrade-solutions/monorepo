@@ -50,7 +50,8 @@ export const ModalProvider = ({ children, modals }) => {
     ...MODAL_COMPONENTS,
     ...modals,
   };
-  const ModalComponent = allModals[store.modalState.name];
+  const ModalComponent =
+    store.modalState.props.component || allModals[store.modalState.name];
 
   const renderContent = () =>
     ModalComponent && (
@@ -67,10 +68,16 @@ export const ModalProvider = ({ children, modals }) => {
         <SwipeableDrawer
           anchor="bottom"
           onOpen={() => {}}
-          // disableBackdropTransition={!isIOS}
-          // disableDiscovery={isIOS}
           onClose={hideModal}
           open={store.open}
+          sx={(theme) => ({
+            '& .MuiDrawer-paper': {
+              backgroundImage:
+                theme.palette.mode === 'dark'
+                  ? 'linear-gradient(0deg, #1D1D1D 0%, #1D1D1D 90%, #3F265F 130%)'
+                  : 'none',
+            },
+          })}
           PaperProps={{
             sx: {
               borderTopLeftRadius: 20,

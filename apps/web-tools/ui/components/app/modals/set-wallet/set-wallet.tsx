@@ -1,13 +1,19 @@
 import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, ButtonIcon, AssetItem, ModalProps, WalletList } from 'dex-ui';
+import {
+  CopyData,
+  ButtonIcon,
+  AssetItem,
+  ModalProps,
+  WalletList,
+} from 'dex-ui';
 import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
+import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
-import { useWallets } from '../../../../hooks/asset/useWallets';
 
 const SetWallet = ({
   asset,
