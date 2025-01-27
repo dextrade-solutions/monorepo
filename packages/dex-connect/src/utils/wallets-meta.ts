@@ -27,9 +27,6 @@ export const WALLETS_META = [
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
-    get isSupported() {
-      return !isMobileWeb;
-    },
   },
   {
     name: 'coinbase wallet',

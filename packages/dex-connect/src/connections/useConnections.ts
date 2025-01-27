@@ -7,7 +7,7 @@ import { MultiverseExtension } from '../providers/multiversx-provider';
 import { SatsConnectProvider } from '../providers/sats-connect-provider';
 import { useEVMProviders } from '../providers/useEVMProviders';
 import { useTronProviders } from '../providers/useTronProviders';
-import { getWalletIcon } from '../utils';
+import { getWalletIcon, WALLETS_META } from '../utils';
 import { useConnectionState } from './useConnectionState';
 import { useSolanaProviders } from '../providers/useSolanaProviders';
 
@@ -40,6 +40,9 @@ export function useConnections({
     const id = `${name}:${type}`;
     return {
       id,
+      meta: WALLETS_META.find(
+        (i) => i.name.toLowerCase() === name.toLowerCase(),
+      ),
       connectionType: instance.type,
       icon,
       name,

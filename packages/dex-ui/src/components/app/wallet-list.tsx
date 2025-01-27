@@ -53,8 +53,8 @@ export default function WalletList({
 
   const pickOrInstallWallet = (item: WalletItem) => {
     // eslint-disable-next-line no-restricted-syntax
-    const hasInstalledProp = 'installed' in (item.metadata || {});
-    if (!isMobileWeb && hasInstalledProp && !item.metadata.installed) {
+    const hasInstalledProp = 'installed' in (item.meta || {});
+    if (!isMobileWeb && hasInstalledProp && !item.meta.installed) {
       return setToInstallWallet(item);
     }
 
@@ -62,11 +62,17 @@ export default function WalletList({
   };
 
   const onSelect = (e: Event, wallet: WalletItem) => {
-    if (!isMobileWeb || wallet.metadata?.isWebView) {
+    if (!isMobileWeb || wallet.meta?.isWebView) {
       e.preventDefault();
       pickOrInstallWallet(wallet);
     }
   };
+
+  let renderList = wallets;
+  const webViewWallet = wallets.filter((i) => i.meta?.isWebView);
+  if (webViewWallet.length) {
+    renderList = webViewWallet;
+  }
 
   return (
     <>
@@ -100,20 +106,20 @@ export default function WalletList({
               <Typography my={2}>
                 {toInstallWallet.name} is not detected
               </Typography>
-              {toInstallWallet.metadata.guide && (
+              {toInstallWallet.meta.guide && (
                 <Button
-                  href={toInstallWallet.metadata.guide.desktop}
+                  href={toInstallWallet.meta.guide.desktop}
                   target="_blank"
                   variant="outlined"
                 >
                   Setup guide
                 </Button>
               )}
-              {toInstallWallet.metadata.downloadLink && (
+              {toInstallWallet.meta.downloadLink && (
                 <Button
                   sx={{ my: 1 }}
                   variant="contained"
-                  href={toInstallWallet.metadata.downloadLink}
+                  href={toInstallWallet.meta.downloadLink}
                   target="_blank"
                 >
                   Install
@@ -124,7 +130,7 @@ export default function WalletList({
         </Box>
       )}
       {showWalletsList &&
-        wallets.map((item, idx) => (
+        renderList.map((item, idx) => (
           <Box data-testid={item.id} key={idx} marginTop={1}>
             <ListItemButton
               sx={{
@@ -135,14 +141,14 @@ export default function WalletList({
               }}
               className="bordered"
               href={
-                item.metadata?.deepLink
-                  ? item.metadata.deepLink + window.location.href
+                item.meta?.deepLink
+                  ? item.meta.deepLink + window.location.href
                   : undefined
               }
               target="_blank"
               onClick={(e) => onSelect(e, item)}
             >
-              {/* {item.metadata && !item.metadata.isSupported && (
+              {/* {item.meta && !item.meta.isSupported && (
                   <ListItemIcon>
                     <Icon name="alert" />
                   </ListItemIcon>
@@ -179,7 +185,7 @@ export default function WalletList({
             </ListItemButton>
           </Box>
         ))}
-      {!wallets.length && (
+      {!renderList.length && (
         <Typography color="text.secondary">No wallets detected...</Typography>
       )}
     </>
