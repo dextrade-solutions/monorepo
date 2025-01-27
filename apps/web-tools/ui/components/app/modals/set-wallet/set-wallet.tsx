@@ -1,13 +1,13 @@
 import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { CopyData, ButtonIcon, AssetItem, ModalProps } from 'dex-ui';
+import { CopyData, ButtonIcon, AssetItem, ModalProps, WalletList } from 'dex-ui';
 import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
-import WalletList from '../../wallet-list';
+import { useWallets } from '../../../../hooks/asset/useWallets';
 
 const SetWallet = ({
   asset,
@@ -25,6 +25,7 @@ const SetWallet = ({
   const canConnectExternalWallet = !asset.isFiat;
   const canPasteAddress = isToAsset;
   const connectionType = determineConnectionType(asset);
+  const wallets = useWallets({ connectionType });
 
   const t = useI18nContext();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
@@ -96,9 +97,9 @@ const SetWallet = ({
         <Box>
           {canConnectExternalWallet && (
             <WalletList
+              wallets={wallets}
               value={savedValue}
               connectingWallet={loadingWallet}
-              connectionType={connectionType}
               onSelectWallet={onSelectWallet}
             />
           )}
