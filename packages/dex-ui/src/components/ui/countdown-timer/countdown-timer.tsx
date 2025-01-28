@@ -1,32 +1,48 @@
 import './index.scss';
 import { Tooltip } from '@mui/material';
 import classnames from 'classnames';
-import { SECOND } from 'dex-helpers';
 import { Duration } from 'luxon';
 import React, { useState, useEffect, useRef } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import TimerIcon from './timer-icon';
 
-// Return the mm:ss start time of the countdown timer.
-// If time has elapsed between `timeStarted` the time current time,
-// then that elapsed time will be subtracted from the timer before
-// rendering
-function getNewTimer(currentTime, timeStarted, timeBaseStart) {
+// Constants
+const SECOND = 1000; // 1 second in milliseconds
+
+// Return the formatted time of the countdown timer.
+function getNewTimer(
+  currentTime: number,
+  timeStarted: number,
+  timeBaseStart: number,
+) {
   const timeAlreadyElapsed = currentTime - timeStarted;
   return timeBaseStart - timeAlreadyElapsed;
 }
 
-function decreaseTimerByOne(timer) {
+function decreaseTimerByOne(timer: number) {
   return Math.max(timer - SECOND, 0);
 }
 
-function timeBelowWarningTime(timer, warningTime) {
+function timeBelowWarningTime(timer: number, warningTime: string) {
   const [warningTimeMinutes, warningTimeSeconds] = warningTime.split(':');
   return (
     timer <=
     (Number(warningTimeMinutes) * 60 + Number(warningTimeSeconds)) * SECOND
   );
+}
+
+function formatTime(milliseconds: number): string {
+  const duration = Duration.fromMillis(milliseconds);
+  const days = Math.floor(duration.as('days'));
+  const hours = Math.floor(duration.as('hours') % 24);
+
+  if (days > 0) {
+    return `${days}d ${hours}h ${duration.toFormat('mm:ss')}`;
+  } else if (hours > 0) {
+    return duration.toFormat('hh:mm:ss');
+  }
+  return duration.toFormat('mm:ss');
 }
 
 export default function CountdownTimer({
@@ -37,94 +53,78 @@ export default function CountdownTimer({
   labelKey,
   infoTooltipLabelKey,
 }: {
-  /**
-   * Unix timestamp that indicates the time at which this timer has started
-   * running.
-   */
   timeStarted: number;
-
-  /**
-   * Boolean indicating whether to display only the time (`true`) or to also
-   * display a label (`false`), given by the `labelKey` parameter.
-   */
   timeOnly?: boolean;
-
-  /**
-   * The duration of this timer in milliseconds.
-   */
   timerBase: number;
-
-  /**
-   * The time at which this timer should turn red, indicating it has almost run
-   * out of time. Given in the format `mm:ss`.
-   */
   warningTime?: string;
-
-  /**
-   * The key of the label to display next to the timer, defined in
-   * `app/_locales/`.
-   */
   labelKey: string;
-
-  /**
-   * The key of the label to display in the tooltip when hovering over the info
-   * icon, defined in `app/_locales/`.
-   */
   infoTooltipLabelKey: string;
 }) {
   const { t } = useTranslation();
-  const intervalRef = useRef();
-  const initialTimeStartedRef = useRef();
+  const intervalRef = useRef<NodeJS.Timeout>();
+  const initialTimeStartedRef = useRef<number>();
+  const previousTimerRef = useRef<string>();
 
   const timerStart = Number(timerBase);
 
-  const [currentTime, setCurrentTime] = useState(() => Date.now());
+  // States for timer and currentTime
+  const [currentTime, setCurrentTime] = useState(Date.now());
   const [timer, setTimer] = useState(() =>
     getNewTimer(currentTime, timeStarted, timerStart),
   );
 
+  // Update timer and currentTime every second
   useEffect(() => {
-    if (intervalRef.current === undefined) {
-      intervalRef.current = setInterval(() => {
-        setTimer(decreaseTimerByOne);
-      }, SECOND);
-    }
+    intervalRef.current = setInterval(() => {
+      const newCurrentTime = Date.now();
+      setCurrentTime(newCurrentTime); // Update current time
+      setTimer(getNewTimer(newCurrentTime, timeStarted, timerStart)); // Calculate new timer
+    }, SECOND);
 
-    return function cleanup() {
-      clearInterval(intervalRef.current);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, []);
+  }, [timeStarted, timerStart]);
 
-  // Reset the timer that timer has hit '0:00' and the timeStarted prop has changed
+  // Reset timer when timeStarted changes
   useEffect(() => {
     if (!initialTimeStartedRef.current) {
       initialTimeStartedRef.current = timeStarted || Date.now();
     }
 
-    if (timer === 0 && timeStarted !== initialTimeStartedRef.current) {
+    if (timeStarted !== initialTimeStartedRef.current) {
       initialTimeStartedRef.current = timeStarted;
       const newCurrentTime = Date.now();
       setCurrentTime(newCurrentTime);
       setTimer(getNewTimer(newCurrentTime, timeStarted, timerStart));
-
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        setTimer(decreaseTimerByOne);
-      }, SECOND);
     }
-  }, [timeStarted, timer, timerStart]);
+  }, [timeStarted, timerStart]);
 
-  const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss');
-  let time;
+  const formattedTimer = formatTime(timer);
+
+  // Track previous timer value for animation
+  const isSliding = previousTimerRef.current !== formattedTimer;
+  previousTimerRef.current = formattedTimer;
+
+  const timeElement = (
+    <div
+      className={classnames('countdown-timer__time', {
+        'countdown-timer__time--sliding': isSliding,
+      })}
+    >
+      {formattedTimer}
+    </div>
+  );
+
+  let content;
   if (timeOnly) {
-    time = <div className="countdown-timer__time">{formattedTimer}</div>;
+    content = timeElement;
   } else if (labelKey) {
-    time = (
-      <div>
-        {t(labelKey)}{' '}
-        <div key="countdown-time-1" className="countdown-timer__time">
-          {formattedTimer}
-        </div>
+    content = (
+      <div className="countdown-timer__label">
+        {t(labelKey)} {timeElement}
       </div>
     );
   }
@@ -138,11 +138,12 @@ export default function CountdownTimer({
             warningTime && timeBelowWarningTime(timer, warningTime),
         })}
       >
-        <TimerIcon />
-        {time}
+        {content}
       </div>
       {!timeOnly && infoTooltipLabelKey ? (
-        <Tooltip position="bottom" contentText={t(infoTooltipLabelKey)} />
+        <Tooltip title={t(infoTooltipLabelKey)} placement="bottom">
+          <div className="countdown-timer__info-icon">ⓘ</div>
+        </Tooltip>
       ) : null}
     </div>
   );

@@ -33,8 +33,7 @@ const PayModal = ({
     mutationFn: (tariffId) =>
       paymentService.createInvoice({
         tariffId,
-        currency: 'ETH',
-        amount: 1,
+        currency: 'USDT_BSC',
       }),
     onSuccess: (response) => {
       const uid = extractUID(response.data.payment_page_url);

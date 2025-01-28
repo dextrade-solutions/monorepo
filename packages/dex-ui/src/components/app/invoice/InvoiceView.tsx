@@ -20,7 +20,13 @@ import { useConfig } from 'wagmi';
 
 import { InvoicePayBtn } from './InvoicePayBtn';
 import InvoicePreloader from './InvoicePreloader';
-import { Icon, UrlIcon, SelectCoinsItem, CopyData } from '../../ui';
+import {
+  Icon,
+  UrlIcon,
+  SelectCoinsItem,
+  CopyData,
+  CountdownTimer,
+} from '../../ui';
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
 import { useGlobalModalContext } from '../modals';
@@ -205,7 +211,7 @@ export default function Invoice({ id }: { id: string }) {
       ) : (
         <>
           <Box
-            m={1}
+            my={3}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -218,7 +224,27 @@ export default function Invoice({ id }: { id: string }) {
             ) : (
               <>
                 <Box>
-                  <Typography>Send: {formattedAmount}</Typography>
+                  <Typography color="text.secondary">
+                    To send <strong>{formattedAmount}</strong>
+                  </Typography>
+
+                  {payment.data.due_to && (
+                    <Typography color="text.secondary" display="flex">
+                      <Typography>Expiration</Typography>
+                      <strong>
+                        <CountdownTimer
+                          timeStarted={new Date().getTime()}
+                          timerBase={
+                            new Date(payment.data.due_to).getTime() -
+                            new Date().getTime()
+                          }
+                          timeOnly
+                          labelKey="Due to"
+                          infoTooltipLabelKey="Expiration Time"
+                        />
+                      </strong>
+                    </Typography>
+                  )}
                 </Box>
                 <SelectCoinsItem
                   className="flex-shrink"

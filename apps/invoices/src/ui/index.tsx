@@ -9,7 +9,7 @@ import {
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { DexUiProvider, Icon, useDexUI, Invoice } from 'dex-ui';
 import log from 'loglevel';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './css/index.scss';
 import { SOLANA_CONNECT_API, SOLANA_CONNECT_WALLETS } from './solana-config';
@@ -22,16 +22,39 @@ export function UI() {
   const [auth] = useLocalStorage<AuthData | null>('auth');
   const { muiTheme } = useDexUI({ theme: 'light' });
 
+  // State to store the extracted ID
+  const [invoiceId, setInvoiceId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Extract ID from the URL
+    const pathParts = window.location.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+    setInvoiceId(id);
+  }, []);
+
+  const handleBackButtonClick = () => {
+    // Navigate to the previous page
+    window.history.back();
+  };
+
   const backbutton = (
     <Button
       startIcon={<Icon name="arrow-left-dex" />}
       color="secondary"
       variant="contained"
-      onClick={() => {}}
+      onClick={handleBackButtonClick}
     >
       Back
     </Button>
   );
+
+  if (!invoiceId) {
+    return (
+      <Box>
+        <Typography variant="h1">404 - Oops! Page Not Found</Typography>
+      </Box>
+    );
+  }
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -46,6 +69,7 @@ export function UI() {
               {backbutton}
             </Box>
             <Invoice
+              id={invoiceId}
               wagmiConfig={config}
               solana={{
                 SOLANA_CONNECT_WALLETS,
