@@ -50,9 +50,14 @@ export function UI() {
 
   if (!invoiceId) {
     return (
-      <Box>
-        <Typography variant="h1">404 - Oops! Page Not Found</Typography>
-      </Box>
+      <>
+        <Typography textAlign="center" variant="h3" fontWeight="bold">
+          404
+        </Typography>
+        <Typography textAlign="center" variant="h6">
+          Oops! Page Not Found
+        </Typography>
+      </>
     );
   }
 
