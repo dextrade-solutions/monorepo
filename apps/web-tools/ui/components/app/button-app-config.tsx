@@ -67,6 +67,7 @@ export default function ButtonAppConfig() {
   return (
     <>
       <ButtonIcon
+        data-testid="settings"
         iconName="setting-dex"
         size="lg"
         iconProps={{
@@ -82,7 +83,7 @@ export default function ButtonAppConfig() {
       >
         {isAuthenticated ? (
           <MenuItem>
-            <ListItem sx={{ display: 'flex' }}>
+            <ListItem sx={{ display: 'flex' }} data-testid="settings-wallet-connected">
               <ListItemIcon>
                 {wallet ? <UrlIcon url={wallet.icon} /> : <PulseLoader />}
               </ListItemIcon>
@@ -102,7 +103,7 @@ export default function ButtonAppConfig() {
             </ListItem>
           </MenuItem>
         ) : (
-          <MenuItem onClick={login}>
+          <MenuItem onClick={login} data-testid="settings-wallet-login">
             <ListItem>
               <ListItemIcon>
                 <Icon name="link" />
@@ -111,7 +112,7 @@ export default function ButtonAppConfig() {
             </ListItem>
           </MenuItem>
         )}
-        <MenuItem onClick={() => navigate(SWAPS_HISTORY_ROUTE)}>
+        <MenuItem onClick={() => navigate(SWAPS_HISTORY_ROUTE)} data-testid="settings-swap-history">
           <ListItem>
             <ListItemIcon>
               <Icon name="menu" />
@@ -119,7 +120,7 @@ export default function ButtonAppConfig() {
             <ListItemText>Activity</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(SETTINGS_GENERAL_ROUTE)}>
+        <MenuItem onClick={() => navigate(SETTINGS_GENERAL_ROUTE)} data-testid="settings-general">
           <ListItem>
             <ListItemIcon>
               <Icon name="setting-dex" />
@@ -127,7 +128,7 @@ export default function ButtonAppConfig() {
             <ListItemText>General</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(PAYMENT_METHODS_ROUTE)}>
+        <MenuItem onClick={() => navigate(PAYMENT_METHODS_ROUTE)} data-testid="settings-payment-methods">
           <ListItem>
             <ListItemIcon>
               <Icon name="setting-dex-2" />
@@ -135,7 +136,7 @@ export default function ButtonAppConfig() {
             <ListItemText>Payment methods</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(KYC_ROUTE)}>
+        <MenuItem onClick={() => navigate(KYC_ROUTE)} data-testid="settings-kyc">
           <ListItem>
             <ListItemIcon>
               <Icon name="info" />
@@ -143,7 +144,7 @@ export default function ButtonAppConfig() {
             <ListItemText>KYC</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(PLANS_ROUTE)}>
+        <MenuItem onClick={() => navigate(PLANS_ROUTE)} data-testid="settings-plans">
           <ListItem>
             <ListItemIcon>
               <Icon name="card" />
@@ -151,7 +152,7 @@ export default function ButtonAppConfig() {
             <ListItemText>Upgrade</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={toggleDarkMode}>
+        <MenuItem onClick={toggleDarkMode} data-testid="settings-theme">
           <ListItem>
             <ListItemIcon>
               <DarkModeSwitch
