@@ -293,7 +293,7 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
    * @request GET:/api/payment/address
    */
   createInvoice = (
-    data: { id: number },
+    data: { tariffId: number },
     params: RequestParams = {},
   ) =>
     this.request<string, Record<string, string>>({

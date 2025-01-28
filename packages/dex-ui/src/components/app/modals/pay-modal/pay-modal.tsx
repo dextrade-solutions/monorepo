@@ -10,6 +10,12 @@ import { PayModalProcessing } from './pay-modal-processing';
 import { ButtonIcon } from '../../../ui';
 import { useGlobalModalContext } from '../modal-context';
 
+function extractUID(url: string): string | null {
+  const regex = /\/pay\/([a-f0-9-]+)$/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
 const PayModal = ({
   plan,
   hideModal,
@@ -23,10 +29,16 @@ const PayModal = ({
   AlertProps) => {
   const { t } = useTranslation();
   const { showModal } = useGlobalModalContext();
-  const createInvoice = useMutation<{ id: string }, unknown, { id: number }>({
-    mutationFn: (params) => paymentService.createInvoice(params),
+  const createInvoice = useMutation<{ id: string }, unknown, number>({
+    mutationFn: (tariffId) =>
+      paymentService.createInvoice({
+        tariffId,
+        currency: 'ETH',
+        amount: 1,
+      }),
     onSuccess: (response) => {
-      onBuyPlan && onBuyPlan(plan, response.id);
+      const uid = extractUID(response.data.payment_page_url);
+      onBuyPlan && onBuyPlan(plan, uid);
       hideModal();
     },
     onError: (e) => {
