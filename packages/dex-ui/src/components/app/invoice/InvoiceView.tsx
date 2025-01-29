@@ -26,6 +26,7 @@ import {
   SelectCoinsItem,
   CopyData,
   CountdownTimer,
+  AssetItem,
 } from '../../ui';
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
@@ -54,7 +55,7 @@ export default function Invoice({ id }: { id: string }) {
   const changeAddress = usePaymentAddress();
   const config = useConfig();
   const showQr = useShowQr();
-
+  const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
   const showCopy = (item: InvoiceNamespace.View.Response) => {
     showModal({
       component: () => (
@@ -190,16 +191,14 @@ export default function Invoice({ id }: { id: string }) {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Icon name="security-card" size="xl" />
-        <Typography variant="h6">
-          Pay {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
-        </Typography>
+      <Box display="flex" alignItems="center" flexDirection="column">
+        <Icon size="xl" name="tag" />
+        {canCurrencyChange && (
+          <Typography variant="h6">
+            Pay{' '}
+            {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
+          </Typography>
+        )}
       </Box>
 
       {isTerminated ? (
@@ -246,14 +245,19 @@ export default function Invoice({ id }: { id: string }) {
                     </Typography>
                   )}
                 </Box>
-                <SelectCoinsItem
-                  className="flex-shrink"
-                  asset={paymentAsset}
-                  placeholder={'Payment Asset'}
-                  items={assetList}
-                  onChange={onChangeAsset}
-                  maxListItem={6}
-                />
+
+                {canCurrencyChange ? (
+                  <SelectCoinsItem
+                    className="flex-shrink"
+                    asset={paymentAsset}
+                    placeholder={'Payment Asset'}
+                    items={assetList}
+                    onChange={onChangeAsset}
+                    maxListItem={6}
+                  />
+                ) : (
+                  <AssetItem iconSize={35} asset={paymentAsset} />
+                )}
               </>
             )}
           </Box>
