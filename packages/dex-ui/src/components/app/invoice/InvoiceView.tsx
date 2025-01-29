@@ -181,11 +181,16 @@ export default function Invoice({ id }: { id: string }) {
   const alertParams = {
     [InvoiceStatus.canceled]: {
       severity: 'danger',
+      status: 'Payment cancelled',
       text: 'Payment has been canceled, if you have questions, please contact support',
     },
     [InvoiceStatus.success]: {
       severity: 'success',
+      status: 'Payment successful',
       text: `Payment received. Received ${formattedAmount}`,
+    },
+    [InvoiceStatus.pending]: {
+      status: 'Payment awaiting',
     },
   };
 
@@ -199,6 +204,9 @@ export default function Invoice({ id }: { id: string }) {
             {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
           </Typography>
         )}
+        <Typography my={0.5} color="text.secondary">
+          {alertParams[payment.data.status].status}
+        </Typography>
       </Box>
 
       {isTerminated ? (
@@ -223,12 +231,12 @@ export default function Invoice({ id }: { id: string }) {
             ) : (
               <>
                 <Box>
-                  <Typography color="text.secondary">
+                  <Typography>
                     To send <strong>{formattedAmount}</strong>
                   </Typography>
 
                   {payment.data.due_to && (
-                    <Typography color="text.secondary" display="flex">
+                    <Typography display="flex">
                       <Typography>Expiration</Typography>
                       <strong>
                         <CountdownTimer
