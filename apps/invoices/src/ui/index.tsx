@@ -67,7 +67,7 @@ export function UI() {
       <DexUiProvider theme={muiTheme} locale={auth?.lang}>
         <Container maxWidth="sm">
           <Box paddingY={3}>
-            <Box display="flex" justifyContent="space-between" m={1} mb={2}>
+            <Box display="flex" justifyContent="space-between" mb={2}>
               <Typography variant="h5">
                 Dex<strong>Pay</strong>
               </Typography>

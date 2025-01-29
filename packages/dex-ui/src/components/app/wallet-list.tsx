@@ -5,7 +5,6 @@ import {
   Grow,
   ListItemAvatar,
   ListItemButton,
-  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
   Typography,
@@ -13,9 +12,9 @@ import {
 import { WalletConnection, WalletItem } from 'dex-connect';
 import { isMobileWeb, shortenAddress } from 'dex-helpers';
 import { isEqual } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { ButtonIcon, PulseLoader, UrlIcon, Icon } from '../ui';
+import { ButtonIcon, PulseLoader, UrlIcon } from '../ui';
 import { useGlobalModalContext } from './modals';
 
 export default function WalletList({
@@ -25,7 +24,6 @@ export default function WalletList({
   onSelectWallet,
 }: {
   value?: WalletConnection; // selected item
-  onlyConnected?: boolean;
   wallets?: any[];
   connectingWalletLabel?: string;
   onSelectWallet?: (item: WalletItem) => void;

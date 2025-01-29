@@ -26,6 +26,7 @@ import {
   SelectCoinsItem,
   CopyData,
   CountdownTimer,
+  AssetItem,
 } from '../../ui';
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
@@ -54,7 +55,7 @@ export default function Invoice({ id }: { id: string }) {
   const changeAddress = usePaymentAddress();
   const config = useConfig();
   const showQr = useShowQr();
-
+  const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
   const showCopy = (item: InvoiceNamespace.View.Response) => {
     showModal({
       component: () => (
@@ -180,25 +181,31 @@ export default function Invoice({ id }: { id: string }) {
   const alertParams = {
     [InvoiceStatus.canceled]: {
       severity: 'danger',
+      status: 'Payment cancelled',
       text: 'Payment has been canceled, if you have questions, please contact support',
     },
     [InvoiceStatus.success]: {
       severity: 'success',
+      status: 'Payment successful',
       text: `Payment received. Received ${formattedAmount}`,
+    },
+    [InvoiceStatus.pending]: {
+      status: 'Payment awaiting',
     },
   };
 
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        flexDirection="column"
-        alignItems="center"
-      >
-        <Icon name="security-card" size="xl" />
-        <Typography variant="h6">
-          Pay {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
+      <Box display="flex" alignItems="center" flexDirection="column">
+        <Icon size="xl" name="tag" />
+        {canCurrencyChange && (
+          <Typography variant="h6">
+            Pay{' '}
+            {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
+          </Typography>
+        )}
+        <Typography my={0.5} color="text.secondary">
+          {alertParams[payment.data.status].status}
         </Typography>
       </Box>
 
@@ -224,12 +231,12 @@ export default function Invoice({ id }: { id: string }) {
             ) : (
               <>
                 <Box>
-                  <Typography color="text.secondary">
+                  <Typography>
                     To send <strong>{formattedAmount}</strong>
                   </Typography>
 
                   {payment.data.due_to && (
-                    <Typography color="text.secondary" display="flex">
+                    <Typography display="flex">
                       <Typography>Expiration</Typography>
                       <strong>
                         <CountdownTimer
@@ -246,14 +253,19 @@ export default function Invoice({ id }: { id: string }) {
                     </Typography>
                   )}
                 </Box>
-                <SelectCoinsItem
-                  className="flex-shrink"
-                  asset={paymentAsset}
-                  placeholder={'Payment Asset'}
-                  items={assetList}
-                  onChange={onChangeAsset}
-                  maxListItem={6}
-                />
+
+                {canCurrencyChange ? (
+                  <SelectCoinsItem
+                    className="flex-shrink"
+                    asset={paymentAsset}
+                    placeholder={'Payment Asset'}
+                    items={assetList}
+                    onChange={onChangeAsset}
+                    maxListItem={6}
+                  />
+                ) : (
+                  <AssetItem iconSize={35} asset={paymentAsset} />
+                )}
               </>
             )}
           </Box>
