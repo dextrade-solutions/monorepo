@@ -1,0 +1,27 @@
+{
+  "Self custodian payment gateway": "Платежная система",
+  "Select asset and pay": "Выберите токен для оплаты",
+  "Buy now": "Перейти к оплате",
+  "Included": "Включено",
+  "Not included": "Не включено",
+  "Total": "Итого",
+  "Compare": "Сравнение",
+  "amlRequests": "AML Проверки",
+  "includeKyc": "KYC",
+  "From": "От",
+  "to": "на",
+  "Left": "Осталось",
+  "AML Requests": "AML",
+  "Personal plans": "Пакеты",
+  "Payments not found, please wait blockchain confirmation or contact support": "Платежи не найдены. Если вы отправили средства, дождитесь подтвеждения транзакции в блокчейне или напишите в тех. поддержку",
+  "Payments history": "История платежей",
+  "Please, send": "Пожалуйста, отправьте",
+  "approvalTimerP2PLabel": {
+    "message": "Approval time $1"
+  },
+  "approvalTimerP2PInfo": {
+    "message": "If you do not confirm the exchange in the time, it will be automatically cancelled"
+  },
+  "KYC verification was disabled after 1 failed attempt, you can activate it, buying plan": "KYC верификация была отключена после 1 неудачной попытки, вы можете активировать ее снова, купив план",
+  "Disabled": "Выключено"
+}

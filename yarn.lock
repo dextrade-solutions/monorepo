@@ -23788,6 +23788,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"dexpay@workspace:apps/dexpay":
+  version: 0.0.0-use.local
+  resolution: "dexpay@workspace:apps/dexpay"
+  dependencies:
+    "@types/react": "npm:^18.2.0"
+    "@types/react-dom": "npm:^18.3.0"
+    "@vitejs/plugin-react": "npm:^4.3.1"
+    dex-services: "workspace:^"
+    dex-ui: "workspace:^"
+    ethers: "npm:^6.13.5"
+    lucide-react: "npm:^0.474.0"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    typescript: "npm:^5.5.3"
+    vite: "npm:^5.2.0"
+    wouter: "npm:^3.5.0"
+  languageName: unknown
+  linkType: soft
+
 "dezalgo@npm:^1.0.0":
   version: 1.0.4
   resolution: "dezalgo@npm:1.0.4"
@@ -34773,6 +34792,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lucide-react@npm:^0.474.0":
+  version: 0.474.0
+  resolution: "lucide-react@npm:0.474.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/66370cb601cda7f5df78ed11d14b20b7f2dfac128a88a098f6e70ff98e4e8abc63d4ad7b3dc9ecf9814c5578c9d224fc158127d3ee4df770016cc356464011ec
+  languageName: node
+  linkType: hard
+
 "luxon@npm:3.2.1":
   version: 3.2.1
   resolution: "luxon@npm:3.2.1"
@@ -35905,6 +35933,13 @@ __metadata:
     stream-each: "npm:^1.1.0"
     through2: "npm:^2.0.0"
   checksum: 10/47afcd689839082ff987f53aed49498f6740ced585215887adf029ecd01c101dae6c2426ea81aef59bed4dbabb21b8247f0dae41f91af30ef0ca862841375420
+  languageName: node
+  linkType: hard
+
+"mitt@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 10/287c70d8e73ffc25624261a4989c783768aed95ecb60900f051d180cf83e311e3e59865bfd6e9d029cdb149dc20ba2f128a805e9429c5c4ce33b1416c65bbd14
   languageName: node
   linkType: hard
 
@@ -41482,6 +41517,13 @@ __metadata:
     es-errors: "npm:^1.3.0"
     set-function-name: "npm:^2.0.1"
   checksum: 10/9fffc01da9c4e12670ff95bc5204364615fcc12d86fc30642765af908675678ebb0780883c874b2dbd184505fb52fa603d80073ecf69f461ce7f56b15d10be9c
+  languageName: node
+  linkType: hard
+
+"regexparam@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "regexparam@npm:3.0.0"
+  checksum: 10/80574803cb9f31d1ec7b10ce1db5be629868794ce331c7098fd9725c4c0891347c2fedc18b17de17bda2441da6ef30218b1ad2d481a4081e33ef773de04f9082
   languageName: node
   linkType: hard
 
@@ -49978,6 +50020,19 @@ __metadata:
   dependencies:
     microevent.ts: "npm:~0.1.1"
   checksum: 10/cd8a2af1d369e9557749acd0e06c88792270570c183b8434bf692d29af86c126fdf9c7c65a0bfdf47bf4fff4d0834c9703b3b369e5ca0a4860bd969f610d0bb4
+  languageName: node
+  linkType: hard
+
+"wouter@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "wouter@npm:3.5.0"
+  dependencies:
+    mitt: "npm:^3.0.1"
+    regexparam: "npm:^3.0.0"
+    use-sync-external-store: "npm:^1.0.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10/f983f249799186a14fa6440000adffb61c7596b2aa3edcf3b752435ac258381a84a4f1398b572a106dfaa3ed034a830e72f47d561baadde6ddbd052f4a8569f8
   languageName: node
   linkType: hard
 
