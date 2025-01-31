@@ -24106,6 +24106,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.3.1"
     date-fns: "npm:^4.1.0"
     dayjs: "npm:^1.11.13"
+    dex-helpers: "workspace:^"
     dex-services: "workspace:^"
     dex-ui: "workspace:^"
     lucide-react: "npm:^0.474.0"
