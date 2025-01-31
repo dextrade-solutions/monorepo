@@ -175,9 +175,11 @@ export default function Invoice({ id }: { id: string }) {
     return <InvoicePreloader />;
   }
 
-  const isTerminated = [InvoiceStatus.canceled, InvoiceStatus.success].includes(
-    payment.data.status,
-  );
+  const isTerminated = [
+    InvoiceStatus.canceled,
+    InvoiceStatus.success,
+    InvoiceStatus.expired,
+  ].includes(payment.data.status);
   const formattedAmount = formatFundsAmount(
     payment.data.amount_requested_f,
     payment.data.coin?.iso,
@@ -255,13 +257,7 @@ export default function Invoice({ id }: { id: string }) {
         </Typography>
       </Box>
 
-      {isTerminated ? (
-        <Box my={4}>
-          <Alert severity={alertParams[payment.data.status].severity}>
-            {alertParams[payment.data.status].text}
-          </Alert>
-        </Box>
-      ) : (
+      {!isTerminated && (
         <>
           <Box
             m={2}
