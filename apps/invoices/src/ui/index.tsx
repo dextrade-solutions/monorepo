@@ -41,25 +41,12 @@ export function UI() {
     <Button
       startIcon={<Icon name="arrow-left-dex" />}
       color="secondary"
-      variant="contained"
+      variant="text"
       onClick={handleBackButtonClick}
     >
       Back
     </Button>
   );
-
-  if (!invoiceId) {
-    return (
-      <>
-        <Typography textAlign="center" variant="h3" fontWeight="bold">
-          404
-        </Typography>
-        <Typography textAlign="center" variant="h6">
-          Oops! Page Not Found
-        </Typography>
-      </>
-    );
-  }
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -73,14 +60,25 @@ export function UI() {
               </Typography>
               {backbutton}
             </Box>
-            <Invoice
-              id={invoiceId}
-              wagmiConfig={config}
-              solana={{
-                SOLANA_CONNECT_WALLETS,
-                SOLANA_CONNECT_API,
-              }}
-            />
+            {invoiceId ? (
+              <Invoice
+                id={invoiceId}
+                wagmiConfig={config}
+                solana={{
+                  SOLANA_CONNECT_WALLETS,
+                  SOLANA_CONNECT_API,
+                }}
+              />
+            ) : (
+              <>
+                <Typography textAlign="center" variant="h3" fontWeight="bold">
+                  404
+                </Typography>
+                <Typography textAlign="center" variant="h6">
+                  Oops! Page Not Found
+                </Typography>
+              </>
+            )}
           </Box>
         </Container>
       </DexUiProvider>

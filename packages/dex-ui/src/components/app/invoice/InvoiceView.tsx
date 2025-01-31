@@ -9,6 +9,7 @@ import {
   MenuList,
   Skeleton,
   Typography,
+  Avatar,
 } from '@mui/material';
 // import assetsDict from 'dex-helpers/assets-dict';
 import { determineConnectionType, useConnections } from 'dex-connect';
@@ -103,7 +104,7 @@ export default function Invoice({ id }: { id: string }) {
     });
   };
 
-  const paymentAssetId = payment.data?.currency.iso_with_network;
+  const paymentAssetId = payment.data?.currency?.iso_with_network;
   const isLoading = payment.isLoading || currencies.isLoading;
 
   const paymentAsset = useMemo(() => {
@@ -166,6 +167,10 @@ export default function Invoice({ id }: { id: string }) {
     );
   }
 
+  const expirationTime = payment.data?.due_to
+    ? new Date(payment.data.due_to).getTime() - new Date().getTime()
+    : null;
+
   if (isLoading || !payment.data) {
     return <InvoicePreloader />;
   }
@@ -192,19 +197,60 @@ export default function Invoice({ id }: { id: string }) {
     [InvoiceStatus.pending]: {
       status: 'Payment awaiting',
     },
+    [InvoiceStatus.expired]: {
+      status: 'Expired',
+    },
   };
 
+  if (expirationTime !== null && expirationTime > 0) {
+    alertParams[InvoiceStatus.pending].status = (
+      <Typography display="flex">
+        <Typography ml={1}>Expires in</Typography>
+        <strong>
+          <CountdownTimer
+            timeStarted={new Date().getTime()}
+            timerBase={expirationTime}
+            timeOnly
+            labelKey="Due to"
+            infoTooltipLabelKey="Expiration Time"
+          />
+        </strong>
+      </Typography>
+    );
+  }
+
+  const primarySendAmount =
+    payment.data.converted_amount_requested_f ||
+    payment.data.amount_requested_f;
+  const primarySendCoin =
+    payment.data.converted_coin?.iso || payment.data.coin?.iso;
   return (
     <Box>
       <Box display="flex" alignItems="center" flexDirection="column">
-        <Icon size="xl" name="tag" />
-        {canCurrencyChange && (
-          <Typography variant="h6">
-            Pay{' '}
-            {formatCurrency(payment.data.converted_amount_requested_f, 'usd')}
-          </Typography>
-        )}
-        <Typography my={0.5} color="text.secondary">
+        <Box my={1}>
+          {payment.data.logo_url ? (
+            <Avatar
+              alt="Payment Logo" // Provide alternative text for accessibility
+              src={payment.data.logo_url}
+              sx={{
+                height: 50,
+                width: 'auto',
+                // minWidth: 100,
+                maxHeight: 100,
+                maxWidth: 200,
+                borderRadius: 0.5, // Maintain rounded corners
+                bgcolor: 'grey.200', // Optional: background color if image fails to load
+              }}
+              variant="square" // Keep it square, remove for circular avatar
+            />
+          ) : (
+            <Icon size="xl" name="tag" />
+          )}
+        </Box>
+        <Typography variant="h6">
+          Pay {formatCurrency(primarySendAmount, primarySendCoin)}
+        </Typography>
+        <Typography mb={2} color="text.secondary">
           {alertParams[payment.data.status].status}
         </Typography>
       </Box>
@@ -218,7 +264,7 @@ export default function Invoice({ id }: { id: string }) {
       ) : (
         <>
           <Box
-            my={3}
+            m={2}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -230,30 +276,6 @@ export default function Invoice({ id }: { id: string }) {
               </>
             ) : (
               <>
-                <Box>
-                  <Typography>
-                    To send <strong>{formattedAmount}</strong>
-                  </Typography>
-
-                  {payment.data.due_to && (
-                    <Typography display="flex">
-                      <Typography>Expiration</Typography>
-                      <strong>
-                        <CountdownTimer
-                          timeStarted={new Date().getTime()}
-                          timerBase={
-                            new Date(payment.data.due_to).getTime() -
-                            new Date().getTime()
-                          }
-                          timeOnly
-                          labelKey="Due to"
-                          infoTooltipLabelKey="Expiration Time"
-                        />
-                      </strong>
-                    </Typography>
-                  )}
-                </Box>
-
                 {canCurrencyChange ? (
                   <SelectCoinsItem
                     className="flex-shrink"
@@ -266,9 +288,28 @@ export default function Invoice({ id }: { id: string }) {
                 ) : (
                   <AssetItem iconSize={35} asset={paymentAsset} />
                 )}
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="flex-end"
+                >
+                  <Typography>
+                    <strong>~ {formattedAmount}</strong>
+                  </Typography>
+                </Box>
               </>
             )}
           </Box>
+
+          {payment.data.description && (
+            <Alert
+              sx={{ justifyContent: 'center' }}
+              severity="info"
+              icon={<Icon name="bookmark" />}
+            >
+              {payment.data.description}
+            </Alert>
+          )}
           <Divider sx={{ my: 2 }} />
           <Box>
             {connectedWallet ? (
@@ -320,7 +361,7 @@ export default function Invoice({ id }: { id: string }) {
                     onClick={() => showQr(payment.data)}
                   >
                     <ListItemAvatar>
-                      <Icon name="scan" />
+                      <Icon ml={1} name="qr-code" size="xl" />
                     </ListItemAvatar>
                     <ListItemText
                       primary="QR Code"
@@ -332,18 +373,20 @@ export default function Invoice({ id }: { id: string }) {
                     onClick={() => showCopy(payment.data)}
                   >
                     <ListItemAvatar>
-                      <Icon name="copy" />
+                      <Icon ml={1} name="copy" size="xl" />
                     </ListItemAvatar>
                     <ListItemText
                       primary="Copy"
                       secondary="Manual copy address and send assets"
                     />
                   </ListItemButton>
-                  <WalletList
-                    wallets={connections}
-                    connectingWallet={loadingWallet}
-                    onSelectWallet={onSelectConnection}
-                  />
+                  {!changeAddress.isPending && (
+                    <WalletList
+                      wallets={connections}
+                      connectingWallet={loadingWallet}
+                      onSelectWallet={onSelectConnection}
+                    />
+                  )}
                 </>
               )}
             </MenuList>

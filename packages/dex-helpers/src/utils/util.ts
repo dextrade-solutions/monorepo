@@ -472,5 +472,5 @@ export function formatCurrency(value: string | number, currencyCode: string) {
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
       })
-    : value;
+    : `${value} ${currencyCode}`;
 }
