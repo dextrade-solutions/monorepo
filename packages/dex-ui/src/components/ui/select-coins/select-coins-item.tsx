@@ -34,7 +34,7 @@ export const SelectCoinsItem = memo(
       setOpen(false);
     }, []);
 
-    const onToggle = useCallback(() => {
+    const onToggle = () =>
       showModal({
         name: 'ASSET_SELECT',
         value: asset,
@@ -46,7 +46,6 @@ export const SelectCoinsItem = memo(
         shouldSearchForImports,
         searchPlaceholder,
       });
-    }, []);
     return (
       <div className={classnames('select-coins__item', className)} tabIndex="0">
         <SelectCoinsItemLabel

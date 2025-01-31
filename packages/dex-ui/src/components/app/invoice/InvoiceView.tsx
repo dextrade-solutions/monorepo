@@ -180,10 +180,15 @@ export default function Invoice({ id }: { id: string }) {
     InvoiceStatus.success,
     InvoiceStatus.expired,
   ].includes(payment.data.status);
-  const formattedAmount = formatFundsAmount(
-    payment.data.amount_requested_f,
-    payment.data.coin?.iso,
-  );
+
+  const primarySendAmount =
+    payment.data.converted_amount_requested_f ||
+    payment.data.amount_requested_f;
+  const primarySendCoin =
+    payment.data.converted_coin?.iso || payment.data.coin?.iso;
+  const secondarySendAmount =
+    payment.data.amount_requested_f &&
+    formatFundsAmount(payment.data.amount_requested_f, payment.data.coin?.iso);
 
   const alertParams = {
     [InvoiceStatus.canceled]: {
@@ -194,9 +199,12 @@ export default function Invoice({ id }: { id: string }) {
     [InvoiceStatus.success]: {
       severity: 'success',
       status: 'Payment successful',
-      text: `Payment received. Received ${formattedAmount}`,
+      text: `Payment received. Received ${secondarySendAmount}`,
     },
     [InvoiceStatus.pending]: {
+      status: 'Payment awaiting',
+    },
+    [InvoiceStatus.unknwn]: {
       status: 'Payment awaiting',
     },
     [InvoiceStatus.expired]: {
@@ -221,11 +229,6 @@ export default function Invoice({ id }: { id: string }) {
     );
   }
 
-  const primarySendAmount =
-    payment.data.converted_amount_requested_f ||
-    payment.data.amount_requested_f;
-  const primarySendCoin =
-    payment.data.converted_coin?.iso || payment.data.coin?.iso;
   return (
     <Box>
       <Box display="flex" alignItems="center" flexDirection="column">
@@ -259,40 +262,43 @@ export default function Invoice({ id }: { id: string }) {
 
       {!isTerminated && (
         <>
-          <Box
-            m={2}
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
+          <Box m={2} display="flex" justifyContent="center" alignItems="center">
             {changeAddress.isPending ? (
               <>
                 <Skeleton width={80} />
+                <div className="flex-grow" />
                 <Skeleton width={100} height={50} />
               </>
             ) : (
               <>
                 {canCurrencyChange ? (
-                  <SelectCoinsItem
-                    className="flex-shrink"
-                    asset={paymentAsset}
-                    placeholder={'Payment Asset'}
-                    items={assetList}
-                    onChange={onChangeAsset}
-                    maxListItem={6}
-                  />
+                  <Button variant={secondarySendAmount ? 'text' : 'contained'}>
+                    <SelectCoinsItem
+                      className="flex-shrink"
+                      asset={paymentAsset}
+                      placeholder={'Select payment Asset'}
+                      items={assetList}
+                      onChange={onChangeAsset}
+                      maxListItem={6}
+                    />
+                  </Button>
                 ) : (
                   <AssetItem iconSize={35} asset={paymentAsset} />
                 )}
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="flex-end"
-                >
-                  <Typography>
-                    <strong>~ {formattedAmount}</strong>
-                  </Typography>
-                </Box>
+                {secondarySendAmount && (
+                  <>
+                    <div className="flex-grow" />
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="flex-end"
+                    >
+                      <Typography>
+                        <strong>~ {secondarySendAmount}</strong>
+                      </Typography>
+                    </Box>
+                  </>
+                )}
               </>
             )}
           </Box>
@@ -306,87 +312,90 @@ export default function Invoice({ id }: { id: string }) {
               {payment.data.description}
             </Alert>
           )}
-          <Divider sx={{ my: 2 }} />
-          <Box>
-            {connectedWallet ? (
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Typography fontWeight="bold">Payment</Typography>
-                <Button
-                  fontWeight="bold"
-                  variant="outlined"
-                  onClick={() => setConnectedWallet(null)}
-                >
-                  Change payment method
-                </Button>
-              </Box>
-            ) : (
-              <Typography fontWeight="bold">Select payment method</Typography>
-            )}
-            <MenuList>
+
+          {payment.data.amount_requested_f && (
+            <Box>
+              <Divider sx={{ my: 2 }} />
               {connectedWallet ? (
-                <>
-                  <ListItemButton onClick={connectedWallet.disconnect}>
-                    <ListItemAvatar>
-                      <UrlIcon url={connectedWallet.icon} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={connectedWallet.name}
-                      secondary={shortenAddress(
-                        connectedWallet.connected.address,
-                      )}
-                    />
-                  </ListItemButton>
-                  <InvoicePayBtn
-                    payCallback={() =>
-                      connectedWallet.txSend({
-                        asset: paymentAsset,
-                        amount: payment.data.amount_requested_f,
-                        recipient: payment.data.address,
-                      })
-                    }
-                  />
-                </>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Typography fontWeight="bold">Payment</Typography>
+                  <Button
+                    fontWeight="bold"
+                    variant="outlined"
+                    onClick={() => setConnectedWallet(null)}
+                  >
+                    Change payment method
+                  </Button>
+                </Box>
               ) : (
-                <>
-                  <ListItemButton
-                    className="bordered"
-                    onClick={() => showQr(payment.data)}
-                  >
-                    <ListItemAvatar>
-                      <Icon ml={1} name="qr-code" size="xl" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="QR Code"
-                      secondary="Scan qr code using any wallet"
-                    />
-                  </ListItemButton>
-                  <ListItemButton
-                    className="bordered"
-                    onClick={() => showCopy(payment.data)}
-                  >
-                    <ListItemAvatar>
-                      <Icon ml={1} name="copy" size="xl" />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Copy"
-                      secondary="Manual copy address and send assets"
-                    />
-                  </ListItemButton>
-                  {!changeAddress.isPending && (
-                    <WalletList
-                      wallets={connections}
-                      connectingWallet={loadingWallet}
-                      onSelectWallet={onSelectConnection}
-                    />
-                  )}
-                </>
+                <Typography fontWeight="bold">Select payment method</Typography>
               )}
-            </MenuList>
-          </Box>
+              <MenuList>
+                {connectedWallet ? (
+                  <>
+                    <ListItemButton onClick={connectedWallet.disconnect}>
+                      <ListItemAvatar>
+                        <UrlIcon url={connectedWallet.icon} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={connectedWallet.name}
+                        secondary={shortenAddress(
+                          connectedWallet.connected.address,
+                        )}
+                      />
+                    </ListItemButton>
+                    <InvoicePayBtn
+                      payCallback={() =>
+                        connectedWallet.txSend({
+                          asset: paymentAsset,
+                          amount: payment.data.amount_requested_f,
+                          recipient: payment.data.address,
+                        })
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ListItemButton
+                      className="bordered"
+                      onClick={() => showQr(payment.data)}
+                    >
+                      <ListItemAvatar>
+                        <Icon ml={1} name="qr-code" size="xl" />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary="QR Code"
+                        secondary="Scan qr code using any wallet"
+                      />
+                    </ListItemButton>
+                    <ListItemButton
+                      className="bordered"
+                      onClick={() => showCopy(payment.data)}
+                    >
+                      <ListItemAvatar>
+                        <Icon ml={1} name="copy" size="xl" />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary="Copy"
+                        secondary="Manual copy address and send assets"
+                      />
+                    </ListItemButton>
+                    {!changeAddress.isPending && (
+                      <WalletList
+                        wallets={connections}
+                        connectingWallet={loadingWallet}
+                        onSelectWallet={onSelectConnection}
+                      />
+                    )}
+                  </>
+                )}
+              </MenuList>
+            </Box>
+          )}
         </>
       )}
     </Box>
