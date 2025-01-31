@@ -1,0 +1,7 @@
+export const ROUTE_HOME = '/';
+export const ROUTE_MERCHANT = '/merchant';
+export const ROUTE_INVOICE_CREATE = '/merchant/invoice/create';
+export const ROUTE_INVOICE_EDIT = '/merchant/invoice/:id/edit';
+export const ROUTE_P2P = '/p2p';
+export const ROUTE_HISTORY = '/history';
+export const ROUTE_PROFILE = '/profile';

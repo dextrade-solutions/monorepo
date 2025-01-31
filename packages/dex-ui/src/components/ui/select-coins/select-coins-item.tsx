@@ -7,7 +7,7 @@ import { useGlobalModalContext } from '../../app/modals';
 
 export const SelectCoinsItem = memo(
   ({
-    asset,
+    value,
     onChange,
     reversed,
     className,
@@ -34,10 +34,10 @@ export const SelectCoinsItem = memo(
       setOpen(false);
     }, []);
 
-    const onToggle = useCallback(() => {
+    const onToggle = () =>
       showModal({
         name: 'ASSET_SELECT',
-        value: asset,
+        value,
         items,
         onChange,
         loading,
@@ -46,11 +46,10 @@ export const SelectCoinsItem = memo(
         shouldSearchForImports,
         searchPlaceholder,
       });
-    }, []);
     return (
       <div className={classnames('select-coins__item', className)} tabIndex="0">
         <SelectCoinsItemLabel
-          coin={asset}
+          coin={value}
           reversed={reversed}
           placeholder={placeholder || t('coin')}
           onClick={onToggle}
@@ -61,7 +60,7 @@ export const SelectCoinsItem = memo(
 );
 
 SelectCoinsItem.propTypes = {
-  asset: PropTypes.object,
+  value: PropTypes.object,
   items: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func,
   reversed: PropTypes.bool,

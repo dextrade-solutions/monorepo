@@ -1,33 +1,41 @@
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TradingPair from "@/components/crypto/TradingPair";
+import { Button, Box, Typography, Paper, Tabs, Tab } from '@mui/material';
+import { useState } from 'react';
+import TradingPair from '../components/crypto/TradingPair';
 
 export default function P2P() {
-  return (
-    <div className="container max-w-md mx-auto p-4">
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-2">P2P</h2>
-        <div className="bg-card rounded-lg p-4 mb-4">
-          <p className="text-sm text-muted-foreground">Total income</p>
-          <p className="text-2xl font-bold mb-4">$120.00 usd</p>
-          <Button className="w-full">Create pair</Button>
-        </div>
-      </div>
+  const [tabValue, setTabValue] = useState('pairs');
 
-      <Tabs defaultValue="pairs">
-        <TabsList className="w-full mb-4">
-          <TabsTrigger value="pairs" className="flex-1">Pairs</TabsTrigger>
-          <TabsTrigger value="trades" className="flex-1">Trades history</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="pairs">
-          <TradingPair />
-        </TabsContent>
-        
-        <TabsContent value="trades">
-          <TradingPair />
-        </TabsContent>
+  return (
+    <Box sx={{ mx: 'auto' }}>
+      <Box mb={4}>
+        <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+          <Typography variant="body2" color="textSecondary">
+            Total income
+          </Typography>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            $120.00 USD
+          </Typography>
+          <Button variant="contained" fullWidth>
+            Create pair
+          </Button>
+        </Paper>
+      </Box>
+
+      <Tabs
+        value={tabValue}
+        onChange={(event, newValue) => setTabValue(newValue)}
+        variant="fullWidth"
+        textColor="primary"
+        indicatorColor="primary"
+      >
+        <Tab label="Pairs" value="pairs" />
+        <Tab label="Trades History" value="trades" />
       </Tabs>
-    </div>
+
+      <Box mt={2}>
+        {tabValue === 'pairs' && <TradingPair />}
+        {tabValue === 'trades' && <TradingPair />}
+      </Box>
+    </Box>
   );
 }

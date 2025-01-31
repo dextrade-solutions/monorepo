@@ -1,23 +1,26 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { assets } from "@/data/mockData";
+import { Box, Typography } from '@mui/material';
+import assetDict from 'dex-helpers/assets-dict';
+import React from 'react';
+
+import { AssetListItem } from './AssetListItem';
+import { useCurrencies } from '../../hooks/use-currencies';
 
 export default function AssetList() {
+  const { items, isLoading } = useCurrencies();
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>; // Or a loading indicator component
+  }
+
+  if (items.length === 0) {
+    return <Typography>No assets found.</Typography>;
+  }
+
   return (
-    <div className="space-y-4">
-      {assets.map((asset) => (
-        <Card key={asset.symbol}>
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-xl">{asset.icon}</span>
-              <span className="font-medium">{asset.symbol}</span>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">{asset.balance}</p>
-              <p className="text-xs text-muted-foreground">$0.00</p>
-            </div>
-          </CardContent>
-        </Card>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {items.map((item) => (
+        <AssetListItem key={item.currency.name} {...item} />
       ))}
-    </div>
+    </Box>
   );
 }

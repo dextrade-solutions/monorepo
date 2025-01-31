@@ -10,11 +10,13 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "peerDependencies": {
+    "lucide-react": "^0.474.0"
+  },
   "dependencies": {
     "bignumber.js": "^9.1.2",
     "bowser": "^2.11.0",
     "copy-to-clipboard": "^3.3.3",
-    "currency-formatter": "^1.5.9",
     "dex-connect": "workspace:^",
     "dex-helpers": "workspace:^",
     "i18next": "^23.15.1",
@@ -26,7 +28,6 @@
     "react-number-format": "^5.4.2"
   },
   "devDependencies": {
-    "@types/currency-formatter": "^1",
     "@types/lodash": "^4.17.4",
     "@types/luxon": "^3",
     "@types/punycode": "^2",

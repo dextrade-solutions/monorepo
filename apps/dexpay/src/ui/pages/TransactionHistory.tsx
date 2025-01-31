@@ -1,25 +1,32 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TransactionList from "@/components/transaction/TransactionList";
+import { useState } from 'react';
+import { Tabs, Tab, Box, Typography } from '@mui/material';
+import TransactionList from '../components/transaction/TransactionList';
 
 export default function TransactionHistory() {
+  const [activeTab, setActiveTab] = useState('all');
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
   return (
-    <div className="container max-w-md mx-auto p-4">
-      <h2 className="text-lg font-semibold mb-4">Transactions history</h2>
-      
-      <Tabs defaultValue="all">
-        <TabsList className="w-full mb-4">
-          <TabsTrigger value="all" className="flex-1">All</TabsTrigger>
-          <TabsTrigger value="withdrawals" className="flex-1">Withdrawals</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="all">
-          <TransactionList />
-        </TabsContent>
-        
-        <TabsContent value="withdrawals">
-          <TransactionList />
-        </TabsContent>
-      </Tabs>
-    </div>
+    <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          aria-label="transaction tabs"
+          variant="fullWidth"
+        >
+          <Tab label="All" value="all" />
+          <Tab label="Withdrawals" value="withdrawals" />
+        </Tabs>
+      </Box>
+
+      <Box sx={{ pt: 2 }}>
+        {activeTab === 'all' && <TransactionList />}
+        {activeTab === 'withdrawals' && <TransactionList />}
+      </Box>
+    </Box>
   );
 }

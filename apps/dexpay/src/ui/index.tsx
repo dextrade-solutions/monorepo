@@ -1,43 +1,56 @@
-import {
-  Box,
-  Container,
-  ThemeProvider,
-  CssBaseline,
-  Typography,
-  Button,
-  Switch,
-} from '@mui/material';
+import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { useLocalStorage } from '@uidotdev/usehooks';
 import { queryClient } from 'dex-helpers/shared';
-import { DexUiProvider, Icon, useDexUI } from 'dex-ui';
+import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Switch, Route } from 'wouter';
 
+import Appbar from './app-bar';
 import BottomNav from './components/layout/BottomNav';
+import {
+  ROUTE_HISTORY,
+  ROUTE_HOME,
+  ROUTE_INVOICE_CREATE,
+  ROUTE_INVOICE_EDIT,
+  ROUTE_MERCHANT,
+  ROUTE_P2P,
+  ROUTE_PROFILE,
+} from './constants/pages';
+import { UserProvider } from './contexts/user-context';
+import { useQuery } from './hooks/use-query';
+import SelectProject from './modals/select-project';
+import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
 import NotFound from './pages/not-found';
 import P2P from './pages/P2P';
 import Profile from './pages/Profile';
 import TransactionHistory from './pages/TransactionHistory';
-import Wallet from './pages/Wallet';
 
 import './css/index.scss';
+import Wallet from './pages/Wallet';
+import { saveAuthToken } from './services/client';
 
 log.setLevel(log.levels.DEBUG);
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Wallet} />
-      <Route path="/merchant" component={Merchant} />
-      <Route path="/p2p" component={P2P} />
-      <Route path="/history" component={TransactionHistory} />
-      <Route path="/profile" component={Profile} />
+      <Route path={ROUTE_HOME} component={Wallet} />
+      <Route path={ROUTE_MERCHANT} component={Merchant} />
+      <Route path={ROUTE_INVOICE_CREATE} component={CreateInvoice} />
+      <Route path={ROUTE_INVOICE_EDIT} component={CreateInvoice} />
+      <Route path={ROUTE_P2P} component={P2P} />
+      <Route path={ROUTE_HISTORY} component={TransactionHistory} />
+      <Route path={ROUTE_PROFILE} component={Profile} />
       <Route component={NotFound} />
     </Switch>
   );
 }
+
+saveAuthToken(
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTI1MCwidHlwZSI6ImFjY2VzcyIsInRva2VuIjoiYURGcHR5Sjd3Y3dqQ1JuM0FXMTlSYkE2RFFFeE01Rk5pbGlQXzFBX3hiUEpNd2I4Z1RlbVJsME9Ia0lqSXM3UGw0NCIsImlhdCI6MTczODMxMDA2NCwiZXhwIjoxNzM4MzE3MjY0fQ.XEkZfsMIalvPh0zqFWt0K5CV653g6axkkvY1I-zuYO8',
+);
 
 export function UI() {
   const { muiTheme } = useDexUI();
@@ -45,12 +58,22 @@ export function UI() {
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
-      <DexUiProvider theme={muiTheme}>
+      <DexUiProvider
+        theme={muiTheme}
+        modals={{
+          SELECT_PROJECT: SelectProject,
+        }}
+      >
         <QueryClientProvider client={queryClient}>
-          <div className="min-h-screen bg-background pb-16">
-            <Router />
-            <BottomNav />
-          </div>
+          <UserProvider>
+            <Container maxWidth="sm">
+              <Appbar />
+              <Box mb={10}>
+                <Router />
+              </Box>
+              <BottomNav />
+            </Container>
+          </UserProvider>
         </QueryClientProvider>
       </DexUiProvider>
     </ThemeProvider>

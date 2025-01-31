@@ -7,3 +7,4 @@ export { default as PaymentMethodExpanded } from './payment-method-expanded';
 export { default as DexPlans } from './dex-plans';
 export { default as Invoice } from './invoice';
 export { default as WalletList } from './wallet-list';
+export * from './hoc';

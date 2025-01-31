@@ -1,9 +1,4 @@
-// import {
-//   ConnectionProvider,
-//   WalletProvider,
-// } from '@solana/wallet-adapter-react';
 import { DexConnectProvider } from 'dex-connect';
-// import { WagmiProvider } from 'wagmi';
 
 import InvoiceView from './InvoiceView';
 

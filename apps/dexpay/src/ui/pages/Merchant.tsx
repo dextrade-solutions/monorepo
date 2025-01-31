@@ -1,34 +1,84 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, Typography, Button, Box } from '@mui/material';
+import { useLocation } from 'wouter';
+
+import { ROUTE_INVOICE_CREATE } from '../constants/pages';
+
+const invoices = [
+  { id: 1, amount: '1 USDT', date: '29/01/2025', status: 'Awaiting payment' },
+  { id: 2, amount: '11 BTC', date: '29/01/2025', status: 'Paid' },
+  { id: 3, amount: '11 BTC', date: '29/01/2025', status: 'Paid' },
+];
 
 export default function Merchant() {
+  const [, navigate] = useLocation();
   return (
-    <div className="container max-w-md mx-auto p-4">
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-2">Merchant</h2>
+    <Box sx={{ mx: 'auto' }}>
+      <Box mb={4}>
         <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Total income</p>
-            <p className="text-2xl font-bold mb-4">$4.00 usd</p>
-            <Button className="w-full">Create invoice</Button>
+          <CardContent>
+            <Typography variant="body2" color="textSecondary">
+              Total income
+            </Typography>
+            <Typography variant="h4" fontWeight="bold" gutterBottom>
+              $4.00 USD
+            </Typography>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                navigate(ROUTE_INVOICE_CREATE);
+              }}
+            >
+              Create Invoice
+            </Button>
           </CardContent>
         </Card>
-      </div>
+      </Box>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Invoices</h3>
-        <div className="space-y-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">1 USDT</span>
-                <span className="text-sm text-muted-foreground">26/01/2024</span>
-              </div>
-              <p className="text-sm text-muted-foreground">Awaiting payment</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          Invoices
+        </Typography>
+        <Box display="flex" flexDirection="column" gap={2}>
+          {invoices.map(({ id, amount, date, status }) => (
+            <Card key={id} sx={{ borderRadius: 1 }}>
+              <CardContent>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={1}
+                >
+                  <Typography fontWeight="bold">{amount}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {date}
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body2" color="textSecondary">
+                    {status}
+                  </Typography>
+                  <Box display="flex" gap={2}>
+                    <Typography variant="body2" fontWeight="bold">
+                      Edit
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold">
+                      Copy link
+                    </Typography>
+                    <Typography variant="body2" fontWeight="bold">
+                      Transactions
+                    </Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      </Box>
+    </Box>
   );
 }

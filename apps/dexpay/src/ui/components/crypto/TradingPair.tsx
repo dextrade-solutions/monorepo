@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { tradingPairs } from "@/data/mockData";
+import { Card, CardContent } from "@mui/material";
+import { tradingPairs } from "../../data/mockData";
 import { formatDistanceToNow } from "date-fns";
 
 export default function TradingPair() {
