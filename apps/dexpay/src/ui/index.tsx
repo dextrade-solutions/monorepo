@@ -18,7 +18,6 @@ import {
   ROUTE_PROFILE,
 } from './constants/pages';
 import { UserProvider } from './contexts/user-context';
-import { useQuery } from './hooks/use-query';
 import SelectProject from './modals/select-project';
 import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
@@ -49,7 +48,7 @@ function Router() {
 }
 
 saveAuthToken(
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTMwMywidHlwZSI6ImFjY2VzcyIsInRva2VuIjoiVkN4MlZXR29tNndsdDNhZ0RDSERVUzdoTFdqN1NTRDllczY2bU9ka0w5c1JrS3ZrVU1vX2dZbHh6TDNnX2lmOFpsQSIsImlhdCI6MTczODMyNTAwMSwiZXhwIjoxNzM4MzMyMjAxfQ.CtB6LtOznK6EMegVTlBo_41EFGx7FC6tH6W7xOXrtjI',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTQzNywidHlwZSI6ImFjY2VzcyIsInRva2VuIjoidGlCeXRhXy1QdnF0eV9EdFU2OHpkNTFaVGRsTnRsNnNfRTBxT0EwRkpGeW95c0ZDejU2MTNzTDJhWkNtRlNvSUttTSIsImlhdCI6MTczODU2NjA4MiwiZXhwIjoxNzM4NTczMjgyfQ.Dbn8YG21OAGu6SQ-5KkfjsMYain30VYLQ2fU4gXgBh0',
 );
 
 export function UI() {

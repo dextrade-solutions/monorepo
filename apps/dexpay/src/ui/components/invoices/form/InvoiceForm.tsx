@@ -25,19 +25,22 @@ import { useMutation } from '../../../hooks/use-query';
 import { useUser } from '../../../hooks/use-user';
 import { Invoice } from '../../../services';
 import DatePickerComponent from '../../ui/DatePicker';
-import { SelectCoin } from '../../ui/SelectCoin';
+import SelectCoinAmount from '../../ui/SelectCoinAmount';
 
 interface InvoiceData {
-  amount: string;
+  coinAmount: {
+    amount: number | null;
+    currency: string;
+  } | null;
   mainCurrency: string;
   convertedCurrencies: string;
   description: string;
   dueDate: dayjs.Dayjs | null;
 }
 
-const CreateInvoiceForm: React.FC = () => {
+const CreateInvoiceForm = () => {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
-    amount: '',
+    coinAmount: null,
     mainCurrency: '', // Initialize with an empty string
     convertedCurrencies: '',
     description: '',
@@ -75,35 +78,13 @@ const CreateInvoiceForm: React.FC = () => {
     }
     invoiceCreate.mutate([{ projectId: user.project.id }, { ...invoiceData }]);
   };
-
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-      <Typography fontWeight="bold" variant="h5">Step 1</Typography>
-      <Typography mt={2}>Choose primary currency</Typography>
-      <Typography display="flex" alignItems="center" color="text.secondary">
-        <InfoIcon />
-        <Typography ml={1}>This coin will be setup as main</Typography>
-      </Typography>
-      <SelectCoin />
-      {/* <SelectCurrencyWithValidation
-        name="currency"
-        form={formRef}
+      <SelectCoinAmount
+        value={invoiceData.coinAmount}
+        name="coinAmount"
         validators={[isRequired]}
-        placeholder="Select primary coin"
-        onChange={handleInputChange}
-      /> */}
-      <TextFieldWithValidation
-        value={invoiceData.amount}
-        name="amount"
-        type="number"
-        required
-        validators={[isRequired]}
-        fullWidth
-        form={formRef}
-        label="Amount"
-        placeholder="Amount"
-        onChange={handleInputChange}
-        margin="normal"
+        onChange={(v) => handleInputChange('coinAmount', v)}
       />
       {/* <FormControl fullWidth margin="normal" required>
         <InputLabel id="main-currency-label">Main Currency</InputLabel>
