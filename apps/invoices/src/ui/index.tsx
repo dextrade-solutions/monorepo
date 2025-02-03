@@ -23,14 +23,11 @@ export function UI() {
   const { muiTheme } = useDexUI({ theme: 'light' });
 
   // State to store the extracted ID
-  const [invoiceId, setInvoiceId] = useState<string | null>(null);
+  // const [invoiceId, setInvoiceId] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Extract ID from the URL
-    const pathParts = window.location.pathname.split('/');
-    const id = pathParts[pathParts.length - 1];
-    setInvoiceId(id);
-  }, []);
+  // Extract ID from the URL
+  const pathParts = window.location.pathname.split('/');
+  const invoiceId = pathParts[pathParts.length - 1];
 
   const handleBackButtonClick = () => {
     // Navigate to the previous page
@@ -75,7 +72,7 @@ export function UI() {
                   404
                 </Typography>
                 <Typography textAlign="center" variant="h6">
-                  Oops! Page Not Found
+                  Oops! Invoice Not Found
                 </Typography>
               </>
             )}
