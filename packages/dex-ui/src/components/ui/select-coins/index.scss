@@ -49,6 +49,7 @@
         }
 
         &__placeholder {
+          white-space: nowrap;
           color: var(--color-typography-alternative);
         }
       }
