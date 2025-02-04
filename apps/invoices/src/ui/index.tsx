@@ -9,7 +9,7 @@ import {
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { DexUiProvider, Icon, useDexUI, Invoice } from 'dex-ui';
 import log from 'loglevel';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import './css/index.scss';
 import { SOLANA_CONNECT_API, SOLANA_CONNECT_WALLETS } from './solana-config';
