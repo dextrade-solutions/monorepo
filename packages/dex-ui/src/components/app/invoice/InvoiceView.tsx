@@ -57,52 +57,6 @@ export default function Invoice({ id }: { id: string }) {
   const config = useConfig();
   const showQr = useShowQr();
   const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
-  const showCopy = (item: InvoiceNamespace.View.Response) => {
-    showModal({
-      component: () => (
-        <Box margin={3}>
-          <Box display="flex">
-            <Typography
-              variant="h5"
-              textAlign="left"
-              className="flex-grow nowrap"
-            >
-              Amount
-            </Typography>
-            <Typography variant="h5">
-              {item.amount_requested_f} {item.coin?.iso}
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Network
-            </Typography>
-            <Typography fontWeight="bold">
-              {item.currency.network_name}
-            </Typography>
-          </Box>
-          <Box my={2}>
-            <Divider />
-          </Box>
-          <Box display="flex" textAlign="right" alignItems="center">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Address
-            </Typography>
-            <CopyData data={item.address} />
-          </Box>
-          <Box display="flex" textAlign="right" alignItems="center">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Link
-            </Typography>
-            <CopyData data={item.payment_page_url} title="Payment link" />
-          </Box>
-          <Alert sx={{ mt: 2 }} severity="info">
-            Please send the exact amount to the provided address.
-          </Alert>
-        </Box>
-      ),
-    });
-  };
 
   const paymentAssetId = payment.data?.currency?.iso_with_network;
   const isLoading = payment.isLoading || currencies.isLoading;
@@ -181,14 +135,27 @@ export default function Invoice({ id }: { id: string }) {
     InvoiceStatus.expired,
   ].includes(payment.data.status);
 
-  const primarySendAmount =
-    payment.data.converted_amount_requested_f ||
-    payment.data.amount_requested_f;
-  const primarySendCoin =
-    payment.data.converted_coin?.iso || payment.data.coin?.iso;
-  const secondarySendAmount =
-    payment.data.amount_requested_f &&
-    formatFundsAmount(payment.data.amount_requested_f, payment.data.coin?.iso);
+  const primarySendAmount = Number(payment.data.converted_amount_requested_f);
+  const primarySendCoin = payment.data.converted_coin?.iso;
+  const primaryRecievedAmount = Number(
+    payment.data.converted_amount_received_total_f,
+  );
+  const primaryDelta = primarySendAmount - primaryRecievedAmount;
+
+  const secondarySendAmount = Number(payment.data.amount_requested_f);
+  const secondarySendCoin = payment.data.coin?.iso;
+  const secondaryRecievedAmount = Number(payment.data.amount_received_total_f);
+  const secondaryDelta = secondarySendAmount - secondaryRecievedAmount;
+
+  const payStr = formatCurrency(
+    primarySendAmount || secondarySendAmount,
+    primarySendCoin || secondarySendCoin,
+  );
+
+  const deltaStr = formatCurrency(
+    Math.abs(primaryDelta || secondaryDelta),
+    primarySendCoin || secondarySendCoin,
+  );
 
   const alertParams = {
     [InvoiceStatus.canceled]: {
@@ -212,6 +179,53 @@ export default function Invoice({ id }: { id: string }) {
     },
   };
 
+  const showCopy = (item: InvoiceNamespace.View.Response) => {
+    showModal({
+      component: () => (
+        <Box margin={3}>
+          <Box display="flex">
+            <Typography
+              variant="h5"
+              textAlign="left"
+              className="flex-grow nowrap"
+            >
+              Amount
+            </Typography>
+            <Typography variant="h5">
+              {secondaryDelta} {item.coin?.iso}
+            </Typography>
+          </Box>
+          <Box display="flex">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Network
+            </Typography>
+            <Typography fontWeight="bold">
+              {item.currency.network_name}
+            </Typography>
+          </Box>
+          <Box my={2}>
+            <Divider />
+          </Box>
+          <Box display="flex" textAlign="right" alignItems="center">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Address
+            </Typography>
+            <CopyData data={item.address} />
+          </Box>
+          <Box display="flex" textAlign="right" alignItems="center">
+            <Typography textAlign="left" className="flex-grow nowrap">
+              Link
+            </Typography>
+            <CopyData data={item.payment_page_url} title="Payment link" />
+          </Box>
+          <Alert sx={{ mt: 2 }} severity="info">
+            Please send the exact amount to the provided address.
+          </Alert>
+        </Box>
+      ),
+    });
+  };
+
   if (expirationTime !== null && expirationTime > 0) {
     alertParams[InvoiceStatus.pending].status = (
       <Typography display="flex">
@@ -227,6 +241,18 @@ export default function Invoice({ id }: { id: string }) {
         </strong>
       </Typography>
     );
+  }
+
+  let isOverpaid = false;
+  if (primaryDelta < 0) {
+    isOverpaid = true;
+  }
+  let partiallyPaid = false;
+  if (
+    payment.data.status === InvoiceStatus.pending &&
+    Number(primaryRecievedAmount) > 0
+  ) {
+    partiallyPaid = true;
   }
 
   return (
@@ -252,14 +278,26 @@ export default function Invoice({ id }: { id: string }) {
             <Icon size="xl" name="tag" />
           )}
         </Box>
-        <Typography variant="h6">
-          Pay {formatCurrency(primarySendAmount, primarySendCoin)}
-        </Typography>
+        <Typography variant="h6">Pay {payStr}</Typography>
         <Typography mb={2} color="text.secondary">
           {alertParams[payment.data.status].status}
         </Typography>
       </Box>
-
+      {partiallyPaid && (
+        <Alert severity="warning">
+          <Typography>The invoice partially paid.</Typography>
+          <Typography>
+            Paid: {formatCurrency(primaryRecievedAmount, primarySendCoin)}
+          </Typography>
+          <Typography>Due: {deltaStr}</Typography>
+        </Alert>
+      )}
+      {isTerminated && isOverpaid && (
+        <Alert sx={{ justifyContent: 'center' }} severity="info">
+          The invoice is overpaid by {deltaStr}. Please contact support for a
+          refund.
+        </Alert>
+      )}
       {!isTerminated && (
         <>
           <Box m={2} display="flex" justifyContent="center" alignItems="center">
@@ -293,8 +331,8 @@ export default function Invoice({ id }: { id: string }) {
                       flexDirection="column"
                       alignItems="flex-end"
                     >
-                      <Typography>
-                        <strong>~ {secondarySendAmount}</strong>
+                      <Typography variant="h6" fontWeight="bold">
+                        <strong>~ {secondaryDelta}</strong>
                       </Typography>
                     </Box>
                   </>
@@ -352,7 +390,7 @@ export default function Invoice({ id }: { id: string }) {
                       payCallback={() =>
                         connectedWallet.txSend({
                           asset: paymentAsset,
-                          amount: payment.data.amount_requested_f,
+                          amount: secondaryDelta,
                           recipient: payment.data.address,
                         })
                       }
@@ -362,7 +400,7 @@ export default function Invoice({ id }: { id: string }) {
                   <>
                     <ListItemButton
                       className="bordered"
-                      onClick={() => showQr(payment.data)}
+                      onClick={() => showQr(payment.data, secondaryDelta)}
                     >
                       <ListItemAvatar>
                         <Icon ml={1} name="qr-code" size="xl" />

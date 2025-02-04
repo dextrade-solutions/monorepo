@@ -34,11 +34,11 @@ export function useShowQr() {
     return address;
   };
 
-  return (invoice: Invoice.View.Response) =>
+  return (invoice: Invoice.View.Response, amount: string | number) =>
     showModal({
       component: () => (
         <QRCode
-          description={`Use QR-code scanner in your wallet, to send ${invoice.amount_requested_f} ${invoice.currency.iso} to the address below.`}
+          description={`Use QR-code scanner in your wallet, to send ${amount} ${invoice.currency.iso} to the address below.`}
           value={getQRValue(invoice)}
         />
       ),

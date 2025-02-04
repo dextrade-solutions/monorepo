@@ -467,10 +467,11 @@ export const sanitizeString = (value: string) => {
 
 export function formatCurrency(value: string | number, currencyCode: string) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
+  const amount = formatFundsAmount(value);
 
   return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
-    ? currencyFormatter.format(Number(value), {
+    ? currencyFormatter.format(Number(amount), {
         code: upperCaseCurrencyCode,
       })
-    : `${value} ${currencyCode}`;
+    : `${amount} ${currencyCode}`;
 }
