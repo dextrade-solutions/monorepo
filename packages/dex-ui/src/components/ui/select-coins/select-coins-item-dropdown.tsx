@@ -51,7 +51,6 @@ export const SelectCoinsItemDropdown = ({
   shouldSearchForImports,
 }) => {
   const t = (v) => v;
-
   const [searchQuery, setSearchQuery] = useState('');
   const [network, setNetwork] = useState(null);
   const [tokenForImport, setTokenForImport] = useState(null);
@@ -76,7 +75,6 @@ export const SelectCoinsItemDropdown = ({
       (p, n) => Number(n.selected || false) - Number(p.selected || false),
     );
   }, [searchItems, itemsFiltered, searchQuery]);
-
   // const renderList = [];
 
   const handleClose = useCallback(() => {

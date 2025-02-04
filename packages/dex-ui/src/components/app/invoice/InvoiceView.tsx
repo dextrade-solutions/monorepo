@@ -11,7 +11,6 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-// import assetsDict from 'dex-helpers/assets-dict';
 import { determineConnectionType, useConnections } from 'dex-connect';
 import { formatCurrency, formatFundsAmount, shortenAddress } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
@@ -107,11 +106,19 @@ export default function Invoice({ id }: { id: string }) {
   );
 
   const assetList = useMemo(() => {
-    if (currencies.data && assetsDict) {
-      return _.compact(currencies.data.data.map((v) => assetsDict[v.iso]));
+    const supportedCurrencies = payment.data?.supported_currencies || [];
+    const allCurrencies = currencies.data?.data || [];
+
+    if (supportedCurrencies.length && allCurrencies.length && assetsDict) {
+      const supportedCurrenciesListIds = _.map(supportedCurrencies, 'id');
+      return _.compact(
+        supportedCurrencies
+          .filter((v) => supportedCurrenciesListIds.includes(v.id))
+          .map((v) => assetsDict[v.iso_with_network]),
+      );
     }
     return [];
-  }, [currencies.data, assetsDict]);
+  }, [currencies.data, assetsDict, payment]);
 
   if (payment.isError) {
     return (
@@ -323,7 +330,7 @@ export default function Invoice({ id }: { id: string }) {
                 ) : (
                   <AssetItem iconSize={35} asset={paymentAsset} />
                 )}
-                {secondarySendAmount && (
+                {Boolean(secondarySendAmount) && (
                   <>
                     <div className="flex-grow" />
                     <Box
