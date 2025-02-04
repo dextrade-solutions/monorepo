@@ -1,4 +1,4 @@
-import { $api } from './client';
+import { $api, $base } from './client';
 import type { Auth } from '../types';
 
 // import { useStore } from '@/stores';
@@ -65,26 +65,11 @@ export default abstract class AuthService {
   }
 
   static refresh(json: Auth.Refresh.Body) {
-    return $base.post(`${AuthService.PREFIX}/refresh`, {
-      json,
-      hooks: {
-        afterResponse: [
-          async (request, options, response) => {
-            const store = useStore();
-            if (response.ok) {
-              await response.json().then((json) => {
-                const responseData = json as Auth.Refresh.Response;
-                store.tokens.access = responseData.access_token;
-                store.tokens.refresh = responseData.refresh_token;
-              });
-            } else {
-              store.tokens.access = null;
-              store.tokens.refresh = null;
-            }
-          },
-        ],
-      },
-    });
+    return $base
+      .post(`${AuthService.PREFIX}/refresh`, {
+        json,
+      })
+      .json<Auth.Refresh.Response>();
   }
 
   static resetPasswordRequest(json: Auth.ResetPasswordRequest.Body) {

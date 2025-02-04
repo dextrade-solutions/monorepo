@@ -38,7 +38,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user, allProjects]);
 
-  const contextValue = { user, setUser: () => {debugger;}, isLoading: projects.isLoading };
+  const contextValue = {
+    user,
+    setUser: (newUser: User | null) => {
+      setUser(newUser);
+    },
+    isLoading: projects.isLoading,
+  };
 
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>

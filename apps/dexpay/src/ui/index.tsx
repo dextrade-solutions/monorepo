@@ -28,7 +28,6 @@ import TransactionHistory from './pages/TransactionHistory';
 
 import './css/index.scss';
 import Wallet from './pages/Wallet';
-import { saveAuthToken } from './services/client';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -47,24 +46,20 @@ function Router() {
   );
 }
 
-saveAuthToken(
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTY1MSwidHlwZSI6ImFjY2VzcyIsInRva2VuIjoiUURHYTNBcVVteHQ3WWtfU0xDV3hOdVg4UFhZNThkUHRJLUE2VE1YajRveWM0NFJRRW5YOURMaDY5TFlGa2FqdnFzOCIsImlhdCI6MTczODY1MzMwNSwiZXhwIjoxNzM4NjYwNTA1fQ.En29K-yKT8q2hHCtkQDnMNPCXQzlkIS-gc8V90UXCCU',
-);
-
 export function UI() {
   const { muiTheme } = useDexUI();
 
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
-      <DexUiProvider
-        theme={muiTheme}
-        modals={{
-          SELECT_PROJECT: SelectProject,
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <UserProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <DexUiProvider
+            theme={muiTheme}
+            modals={{
+              SELECT_PROJECT: SelectProject,
+            }}
+          >
             <Container maxWidth="sm">
               <Appbar />
               <Box mb={10}>
@@ -72,9 +67,9 @@ export function UI() {
               </Box>
               <BottomNav />
             </Container>
-          </UserProvider>
-        </QueryClientProvider>
-      </DexUiProvider>
+          </DexUiProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
