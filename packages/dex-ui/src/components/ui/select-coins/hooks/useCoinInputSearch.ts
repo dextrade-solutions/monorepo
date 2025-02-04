@@ -1,8 +1,14 @@
 import Fuse from 'fuse.js';
 import { useRef, useCallback, useState } from 'react';
 
+const DEFAULT_SEARCH_KEYS = [
+  { name: 'name', weight: 0.499 },
+  { name: 'symbol', weight: 0.499 },
+  { name: 'address', weight: 0.002 },
+];
+
 export const useCoinInputSearch = (params) => {
-  const { fuseSearchKeys } = params;
+  const { fuseSearchKeys = DEFAULT_SEARCH_KEYS } = params;
   const prevList = useRef([]);
   const fuseRef = useRef();
   const [result, setResult] = useState([]);

@@ -64,8 +64,6 @@ export const SelectCoinsItemDropdown = ({
   const [searchItems, handleSearchItems, handleSetFuse] = useCoinInputSearch({
     fuseSearchKeys,
   });
-  // const handleSearchItems = () => {};
-  // const handleSetFuse = () => {};
 
   const renderList = useMemo(() => {
     const list = searchQuery
@@ -76,8 +74,6 @@ export const SelectCoinsItemDropdown = ({
       (p, n) => Number(n.selected || false) - Number(p.selected || false),
     );
   }, [searchItems, itemsFiltered, searchQuery]);
-
-  // const renderList = [];
 
   const handleClose = useCallback(() => {
     setSearchQuery('');

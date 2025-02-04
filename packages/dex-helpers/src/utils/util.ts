@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import bowser from 'bowser';
-// import currencyFormatter from 'currency-formatter';
-// import currencies from 'currency-formatter/currencies';
+import currencyFormatter from 'currency-formatter';
+import currencies from 'currency-formatter/currencies';
 import * as lodash from 'lodash';
 import { DateTime } from 'luxon';
 import * as punycode from 'punycode/punycode';

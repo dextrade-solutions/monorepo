@@ -1,4 +1,16 @@
-import { Box, TextField, Skeleton, Autocomplete } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Skeleton,
+  Autocomplete,
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Input,
+  OutlinedInput,
+  StepLabel,
+  FormLabel,
+} from '@mui/material';
 import { getCoinIconByUid } from 'dex-helpers';
 import { UrlIcon, withValidationProvider } from 'dex-ui';
 import React from 'react';
@@ -8,20 +20,23 @@ import { Currency } from '../../services';
 import { ICoin } from '../../types';
 
 type InputValue = {
-  amount: number;
-  coin: ICoin;
+  amount: string | number | null;
+  coin: string;
 };
 
 function SelectCoinAmount({
   value,
+  error,
+  isLoading,
+  coins,
   onChange,
 }: {
-  value?: InputValue;
+  value: InputValue;
+  error: boolean;
+  isLoading: boolean;
+  coins: Record<string, ICoin>;
   onChange: (v: InputValue) => void;
 }) {
-  const coins = useQuery(Currency.coins);
-
-  const allCoins = coins.data?.list.currentPageResult || [];
   const preloader = () => {
     return (
       <Box>
@@ -39,7 +54,7 @@ function SelectCoinAmount({
     });
   };
 
-  const handleSelectChange = (v) => {
+  const handleSelectChange = (_, v) => {
     onChange({
       amount: value.amount,
       coin: v,
@@ -48,46 +63,87 @@ function SelectCoinAmount({
 
   return (
     <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-      <TextField
-        value={value?.amount}
+      <FormControl
         sx={{
           width: '100%',
         }}
-        onChange={handleInputChange}
-        type="number"
-        placeholder="0.1"
-        InputProps={{
-          inputMode: 'decimal',
-        }}
-      />
-      <Autocomplete
-        value={value?.coin}
-        options={allCoins}
-        loading={coins.isLoading}
-        renderOption={(props, option) => {
-          const { key, ...optionProps } = props;
-          return (
-            <Box
-              key={key}
-              component="li"
-              sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-              {...optionProps}
-            >
-              <img
-                loading="lazy"
-                width="20"
-                src={getCoinIconByUid(option.iso)}
-                alt=""
+        variant="outlined"
+      >
+        <OutlinedInput
+          value={value?.amount}
+          id="input-with-icon-adornment"
+          type="number"
+          placeholder="0"
+          error={error}
+          sx={{
+            padding: 0,
+            overflow: 'hidden',
+          }}
+          onChange={handleInputChange}
+          endAdornment={
+            <InputAdornment position="end">
+              <Autocomplete
+                value={value?.coin}
+                options={Object.keys(coins)}
+                loading={isLoading}
+                disableClearable
+                renderOption={(props, option) => {
+                  const { key, ...optionProps } = props;
+                  return (
+                    <Box
+                      key={key}
+                      component="li"
+                      sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                      {...optionProps}
+                    >
+                      <img
+                        loading="lazy"
+                        width="20"
+                        src={getCoinIconByUid(option.toLowerCase())}
+                        alt=""
+                      />
+                      {option}
+                    </Box>
+                  );
+                }}
+                onChange={handleSelectChange}
+                renderInput={(params) => (
+                  <>
+                    <TextField
+                      {...params}
+                      InputProps={{
+                        ...params.InputProps,
+                        disableUnderline: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <img
+                              loading="lazy"
+                              width="20"
+                              src={getCoinIconByUid(value?.coin?.toLowerCase())}
+                              alt=""
+                            />
+                          </InputAdornment>
+                        ),
+                        sx: {
+                          paddingRight: 1,
+                          width: `${Math.max(110, value.coin.length * 23)}px`, // Adjusts width dynamically
+                        },
+                      }}
+                      sx={{
+                        paddingRight: 1,
+                      }}
+                      // inputProps={{ style: { minWidth: "50px" } }}
+                      variant="standard"
+                    />
+                  </>
+                )}
               />
-              {option.iso}
-            </Box>
-          );
-        }}
-        onChange={handleSelectChange}
-        renderInput={(params) => <TextField {...params} label="Currency" />}
-      />
+            </InputAdornment>
+          }
+        />
+      </FormControl>
     </Box>
   );
 }
 
-export default withValidationProvider(SelectCoinAmount, (v) => v);
+export default withValidationProvider(SelectCoinAmount, (v) => v.amount);

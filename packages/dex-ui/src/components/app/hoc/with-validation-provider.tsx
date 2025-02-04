@@ -1,7 +1,9 @@
 import React, { RefObject, useState } from 'react';
 
+const onChangeParseDefault = (...args: any) => args;
+
 const withValidationProvider =
-  (Field: any, onChangeParse: (...args: any[]) => any) =>
+  (Field: any, onChangeParse = onChangeParseDefault) =>
   ({
     validators = [],
     form,
@@ -22,7 +24,7 @@ const withValidationProvider =
     };
 
     if (form?.current) {
-      form.current[name] = findErrors(fieldProps.value);
+      form.current[name] = findErrors(onChangeParse(fieldProps.value));
     }
 
     const handleChange = (...args: any[]) => {
@@ -30,7 +32,7 @@ const withValidationProvider =
       const foundErrors = findErrors(newValue);
       setError(foundErrors);
       form.current[name] = foundErrors;
-      fieldProps.onChange(name, newValue);
+      fieldProps.onChange(name, ...args);
     };
     return (
       <Field

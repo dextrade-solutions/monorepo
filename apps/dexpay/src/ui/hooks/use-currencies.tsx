@@ -22,7 +22,7 @@ export function useCurrencies() {
       .map((i) => ({
         currency: i,
         asset: assetDict[i.name],
-        balance: balancesData?.balances.map((b) => b.currency_id === i.id),
+        balance: balancesData?.balances?.map((b) => b.currency_id === i.id),
       }))
       .filter((i) => i.asset),
     isLoading: false,
