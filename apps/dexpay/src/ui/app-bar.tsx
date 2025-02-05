@@ -8,11 +8,15 @@ import {
   ROUTE_MERCHANT,
   ROUTE_P2P,
   ROUTE_PROFILE,
+  ROUTE_WALLET_DEPOSIT,
+  ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
 import ProjectSelectBtn from './project-select-button';
 
 const titles = {
   [ROUTE_HOME]: 'Wallet',
+  [ROUTE_WALLET_DEPOSIT]: 'Deposit',
+  [ROUTE_WALLET_WITHDRAW]: 'Withdraw',
   [ROUTE_MERCHANT]: 'Merchant',
   [ROUTE_INVOICE_CREATE]: 'Create invoice',
   [ROUTE_P2P]: 'P2P',

@@ -16,6 +16,8 @@ import {
   ROUTE_MERCHANT,
   ROUTE_P2P,
   ROUTE_PROFILE,
+  ROUTE_WALLET_DEPOSIT,
+  ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
 import { UserProvider } from './contexts/user-context';
 import SelectProject from './modals/select-project';
@@ -28,6 +30,8 @@ import TransactionHistory from './pages/TransactionHistory';
 
 import './css/index.scss';
 import Wallet from './pages/Wallet';
+import WalletDepositPage from './pages/WalletDeposit';
+import WalletWithdrawPage from './pages/WalletWithdraw';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -35,6 +39,8 @@ function Router() {
   return (
     <Switch>
       <Route path={ROUTE_HOME} component={Wallet} />
+      <Route path={ROUTE_WALLET_DEPOSIT} component={WalletDepositPage} />
+      <Route path={ROUTE_WALLET_WITHDRAW} component={WalletWithdrawPage} />
       <Route path={ROUTE_MERCHANT} component={Merchant} />
       <Route path={ROUTE_INVOICE_CREATE} component={CreateInvoice} />
       <Route path={ROUTE_INVOICE_EDIT} component={CreateInvoice} />

@@ -1,11 +1,20 @@
 import { Button, Paper, Typography, Box } from '@mui/material';
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
+import React from 'react';
+import { useLocation } from 'wouter';
+
 import AssetList from '../components/crypto/AssetList';
+import {
+  ROUTE_WALLET_DEPOSIT,
+  ROUTE_WALLET_WITHDRAW,
+} from '../constants/pages';
 
 export default function Wallet() {
+  const [_, navigate] = useLocation();
   return (
     <Box>
-      <Box mb={8}>
-        <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+      <Box mb={4}>
+        <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="body2" color="textSecondary">
             Balance
           </Typography>
@@ -14,10 +23,24 @@ export default function Wallet() {
           </Typography>
         </Paper>
         <Box display="flex" gap={2}>
-          <Button fullWidth variant="contained">
+          <Button
+            fullWidth
+            color="secondary"
+            size="large"
+            variant="contained"
+            startIcon={<ArrowDownLeft />}
+            onClick={() => navigate(ROUTE_WALLET_DEPOSIT)}
+          >
             Deposit
           </Button>
-          <Button fullWidth variant="outlined">
+          <Button
+            fullWidth
+            color="secondary"
+            size="large"
+            variant="contained"
+            startIcon={<ArrowUpRight />}
+            onClick={() => navigate(ROUTE_WALLET_WITHDRAW)}
+          >
             Withdraw
           </Button>
         </Box>

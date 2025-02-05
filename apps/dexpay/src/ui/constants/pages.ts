@@ -1,4 +1,6 @@
 export const ROUTE_HOME = '/';
+export const ROUTE_WALLET_DEPOSIT = '/wallet/deposit';
+export const ROUTE_WALLET_WITHDRAW = '/wallet/withdraw';
 export const ROUTE_MERCHANT = '/merchant';
 export const ROUTE_INVOICE_CREATE = '/merchant/invoice/create';
 export const ROUTE_INVOICE_EDIT = '/merchant/invoice/:id/edit';

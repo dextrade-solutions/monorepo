@@ -22,7 +22,7 @@ export function useQuery<TService extends AnyFunction>(
   >,
 ) {
   // Create query key from service method name and params
-  const queryKey = [serviceMethod.name, params];
+  const queryKey = [serviceMethod.toString(), params];
   const queryFn = () => serviceMethod(params);
 
   return useReactQuery({

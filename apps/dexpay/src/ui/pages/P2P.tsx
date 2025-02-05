@@ -1,5 +1,7 @@
 import { Button, Box, Typography, Paper, Tabs, Tab } from '@mui/material';
+import { FormInputIcon, PersonStanding, Plus } from 'lucide-react';
 import { useState } from 'react';
+
 import TradingPair from '../components/crypto/TradingPair';
 
 export default function P2P() {
@@ -15,10 +17,16 @@ export default function P2P() {
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             $120.00 USD
           </Typography>
-          <Button variant="contained" fullWidth>
-            Create pair
-          </Button>
         </Paper>
+        <Button
+          startIcon={<Plus />}
+          color="secondary"
+          size="large"
+          variant="contained"
+          fullWidth
+        >
+          Create pair
+        </Button>
       </Box>
 
       <Tabs

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import { CircleNumber, CopyData, useGlobalModalContext } from 'dex-ui';
-import { DeleteIcon, Edit, Edit3, Settings, Trash } from 'lucide-react';
+import { DeleteIcon, Settings, Trash } from 'lucide-react';
 import React from 'react';
 
 import { useMutation, useQuery } from '../../hooks/use-query';
