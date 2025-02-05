@@ -57,6 +57,7 @@ export default function InvoiceList() {
     <>
       {renderInvoicesList.map((invoice, idx) => (
         <Card
+          elevation={0}
           sx={{
             bgcolor: 'secondary.dark',
             borderRadius: 1,

@@ -1,12 +1,7 @@
 import {
   Box,
-  TextField,
   Button,
   Typography,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   FormLabel,
   AccordionDetails,
   AccordionSummary,
@@ -14,21 +9,14 @@ import {
 } from '@mui/material';
 import dayjs from 'dayjs';
 import { isRequired } from 'dex-helpers';
-import {
-  CircleNumber,
-  Icon,
-  MultiselectAssets,
-  useGlobalModalContext,
-} from 'dex-ui';
+import { CircleNumber, Icon, useGlobalModalContext } from 'dex-ui';
 import _ from 'lodash';
-import { InfoIcon } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 import { useLocation } from 'wouter';
 
 import {
   DatePickerWithValidation,
   MultiselectAssetsWithValidation,
-  SelectCurrencyWithValidation,
   TextFieldWithValidation,
 } from './fields';
 import { ROUTE_MERCHANT } from '../../../constants/pages';
@@ -36,7 +24,6 @@ import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../../hooks/use-query';
 import { useUser } from '../../../hooks/use-user';
 import { Currency, Invoice } from '../../../services';
-import DatePickerComponent from '../../ui/DatePicker';
 import SelectCoinAmount from '../../ui/SelectCoinAmount';
 
 interface InvoiceData {

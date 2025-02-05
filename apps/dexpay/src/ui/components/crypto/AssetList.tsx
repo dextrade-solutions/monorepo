@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material';
-import assetDict from 'dex-helpers/assets-dict';
 import React from 'react';
 
 import { AssetListItem } from './AssetListItem';

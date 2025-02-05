@@ -17,7 +17,7 @@ export default function Merchant() {
   return (
     <Box sx={{ mx: 'auto' }}>
       <Box mb={4}>
-        <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
+        <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
           <Typography variant="body2" color="textSecondary">
             Total income
           </Typography>

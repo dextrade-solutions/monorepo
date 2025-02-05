@@ -38,7 +38,7 @@ const transactions = [
   {
     type: 'send',
     to: '0x7Dbc4...57AF435',
-    amount: '-30,000,000,000,000,000,000 XDC',
+    amount: '-30 XDC',
     status: 'Pending',
     date: 'Oct 30, 2024',
   },

@@ -61,10 +61,11 @@ export function MultiselectAssets({
   );
   return (
     <Paper
+      elevation={0}
       sx={{
         p: 1,
         border: 1,
-        borderColor: 'text.secondary',
+        borderColor: 'divider',
         marginY: 1,
       }}
     >

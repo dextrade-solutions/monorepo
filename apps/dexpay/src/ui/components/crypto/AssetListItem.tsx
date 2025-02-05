@@ -16,8 +16,7 @@ export function AssetListItem({
   balance?: IBalance;
 }) {
   return (
-    <Card sx={{ borderRadius: 1, boxShadow: 3, bgcolor: 'secondary.dark' }}>
-      {/* Improved card styling */}
+    <Card elevation={0} sx={{ borderRadius: 1, bgcolor: 'secondary.dark' }}>
       <CardContent
         sx={{
           display: 'flex',

@@ -10,7 +10,7 @@ const Palette = {
       default: '#fff',
     },
     secondary: {
-      light: '#ff7961',
+      light: '#9698db',
       main: '#4143A1',
       dark: '#f0f1f7',
     },

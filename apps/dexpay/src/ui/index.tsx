@@ -27,11 +27,10 @@ import NotFound from './pages/not-found';
 import P2P from './pages/P2P';
 import Profile from './pages/Profile';
 import TransactionHistory from './pages/TransactionHistory';
-
-import './css/index.scss';
 import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
 import WalletWithdrawPage from './pages/WalletWithdraw';
+import './css/index.scss';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -53,7 +52,7 @@ function Router() {
 }
 
 export function UI() {
-  const { muiTheme } = useDexUI();
+  const { muiTheme } = useDexUI({ theme: 'light' });
 
   return (
     <ThemeProvider theme={muiTheme}>
