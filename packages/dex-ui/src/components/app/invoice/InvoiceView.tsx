@@ -179,7 +179,7 @@ export default function InvoiceView({
 
   const alertParams = {
     [InvoiceStatus.canceled]: {
-      icon: mainIcon,
+      icon: <Icon size="lg" name="close" />,
       color: 'error.main',
       severity: 'danger',
       status: 'Payment cancelled',
