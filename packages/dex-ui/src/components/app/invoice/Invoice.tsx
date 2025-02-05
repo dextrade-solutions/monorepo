@@ -11,14 +11,16 @@ export default function Invoice({
   wagmiConfig,
   solana,
   id,
+  onBack,
 }: {
   wagmiConfig: any;
   solana: SolanaConfig;
   id: string;
+  onBack?: () => void;
 }) {
   return (
     <DexConnectProvider wagmiConfig={wagmiConfig} solanaConfig={solana}>
-      <InvoiceView id={id} />
+      <InvoiceView id={id} onBack={onBack} />
     </DexConnectProvider>
   );
 }

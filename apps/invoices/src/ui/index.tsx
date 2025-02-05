@@ -34,29 +34,12 @@ export function UI() {
     window.history.back();
   };
 
-  const backbutton = (
-    <Button
-      startIcon={<Icon name="arrow-left-dex" />}
-      color="secondary"
-      variant="text"
-      onClick={handleBackButtonClick}
-    >
-      Back
-    </Button>
-  );
-
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <DexUiProvider theme={muiTheme} locale={auth?.lang}>
         <Container maxWidth="sm">
           <Box paddingY={3}>
-            <Box display="flex" justifyContent="space-between" mb={2}>
-              <Typography variant="h5">
-                Dex<strong>Pay</strong>
-              </Typography>
-              {backbutton}
-            </Box>
             {invoiceId ? (
               <Invoice
                 id={invoiceId}
@@ -65,6 +48,7 @@ export function UI() {
                   SOLANA_CONNECT_WALLETS,
                   SOLANA_CONNECT_API,
                 }}
+                onBack={handleBackButtonClick}
               />
             ) : (
               <>

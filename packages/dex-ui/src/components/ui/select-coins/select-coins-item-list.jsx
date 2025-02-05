@@ -26,58 +26,60 @@ export const SelectCoinsItemList = ({
     },
     [onReset],
   );
-
+  const renderSelected = () => (
+    <Box
+      as="li"
+      marginLeft={2}
+      marginY={1}
+      className="select-coins__list__item__clear"
+      key="select-coin-item-reset"
+    >
+      <Typography marginRight={2}>Selected: </Typography>
+      <Chip
+        type="inline"
+        label={
+          <Box display="flex" alignItems="center" alignContent="center">
+            {coin.uid && (
+              <Box marginRight={1}>
+                <UrlIcon
+                  marginRight={2}
+                  url={getCoinIconByUid(coin.uid)}
+                  name={coin.name}
+                />
+              </Box>
+            )}
+            <Typography
+              fontWeight="bold"
+              className="searchable-item-list__primary-label"
+            >
+              {`${coin.symbol}`}
+            </Typography>
+            {coin.standard && (
+              <Typography marginLeft={1} fontWeight="light">
+                {coin.standard.toUpperCase()}
+              </Typography>
+            )}
+            <Icon marginLeft={1} name="close" size="sm" />
+          </Box>
+        }
+        onClick={handleReset}
+      ></Chip>
+    </Box>
+  );
   if (!list.length) {
     return (
-      <Box ml={2} my={3}>
-        {Placeholder || <div>empty list</div>}
-      </Box>
+      <>
+        {Boolean(coin) && renderSelected()}
+        <Box ml={2} my={3}>
+          {Placeholder || <div>empty list</div>}
+        </Box>
+      </>
     );
   }
-
   return (
     <>
       <ul className="select-coins__list">
-        {Boolean(coin) && (
-          <Box
-            as="li"
-            marginLeft={2}
-            marginY={1}
-            className="select-coins__list__item__clear"
-            key="select-coin-item-reset"
-          >
-            <Typography marginRight={2}>Selected: </Typography>
-            <Chip
-              type="inline"
-              label={
-                <Box display="flex" alignItems="center" alignContent="center">
-                  {coin.uid && (
-                    <Box marginRight={1}>
-                      <UrlIcon
-                        marginRight={2}
-                        url={getCoinIconByUid(coin.uid)}
-                        name={coin.name}
-                      />
-                    </Box>
-                  )}
-                  <Typography
-                    fontWeight="bold"
-                    className="searchable-item-list__primary-label"
-                  >
-                    {`${coin.symbol}`}
-                  </Typography>
-                  {coin.standard && (
-                    <Typography marginLeft={1} fontWeight="light">
-                      {coin.standard.toUpperCase()}
-                    </Typography>
-                  )}
-                  <Icon marginLeft={1} name="close" size="sm" />
-                </Box>
-              }
-              onClick={handleReset}
-            ></Chip>
-          </Box>
-        )}
+        {Boolean(coin) && renderSelected()}
         <TransitionGroup>
           {list.map(({ item, refIndex }) => {
             if (hideItemIf?.(item)) {

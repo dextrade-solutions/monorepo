@@ -51,7 +51,6 @@ export const SelectCoinsItemDropdown = ({
   shouldSearchForImports,
 }) => {
   const t = (v) => v;
-
   const [searchQuery, setSearchQuery] = useState('');
   const [network, setNetwork] = useState(null);
   const [tokenForImport, setTokenForImport] = useState(null);
