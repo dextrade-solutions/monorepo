@@ -5,6 +5,10 @@ export default function InvoicePreloader() {
   return (
     <Box>
       {/* Header Skeleton */}
+      <Box display="flex" justifyContent="space-between">
+        <Skeleton width={120} height={50} />
+        <Skeleton width={120} height={50} />
+      </Box>
       <Box
         display="flex"
         justifyContent="center"

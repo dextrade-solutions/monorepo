@@ -37,7 +37,13 @@ import useCurrencies from './react-queries/queries/useCurrencies';
 import usePayment from './react-queries/queries/usePayment';
 import { Invoice as InvoiceNamespace } from './types/invoices';
 
-export default function Invoice({ id }: { id: string }) {
+export default function InvoiceView({
+  id,
+  onBack,
+}: {
+  id: string;
+  onBack?: () => void;
+}) {
   const [assetsDict, setAssetDict] = useState(null);
   const [loadingWallet, setLoadingWallet] = useState(null);
   const [connectedWallet, setConnectedWallet] = useState(null);
@@ -154,34 +160,49 @@ export default function Invoice({ id }: { id: string }) {
   const secondaryRecievedAmount = Number(payment.data.amount_received_total_f);
   const secondaryDelta = secondarySendAmount - secondaryRecievedAmount;
 
-  const payStr = formatCurrency(
+  let payStr = formatCurrency(
     primarySendAmount || secondarySendAmount,
     primarySendCoin || secondarySendCoin,
   );
+  if (payment.data.status === InvoiceStatus.success) {
+    payStr = `Paid ${payStr}`;
+  } else {
+    payStr = `Pay ${payStr}`;
+  }
 
   const deltaStr = formatCurrency(
     Math.abs(primaryDelta || secondaryDelta),
     primarySendCoin || secondarySendCoin,
   );
 
+  const mainIcon = <Icon size="lg" name="tag" />;
+
   const alertParams = {
     [InvoiceStatus.canceled]: {
+      icon: mainIcon,
+      color: 'error.main',
       severity: 'danger',
       status: 'Payment cancelled',
       text: 'Payment has been canceled, if you have questions, please contact support',
     },
     [InvoiceStatus.success]: {
+      icon: <Icon name="check" />,
+      color: 'success.light',
       severity: 'success',
       status: 'Payment successful',
       text: `Payment received. Received ${secondarySendAmount}`,
     },
     [InvoiceStatus.pending]: {
+      color: 'primary.main',
+      icon: mainIcon,
       status: 'Payment awaiting',
     },
     [InvoiceStatus.unknwn]: {
+      icon: mainIcon,
       status: 'Payment awaiting',
     },
     [InvoiceStatus.expired]: {
+      icon: mainIcon,
       status: 'Expired',
     },
   };
@@ -262,30 +283,51 @@ export default function Invoice({ id }: { id: string }) {
     partiallyPaid = true;
   }
 
+  const backbutton = onBack ? (
+    <Button
+      startIcon={<Icon name="arrow-left-dex" />}
+      color="secondary"
+      variant="text"
+      onClick={onBack}
+    >
+      Back
+    </Button>
+  ) : null;
+
   return (
     <Box>
+      <Box display="flex" justifyContent="space-between" mb={2}>
+        {payment.data.logo_url ? (
+          <Avatar
+            alt="Payment Logo" // Provide alternative text for accessibility
+            src={payment.data.logo_url}
+            sx={{
+              height: 50,
+              width: 'auto',
+              maxHeight: 100,
+              maxWidth: 200,
+              borderRadius: 0.5, // Maintain rounded corners
+            }}
+            variant="square" // Keep it square, remove for circular avatar
+          />
+        ) : (
+          <Typography variant="h5">
+            Dex<strong>Pay</strong>
+          </Typography>
+        )}
+
+        {backbutton}
+      </Box>
       <Box display="flex" alignItems="center" flexDirection="column">
-        <Box my={1}>
-          {payment.data.logo_url ? (
-            <Avatar
-              alt="Payment Logo" // Provide alternative text for accessibility
-              src={payment.data.logo_url}
-              sx={{
-                height: 50,
-                width: 'auto',
-                // minWidth: 100,
-                maxHeight: 100,
-                maxWidth: 200,
-                borderRadius: 0.5, // Maintain rounded corners
-                bgcolor: 'grey.200', // Optional: background color if image fails to load
-              }}
-              variant="square" // Keep it square, remove for circular avatar
-            />
-          ) : (
-            <Icon size="xl" name="tag" />
-          )}
-        </Box>
-        <Typography variant="h6">Pay {payStr}</Typography>
+        <Avatar
+          sx={{
+            my: 1,
+            backgroundColor: alertParams[payment.data.status].color,
+          }}
+        >
+          {alertParams[payment.data.status].icon}
+        </Avatar>
+        <Typography variant="h6">{payStr}</Typography>
         <Typography mb={2} color="text.secondary">
           {alertParams[payment.data.status].status}
         </Typography>
