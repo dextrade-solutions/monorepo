@@ -3,8 +3,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from 'dex-helpers/shared';
 import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
-import React from 'react';
-import { Switch, Route } from 'wouter';
+import React, { useEffect } from 'react';
+import { Switch, Route, useLocation } from 'wouter';
 
 import Appbar from './app-bar';
 import BottomNav from './components/layout/BottomNav';
@@ -13,6 +13,7 @@ import {
   ROUTE_HOME,
   ROUTE_INVOICE_CREATE,
   ROUTE_INVOICE_EDIT,
+  ROUTE_LOGIN,
   ROUTE_MERCHANT,
   ROUTE_P2P,
   ROUTE_PROFILE,
@@ -20,7 +21,9 @@ import {
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
 import { UserProvider } from './contexts/user-context';
+import { useUser } from './hooks/use-user';
 import SelectProject from './modals/select-project';
+import LoginForm from './pages/auth/Login';
 import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
 import NotFound from './pages/not-found';
@@ -35,6 +38,20 @@ import './css/index.scss';
 log.setLevel(log.levels.DEBUG);
 
 function Router() {
+  const user = useUser();
+  const [, navigate] = useLocation(); // Get the navigate function
+
+  useEffect(() => {
+    // Add useEffect to check authorization status
+    if (!user.isAuthorized) {
+      navigate('/'); // Redirect to login if not authorized
+    }
+  }, [user.isAuthorized, navigate]); // Add dependencies
+
+  if (!user.isAuthorized) {
+    return <Route path={'/'} component={LoginForm} />; // Or a loading indicator while checking authorization
+  }
+
   return (
     <Switch>
       <Route path={ROUTE_HOME} component={Wallet} />
@@ -48,6 +65,19 @@ function Router() {
       <Route path={ROUTE_PROFILE} component={Profile} />
       <Route component={NotFound} />
     </Switch>
+  );
+}
+
+function App() {
+  const { isAuthorized } = useUser();
+  return (
+    <Container maxWidth="sm">
+      <Appbar />
+      <Box mb={10}>
+        <Router />
+      </Box>
+      {isAuthorized && <BottomNav />}
+    </Container>
   );
 }
 
@@ -65,13 +95,7 @@ export function UI() {
               SELECT_PROJECT: SelectProject,
             }}
           >
-            <Container maxWidth="sm">
-              <Appbar />
-              <Box mb={10}>
-                <Router />
-              </Box>
-              <BottomNav />
-            </Container>
+            <App />
           </DexUiProvider>
         </UserProvider>
       </QueryClientProvider>

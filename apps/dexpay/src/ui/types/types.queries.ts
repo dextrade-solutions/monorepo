@@ -51,10 +51,6 @@ export namespace Auth {
   }
 
   export namespace TwoFaCode {
-    export interface Params {
-      isNewMode: boolean;
-    }
-
     export interface Body {
       code_token: string;
       code: string;

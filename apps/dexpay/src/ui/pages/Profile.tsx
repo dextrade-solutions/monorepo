@@ -1,21 +1,31 @@
-import { Button, Card, CardContent, Box, Typography } from "@mui/material";
-import { Icon } from "dex-ui";
+import { Button, Card, CardContent, Box, Typography } from '@mui/material';
+import { Icon } from 'dex-ui';
+import { LogOut } from 'lucide-react';
+import { useUser } from '../hooks/use-user';
 
 export default function Profile() {
+  const { logout } = useUser();
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
-      <Card>
+      <Card
+        elevation={0}
+        sx={{
+          my: 2,
+          bgcolor: 'secondary.dark',
+          borderRadius: 1,
+        }}
+      >
         <CardContent sx={{ p: 4 }}>
-          <Box 
-            sx={{ 
+          <Box
+            sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              mb: 4
+              mb: 4,
             }}
           >
-            <Box
+            {/* <Box
               sx={{
                 width: 96,
                 height: 96,
@@ -24,11 +34,11 @@ export default function Profile() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                mb: 2
+                mb: 2,
               }}
             >
               <Icon size="xl" name="download" />
-            </Box>
+            </Box> */}
             <Typography variant="body2" color="text.secondary">
               Drag and drop a file here to update
             </Typography>
@@ -38,6 +48,17 @@ export default function Profile() {
           </Button>
         </CardContent>
       </Card>
+
+      <Button
+        endIcon={<LogOut />}
+        sx={{ mt: 3 }}
+        fullWidth
+        color="error"
+        variant="outlined"
+        onClick={() => logout()}
+      >
+        Logout
+      </Button>
     </Box>
   );
 }

@@ -1,43 +1,47 @@
-import React, { RefObject, useState } from 'react';
-
-const onChangeParseDefault = (...args: any) => args;
+import { useFormStore } from 'dex-helpers/shared';
+import React, { RefObject, useEffect, useState } from 'react';
 
 const withValidationProvider =
-  (Field: any, onChangeParse = onChangeParseDefault) =>
+  (Field: any) =>
   ({
-    validators = [],
-    form,
+    validationForm,
     name,
+    value,
+    onChange,
     ...fieldProps
   }: {
     validators: ((v: any) => false | string)[];
-    form: RefObject<{ [k: string]: string[] }>;
+    validationForm: RefObject<{ [k: string]: string[] }>;
     name: string;
+    value: any;
+    onChange: (name: string, v: any) => void;
   }) => {
-    const [error, setError] = useState<string[]>([]);
-
-    const findErrors = (v: any) => {
-      return validators.reduce<string[]>((acc, validate) => {
-        const errorMessage = (validate(v) || '').replace('{v}', name);
-        return errorMessage ? [...acc, errorMessage] : acc;
-      }, []);
-    };
-
-    if (form?.current) {
-      form.current[name] = findErrors(onChangeParse(fieldProps.value));
-    }
+    useEffect(() => {
+      const findErrors = async (v: any) => {
+        return validationForm.validationSchema.fields[name].validate(v);
+      };
+      findErrors(value)
+        .then(() => {
+          validationForm.setErrors(name, []);
+        })
+        .catch((e) => {
+          validationForm.setErrors(name, e.errors);
+        });
+    }, [value]);
 
     const handleChange = (...args: any[]) => {
-      const newValue = onChangeParse(...args);
-      const foundErrors = findErrors(newValue);
-      setError(foundErrors);
-      form.current[name] = foundErrors;
-      fieldProps.onChange(name, ...args);
+      validationForm.setInteracted(name);
+      onChange(name, ...args);
     };
     return (
       <Field
         {...fieldProps}
-        error={Boolean(error.length)}
+        value={value}
+        error={
+          Boolean(validationForm.interacted[name]) &&
+          Boolean(validationForm.errors[name]?.length)
+        }
+        helperText={validationForm.interacted[name] && validationForm.errors[name]?.[0]}
         onChange={handleChange}
       />
     );

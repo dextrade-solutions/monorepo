@@ -27,3 +27,8 @@ export const maxLen = (len: number) => (v: string) => {
 export const minLen = (len: number) => (v: string) => {
   return v?.length < len && `Min value of {v} is ${len}`;
 };
+
+export const email = (v: string) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u; // Simple email regex.  Consider a more robust one if needed.
+  return !re.test(v) && 'Invalid email address';
+};

@@ -10,30 +10,30 @@ const BASE_API_CONFIG = {
     'Content-Type': 'application/json',
   },
 };
-
+const getAuthDataFrom = () => {
+  const data = localStorage.getItem('user-data');
+  return data && JSON.parse(data);
+};
 // Function to read the Bearer token from localStorage
 const getAuth = () => {
-  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
-  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  const userData = getAuthDataFrom();
   return {
-    accessToken,
-    refreshToken,
+    accessToken: userData?.auth?.accessToken,
+    refreshToken: userData?.auth?.refreshToken,
   };
 };
 
 export const saveAuthData = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-  localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  const userData = getAuth();
+  localStorage.setItem(
+    'user-data',
+    JSON.stringify({
+      ...(userData || {}),
+      auth: { accessToken, refreshToken },
+    }),
+  );
 };
 
-if (!getAuth().accessToken) {
-  saveAuthData(
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTczOCwidHlwZSI6ImFjY2VzcyIsInRva2VuIjoiZkxQemo2c2ZDNmtSanVxSXVUVkViREFrSFBLS2kydmVpd0ZJd2lnTnNPMl9rT1o5cWNNa0xQNExnYVhST2VidktqcyIsImlhdCI6MTczODcyNTg2NSwiZXhwIjoxNzM4NzMzMDY1fQ.Kq8gVXYenJMIP8TqQiWpTp8La18P_dAkNYdLes5u4z0',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl9pZCI6OTc0OSwidHlwZSI6InJlZnJlc2giLCJ0b2tlbiI6Inozc2lYVlJaMDhjTThiMHRBRGczOWxHcVdENHR1YnRCQ2h1V3NMblQwOHpKMkJlT2NDV0JBRGlxRjVvS2ZuN3Fwb1UiLCJpYXQiOjE3Mzg3NDE4OTgsImV4cCI6MTczODc4NTA5OH0.TMPoqgG9ir9K8IWHkt3zRRrMW3oZrtAK_t1g1krrngM',
-  );
-}
-
-export const $base = ky.create(BASE_API_CONFIG);
 export const $api = ky.create({
   ...BASE_API_CONFIG,
   hooks: {
@@ -56,10 +56,12 @@ export const $api = ky.create({
 
             handleRefreshToken();
           }
-          // Important to re-throw the error after your custom handling for other parts of the application to know!
-          throw new Error(
-            `Network response was not ok. Status: ${response.status}`,
-          );
+          const errorData = await response.json(); // Attempt to parse JSON error data
+          const errorMessage =
+            errorData?.message ||
+            errorData?.error ||
+            'An unknown error occurred.'; // Extract the message
+          throw new Error(errorMessage); // Throw a new error with the message
         }
         return response;
       },

@@ -1,4 +1,4 @@
-import { $api, $base } from './client';
+import { $api } from './client';
 import type { Auth } from '../types';
 
 // import { useStore } from '@/stores';
@@ -32,40 +32,16 @@ export default abstract class AuthService {
    * @param params
    * @param json
    */
-  static async twoFaCode(
-    params: Auth.TwoFaCode.Params,
-    json: Auth.TwoFaCode.Body,
-  ) {
+  static async twoFaCode(json: Auth.TwoFaCode.Body) {
     return $api
-      .post(
-        params.isNewMode
-          ? `${AuthService.PREFIX}/2fa/confirm`
-          : `${AuthService.PREFIX}/code`,
-        {
-          json,
-          hooks: {
-            afterResponse: [
-              async (request, options, response) => {
-                if (response.ok) {
-                  await response.json().then((json) => {
-                    const responseData = json as Auth.TwoFaCode.Response;
-
-                    const store = useStore();
-
-                    store.tokens.access = responseData.access_token;
-                    store.tokens.refresh = responseData.refresh_token;
-                  });
-                }
-              },
-            ],
-          },
-        },
-      )
-      .then(() => null);
+      .post(`${AuthService.PREFIX}/2fa/confirm`, {
+        json,
+      })
+      .json<Auth.TwoFaCode.Response>();
   }
 
   static refresh(json: Auth.Refresh.Body) {
-    return $base
+    return $api
       .post(`${AuthService.PREFIX}/refresh`, {
         json,
       })

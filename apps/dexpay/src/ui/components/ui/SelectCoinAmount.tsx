@@ -146,4 +146,4 @@ function SelectCoinAmount({
   );
 }
 
-export default withValidationProvider(SelectCoinAmount, (v) => v.amount);
+export default withValidationProvider(SelectCoinAmount);

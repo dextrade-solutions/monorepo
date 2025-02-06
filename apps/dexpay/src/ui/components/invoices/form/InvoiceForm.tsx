@@ -8,22 +8,21 @@ import {
   Accordion,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import { isRequired } from 'dex-helpers';
-import { CircleNumber, Icon, useGlobalModalContext } from 'dex-ui';
+import { CircleNumber, Icon, useForm, useGlobalModalContext } from 'dex-ui';
 import _ from 'lodash';
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
-import {
-  DatePickerWithValidation,
-  MultiselectAssetsWithValidation,
-  TextFieldWithValidation,
-} from './fields';
 import { ROUTE_MERCHANT } from '../../../constants/pages';
 import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../../hooks/use-query';
 import { useUser } from '../../../hooks/use-user';
 import { Currency, Invoice } from '../../../services';
+import {
+  DatePickerWithValidation,
+  MultiselectAssetsWithValidation,
+  TextFieldWithValidation,
+} from '../../fields';
 import SelectCoinAmount from '../../ui/SelectCoinAmount';
 
 interface InvoiceData {
@@ -52,6 +51,8 @@ const CreateInvoiceForm = () => {
   const [, navigate] = useLocation();
   const { user } = useUser();
 
+  const form = useForm();
+
   const currencies = useCurrencies();
 
   const invoiceCreate = useMutation(Invoice.create, {
@@ -72,10 +73,6 @@ const CreateInvoiceForm = () => {
     (acc, coin) => ({ ...acc, [coin.iso]: coin }),
     {},
   );
-
-  const formRef = useRef<{ [k: string]: string[] }>({});
-  const formError = Object.values(formRef.current).find((v) => v[0]);
-  const isFormInitialized = Object.values(formRef.current).length > 0;
 
   const handleInputChange = (field: string, value: string) => {
     setInvoiceData((prev) => ({ ...prev, [field]: value }));
@@ -120,11 +117,10 @@ const CreateInvoiceForm = () => {
       </Box>
       <SelectCoinAmount
         value={invoiceData.primaryCoin}
-        form={formRef}
+        validationForm={form}
         coins={allCoins}
         isLoading={coins.isLoading}
         name="primaryCoin"
-        validators={[isRequired]}
         onChange={handleInputChange}
       />
       <Box mt={3} display="flex" alignItems="center">
@@ -136,31 +132,9 @@ const CreateInvoiceForm = () => {
         name="convertedCurrencies"
         currencies={currencies.items}
         isLoading={currencies.isLoading}
-        form={formRef}
+        validationForm={form}
         onChange={handleInputChange}
       />
-
-      {/* <FormControl fullWidth margin="normal" required>
-        <InputLabel id="main-currency-label">Main Currency</InputLabel>
-        <Select
-          labelId="main-currency-label"
-          name="mainCurrency"
-          value={invoiceData.mainCurrency}
-          label="Main Currency" // Add label prop
-        >
-          <MenuItem value="USD">USD</MenuItem>
-          <MenuItem value="EUR">EUR</MenuItem>
-        </Select>
-      </FormControl> */}
-
-      {/* <TextField
-        margin="normal"
-        fullWidth
-        label="Converted Currencies (Optional)"
-        name="convertedCurrencies"
-        value={invoiceData.convertedCurrencies}
-        onChange={handleInputChange}
-      /> */}
 
       <Accordion
         disableGutters
@@ -184,7 +158,7 @@ const CreateInvoiceForm = () => {
             <TextFieldWithValidation
               id="description"
               fullWidth
-              form={formRef}
+              validationForm={form}
               placeholder="Description"
               name="description"
               multiline
@@ -195,7 +169,7 @@ const CreateInvoiceForm = () => {
           <DatePickerWithValidation
             value={invoiceData.dueDate}
             label="Due Date"
-            form={formRef}
+            validationForm={form}
             onChange={handleInputChange}
             textFieldProps={{
               margin: 'normal',
@@ -207,14 +181,16 @@ const CreateInvoiceForm = () => {
       <Button
         type="submit"
         disabled={
-          invoiceCreate.isPending || !isFormInitialized || Boolean(formError)
+          invoiceCreate.isPending ||
+          !form.isInitiated ||
+          Boolean(form.primaryError)
         }
         fullWidth
         size="large"
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
       >
-        {formError || 'Create Invoice'}
+        {form.primaryError || 'Create Invoice'}
       </Button>
     </Box>
   );

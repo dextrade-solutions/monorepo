@@ -11,6 +11,7 @@ import {
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
+import { useUser } from './hooks/use-user';
 import ProjectSelectBtn from './project-select-button';
 
 const titles = {
@@ -25,6 +26,7 @@ const titles = {
 };
 
 const Appbar = () => {
+  const { isAuthorized } = useUser();
   const [location] = useLocation();
   const title = titles[location] || ''; // Get title based on route or default to empty string
 
@@ -36,10 +38,14 @@ const Appbar = () => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {title} {/* Display dynamic title */}
-        </Typography>
-        <ProjectSelectBtn />
+        {isAuthorized && ( // add something else if not authorized
+          <>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {title} {/* Display dynamic title */}
+            </Typography>
+            <ProjectSelectBtn />
+          </>
+        )}
       </Box>
     </AppBar>
   );

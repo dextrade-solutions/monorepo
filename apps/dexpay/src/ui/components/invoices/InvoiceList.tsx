@@ -10,7 +10,12 @@ import {
   Fab,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
-import { CircleNumber, CopyData, useGlobalModalContext } from 'dex-ui';
+import {
+  CircleNumber,
+  CopyData,
+  CountdownTimer,
+  useGlobalModalContext,
+} from 'dex-ui';
 import { DeleteIcon, Settings, Trash } from 'lucide-react';
 import React from 'react';
 
@@ -71,9 +76,20 @@ export default function InvoiceList() {
               alignItems="center"
               mb={1}
             >
-              <Typography variant="body2" color="textSecondary">
-                {invoice.due_to}
-              </Typography>
+              {/* {invoice.due_to && (
+                <Typography variant="body2" color="textSecondary">
+                  Due to:{' '}
+                  {
+                    <CountdownTimer
+                      timeStarted={new Date().getTime()}
+                      timerBase={
+                        new Date().getTime() -
+                        new Date(invoice.due_to).getTime()
+                      }
+                    />
+                  }
+                </Typography>
+              )} */}
             </Box>
             {invoice.converted_coin?.iso && (
               <Box display="flex" justifyContent="space-between">
