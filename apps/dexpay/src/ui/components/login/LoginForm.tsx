@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useGlobalModalContext, useForm, ButtonIcon, useLoader } from 'dex-ui';
+import { useGlobalModalContext, useForm, useLoader } from 'dex-ui';
 import React, { useState, ChangeEvent } from 'react';
 import { Link } from 'wouter'; // Import Link
 
@@ -21,7 +21,7 @@ const LoginForm = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      loader.runLoader(user.login(values.email, values.password));
+      await loader.runLoader(user.login(values.email, values.password));
     } catch (error) {
       showModal({
         name: 'ALERT_MODAL',

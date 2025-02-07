@@ -54,9 +54,11 @@ export default function InvoiceList() {
         if (!user?.project) {
           throw new Error('handleRemove - no user project selected');
         }
-        loader.runLoader(deleteInvoice.mutateAsync([
-          { projectId: user.project.id, id: invoice.id },
-        ]))
+        loader.runLoader(
+          deleteInvoice.mutateAsync([
+            { projectId: user.project.id, id: invoice.id },
+          ]),
+        );
       },
     });
   };
