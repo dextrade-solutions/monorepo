@@ -32,11 +32,12 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const ProjectSelectButton = () => {
   const { showModal } = useGlobalModalContext();
-  const { user } = useUser();
+  const { user, projects } = useUser();
 
   const handleClick = () => {
     showModal({
       name: 'SELECT_PROJECT',
+      projects,
     });
   };
 

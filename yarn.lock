@@ -23929,7 +23929,6 @@ __metadata:
     tronweb: "npm:^6.0.1"
     viem: "npm:^2.21.17"
     vite: "npm:^5.2.0"
-    zustand: "npm:^5.0.3"
   languageName: unknown
   linkType: soft
 

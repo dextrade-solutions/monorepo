@@ -1,33 +1,43 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useGlobalModalContext, useForm, ButtonIcon, useLoader } from 'dex-ui';
-import React, { useState, ChangeEvent } from 'react';
-import { Link } from 'wouter'; // Import Link
+import { useForm, useLoader, useGlobalModalContext } from 'dex-ui';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { Link } from 'wouter';
 
-import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
+import { ROUTE_LOGIN } from '../../constants/pages';
 import { useUser } from '../../hooks/use-user';
 import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
 
-const LoginForm = () => {
+const SignUpForm = () => {
   const user = useUser();
-  const { showModal } = useGlobalModalContext();
-  const form = useForm({ validationSchema: Validation.Auth.signIn });
   const [values, setValues] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
   });
+  const form = useForm({ validationSchema: Validation.Auth.signUp, values });
   const loader = useLoader();
+  const { showModal } = useGlobalModalContext();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      loader.runLoader(user.login(values.email, values.password));
-    } catch (error) {
+      await loader.runLoader(
+        user.signUp({
+          email: values.email,
+          password: values.password,
+          first_name: 'user',
+          last_name: 'user',
+        }),
+      );
+    } catch (error: any) {
       showModal({
         name: 'ALERT_MODAL',
         severity: 'error',
         text: error.message,
+        autoClose: 5000,
       });
+      console.error('Error signing up:', error);
     }
   };
 
@@ -55,16 +65,24 @@ const LoginForm = () => {
         margin="normal"
         fullWidth
         label="Password"
-        autoComplete="current-password"
+        type="password"
+        autoComplete="new-password"
         value={values.password}
         name="password"
         validationForm={form}
         onChange={handleInputChange}
       />
-      <Link href={ROUTE_FORGOT_PASSWORD}>
-        <Typography>Forgot your password?</Typography>
-      </Link>
-
+      <VPasswordField
+        margin="normal"
+        fullWidth
+        label="Confirm Password"
+        type="password"
+        autoComplete="new-password"
+        value={values.confirmPassword}
+        name="confirmPassword"
+        validationForm={form}
+        onChange={handleInputChange}
+      />
       <Button
         type="submit"
         fullWidth
@@ -76,20 +94,19 @@ const LoginForm = () => {
         }
         sx={{ mt: 3, mb: 2 }}
       >
-        {form.primaryError || 'Sign in'}
+        {form.primaryError || 'Sign up'}
       </Button>
-
       <Box
         display="flex"
         justifyContent="center"
         alignItems="center"
         width="100%"
       >
-        <Typography mr={1}>Don’t have an account?</Typography>
-        <Link href={ROUTE_REGISTER}>Sign Up</Link>
+        <Typography mr={1}>Already have an account?</Typography>
+        <Link href={ROUTE_LOGIN}>Sign in</Link>
       </Box>
     </Box>
   );
 };
 
-export default LoginForm;
+export default SignUpForm;

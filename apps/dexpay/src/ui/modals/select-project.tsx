@@ -14,20 +14,14 @@ import { ButtonIcon, ModalProps } from 'dex-ui';
 import { PlusIcon } from 'lucide-react';
 import React from 'react';
 
-import { useQuery } from '../hooks/use-query';
 import { useUser } from '../hooks/use-user';
-import { Projects } from '../services';
 import { IProject } from '../types';
 
 const SelectProject = ({ hideModal }: ModalProps) => {
-  const { data, isLoading } = useQuery(Projects.my);
-  const renderList = data?.list.currentPageResult || [];
-  const { setUser } = useUser();
+  const { setProject, projects: renderList } = useUser();
 
   const handleSelectProject = (project: IProject) => {
-    setUser({
-      project,
-    });
+    setProject(project);
     hideModal();
   };
 
@@ -47,24 +41,16 @@ const SelectProject = ({ hideModal }: ModalProps) => {
         <Divider />
       </Box>
       <Box>
-        {isLoading ? (
-          <Box>
-            <Skeleton sx={{ my: 1 }} width="100%" height={40} />
-            <Skeleton sx={{ my: 1 }} width="100%" height={40} />
-            <Skeleton sx={{ my: 1 }} width="100%" height={40} />
-          </Box>
-        ) : (
-          <MenuList>
-            {renderList.map((project) => (
-              <ListItemButton
-                key={project.id}
-                onClick={() => handleSelectProject(project)}
-              >
-                <ListItemText>{project.name}</ListItemText>
-              </ListItemButton>
-            ))}
-          </MenuList>
-        )}
+        <MenuList>
+          {renderList.map((project) => (
+            <ListItemButton
+              key={project.id}
+              onClick={() => handleSelectProject(project)}
+            >
+              <ListItemText>{project.name}</ListItemText>
+            </ListItemButton>
+          ))}
+        </MenuList>
         <Button variant="contained" fullWidth endIcon={<PlusIcon />}>
           New project
         </Button>

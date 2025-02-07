@@ -1,5 +1,9 @@
 import { Autocomplete, TextField } from '@mui/material';
-import { MultiselectAssets, withValidationProvider } from 'dex-ui';
+import {
+  MultiselectAssets,
+  PasswordField,
+  withValidationProvider,
+} from 'dex-ui';
 
 import DatePickerComponent from './ui/DatePicker';
 import SelectCurrency from './ui/SelectCurrency';
@@ -19,3 +23,5 @@ export const SelectCurrencyWithValidation =
 
 export const MultiselectAssetsWithValidation =
   withValidationProvider(MultiselectAssets);
+
+export const VPasswordField = withValidationProvider(PasswordField);

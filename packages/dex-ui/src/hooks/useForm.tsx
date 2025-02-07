@@ -1,11 +1,31 @@
 import { flatten } from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SchemaOf } from 'yup';
 
-export const useForm = ({
+export type UseFormReturnType<T> = {
+  validationSchema: SchemaOf<T> | undefined;
+  errors: { [key: string]: string[] };
+  interacted: { [key: string]: boolean };
+  isInitiated: boolean;
+  isInteracted: boolean;
+  primaryError: string | undefined;
+  setInteracted: (name: string) => void;
+  setErrors: (name: string, errors: string[]) => void;
+  setValues: React.Dispatch<React.SetStateAction<any>>; // And this to update values
+};
+
+export const useForm = <T,>({
   validationSchema,
-}: { validationSchema?: any } = {}) => {
+  values,
+}: {
+  validationSchema: SchemaOf<T>;
+  values: any;
+} = {}): UseFormReturnType<T> => {
   const [errorsData, setErrorsData] = useState({});
   const [interactedData, setInteractedData] = useState({});
+  const [resolvedSchema, setResolvedSchema] = useState<SchemaOf<T> | undefined>(
+    validationSchema,
+  );
 
   const isInitiated = Object.values(errorsData).length > 0;
   const isInteracted = Object.values(interactedData).length > 0;
@@ -19,8 +39,17 @@ export const useForm = ({
     setErrorsData((prev) => ({ ...prev, [name]: errors }));
   };
 
+  useEffect(() => {
+    if (validationSchema && values) {
+      setResolvedSchema(
+        validationSchema.resolve({ value: values, context: values }),
+      );
+    }
+  }, [validationSchema, values]);
+
   return {
     validationSchema,
+    resolvedSchema, // Include resolvedSchema in the return
     errors: errorsData,
     interacted: interactedData,
     isInitiated,
@@ -28,5 +57,6 @@ export const useForm = ({
     primaryError,
     setInteracted,
     setErrors,
+    values, // Make sure these are returned
   };
 };

@@ -51,6 +51,10 @@ export namespace Auth {
   }
 
   export namespace TwoFaCode {
+    export interface Params {
+      isNewMode: boolean;
+    }
+
     export interface Body {
       code_token: string;
       code: string;
@@ -227,6 +231,62 @@ export namespace Project {
 
     export interface Response {
       data: IProject;
+    }
+  }
+
+  export namespace Init {
+    export interface Params {
+      id: number;
+    }
+
+    export interface Body {
+      mnemonic_encrypted_id: number;
+    }
+
+    export interface Response {
+      status: string;
+    }
+  }
+
+  export namespace InviteUser {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Body {
+      email: string;
+    }
+
+    export interface Response {
+      status: boolean;
+    }
+  }
+
+  export namespace UsersWithAccess {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Response {
+      currentPageResult: Array<{
+        id: number;
+        user_id: number;
+        user: { email: string };
+      }>;
+      totalPages: number;
+      totalCount: number;
+      page: number;
+    }
+  }
+
+  export namespace RevokeAccess {
+    export interface Params {
+      projectId: number;
+      userId: number;
+    }
+
+    export interface Response {
+      status: boolean;
     }
   }
 }
@@ -445,7 +505,9 @@ export namespace Transaction {
       }
 
       export interface Query extends Record<string, any> {
+        page: number;
         not_completed_only?: boolean;
+        status?: number;
       }
 
       export interface Response {
@@ -635,9 +697,13 @@ export namespace Invoice {
     }
 
     export interface Body {
-      description: string;
+      converted_amount_requested: string;
+      converted_coin_id: number;
       amount_requested: string;
-      currency_id: number;
+      currency_id?: number;
+      supported_currencies?: number[];
+      coin_id?: number;
+      description?: string;
       due_to: string;
     }
 
@@ -670,6 +736,7 @@ export namespace Invoice {
       converted_coin_id: number | null;
       currency_id: number;
       currency: {
+        coin_id: number;
         iso_with_network: string;
         type: number;
         iso: string;
@@ -685,6 +752,18 @@ export namespace Invoice {
       tax: string | null;
       payment_page_url: string;
       logo_url: string | null;
+
+      // Поле supported_currencies: массив объектов или undefined
+      supported_currencies?: Array<{
+        id: number;
+        coin_id: number;
+        iso_with_network: string;
+        type: number;
+        iso: string;
+        native_currency_iso: string;
+        token_type: string | null;
+        network_name: string;
+      }>;
     }
   }
 
@@ -735,6 +814,36 @@ export namespace Invoice {
         network_name: string;
         coin_id: number;
       }>;
+    }
+  }
+
+  export namespace Preference {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Response {
+      id: number;
+      converted_coin_id: number;
+    }
+
+    export interface SaveBody {
+      converted_coin_id: number;
+    }
+  }
+
+  export namespace Rate {
+    export interface Params {
+      pair: string;
+    }
+
+    export interface Response {
+      [key: string]: {
+        symbol: string;
+        rateFloat: number;
+        updateTime: number;
+        serviceName: string;
+      };
     }
   }
 

@@ -4,7 +4,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { useQuery, useMutation } from '../hooks/use-query';
 import { Auth, Projects } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject } from '../types';
+import { IProject, Auth as AuthTypes } from '../types';
 
 interface User {
   auth: {
@@ -22,12 +22,13 @@ interface UserContextType {
   projects: IProject[] | undefined;
   twoFAdata: {
     codeToken: string;
-    method: number;
+    method?: number;
   };
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
   login: (email: string, pass: string) => Promise<void>;
-  twoFA: (code: string) => Promise<void>;
+  twoFA: (code: string, isNewMode?: boolean) => Promise<void>;
   logout: () => void;
+  signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -47,13 +48,13 @@ export const UserContext = createContext<UserContextType>({
     throw new Error('Not implemented');
   },
   logout: () => {},
+  signUp: () => {},
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user-data', null);
   const [twoFA, setTwoFa] = useState({
     codeToken: '',
-    method: 1,
   }); // twoFA code token
 
   const projects = useQuery(
@@ -118,9 +119,17 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
   });
 
+  const signUpMutation = useMutation(Auth.signUp, {
+    onSuccess: async (data) => {
+      setTwoFa({
+        codeToken: data.twofa.token,
+      });
+    },
+  });
+
   const contextValue = {
     user,
-    projects: projects.data,
+    projects: projects.data?.list.currentPageResult || [],
     twoFAdata: twoFA,
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
@@ -131,11 +140,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     login: (email: string, password: string) => {
       return loginMutation.mutateAsync([{ email, password, old_2fa: false }]);
     },
-    twoFA: (code: string) => {
+    signUp: (params: AuthTypes.SignUp.Body) =>
+      signUpMutation.mutateAsync([params]),
+    twoFA: (code: string, isNewMode = true) => {
       if (!twoFA.codeToken) {
         throw new Error('Login failed - No code token');
       }
       return twoFACode.mutateAsync([
+        { isNewMode },
         { code_token: twoFA.codeToken, method: twoFA.method, code },
       ]);
     },

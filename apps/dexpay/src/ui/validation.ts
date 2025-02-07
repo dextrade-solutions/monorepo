@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable no-useless-escape */
-import { object, string, ref, number, date, boolean, array } from 'yup';
+import dayjs from 'dayjs';
+import { object, string, ref, number, date, boolean, array, mixed } from 'yup';
 
 export namespace Validation {
   export namespace Auth {
@@ -25,8 +26,7 @@ export namespace Validation {
         .max(
           20,
           (ctx) => `Confirm password must be at most ${ctx.max} characters`,
-        )
-        .oneOf([ref('password')], 'Password mismatch'),
+        ),
       first_name: string().required('First name is a required field'),
       last_name: string().required('Last name is a required field'),
     });
@@ -137,14 +137,20 @@ export namespace Validation {
 
   export namespace Invoice {
     export const create = object({
-      description: string().max(
-        250,
-        (ctx) => `Description must be at most ${ctx.max} characters`,
-      ),
-      amount_requested: number().required('Amount is required'),
-      coin_id: string().required('Currency is required'),
-      currency_id: array().of(number()).nullable(),
-      due_to: date(),
+      primaryCoin: object().shape({
+        amount: string().required(),
+        coin: string().required('Coin is sdaasd'), // Assuming coin is required within primaryCoin
+      }),
+      convertedCurrencies: array().of(string()),
+      description: string(),
+      dueDate: mixed()
+        .nullable()
+        .test('is-valid-date', 'Invalid due date', (value) => {
+          if (value === null) {
+            return true;
+          } // Allow null values
+          return dayjs(value).isValid(); // Check if it's a valid dayjs date
+        }),
     });
 
     export const createCashier = object({

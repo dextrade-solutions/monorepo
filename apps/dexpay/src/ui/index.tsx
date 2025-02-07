@@ -17,6 +17,7 @@ import {
   ROUTE_MERCHANT,
   ROUTE_P2P,
   ROUTE_PROFILE,
+  ROUTE_REGISTER,
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
@@ -24,6 +25,7 @@ import { UserProvider } from './contexts/user-context';
 import { useUser } from './hooks/use-user';
 import SelectProject from './modals/select-project';
 import LoginForm from './pages/auth/Login';
+import SignUp from './pages/auth/SignUp';
 import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
 import NotFound from './pages/not-found';
@@ -34,6 +36,7 @@ import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
 import WalletWithdrawPage from './pages/WalletWithdraw';
 import './css/index.scss';
+import SalespersonsModal from './modals/salespersons';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -49,7 +52,12 @@ function Router() {
   }, [user.isAuthorized, navigate]); // Add dependencies
 
   if (!user.isAuthorized) {
-    return <Route path={'/'} component={LoginForm} />; // Or a loading indicator while checking authorization
+    return (
+      <Switch>
+        <Route path={ROUTE_LOGIN} component={LoginForm} />
+        <Route path={ROUTE_REGISTER} component={SignUp} />
+      </Switch>
+    );
   }
 
   return (
@@ -93,6 +101,7 @@ export function UI() {
             theme={muiTheme}
             modals={{
               SELECT_PROJECT: SelectProject,
+              SALESPERSONS: SalespersonsModal,
             }}
           >
             <App />

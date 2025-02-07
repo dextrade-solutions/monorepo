@@ -8,6 +8,7 @@ import {
   Chip,
   IconButton,
   Fab,
+  Skeleton,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import {
@@ -15,6 +16,7 @@ import {
   CopyData,
   CountdownTimer,
   useGlobalModalContext,
+  useLoader,
 } from 'dex-ui';
 import { DeleteIcon, Settings, Trash } from 'lucide-react';
 import React from 'react';
@@ -27,6 +29,7 @@ import { IInvoice } from '../../types';
 export default function InvoiceList() {
   const { user } = useUser();
   const { showModal } = useGlobalModalContext();
+  const loader = useLoader();
   const invoices = useQuery(Invoice.list, { projectId: user?.project.id });
   const deleteInvoice = useMutation(Invoice.delete, {
     onSuccess: () => {
@@ -47,16 +50,45 @@ export default function InvoiceList() {
           </Typography>
         </Box>
       ),
-      onConfirm: () => {
+      onConfirm: async () => {
         if (!user?.project) {
           throw new Error('handleRemove - no user project selected');
         }
-        return deleteInvoice.mutateAsync([
+        loader.runLoader(deleteInvoice.mutateAsync([
           { projectId: user.project.id, id: invoice.id },
-        ]);
+        ]))
       },
     });
   };
+
+  if (invoices.isLoading) {
+    return (
+      <Card
+        elevation={0}
+        sx={{ bgcolor: 'secondary.dark', borderRadius: 1, mb: 2 }}
+      >
+        <CardContent>
+          <Skeleton height={20} width="60%" />
+          <Skeleton height={40} width="100%" sx={{ mt: 1 }} />
+          <Divider sx={{ my: 1 }} />
+          <Skeleton height={20} width="100%" />
+          <Skeleton height={20} width="100%" sx={{ mt: 1 }} />
+          <Box display="flex" alignItems="center" mt={1}>
+            <Skeleton height={36} width={80} />
+            <Skeleton height={36} width={80} sx={{ ml: 1 }} />
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!renderInvoicesList.length) {
+    return (
+      <Typography color="text.secondary">
+        No invoices created yet. Create a new one.
+      </Typography>
+    );
+  }
 
   return (
     <>

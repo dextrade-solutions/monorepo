@@ -8,8 +8,14 @@ import {
   Accordion,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import { CircleNumber, Icon, useForm, useGlobalModalContext } from 'dex-ui';
-import _ from 'lodash';
+import {
+  CircleNumber,
+  Icon,
+  useForm,
+  useGlobalModalContext,
+  useLoader,
+} from 'dex-ui';
+import { map } from 'lodash';
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
@@ -18,6 +24,7 @@ import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../../hooks/use-query';
 import { useUser } from '../../../hooks/use-user';
 import { Currency, Invoice } from '../../../services';
+import { Validation } from '../../../validation';
 import {
   DatePickerWithValidation,
   MultiselectAssetsWithValidation,
@@ -30,7 +37,6 @@ interface InvoiceData {
     amount: number | null;
     coin: string;
   } | null;
-  mainCurrency: string;
   convertedCurrencies: string[];
   description: string;
   dueDate: dayjs.Dayjs | null;
@@ -42,7 +48,6 @@ const CreateInvoiceForm = () => {
       amount: null,
       coin: 'USDT',
     },
-    mainCurrency: '', // Initialize with an empty string
     convertedCurrencies: [],
     description: '',
     dueDate: null,
@@ -50,8 +55,9 @@ const CreateInvoiceForm = () => {
   const { showModal } = useGlobalModalContext();
   const [, navigate] = useLocation();
   const { user } = useUser();
+  const { runLoader } = useLoader();
 
-  const form = useForm();
+  const form = useForm({ validationSchema: Validation.Invoice.create });
 
   const currencies = useCurrencies();
 
@@ -100,14 +106,16 @@ const CreateInvoiceForm = () => {
       coin_id: undefined,
       ...(values.convertedCurrencies.length
         ? {
-            supported_currencies: _.map(
+            supported_currencies: map(
               values.convertedCurrencies,
               'extra.currency.id',
             ),
           }
         : {}),
     };
-    invoiceCreate.mutate([{ projectId: user.project.id }, body]);
+    runLoader(
+      invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]),
+    );
   };
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -169,6 +177,7 @@ const CreateInvoiceForm = () => {
           <DatePickerWithValidation
             value={invoiceData.dueDate}
             label="Due Date"
+            name="dueDate"
             validationForm={form}
             onChange={handleInputChange}
             textFieldProps={{

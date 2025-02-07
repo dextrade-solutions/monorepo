@@ -32,11 +32,19 @@ export default abstract class AuthService {
    * @param params
    * @param json
    */
-  static async twoFaCode(json: Auth.TwoFaCode.Body) {
+  static async twoFaCode(
+    params: Auth.TwoFaCode.Params,
+    json: Auth.TwoFaCode.Body,
+  ) {
     return $api
-      .post(`${AuthService.PREFIX}/2fa/confirm`, {
-        json,
-      })
+      .post(
+        params.isNewMode
+          ? `${AuthService.PREFIX}/2fa/confirm`
+          : `${AuthService.PREFIX}/code`,
+        {
+          json,
+        },
+      )
       .json<Auth.TwoFaCode.Response>();
   }
 

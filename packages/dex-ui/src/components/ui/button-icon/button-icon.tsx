@@ -35,6 +35,7 @@ export const ButtonIcon = ({
         },
         className,
       )}
+      color={color}
       disabled={disabled}
       {...props}
     >

@@ -6,8 +6,8 @@ export interface IProject {
   creator_id: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
-  private_name: string;
+  deletedAt: string | null;
+  private_name: string | null;
   access_granted: {
     id: string;
     internal_id: string;
@@ -15,7 +15,7 @@ export interface IProject {
     user_id: string;
     createdAt: string;
     updatedAt: string;
-    deletedAt: string;
+    deletedAt: string | null;
   }[];
 }
 
@@ -25,7 +25,7 @@ export interface IVault {
   project_id: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IAddress {
@@ -38,7 +38,7 @@ export interface IAddress {
   tag: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface ICurrency {
@@ -56,7 +56,7 @@ export interface ICurrency {
   is_native_asset: boolean;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface ICoin {
@@ -73,7 +73,7 @@ export interface INetwork {
   public_name: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface ITransaction {
@@ -94,7 +94,7 @@ export interface ITransaction {
   submittedAt: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IMemo {
@@ -105,7 +105,7 @@ export interface IMemo {
   creator_id: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface ICallback {
@@ -118,7 +118,7 @@ export interface ICallback {
   creator_id: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IApiToken {
@@ -147,7 +147,7 @@ export interface IInvoice {
   status_label: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string;
+  deletedAt: string | null;
   transactions: [];
 }
 
@@ -170,7 +170,7 @@ export interface IPair {
   createdAt: string,
   updatedAt: string,
   deletedAt: null,
-  currency_main: ICurrency,
+  currency_main: ICurrency | null,
   currency_second: ICurrency,
   liquidity_main_address: {
     address: string,
@@ -194,7 +194,7 @@ export interface IPriceSource {
   service_currency_iso: string,
   createdAt: string,
   updatedAt: string,
-  deletedAt: string
+  deletedAt: string | null
 }
 
 export interface IPriceSourcePair {
@@ -288,7 +288,7 @@ export interface IPermission {
   is_enabled: boolean,
   createdAt: string,
   updatedAt: string,
-  deletedAt: string
+  deletedAt: string | null
 }
 
 export interface IUser {
@@ -300,7 +300,7 @@ export interface IUser {
   is_email_activated: boolean,
   createdAt: string,
   updatedAt: string,
-  deletedAt: string,
+  deletedAt: string | null,
   permissions?: IPermission[]
 }
 
@@ -314,7 +314,7 @@ export interface IBalance {
   currency_id: number,
   createdAt: string,
   updatedAt: string,
-  deletedAt: string
+  deletedAt: string | null
 }
 
 export interface IDextradeUser {
@@ -324,6 +324,6 @@ export interface IDextradeUser {
   username: string,
   createdAt: string,
   updatedAt: string,
-  deletedAt: string,
-  project?: IProject
+  deletedAt: string | null,
+  project?: IProject | null
 }
