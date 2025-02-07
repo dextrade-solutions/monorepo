@@ -1,5 +1,9 @@
-import { Modal, Box, CircularProgress } from '@mui/material';
-import React, { createContext, useContext, useState } from 'react';
+import { Modal, Box } from '@mui/material';
+import React, {
+  createContext,
+  useContext,
+  useState,
+} from 'react';
 
 interface LoaderContextType {
   isLoading: boolean;
@@ -20,7 +24,7 @@ export const LoaderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const renderLoader = () => {
     return (
-      <Modal open={isLoading}>
+      <Modal keepMounted open={isLoading}>
         <Box
           sx={{
             display: 'flex',
@@ -32,10 +36,7 @@ export const LoaderProvider: React.FC<{ children: React.ReactNode }> = ({
           }}
         >
           <video width="150px" autoPlay loop muted playsInline>
-            <source
-              id="safariPreloaderSource"
-              src="/images/logo/logo-animated.mov"
-            />
+            <source src="/images/logo/logo-animated.mov" type="video/mp4" />
             <source src="/images/logo/logo-animated.webm" type="video/webm" />
           </video>
         </Box>
