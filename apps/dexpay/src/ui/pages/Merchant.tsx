@@ -1,12 +1,6 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Button,
-  Box,
-  Paper,
-} from '@mui/material';
+import { Typography, Button, Box, Paper } from '@mui/material';
 import { CircleNumber, Icon, useGlobalModalContext } from 'dex-ui';
+import React from 'react';
 import { useLocation } from 'wouter';
 
 import InvoiceList from '../components/invoices/InvoiceList';
@@ -14,12 +8,6 @@ import { ROUTE_INVOICE_CREATE } from '../constants/pages';
 import { useQuery } from '../hooks/use-query';
 import { useUser } from '../hooks/use-user';
 import { Projects } from '../services';
-
-// const invoices = [
-//   { id: 1, amount: '1 USDT', date: '29/01/2025', status: 'Awaiting payment' },
-//   { id: 2, amount: '11 BTC', date: '29/01/2025', status: 'Paid' },
-//   { id: 3, amount: '11 BTC', date: '29/01/2025', status: 'Paid' },
-// ];
 
 export default function Merchant() {
   const [, navigate] = useLocation();

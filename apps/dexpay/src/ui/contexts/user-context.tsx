@@ -76,7 +76,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const { access_token: accessToken, refresh_token: refreshToken } = data;
       saveAuthData(accessToken, refreshToken);
       const result = await projects.refetch();
-      const [project] = result.data?.list.currentPageResult || [];
+      const [project] = (result.data?.list.currentPageResult || []).reverse();
 
       setUser((prev) => ({
         ...prev,
