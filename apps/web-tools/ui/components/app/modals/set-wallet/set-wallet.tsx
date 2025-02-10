@@ -6,6 +6,7 @@ import {
   AssetItem,
   ModalProps,
   WalletList,
+  Icon,
 } from 'dex-ui';
 import React, { useState } from 'react';
 
@@ -13,8 +14,8 @@ import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useEVMConnections from '../../../../hooks/wallets/useEVMConnections';
 import { WalletConnection } from '../../../../types';
+import { useDisconnectWallet } from '../hooks/use-disconnect-wallet';
 
 const SetWallet = ({
   asset,
@@ -33,20 +34,16 @@ const SetWallet = ({
   const canPasteAddress = isToAsset;
   const connectionType = determineConnectionType(asset);
   const wallets = useWallets({ connectionType });
+  const disconnectWallet = useDisconnectWallet();
 
   const t = useI18nContext();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
   const [value, setValue] = useState<WalletConnection>(savedValue);
 
-  const evmConnections = useEVMConnections();
-  const wallet = evmConnections.find(w => w.name === value?.walletName);
-
   const handleDisconnect = async () => {
-    if (wallet) {
-      await wallet.disconnect();
-    }
-    hideModal();
+    const wallet = wallets.find((w) => w.name === value?.walletName);
+    disconnectWallet(wallet);
   };
 
   const onSetInputWallet = () => {
@@ -110,9 +107,16 @@ const SetWallet = ({
           >
             Change
           </Button>
-          <Button variant="outlined" fullWidth onClick={handleDisconnect}>
-            Disconnect Wallet
-          </Button>
+          {value.walletName && (
+            <Button
+              startIcon={<Icon name="disconnect" />}
+              variant="outlined"
+              fullWidth
+              onClick={handleDisconnect}
+            >
+              Disconnect Wallet
+            </Button>
+          )}
         </Box>
       ) : (
         <Box>
