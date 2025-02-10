@@ -13,6 +13,7 @@ import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import useEVMConnections from '../../../../hooks/wallets/useEVMConnections';
 import { WalletConnection } from '../../../../types';
 
 const SetWallet = ({
@@ -37,6 +38,16 @@ const SetWallet = ({
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
   const [value, setValue] = useState<WalletConnection>(savedValue);
+
+  const evmConnections = useEVMConnections();
+  const wallet = evmConnections.find(w => w.name === value?.walletName);
+
+  const handleDisconnect = async () => {
+    if (wallet) {
+      await wallet.disconnect();
+    }
+    hideModal();
+  };
 
   const onSetInputWallet = () => {
     onChange({
@@ -95,8 +106,12 @@ const SetWallet = ({
             onClick={() => {
               setValue(null);
             }}
+            sx={{ marginBottom: 1 }}
           >
             Change
+          </Button>
+          <Button variant="outlined" fullWidth onClick={handleDisconnect}>
+            Disconnect Wallet
           </Button>
         </Box>
       ) : (
