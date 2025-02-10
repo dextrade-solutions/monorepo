@@ -137,6 +137,10 @@ class P2PService {
   public getKycInfo() {
     return this.axios.get('api/kyc');
   }
+
+  public requestEnergy(address: string) {
+    return this.axios.post('api/exchange/get/trx/energy', { address });
+  }
 }
 
 const serviceInstance = new P2PService();
