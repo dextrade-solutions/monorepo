@@ -124,6 +124,7 @@ const SetWallet = ({
             <WalletList
               wallets={wallets}
               value={savedValue}
+              hideConnectionType
               connectingWallet={loadingWallet}
               onSelectWallet={onSelectWallet}
             />
