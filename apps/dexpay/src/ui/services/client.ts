@@ -92,8 +92,7 @@ async function handleRefreshToken() {
     } catch (refreshError) {
       console.error('Refresh token failed:', refreshError);
       // Handle refresh token failure (e.g., redirect to login, clear tokens)
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      localStorage.removeItem('user-data');
     } finally {
       isRefreshing = false; // Reset the flag regardless of success or failure
     }
