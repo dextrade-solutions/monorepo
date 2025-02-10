@@ -1,9 +1,9 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { NetworkTypes } from 'dex-helpers';
+import { getAdLimitPerExchange, NetworkTypes } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
-import { isEqual } from 'lodash';
+import { isEqual, floor } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -93,8 +93,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }
         const { data } = await P2PService.estimateFee({
           ...txParams,
-          value: undefined,
-          // value: txParams.value ? Number(txParams.value) : undefined,
+          value: txParams.value ? Number(txParams.value) : undefined,
           network: assetTo.network,
         });
         incomingFeeCalculated = Number(
@@ -113,8 +112,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   );
   const recalculateTo = useDebouncedCallback(async (fromAmount) => {
     let sumInCoin2 = Number(fromAmount) * exchangeRate;
-    const fee = await calcIncomingFee(sumInCoin2);
-    sumInCoin2 -= fee;
+    const feeInCoin2 = await calcIncomingFee(sumInCoin2);
+    sumInCoin2 -= feeInCoin2;
     assetInputTo.setInputAmount(
       sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
     );
@@ -124,15 +123,16 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const recalculateFrom = useDebouncedCallback(async (toAmount) => {
     const sumInCoin2 = Number(toAmount);
     let sumInCoin1 = sumInCoin2 / exchangeRate;
-    const fee = await calcIncomingFee(sumInCoin2);
-    sumInCoin1 += fee / exchangeRate;
+    const feeInCoin2 = await calcIncomingFee(sumInCoin2);
+    const feeInCoin1 = feeInCoin2 / exchangeRate;
+    sumInCoin1 += feeInCoin1;
     assetInputFrom.setInputAmount(
       sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
     );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
 
-  const { fee: outgoingFee } = useFee({
+  const { fee: outgoingFee, loading: outgoingFeeLoading } = useFee({
     asset: assetFrom,
     amount: assetInputFrom.value,
     from: assetInputFrom.account?.address,
@@ -162,9 +162,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   };
 
   useEffect(() => {
-    onInputAmountFrom(fromTokenInputValue);
+    if (assetInputTo.native) {
+      onInputAmountFrom(fromTokenInputValue);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTokenInputValue]);
+  }, [fromTokenInputValue, assetInputTo.native]);
 
   const startExchange = async ({
     exchangerPaymentMethodId,
@@ -240,7 +242,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <AssetAmountField
           assetInput={assetInputTo}
           hasValidationErrors={hasValidationErrors}
-          reserve={ad.reserveInCoin2}
+          reserve={getAdLimitPerExchange(ad)}
           onChange={onInputAmountTo}
         />
       </Box>
@@ -276,6 +278,11 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <Box mt={2}>
           <SwapFees
             superFee={assetFrom.standard === NetworkTypes.trc20}
+            loading={
+              assetInputTo.loading ||
+              assetInputFrom.loading ||
+              outgoingFeeLoading
+            }
             inbound={{
               amount: incomingFee,
               asset: assetTo,

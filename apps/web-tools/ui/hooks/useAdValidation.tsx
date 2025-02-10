@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { formatFundsAmount, getAdLimitPerExchange } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import React from 'react';
 
@@ -38,15 +39,6 @@ export function useAdValidation({
     return params;
   }
   if (
-    assetInputFrom.amount &&
-    Number(assetInputFrom.amount) > Number(ad.maximumExchangeAmountCoin1)
-  ) {
-    params.submitBtnText = `Max amount is ${ad.maximumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`;
-    params.hasValidationErrors = true;
-    params.disabledBtn = true;
-    return params;
-  }
-  if (
     assetInputTo.amount &&
     Number(assetInputTo.amount) < Number(ad.minimumExchangeAmountCoin2)
   ) {
@@ -56,15 +48,6 @@ export function useAdValidation({
     return params;
   }
 
-  if (
-    assetInputTo.amount &&
-    Number(assetInputTo.amount) > Number(ad.maximumExchangeAmountCoin2)
-  ) {
-    params.submitBtnText = `Max amount is ${ad.maximumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`;
-    params.hasValidationErrors = true;
-    params.disabledBtn = true;
-    return params;
-  }
   if (!assetInputFrom.amount || !assetInputTo.amount) {
     params.disabledBtn = true;
     params.hasValidationErrors = true;
@@ -82,9 +65,9 @@ export function useAdValidation({
   }
   if (
     assetInputTo.amount &&
-    Number(ad.reserveInCoin2) < Number(assetInputTo.amount)
+    getAdLimitPerExchange(ad) < Number(assetInputTo.amount)
   ) {
-    params.submitBtnText = `Ad limit in ${assetInputTo.asset.symbol} exceeded`;
+    params.submitBtnText = `Max limit in ${formatFundsAmount(getAdLimitPerExchange(ad))} ${assetInputTo.asset.symbol} exceeded`;
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;

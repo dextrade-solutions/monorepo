@@ -3,28 +3,34 @@ import { formatFundsAmount } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
 
 type Output = {
+  amount?: number;
   price: number;
   tickerFrom: string;
   tickerTo: string;
+  secondary: boolean;
 };
 
 export default function AssetPriceOutput({
-  price,
+  amount,
+  price, // rate price
   tickerFrom,
   tickerTo,
+  secondary,
 }: Output) {
-  const [output, setOutput] = useState<Output>({
-    price,
-    tickerFrom,
-    tickerTo,
-  });
+  const [reversed, setReversed] = useState(false);
+  // const [output, setOutput] = useState<Output>({
+  //   price,
+  //   tickerFrom,
+  //   tickerTo,
+  // });
 
   const togglePrice = () => {
-    setOutput((v) => ({
-      price: 1 / v.price,
-      tickerFrom: v.tickerTo,
-      tickerTo: v.tickerFrom,
-    }));
+    setReversed((v) => !v);
+    // setOutput((v) => ({
+    //   price: 1 / v.price,
+    //   tickerFrom: v.tickerTo,
+    //   tickerTo: v.tickerFrom,
+    // }));
   };
   useEffect(() => {
     if (price < 1) {
@@ -37,6 +43,13 @@ export default function AssetPriceOutput({
     e.stopPropagation();
     togglePrice();
   };
+
+  const output = {
+    price: reversed ? (amount || 1) * (1 / price) : amount || price,
+    tickerFrom: reversed ? tickerTo : tickerFrom,
+    tickerTo: reversed ? tickerFrom : tickerTo,
+  };
+
   return (
     <Box
       display="flex"
@@ -44,18 +57,20 @@ export default function AssetPriceOutput({
       alignContent="center"
       marginTop={1}
     >
+      {!secondary && (
+        <Link
+          sx={{ cursor: 'pointer' }}
+          variant="body1"
+          onClick={onClick}
+          color="inherit"
+        >
+          Per 1 {output.tickerFrom}
+        </Link>
+      )}
       <Link
         sx={{ cursor: 'pointer' }}
         variant="body1"
-        onClick={onClick}
-        color="inherit"
-      >
-        Per 1 {output.tickerFrom}
-      </Link>
-      <Link
-        sx={{ cursor: 'pointer' }}
-        variant="body1"
-        fontWeight="bold"
+        fontWeight={secondary ? 'normal' : 'bold'}
         color="inherit"
         onClick={onClick}
       >

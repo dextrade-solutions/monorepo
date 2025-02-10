@@ -54,9 +54,6 @@ export default function AdView() {
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
-    if (ad.reserve) {
-      ad.reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
-    }
 
     if (assetFrom && assetTo) {
       content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;

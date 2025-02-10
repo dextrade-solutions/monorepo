@@ -6,6 +6,7 @@ import {
   CardHeader,
   Chip,
   Collapse,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -23,10 +24,10 @@ const TRX_ENERGY_SAVE_FEE = 8; // currently is 8 TRX
 
 export function SwapFees(fees: {
   superFee: boolean;
+  loading: boolean;
   inbound: { amount?: number; asset?: AssetModel };
   outbound: { amount?: number; asset?: AssetModel };
 }) {
-  const { isAuthenticated } = useAuthWallet();
   const paymodalHandlers = usePaymodalHandlers();
   const { showModal } = useGlobalModalContext();
   const [expanded, setExpanded] = useState(false);
@@ -83,11 +84,16 @@ export function SwapFees(fees: {
                     display="flex"
                     alignItems="center"
                     justifyContent="space-between"
+                    mr={2}
                   >
                     <Typography>Total fee</Typography>
-                    <Typography fontWeight="bold" marginRight={2}>
-                      {formatCurrency(total, 'usd')}
-                    </Typography>
+                    {fees.loading ? (
+                      <Skeleton width={70} />
+                    ) : (
+                      <Typography fontWeight="bold">
+                        {formatCurrency(total, 'usd')}
+                      </Typography>
+                    )}
                   </Box>
                 )}
                 {typeof reducableFeeOutbound === 'number' && (

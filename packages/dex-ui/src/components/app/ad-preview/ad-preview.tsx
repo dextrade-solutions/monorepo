@@ -6,7 +6,7 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
+import { formatFundsAmount, getAdLimitPerExchange, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
@@ -33,7 +33,7 @@ const AdPreview = ({
   onClick,
 }: IProps) => {
   const { t } = useTranslation();
-  const reserveInCoin2 = ad.reserveSum;
+  const reserveInCoin2 = getAdLimitPerExchange(ad);
   return (
     <Card
       variant="outlined"

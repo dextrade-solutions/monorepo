@@ -67,18 +67,22 @@ export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
     from,
     to: to || NULLISH_TOKEN_ADDRESS,
   });
-  txParams.value = undefined;
+  txParams.value = String(txParams.value || 0n);
+
   const { data: fee, isLoading } = useQuery({
     queryKey: ['estimate-fee', txParams],
-    queryFn: () =>
-      P2PService.estimateFee({
+    queryFn: () => {
+      return P2PService.estimateFee({
         contractAddress: asset.contract,
+        data: txParams.data,
         from: txParams.from,
-        to: txParams.to,
+        to: asset.contract ? undefined : txParams.to,
+        value: txParams.value,
         network: asset.network,
       }).then(({ data }) => {
         return Number(formatUnits(BigInt(data), 18));
-      }),
+      });
+    },
   });
 
   return {

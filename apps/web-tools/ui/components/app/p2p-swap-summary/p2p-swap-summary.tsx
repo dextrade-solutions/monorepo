@@ -29,6 +29,8 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
     (ad.fromCoin.networkName === NetworkNames.fiat ||
       ad.toCoin.networkName === NetworkNames.fiat);
 
+  const isMaxEqualReserve = ad.maximumExchangeAmountCoin2 && ad.maximumExchangeAmountCoin2 === ad.reserveSum;
+
   return (
     <Box className="p2p-swap-summary">
       <div>
@@ -56,33 +58,42 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             tickerTo={ad.toCoin.ticker}
           />
         </Box>
+        <Typography display="flex">
+          <span className="flex-grow">Available quantity</span>
+          <span className="row-summary__value">
+            <AssetPriceOutput
+              amount={ad.reserveSum}
+              price={ad.coinPair.price}
+              tickerFrom={ad.fromCoin.ticker}
+              tickerTo={ad.toCoin.ticker}
+              secondary
+            />
+          </span>
+        </Typography>
         {ad.minimumExchangeAmountCoin1 > 0 && (
           <Typography display="flex">
             <span className="flex-grow">{t('min')}</span>
             <span className="row-summary__value">
-              {formatFundsAmount(
-                ad.minimumExchangeAmountCoin1,
-                fromCoin.ticker,
-              )}
-              {` (${formatFundsAmount(
-                ad.minimumExchangeAmountCoin2,
-                toCoin.ticker,
-              )})`}
+              <AssetPriceOutput
+                amount={ad.minimumExchangeAmountCoin2}
+                price={ad.coinPair.price}
+                tickerFrom={ad.fromCoin.ticker}
+                tickerTo={ad.toCoin.ticker}
+                secondary
+              />
             </span>
           </Typography>
         )}
-        {ad.maximumExchangeAmountCoin1 > 0 && (
+        {!isMaxEqualReserve && ad.maximumExchangeAmountCoin1 > 0 && (
           <Typography mb={1} display="flex">
             <span className="flex-grow">{t('max')}</span>
             <span className="row-summary__value">
-              {formatFundsAmount(
-                ad.maximumExchangeAmountCoin1,
-                fromCoin.ticker,
-              )}
-              {` (${formatFundsAmount(
-                ad.maximumExchangeAmountCoin2,
-                toCoin.ticker,
-              )})`}
+              <AssetPriceOutput
+                price={ad.maximumExchangeAmountCoin2}
+                tickerFrom={ad.fromCoin.ticker}
+                tickerTo={ad.toCoin.ticker}
+                secondary
+              />
             </span>
           </Typography>
         )}

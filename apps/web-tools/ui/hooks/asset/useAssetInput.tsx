@@ -1,7 +1,7 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
-import _ from 'lodash';
+import { floor } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
@@ -33,6 +33,11 @@ export const useAssetInput = ({
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
   const [inputAmount, setInputAmount] = useState<number | string>();
+  const [limits, setLimits] = useState<{
+    max: number | null;
+  }>({
+    max: null,
+  });
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
 
@@ -125,7 +130,7 @@ export const useAssetInput = ({
   };
 
   const onSetAmount = (v: string | number | null) => {
-    const convertedAmount = _.floor(Number(v), 8);
+    const convertedAmount = floor(Number(v), 8);
     const newValue = convertedAmount || v;
     setInputAmount(newValue || '');
   };
@@ -156,8 +161,10 @@ export const useAssetInput = ({
     balance,
     balanceNative,
     paymentMethod,
+    limits,
     setLoading,
     setInputAmount: onSetAmount,
+    setLimits,
     showPaymentMethod,
     showConfigureWallet,
     makeTransfer,
