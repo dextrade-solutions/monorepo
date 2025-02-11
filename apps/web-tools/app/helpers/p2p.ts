@@ -14,10 +14,6 @@ export function parseCoin(
   if (asset) {
     return {
       ...asset,
-      standard:
-        asset.network === NetworkNames.bitcoin
-          ? coin.networkType
-          : asset.standard,
       priceInUsdt,
     };
   }

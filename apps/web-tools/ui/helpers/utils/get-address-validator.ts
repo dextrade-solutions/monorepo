@@ -29,39 +29,30 @@ export function getAddressValidator(
       const network = btcNetworksConfig[networkName];
       return (address: string) => {
         try {
-          switch (networkType) {
-            case NetworkTypes.bip44: // P2PKH (legacy)
-              bitcoin.payments.p2pkh({
-                address,
-                network,
-              });
-              break;
-            case NetworkTypes.bip49: // P2SH-P2WPKH (nested SegWit)
-              bitcoin.payments.p2sh({
-                address,
-                network,
-              });
-              break;
-            case NetworkTypes.bip84: // P2WPKH (native SegWit)
-              bitcoin.payments.p2wpkh({
-                address,
-                network,
-              });
-              break;
-            case NetworkTypes.bip86: // P2TR
-              bitcoin.payments.p2tr({
-                address,
-                network,
-              });
-              break;
-            default:
-              return `Unknown ${networkType} format`; // Invalid network type
-          }
-          return false; // Address is valid for the given type
-        } catch (error) {
-          console.error(error);
-          return `Address is not presented in ${networkType} format`; // Address is invalid
+          bitcoin.payments.p2pkh({ address, network });
+          return false;
+        } catch {
+          // pass
         }
+        try {
+          bitcoin.payments.p2sh({ address, network });
+          return false;
+        } catch {
+          // pass
+        }
+        try {
+          bitcoin.payments.p2wpkh({ address, network });
+          return false;
+        } catch {
+          // pass
+        }
+        try {
+          bitcoin.payments.p2tr({ address, network });
+          return false;
+        } catch {
+          // pass
+        }
+        return 'Invalid Bitcoin address (no matching format found)';
       };
 
     case NetworkNames.solana:

@@ -1,9 +1,9 @@
 import { Box, Skeleton, Typography } from '@mui/material';
 import { getCoinIconByUid } from 'dex-helpers';
+import { AssetModel, CoinModel } from 'dex-helpers/types';
 import React from 'react';
 
 import UrlIcon from '../url-icon';
-import { AssetModel, CoinModel } from 'dex-helpers/types';
 
 interface IProps {
   coin?: CoinModel;
@@ -29,6 +29,8 @@ const AssetItem = ({
 
   const ticker = asset?.symbol || coin?.ticker;
 
+  const isBtc = ticker === 'BTC';
+
   const networkType = asset?.standard || coin?.networkType;
 
   return (
@@ -46,9 +48,11 @@ const AssetItem = ({
           <UrlIcon size={iconSize} url={url} />
           <Box marginX={2}>
             <Typography fontWeight="bold">{ticker}</Typography>
-            <Typography fontWeight={200} variant="body2">
-              {networkType?.toUpperCase()}
-            </Typography>
+            {!isBtc && (
+              <Typography fontWeight={200} variant="body2">
+                {networkType?.toUpperCase()}
+              </Typography>
+            )}
           </Box>
         </>
       )}

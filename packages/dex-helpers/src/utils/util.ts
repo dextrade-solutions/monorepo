@@ -97,8 +97,12 @@ export function formatFundsAmount(
   amount: string | number,
   ticker: string = '',
   decimalsToKeep?: number,
-  maxDecimalsLen = 8,
+  maxDecimalsLenForNoUsd = 8,
 ) {
+  let maxDecimalsLen = maxDecimalsLenForNoUsd;
+  if (ticker && ticker.toLowerCase().includes('usd')) {
+    maxDecimalsLen = 2;
+  }
   let parsedStr: string;
   if (typeof amount === 'number') {
     parsedStr = amount.toFixed(18);
@@ -467,8 +471,9 @@ export const sanitizeString = (value: string) => {
 
 export function formatCurrency(value: string | number, currencyCode: string) {
   const upperCaseCurrencyCode = currencyCode.toUpperCase();
-
-  return currencies.find((currency) => currency.code === upperCaseCurrencyCode)
+  const isBtc = upperCaseCurrencyCode === 'BTC';
+  return !isBtc &&
+    currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
       })

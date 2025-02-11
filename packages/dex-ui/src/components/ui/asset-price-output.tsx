@@ -1,5 +1,5 @@
 import { Box, Link } from '@mui/material';
-import { formatFundsAmount } from 'dex-helpers';
+import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
 
 type Output = {
@@ -63,7 +63,7 @@ export default function AssetPriceOutput({
         color="inherit"
         onClick={onClick}
       >
-        {formatFundsAmount(output.price, output.tickerTo)}
+        {formatCurrency(output.price, output.tickerTo)}
       </Link>
     </Box>
   );
