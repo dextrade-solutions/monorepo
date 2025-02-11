@@ -91,6 +91,7 @@ const AdPreview = ({
             price={ad.coinPair.price}
             tickerFrom={ad.fromCoin.ticker}
             tickerTo={ad.toCoin.ticker}
+            disableToggle
           />
           <Box
             display="flex"

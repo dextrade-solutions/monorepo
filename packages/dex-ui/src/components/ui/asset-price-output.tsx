@@ -8,6 +8,7 @@ type Output = {
   tickerTo: string;
   amount?: number;
   secondary?: boolean;
+  disableToggle?: boolean;
 };
 
 export default function AssetPriceOutput({
@@ -16,21 +17,11 @@ export default function AssetPriceOutput({
   tickerFrom,
   tickerTo,
   secondary,
+  disableToggle,
 }: Output) {
   const [reversed, setReversed] = useState(false);
-  // const [output, setOutput] = useState<Output>({
-  //   price,
-  //   tickerFrom,
-  //   tickerTo,
-  // });
-
   const togglePrice = () => {
     setReversed((v) => !v);
-    // setOutput((v) => ({
-    //   price: 1 / v.price,
-    //   tickerFrom: v.tickerTo,
-    //   tickerTo: v.tickerFrom,
-    // }));
   };
   useEffect(() => {
     if (price < 1) {
@@ -39,6 +30,9 @@ export default function AssetPriceOutput({
   }, []);
 
   const onClick = (e: Event) => {
+    if (disableToggle) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     togglePrice();
@@ -54,7 +48,7 @@ export default function AssetPriceOutput({
     <Box display="flex" justifyContent="space-between" alignContent="center">
       {!secondary && (
         <Link
-          sx={{ cursor: 'pointer' }}
+          sx={{ cursor: 'pointer', textDecoration: disableToggle && 'none' }}
           variant="body1"
           onClick={onClick}
           color="inherit"
@@ -63,7 +57,7 @@ export default function AssetPriceOutput({
         </Link>
       )}
       <Link
-        sx={{ cursor: 'pointer' }}
+        sx={{ cursor: 'pointer', textDecoration: disableToggle && 'none' }}
         variant="body1"
         fontWeight={secondary ? 'normal' : 'bold'}
         color="inherit"
