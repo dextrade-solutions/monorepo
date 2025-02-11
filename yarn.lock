@@ -48690,6 +48690,7 @@ __metadata:
     remote-redux-devtools: "npm:^0.5.16"
     sass: "npm:^1.75.0"
     sats-connect: "npm:^3.0.1"
+    tiny-secp256k1: "npm:^2.2.3"
     tronweb: "npm:^6.0.0"
     typescript: "npm:^5.2.2"
     uint8array-tools: "npm:^0.0.9"

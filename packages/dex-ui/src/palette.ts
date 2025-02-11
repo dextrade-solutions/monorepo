@@ -1,7 +1,7 @@
 const Palette = {
   light: {
     primary: {
-      light: '#E5E6F6',
+      light: '#F5F5FB',
       main: '#4143A1',
       dark: '#203055',
       contrastText: '#fff',

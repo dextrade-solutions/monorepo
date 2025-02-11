@@ -4,7 +4,6 @@ import { AdItem } from 'dex-helpers/types';
 import React from 'react';
 
 import type { useAssetInput } from './asset/useAssetInput';
-import { validateAddress } from '../../app/helpers/chain-helpers/validate-address';
 
 type AdParams = {
   ad: AdItem;
@@ -78,15 +77,6 @@ export function useAdValidation({
         Set your <strong>{assetInputTo.asset.symbol}</strong> wallet
       </Typography>
     );
-    return params;
-  }
-  if (
-    assetInputTo.account &&
-    !validateAddress(assetInputTo.asset, assetInputTo.account.address)
-  ) {
-    params.submitBtnText = 'Recipient address is not valid';
-    params.hasValidationErrors = true;
-    params.disabledBtn = true;
     return params;
   }
   if (assetInputTo.asset.isFiat && !assetInputTo.paymentMethod) {

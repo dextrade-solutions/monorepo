@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
+import { getAddressValidator } from '../../../../helpers/utils/get-address-validator';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
@@ -35,6 +36,7 @@ const SetWallet = ({
   const connectionType = determineConnectionType(asset);
   const wallets = useWallets({ connectionType });
   const disconnectWallet = useDisconnectWallet();
+  const addressValidator = getAddressValidator(asset.network, asset.standard);
 
   const t = useI18nContext();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
@@ -70,6 +72,8 @@ const SetWallet = ({
       setLoadingWallet(null);
     }
   };
+
+  const inputWalletAddressError = addressValidator(inputWalletAddress);
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -144,12 +148,15 @@ const SetWallet = ({
                   placeholder="Recipient address"
                   fullWidth
                   size="medium"
+                  error={inputWalletAddress && inputWalletAddressError}
+                  helperText={inputWalletAddress && inputWalletAddressError}
                   onChange={(v) => setInputWalletAddress(v.target.value)}
                 />
                 {inputWalletAddress && (
                   <Box marginTop={1}>
                     <Button
                       fullWidth
+                      disabled={Boolean(inputWalletAddressError)}
                       variant="contained"
                       onClick={onSetInputWallet}
                     >

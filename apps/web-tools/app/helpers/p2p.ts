@@ -12,7 +12,14 @@ export function parseCoin(
       item.symbol === coin.ticker,
   );
   if (asset) {
-    return { ...asset, priceInUsdt };
+    return {
+      ...asset,
+      standard:
+        asset.network === NetworkNames.bitcoin
+          ? coin.networkType
+          : asset.standard,
+      priceInUsdt,
+    };
   }
   return null;
 }

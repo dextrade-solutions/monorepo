@@ -1,5 +1,5 @@
 import { NetworkNames } from 'dex-helpers';
-import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
+import { AssetModel, CoinModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
 import { useEffect, useState } from 'react';

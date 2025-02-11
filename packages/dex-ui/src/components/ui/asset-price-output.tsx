@@ -3,11 +3,11 @@ import { formatFundsAmount } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
 
 type Output = {
-  amount?: number;
   price: number;
   tickerFrom: string;
   tickerTo: string;
-  secondary: boolean;
+  amount?: number;
+  secondary?: boolean;
 };
 
 export default function AssetPriceOutput({
@@ -51,12 +51,7 @@ export default function AssetPriceOutput({
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      alignContent="center"
-      marginTop={1}
-    >
+    <Box display="flex" justifyContent="space-between" alignContent="center">
       {!secondary && (
         <Link
           sx={{ cursor: 'pointer' }}
