@@ -7,10 +7,14 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { VitePWA } from 'vite-plugin-pwa';
 import wasm from 'vite-plugin-wasm';
 import { VitePluginRadar } from 'vite-plugin-radar';
+import packageJson from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
+  define: {
+    __VERSION__: JSON.stringify(packageJson.version),
+  },
   plugins: [
     react(),
     VitePluginRadar({
