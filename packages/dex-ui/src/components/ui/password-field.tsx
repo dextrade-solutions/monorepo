@@ -30,6 +30,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({
         endAdornment: (
           <InputAdornment position="end">
             <ButtonIcon
+              sx={{ opacity: 0.4 }}
               aria-label="toggle password visibility"
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}

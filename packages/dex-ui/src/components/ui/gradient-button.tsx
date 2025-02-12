@@ -24,9 +24,9 @@ const GradientButton: React.FC<GradientButtonProps> = ({
       fullWidth
       sx={{
         ...sx,
+        height: '48px',
+        boxShadow: '0px 10px 20px 0px rgba(60, 118, 255, 0.15)',
         backgroundImage: loading || disabled ? undefined : bgPrimaryGradient,
-        // Add any other default styling you want here, for example:
-        // color: (theme) => theme.palette.getContrastText(theme.palette.primary.main), // For better contrast
       }}
       disabled={loading || disabled}
       variant="contained"

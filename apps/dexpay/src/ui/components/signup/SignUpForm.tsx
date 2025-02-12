@@ -26,8 +26,6 @@ const SignUpForm = () => {
         user.signUp({
           email: values.email,
           password: values.password,
-          first_name: 'user',
-          last_name: 'user',
         }),
       );
     } catch (error: any) {

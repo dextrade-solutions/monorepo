@@ -58,6 +58,11 @@ export function useDexUI({
             },
           },
           MuiButton: {
+            styleOverrides: {
+              root: {
+                borderRadius: 8,
+              },
+            },
             defaultProps: {
               disableElevation: true,
             },
