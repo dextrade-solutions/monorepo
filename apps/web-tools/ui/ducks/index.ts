@@ -13,7 +13,11 @@ const PERSIST_VERSION = __VERSION__;
 
 // Create a transform to handle versioning
 const migrate = (inboundState: any) => {
-  const persistedVersion = inboundState?._persist?.version || '0.0.0';
+  let persistedVersion = inboundState?._persist?.version;
+  persistedVersion =
+    typeof persistedVersion === 'number' || !persistedVersion
+      ? '0.0.0'
+      : persistedVersion;
 
   if (compareVersions(persistedVersion, PERSIST_VERSION) === 0) {
     return inboundState; // No migration needed
