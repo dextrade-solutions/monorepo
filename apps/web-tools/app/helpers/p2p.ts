@@ -12,7 +12,10 @@ export function parseCoin(
       item.symbol === coin.ticker,
   );
   if (asset) {
-    return { ...asset, priceInUsdt };
+    return {
+      ...asset,
+      priceInUsdt,
+    };
   }
   return null;
 }

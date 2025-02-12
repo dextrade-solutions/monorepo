@@ -1,13 +1,5 @@
-import {
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Typography,
-} from '@mui/material';
-import { NetworkNames, formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
+import { Alert, Box, Card, CardContent, Chip, Typography } from '@mui/material';
+import { NetworkNames, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { ExchangerUserPreview, AssetPriceOutput } from 'dex-ui';
 import React from 'react';
@@ -22,12 +14,14 @@ interface IProps {
 export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
   const t = useI18nContext();
 
-  const { fromCoin, toCoin } = ad;
-
   const showPaymentMethods =
     ad.paymentMethods &&
     (ad.fromCoin.networkName === NetworkNames.fiat ||
       ad.toCoin.networkName === NetworkNames.fiat);
+
+  const isMaxEqualReserve =
+    ad.maximumExchangeAmountCoin2 &&
+    ad.maximumExchangeAmountCoin2 === ad.reserveSum;
 
   return (
     <Box className="p2p-swap-summary">
@@ -56,33 +50,42 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             tickerTo={ad.toCoin.ticker}
           />
         </Box>
+        <Typography display="flex" alignItems="center">
+          <span className="flex-grow">Available quantity</span>
+          <span className="row-summary__value">
+            <AssetPriceOutput
+              amount={ad.reserveSum}
+              price={ad.coinPair.price}
+              tickerFrom={ad.fromCoin.ticker}
+              tickerTo={ad.toCoin.ticker}
+              secondary
+            />
+          </span>
+        </Typography>
         {ad.minimumExchangeAmountCoin1 > 0 && (
-          <Typography display="flex">
+          <Typography display="flex" alignItems="center">
             <span className="flex-grow">{t('min')}</span>
             <span className="row-summary__value">
-              {formatFundsAmount(
-                ad.minimumExchangeAmountCoin1,
-                fromCoin.ticker,
-              )}
-              {` (${formatFundsAmount(
-                ad.minimumExchangeAmountCoin2,
-                toCoin.ticker,
-              )})`}
+              <AssetPriceOutput
+                amount={ad.minimumExchangeAmountCoin2}
+                price={ad.coinPair.price}
+                tickerFrom={ad.fromCoin.ticker}
+                tickerTo={ad.toCoin.ticker}
+                secondary
+              />
             </span>
           </Typography>
         )}
-        {ad.maximumExchangeAmountCoin1 > 0 && (
-          <Typography mb={1} display="flex">
+        {!isMaxEqualReserve && ad.maximumExchangeAmountCoin1 > 0 && (
+          <Typography mb={1} display="flex" alignItems="center">
             <span className="flex-grow">{t('max')}</span>
             <span className="row-summary__value">
-              {formatFundsAmount(
-                ad.maximumExchangeAmountCoin1,
-                fromCoin.ticker,
-              )}
-              {` (${formatFundsAmount(
-                ad.maximumExchangeAmountCoin2,
-                toCoin.ticker,
-              )})`}
+              <AssetPriceOutput
+                price={ad.maximumExchangeAmountCoin2}
+                tickerFrom={ad.fromCoin.ticker}
+                tickerTo={ad.toCoin.ticker}
+                secondary
+              />
             </span>
           </Typography>
         )}

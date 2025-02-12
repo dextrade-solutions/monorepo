@@ -1,11 +1,8 @@
+import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { encodeFunctionData, parseEther, parseUnits } from 'viem';
 
-import {
-  NULLISH_TOKEN_ADDRESS,
-  genKeyPair,
-  generateAtomicSwapParams,
-} from './atomic-swaps';
+import { genKeyPair, generateAtomicSwapParams } from './atomic-swaps';
 import { generateERC20TransferData } from './send.utils';
 import { AssetModel } from '../types/p2p-swaps';
 
@@ -24,8 +21,20 @@ export function generateTxParams({
   to: destinationAddress,
   isAtomicSwap,
 }: Params) {
-  let data;
-  let value = parseUnits(Number(amount).toFixed(8), asset.decimals);
+  let data, value;
+
+  try {
+    // Attempt to parse the amount directly
+    value = parseUnits(String(amount), asset.decimals);
+  } catch (error) {
+    // If direct parsing fails (e.g., due to scientific notation), use BigNumber
+    const amountBN = new BigNumber(amount);
+    if (amountBN.isNaN()) {
+      throw new Error(`Invalid amount: ${amount}`); // Or handle the error differently
+    }
+    value = amountBN.shiftedBy(asset.decimals).toFixed(0); // Shift and convert to string
+    value = BigInt(value); // Convert string to BigInt for viem
+  }
   if (isAtomicSwap) {
     const callContractData = generateAtomicSwapParams(
       asset.network,

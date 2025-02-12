@@ -6,7 +6,7 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatFundsAmount, getUserAvatarUrl } from 'dex-helpers';
+import { formatCurrency, formatFundsAmount, getAdLimitPerExchange, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
 import { useTranslation } from 'react-i18next';
 
@@ -33,7 +33,7 @@ const AdPreview = ({
   onClick,
 }: IProps) => {
   const { t } = useTranslation();
-  const reserveInCoin2 = ad.reserveSum;
+  const reserveInCoin2 = getAdLimitPerExchange(ad);
   return (
     <Card
       variant="outlined"
@@ -60,7 +60,7 @@ const AdPreview = ({
             {Boolean(Number(fromTokenAmount)) && (
               <Typography color="success.main">
                 ~{' '}
-                {formatFundsAmount(
+                {formatCurrency(
                   fromTokenAmount * ad.priceInCoin2,
                   ad.toCoin.ticker,
                 )}
@@ -91,6 +91,7 @@ const AdPreview = ({
             price={ad.coinPair.price}
             tickerFrom={ad.fromCoin.ticker}
             tickerTo={ad.toCoin.ticker}
+            disableToggle
           />
           <Box
             display="flex"
@@ -99,7 +100,7 @@ const AdPreview = ({
           >
             <Typography>{t('quantity')}</Typography>
             <Typography fontWeight="bold">
-              {formatFundsAmount(reserveInCoin2, ad.toCoin.ticker)}
+              {formatCurrency(reserveInCoin2, ad.toCoin.ticker)}
             </Typography>
           </Box>
           <Box
@@ -110,7 +111,7 @@ const AdPreview = ({
             <Typography>{t('limits')}</Typography>
             <Typography fontWeight="bold">
               {formatFundsAmount(ad.minimumExchangeAmountCoin2 || 0)} —{' '}
-              {formatFundsAmount(
+              {formatCurrency(
                 ad.maximumExchangeAmountCoin2 || reserveInCoin2,
                 ad.toCoin.ticker,
               )}

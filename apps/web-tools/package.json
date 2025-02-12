@@ -1,7 +1,7 @@
 {
   "name": "web-tools",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -86,6 +86,7 @@
     "redux-persist": "^6.0.0",
     "remote-redux-devtools": "^0.5.16",
     "sats-connect": "^3.0.1",
+    "tiny-secp256k1": "^2.2.3",
     "tronweb": "^6.0.0",
     "uint8array-tools": "^0.0.9",
     "use-debounce": "^10.0.4",

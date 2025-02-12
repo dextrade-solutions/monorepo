@@ -15,5 +15,7 @@ export default function useBalance(address: string) {
     refetchInterval: 30 * SECOND,
   });
 
-  return data?.final_balance ? BigInt(data.final_balance) : null;
+  return typeof data?.final_balance === 'number'
+    ? BigInt(data.final_balance)
+    : null;
 }

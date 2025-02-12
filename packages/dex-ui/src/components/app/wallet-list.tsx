@@ -20,11 +20,13 @@ import { useGlobalModalContext } from './modals';
 export default function WalletList({
   value,
   wallets = [],
+  hideConnectionType,
   connectingWalletLabel = 'Connecting',
   onSelectWallet,
 }: {
   value?: WalletConnection; // selected item
   wallets?: any[];
+  hideConnectionType: boolean;
   connectingWalletLabel?: string;
   onSelectWallet?: (item: WalletItem) => void;
 }) {
@@ -167,9 +169,11 @@ export default function WalletList({
                   primary={
                     <Box display="flex">
                       <Typography>{item.name}</Typography>
-                      <Typography color="text.secondary" ml={1}>
-                        {item.connectionType}
-                      </Typography>
+                      {!hideConnectionType && (
+                        <Typography color="text.secondary" ml={1}>
+                          {item.connectionType}
+                        </Typography>
+                      )}
                     </Box>
                   }
                   secondary={

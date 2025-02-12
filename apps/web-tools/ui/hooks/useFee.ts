@@ -63,22 +63,29 @@ export const useDexTradeFee = (params: PublicFeeParams) => {
 export const useEVMFee = ({ asset, amount = 0, from, to }: FeeParams) => {
   const txParams = generateTxParams({
     asset,
-    amount: Number(amount).toFixed(8),
+    amount,
     from,
     to: to || NULLISH_TOKEN_ADDRESS,
   });
-  txParams.value = undefined;
+  let value;
+  if (typeof txParams.value === 'bigint') {
+    value = formatUnits(txParams.value, 0);
+    delete txParams.value;
+  }
   const { data: fee, isLoading } = useQuery({
-    queryKey: ['estimate-fee', txParams],
-    queryFn: () =>
-      P2PService.estimateFee({
+    queryKey: ['estimate-fee', txParams, value],
+    queryFn: () => {
+      return P2PService.estimateFee({
         contractAddress: asset.contract,
+        data: txParams.data,
         from: txParams.from,
-        to: txParams.to,
+        value,
+        to: asset.contract ? undefined : txParams.to,
         network: asset.network,
       }).then(({ data }) => {
         return Number(formatUnits(BigInt(data), 18));
-      }),
+      });
+    },
   });
 
   return {

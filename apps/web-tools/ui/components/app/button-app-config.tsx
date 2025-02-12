@@ -53,6 +53,7 @@ export default function ButtonAppConfig() {
   };
 
   const login = () => {
+    setAnchorEl(null);
     showModal({ name: 'LOGIN_MODAL' });
   };
 
@@ -83,7 +84,10 @@ export default function ButtonAppConfig() {
       >
         {isAuthenticated ? (
           <MenuItem>
-            <ListItem sx={{ display: 'flex' }} data-testid="settings-wallet-connected">
+            <ListItem
+              sx={{ display: 'flex' }}
+              data-testid="settings-wallet-connected"
+            >
               <ListItemIcon>
                 {wallet ? <UrlIcon url={wallet.icon} /> : <PulseLoader />}
               </ListItemIcon>
@@ -112,7 +116,10 @@ export default function ButtonAppConfig() {
             </ListItem>
           </MenuItem>
         )}
-        <MenuItem onClick={() => navigate(SWAPS_HISTORY_ROUTE)} data-testid="settings-swap-history">
+        <MenuItem
+          onClick={() => navigate(SWAPS_HISTORY_ROUTE)}
+          data-testid="settings-swap-history"
+        >
           <ListItem>
             <ListItemIcon>
               <Icon name="menu" />
@@ -120,7 +127,10 @@ export default function ButtonAppConfig() {
             <ListItemText>Activity</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(SETTINGS_GENERAL_ROUTE)} data-testid="settings-general">
+        <MenuItem
+          onClick={() => navigate(SETTINGS_GENERAL_ROUTE)}
+          data-testid="settings-general"
+        >
           <ListItem>
             <ListItemIcon>
               <Icon name="setting-dex" />
@@ -128,7 +138,10 @@ export default function ButtonAppConfig() {
             <ListItemText>General</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(PAYMENT_METHODS_ROUTE)} data-testid="settings-payment-methods">
+        <MenuItem
+          onClick={() => navigate(PAYMENT_METHODS_ROUTE)}
+          data-testid="settings-payment-methods"
+        >
           <ListItem>
             <ListItemIcon>
               <Icon name="setting-dex-2" />
@@ -136,7 +149,10 @@ export default function ButtonAppConfig() {
             <ListItemText>Payment methods</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(KYC_ROUTE)} data-testid="settings-kyc">
+        <MenuItem
+          onClick={() => navigate(KYC_ROUTE)}
+          data-testid="settings-kyc"
+        >
           <ListItem>
             <ListItemIcon>
               <Icon name="info" />
@@ -144,7 +160,10 @@ export default function ButtonAppConfig() {
             <ListItemText>KYC</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={() => navigate(PLANS_ROUTE)} data-testid="settings-plans">
+        <MenuItem
+          onClick={() => navigate(PLANS_ROUTE)}
+          data-testid="settings-plans"
+        >
           <ListItem>
             <ListItemIcon>
               <Icon name="card" />

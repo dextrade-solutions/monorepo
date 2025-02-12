@@ -10,14 +10,15 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { AdItem } from 'dex-helpers/types';
 import { Icon } from 'dex-ui';
-import { sumBy } from 'lodash';
 import { useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
 import P2PSwapView from '../../components/app/p2p-swap-view';
+import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { SECOND } from 'dex-helpers';
 
 export default function AdView() {
   const t = useI18nContext();
@@ -42,6 +43,7 @@ export default function AdView() {
     queryKey: ['p2pAds', filterModel],
     queryFn: () =>
       P2PService.filterAds(filterModel).then((response) => response.data),
+    refetchInterval: 10 * SECOND,
   });
 
   let content = (
@@ -50,13 +52,17 @@ export default function AdView() {
     </Box>
   );
 
+  const handleNavigateBack = () => {
+    if (navigate(-1) === undefined) {
+      // Check if navigate(-1) returns undefined (meaning no history)
+      navigate(HOME_ROUTE); // Navigate to home route if no history
+    }
+  };
+
   const [ad] = data || [];
   if (ad) {
     const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
     const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
-    if (ad.reserve) {
-      ad.reserveInCoin2 = sumBy(ad.reserve, 'reserveInCoin2');
-    }
 
     if (assetFrom && assetTo) {
       content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
@@ -132,7 +138,7 @@ export default function AdView() {
               startIcon={<Icon name="arrow-left-dex" />}
               color="secondary"
               variant="contained"
-              onClick={() => navigate(-1)}
+              onClick={handleNavigateBack}
             >
               {t('back')}
             </Button>

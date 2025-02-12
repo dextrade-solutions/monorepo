@@ -1,11 +1,39 @@
 import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
+import { persistReducer, createTransform } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import appReducer from './app/app';
 import authReducer from './auth';
 import localeMessagesReducer from './locale/locale';
+import { migrations } from './migrations';
 import swapsReducer from './swaps/swaps';
+import { compareVersions } from '../../app/helpers/utils';
+
+const PERSIST_VERSION = __VERSION__;
+
+// Create a transform to handle versioning
+const migrate = (inboundState: any) => {
+  let persistedVersion = inboundState?._persist?.version;
+  persistedVersion =
+    typeof persistedVersion === 'number' || !persistedVersion
+      ? '0.0.0'
+      : persistedVersion;
+
+  if (compareVersions(persistedVersion, PERSIST_VERSION) === 0) {
+    return inboundState; // No migration needed
+  }
+  let migratedState = { ...inboundState };
+
+  // Iterate through all available migrations and apply them if needed
+  Object.entries(migrations).forEach(([migrationVersion, migrationFn]) => {
+    if (compareVersions(persistedVersion, migrationVersion) < 0) {
+      console.info(`Applying migration ${migrationVersion}`);
+
+      migratedState = migrationFn({ ...migratedState }); // Apply the migration
+    }
+  });
+  return migratedState;
+};
 
 export default combineReducers({
   auth: persistReducer(
@@ -20,6 +48,9 @@ export default combineReducers({
     {
       key: 'app',
       storage,
+      // transforms: [versionTransform], // Add the version transform
+      version: PERSIST_VERSION,
+      migrate: (state) => Promise.resolve(migrate(state)),
     },
     appReducer,
   ),

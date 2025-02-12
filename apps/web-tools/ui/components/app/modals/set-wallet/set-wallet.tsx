@@ -6,14 +6,17 @@ import {
   AssetItem,
   ModalProps,
   WalletList,
+  Icon,
 } from 'dex-ui';
 import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
 import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
+import { getAddressValidator } from '../../../../helpers/utils/get-address-validator';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { WalletConnection } from '../../../../types';
+import { useDisconnectWallet } from '../hooks/use-disconnect-wallet';
 
 const SetWallet = ({
   asset,
@@ -32,11 +35,18 @@ const SetWallet = ({
   const canPasteAddress = isToAsset;
   const connectionType = determineConnectionType(asset);
   const wallets = useWallets({ connectionType });
+  const disconnectWallet = useDisconnectWallet();
+  const addressValidator = getAddressValidator(asset.network, asset.standard);
 
   const t = useI18nContext();
   const [inputWalletAddress, setInputWalletAddress] = useState('');
   const [loadingWallet, setLoadingWallet] = useState();
   const [value, setValue] = useState<WalletConnection>(savedValue);
+
+  const handleDisconnect = async () => {
+    const wallet = wallets.find((w) => w.name === value?.walletName);
+    disconnectWallet(wallet);
+  };
 
   const onSetInputWallet = () => {
     onChange({
@@ -62,6 +72,8 @@ const SetWallet = ({
       setLoadingWallet(null);
     }
   };
+
+  const inputWalletAddressError = addressValidator(inputWalletAddress);
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -95,9 +107,20 @@ const SetWallet = ({
             onClick={() => {
               setValue(null);
             }}
+            sx={{ marginBottom: 1 }}
           >
             Change
           </Button>
+          {value.walletName && (
+            <Button
+              startIcon={<Icon name="disconnect" />}
+              variant="outlined"
+              fullWidth
+              onClick={handleDisconnect}
+            >
+              Disconnect Wallet
+            </Button>
+          )}
         </Box>
       ) : (
         <Box>
@@ -105,6 +128,7 @@ const SetWallet = ({
             <WalletList
               wallets={wallets}
               value={savedValue}
+              hideConnectionType
               connectingWallet={loadingWallet}
               onSelectWallet={onSelectWallet}
             />
@@ -124,12 +148,15 @@ const SetWallet = ({
                   placeholder="Recipient address"
                   fullWidth
                   size="medium"
+                  error={inputWalletAddress && inputWalletAddressError}
+                  helperText={inputWalletAddress && inputWalletAddressError}
                   onChange={(v) => setInputWalletAddress(v.target.value)}
                 />
                 {inputWalletAddress && (
                   <Box marginTop={1}>
                     <Button
                       fullWidth
+                      disabled={Boolean(inputWalletAddressError)}
                       variant="contained"
                       onClick={onSetInputWallet}
                     >
