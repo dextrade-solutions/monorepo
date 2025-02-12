@@ -7,6 +7,7 @@ import React, { useEffect } from 'react';
 import { Switch, Route, useLocation } from 'wouter';
 
 import Appbar from './app-bar';
+import { GradientFluid } from './components/GradientFluid';
 import BottomNav from './components/layout/BottomNav';
 import {
   ROUTE_HISTORY,
@@ -78,6 +79,34 @@ function Router() {
 
 function App() {
   const { isAuthorized } = useUser();
+  if (!isAuthorized) {
+    return (
+      <>
+        <Box
+          position="absolute"
+          sx={{
+            top: -30,
+            left: 0,
+            overflow: 'hidden',
+          }}
+        >
+          <GradientFluid />
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            pt: 10,
+            flexDirection: 'column',
+            height: '100vh', // Make container take up full viewport height
+            justifyContent: 'center', // Vertically center content
+            alignItems: 'center', // Horizontally center content
+          }}
+        >
+          <Router />
+        </Box>
+      </>
+    );
+  }
   return (
     <Container maxWidth="sm">
       <Appbar />

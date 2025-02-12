@@ -1,12 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useForm, useLoader, useGlobalModalContext } from 'dex-ui';
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Link } from 'wouter';
+import React, { useState, ChangeEvent } from 'react';
 
 import { ROUTE_LOGIN } from '../../constants/pages';
 import { useUser } from '../../hooks/use-user';
 import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
+import Link from '../ui/Link';
 
 const SignUpForm = () => {
   const user = useUser();
@@ -102,8 +102,12 @@ const SignUpForm = () => {
         alignItems="center"
         width="100%"
       >
-        <Typography mr={1}>Already have an account?</Typography>
-        <Link href={ROUTE_LOGIN}>Sign in</Link>
+        <Typography mr={1} color="text.secondary">
+          Already have an account?
+        </Typography>
+        <Link href={ROUTE_LOGIN} color="text.tertiary">
+          Sign in
+        </Link>
       </Box>
     </Box>
   );

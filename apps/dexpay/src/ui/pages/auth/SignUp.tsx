@@ -19,7 +19,12 @@ const SignUp = () => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography
+          variant="h4"
+          component="h1"
+          color="text.tertiary"
+          gutterBottom
+        >
           Dex<strong>Pay</strong>
         </Typography>
         {codeToken ? <LoginOtp old /> : <SignUpForm />}

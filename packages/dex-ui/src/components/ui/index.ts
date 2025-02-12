@@ -14,4 +14,5 @@ export { default as AssetPriceOutput } from './asset-price-output';
 export { default as QRCode } from './qr-code';
 export { default as CircleNumber } from './circle-number';
 export { default as PasswordField } from './password-field';
+export { default as GradientButton } from './gradient-button';
 export * from './select-coins';

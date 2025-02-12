@@ -31,6 +31,25 @@ export function useDexUI({
           drawer: 999,
         },
         components: {
+          MuiTextField: {
+            styleOverrides: {
+              root: {
+                '& .MuiOutlinedInput-root': {
+                  // Target OutlinedInput specifically
+                  borderRadius: 8,
+                  backgroundColor:
+                    paletteMode === 'dark' ? '#2D2338' : '#F5F5FB', // Lighter background based on paletteMode
+                  '&.Mui-focused fieldset': {
+                    // Focused state
+                    //  Adjust border color as needed for focused state
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(0, 0, 0, 0.1)',
+                  },
+                },
+              },
+            },
+          },
           MuiCard: {
             styleOverrides: {
               root: {

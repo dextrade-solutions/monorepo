@@ -21,6 +21,7 @@ const Palette = {
     text: {
       primary: '#4143A1',
       secondary: '#9091cd',
+      tertiary: '#3C76FF',
     },
     action: {
       disabledBackground: '#f2f2f3',

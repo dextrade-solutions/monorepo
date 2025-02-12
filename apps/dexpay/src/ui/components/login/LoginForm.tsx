@@ -1,12 +1,17 @@
-import { Box, Button, Typography } from '@mui/material';
-import { useGlobalModalContext, useForm, useLoader } from 'dex-ui';
+import { Box, Typography } from '@mui/material';
+import {
+  useGlobalModalContext,
+  useForm,
+  useLoader,
+  GradientButton,
+} from 'dex-ui';
 import React, { useState, ChangeEvent } from 'react';
-import { Link } from 'wouter'; // Import Link
 
 import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
 import { useUser } from '../../hooks/use-user';
 import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
+import Link from '../ui/Link';
 
 const LoginForm = () => {
   const user = useUser();
@@ -39,7 +44,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form" textAlign="right" onSubmit={handleSubmit} noValidate>
       <TextFieldWithValidation
         margin="normal"
         fullWidth
@@ -61,23 +66,18 @@ const LoginForm = () => {
         validationForm={form}
         onChange={handleInputChange}
       />
-      <Link href={ROUTE_FORGOT_PASSWORD}>
-        <Typography>Forgot your password?</Typography>
+      <Link href={ROUTE_FORGOT_PASSWORD} noUnderline>
+        Forgot password?
       </Link>
 
-      <Button
+      <GradientButton
         type="submit"
         fullWidth
         size="large"
-        variant="contained"
-        color="primary"
-        disabled={
-          !form.isInitiated || !form.isInteracted || Boolean(form.primaryError)
-        }
         sx={{ mt: 3, mb: 2 }}
       >
-        {form.primaryError || 'Sign in'}
-      </Button>
+        Sign in
+      </GradientButton>
 
       <Box
         display="flex"
@@ -85,7 +85,9 @@ const LoginForm = () => {
         alignItems="center"
         width="100%"
       >
-        <Typography mr={1}>Don’t have an account?</Typography>
+        <Typography mr={1} color="text.secondary">
+          Don’t have an account?
+        </Typography>
         <Link href={ROUTE_REGISTER}>Sign Up</Link>
       </Box>
     </Box>

@@ -13,18 +13,18 @@ const Login = () => {
   return (
     <Container maxWidth="xs">
       {' '}
-      {/* Center the content */}
+      <Box color="text.tertiary">
+        <Typography variant="h4" component="h1" gutterBottom fontWeight="550">
+          Welcome back, to Dex<strong>Pay</strong>!
+        </Typography>
+      </Box>
       <Box
         sx={{
-          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center', // Center horizontally
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
-          Dex<strong>Pay</strong> {/* Add DexPay title */}
-        </Typography>
         {codeToken ? <LoginOtp /> : <LoginForm />} {/* Conditional rendering */}
       </Box>
     </Container>
