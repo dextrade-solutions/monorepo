@@ -14,11 +14,11 @@ import { ButtonIcon, ModalProps } from 'dex-ui';
 import { PlusIcon } from 'lucide-react';
 import React from 'react';
 
-import { useUser } from '../hooks/use-user';
+import { useAuth } from '../hooks/use-auth';
 import { IProject } from '../types';
 
 const SelectProject = ({ hideModal }: ModalProps) => {
-  const { setProject, projects: renderList } = useUser();
+  const { setProject, projects: renderList } = useAuth();
 
   const handleSelectProject = (project: IProject) => {
     setProject(project);

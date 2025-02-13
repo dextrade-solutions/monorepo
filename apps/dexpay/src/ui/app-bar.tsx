@@ -11,7 +11,7 @@ import {
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
-import { useUser } from './hooks/use-user';
+import { useAuth } from './hooks/use-auth';
 import ProjectSelectBtn from './project-select-button';
 
 const titles = {
@@ -28,7 +28,6 @@ const titles = {
 const Appbar = () => {
   const [location] = useLocation();
   const title = titles[location] || ''; // Get title based on route or default to empty string
-
   return (
     <AppBar position="static" elevation={0} color="transparent">
       <Box

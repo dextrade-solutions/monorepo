@@ -1,10 +1,10 @@
 import { Button, Card, CardContent, Box, Typography } from '@mui/material';
 import { Icon } from 'dex-ui';
 import { LogOut } from 'lucide-react';
-import { useUser } from '../hooks/use-user';
+import { useAuth } from '../hooks/use-auth';
 
 export default function Profile() {
-  const { logout } = useUser();
+  const { logout } = useAuth();
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
       <Card

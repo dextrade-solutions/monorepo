@@ -20,9 +20,9 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
 import { ROUTE_MERCHANT } from '../../../constants/pages';
+import { useAuth } from '../../../hooks/use-auth';
 import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../../hooks/use-query';
-import { useUser } from '../../../hooks/use-user';
 import { Currency, Invoice } from '../../../services';
 import { Validation } from '../../../validation';
 import {
@@ -54,7 +54,7 @@ const CreateInvoiceForm = () => {
   });
   const { showModal } = useGlobalModalContext();
   const [, navigate] = useLocation();
-  const { user } = useUser();
+  const { user } = useAuth();
   const { runLoader } = useLoader();
 
   const form = useForm({ validationSchema: Validation.Invoice.create });
@@ -118,7 +118,13 @@ const CreateInvoiceForm = () => {
     );
   };
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      noValidate
+      sx={{ mt: 1 }}
+      data-testid="invoice-create-form"
+    >
       <Box my={1} display="flex" alignItems="center">
         <CircleNumber color="secondary.light" number={1} />
         <Typography ml={1}>Primary coin</Typography>
@@ -129,6 +135,7 @@ const CreateInvoiceForm = () => {
         coins={allCoins}
         isLoading={coins.isLoading}
         name="primaryCoin"
+        data-testid="invoice-create-primary-coin-select"
         onChange={handleInputChange}
       />
       <Box mt={3} display="flex" alignItems="center">
@@ -141,6 +148,7 @@ const CreateInvoiceForm = () => {
         currencies={currencies.items}
         isLoading={currencies.isLoading}
         validationForm={form}
+        data-testid="invoice-create-crypto-currency-select"
         onChange={handleInputChange}
       />
 
@@ -154,6 +162,7 @@ const CreateInvoiceForm = () => {
             display: 'none',
           },
         }}
+        data-testid="invoice-create-options-accordion"
       >
         <AccordionSummary expandIcon={<Icon name="chevron-down" />}>
           Options
@@ -171,7 +180,8 @@ const CreateInvoiceForm = () => {
               name="description"
               multiline
               value={invoiceData.description}
-              onChange={(v) => handleInputChange(v)}
+              data-testid="invoice-create-description-input"
+              onChange={handleInputChange}
             />
           </Box>
           <DatePickerWithValidation
@@ -183,6 +193,7 @@ const CreateInvoiceForm = () => {
             textFieldProps={{
               margin: 'normal',
             }}
+            data-testid="invoice-create-due-date-picker"
           />
         </AccordionDetails>
       </Accordion>
@@ -198,6 +209,7 @@ const CreateInvoiceForm = () => {
         size="large"
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
+        data-testid="invoice-create-submit-button"
       >
         {form.primaryError || 'Create Invoice'}
       </Button>

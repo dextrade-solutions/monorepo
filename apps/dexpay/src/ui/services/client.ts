@@ -24,7 +24,7 @@ const getAuth = () => {
 };
 
 export const saveAuthData = (accessToken: string, refreshToken: string) => {
-  const userData = getAuth();
+  const userData = getAuthDataFrom();
   localStorage.setItem(
     'user-data',
     JSON.stringify({
@@ -69,6 +69,11 @@ export const $api = ky.create({
   },
 });
 
+const hardLogout = () => {
+  localStorage.removeItem('user-data');
+  window.location.reload();
+};
+
 let isRefreshing = false;
 
 async function handleRefreshToken() {
@@ -92,7 +97,7 @@ async function handleRefreshToken() {
     } catch (refreshError) {
       console.error('Refresh token failed:', refreshError);
       // Handle refresh token failure (e.g., redirect to login, clear tokens)
-      localStorage.removeItem('user-data');
+      hardLogout();
     } finally {
       isRefreshing = false; // Reset the flag regardless of success or failure
     }

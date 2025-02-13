@@ -2,16 +2,17 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Projects } from '../services'; // Import Auth service
+import { Auth, Memo, Projects } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes } from '../types';
+import { IProject, Auth as AuthTypes, IMemo } from '../types';
 
 interface User {
   auth: {
     accessToken: string;
     refreshToken: string;
   };
-  project: IProject;
+  project?: IProject;
+  isRegistrationCompleted?: boolean;
   // ... any other user properties
 }
 
@@ -24,11 +25,12 @@ interface UserContextType {
     codeToken: string;
     method?: number;
   };
-  setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
   login: (email: string, pass: string) => Promise<void>;
   twoFA: (code: string, isNewMode?: boolean) => Promise<void>;
   logout: () => void;
   signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
+  setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
+  setCompleteReginstration: () => void;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -41,6 +43,7 @@ export const UserContext = createContext<UserContextType>({
     method: 1,
   },
   setProject: () => {},
+  setCompleteReginstration: () => {},
   login: async () => {
     throw new Error('Not implemented');
   },
@@ -64,6 +67,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       enabled: Boolean(user),
     },
   );
+  const memos = useQuery(
+    Memo.my,
+    { page: 0 },
+    {
+      enabled: Boolean(user),
+    },
+  );
 
   useEffect(() => {
     if (!user?.auth) {
@@ -75,8 +85,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     onSuccess: async (data) => {
       const { access_token: accessToken, refresh_token: refreshToken } = data;
       saveAuthData(accessToken, refreshToken);
-      const result = await projects.refetch();
-      const [project] = (result.data?.list.currentPageResult || []).reverse();
+      const resultProjects = await projects.refetch();
+      const resultMemos = await memos.refetch();
+      const projectsList = resultProjects.data?.list.currentPageResult || [];
+      const memosList = resultMemos.data?.list.currentPageResult || [];
+
+      const [project] = projectsList.reverse();
+      const [memo] = memosList;
 
       setUser((prev) => ({
         ...prev,
@@ -85,6 +100,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           refreshToken,
         },
         project,
+        isRegistrationCompleted: Boolean(memo),
       }));
       setTwoFa((v) => ({
         ...v,
@@ -130,10 +146,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const contextValue = {
     user,
     projects: projects.data?.list.currentPageResult || [],
+    memos: memos.data?.list.currentPageResult || [],
     twoFAdata: twoFA,
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
-    isAuthorized: Boolean(user),
+    isAuthorized: Boolean(user?.project),
     setProject: (project: IProject) => {
       setUser((prev) => ({ ...prev, project }));
     },
@@ -153,6 +170,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
     logout: () => {
       setUser(null);
+    },
+    setCompleteReginstration: () => {
+      setUser((prev) => ({
+        ...prev!,
+        isRegistrationCompleted: true,
+      }));
     },
   };
 

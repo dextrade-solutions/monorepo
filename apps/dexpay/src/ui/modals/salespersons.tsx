@@ -7,7 +7,6 @@ import {
   ListItemButton,
   ListItemAvatar,
   Avatar,
-  TextField,
   Button,
   Skeleton,
   IconButton,
@@ -24,10 +23,10 @@ import { Trash } from 'lucide-react';
 import React, { useState } from 'react';
 import * as yup from 'yup';
 
-import { useMutation, useQuery } from '../hooks/use-query';
-import { useUser } from '../hooks/use-user';
-import { Projects } from '../services';
 import { TextFieldWithValidation } from '../components/fields';
+import { useAuth } from '../hooks/use-auth';
+import { useMutation, useQuery } from '../hooks/use-query';
+import { Projects } from '../services';
 
 const inviteUserSchema = yup.object().shape({
   email: yup
@@ -37,7 +36,7 @@ const inviteUserSchema = yup.object().shape({
 });
 
 const SalespersonsModal = ({ hideModal }: ModalProps) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { showModal } = useGlobalModalContext();
   const loader = useLoader();
 
@@ -109,21 +108,28 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
   };
 
   return (
-    <Box padding={5}>
-      <Box display="flex" justifyContent="space-between" marginBottom={2}>
-        <Typography>Salespersons</Typography>
+    <Box padding={5} data-testid="salespersons-modal">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        marginBottom={2}
+        data-testid="salespersons-modal-header"
+      >
+        <Typography data-testid="salespersons-modal-title">
+          Salespeople
+        </Typography>
         <ButtonIcon
           iconName="close"
           color="secondary"
           size="sm"
           onClick={hideModal}
+          data-testid="salespersons-modal-close-button"
         />
       </Box>
-
       <Divider />
-
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 2 }} data-testid="salespersons-modal-invite-section">
         <TextFieldWithValidation
+          data-testid="salespersons-modal-email-input"
           validationForm={form}
           label="Email"
           name="email"
@@ -137,17 +143,25 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
           variant="contained"
           fullWidth
           sx={{ mt: 2 }}
+          data-testid="salespersons-modal-invite-button"
         >
           Invite User
         </Button>
       </Box>
-
       {usersWithAccess.isLoading ? (
-        <Skeleton variant="rectangular" height={40} sx={{ my: 2 }} />
+        <Skeleton
+          variant="rectangular"
+          height={40}
+          sx={{ my: 2 }}
+          data-testid="salespersons-modal-loading-skeleton"
+        />
       ) : (
-        <MenuList>
+        <MenuList data-testid="salespersons-modal-user-list">
           {(usersWithAccess.data?.currentPageResult || []).map((userAccess) => (
-            <Box key={userAccess.user_id}>
+            <Box
+              key={userAccess.user_id}
+              data-testid={`salespersons-modal-user-item-${userAccess.user_id}`}
+            >
               <ListItemButton>
                 <ListItemAvatar>
                   <Avatar>{userAccess.user?.email[0]?.toUpperCase()}</Avatar>
@@ -158,6 +172,7 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
                     edge="end"
                     aria-label="delete"
                     onClick={() => handleRevoke(userAccess.user_id)}
+                    data-testid={`salespersons-modal-revoke-button-${userAccess.user_id}`}
                   >
                     <Trash />
                   </IconButton>

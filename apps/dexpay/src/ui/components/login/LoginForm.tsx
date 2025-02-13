@@ -8,13 +8,13 @@ import {
 import React, { useState, ChangeEvent } from 'react';
 
 import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
-import { useUser } from '../../hooks/use-user';
+import { useAuth } from '../../hooks/use-auth';
 import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
 import Link from '../ui/Link';
 
 const LoginForm = () => {
-  const user = useUser();
+  const auth = useAuth();
   const { showModal } = useGlobalModalContext();
   const form = useForm({ validationSchema: Validation.Auth.signIn });
   const [values, setValues] = useState({
@@ -26,7 +26,7 @@ const LoginForm = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await loader.runLoader(user.login(values.email, values.password));
+      await loader.runLoader(auth.login(values.email, values.password));
     } catch (error) {
       showModal({
         name: 'ALERT_MODAL',
@@ -44,8 +44,15 @@ const LoginForm = () => {
   };
 
   return (
-    <Box component="form" textAlign="right" onSubmit={handleSubmit} noValidate>
+    <Box
+      data-testid="login-form"
+      component="form"
+      textAlign="right"
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <TextFieldWithValidation
+        data-testid="login-email-input"
         margin="normal"
         fullWidth
         label="Email Address"
@@ -57,6 +64,7 @@ const LoginForm = () => {
         onChange={handleInputChange}
       />
       <VPasswordField
+        data-testid="login-password-input"
         margin="normal"
         fullWidth
         label="Password"
@@ -71,6 +79,7 @@ const LoginForm = () => {
       </Link>
 
       <GradientButton
+        data-testid="login-submit-button"
         type="submit"
         fullWidth
         size="large"
@@ -88,7 +97,9 @@ const LoginForm = () => {
         <Typography mr={1} color="text.secondary">
           Don’t have an account?
         </Typography>
-        <Link href={ROUTE_REGISTER}>Sign Up</Link>
+        <Link href={ROUTE_REGISTER} data-testid="login-signup-link">
+          Sign Up
+        </Link>
       </Box>
     </Box>
   );

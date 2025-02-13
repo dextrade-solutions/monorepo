@@ -3,6 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from 'dex-helpers/shared';
 import { DexUiProvider, useDexUI } from 'dex-ui';
 import log from 'loglevel';
+import { SnackbarProvider } from 'notistack';
 import React, { useEffect } from 'react';
 import { Switch, Route, useLocation } from 'wouter';
 
@@ -23,7 +24,8 @@ import {
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
 import { UserProvider } from './contexts/user-context';
-import { useUser } from './hooks/use-user';
+import { useAuth } from './hooks/use-auth';
+import SalespersonsModal from './modals/salespersons';
 import SelectProject from './modals/select-project';
 import LoginForm from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
@@ -35,30 +37,34 @@ import Profile from './pages/Profile';
 import TransactionHistory from './pages/TransactionHistory';
 import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
+import WalletMemo from './pages/WalletMemo';
 import WalletWithdrawPage from './pages/WalletWithdraw';
 import './css/index.scss';
-import SalespersonsModal from './modals/salespersons';
 
 log.setLevel(log.levels.DEBUG);
 
 function Router() {
-  const user = useUser();
-  const [, navigate] = useLocation(); // Get the navigate function
+  const auth = useAuth();
+  const [, navigate] = useLocation();
 
   useEffect(() => {
-    // Add useEffect to check authorization status
-    if (!user.isAuthorized) {
-      navigate('/'); // Redirect to login if not authorized
+    if (
+      !auth.isAuthorized ||
+      (auth.user && !auth.user.isRegistrationCompleted)
+    ) {
+      navigate('/');
     }
-  }, [user.isAuthorized, navigate]); // Add dependencies
+  }, []);
 
-  if (!user.isAuthorized) {
+  if (!auth.isAuthorized) {
     return (
       <Switch>
         <Route path={ROUTE_LOGIN} component={LoginForm} />
         <Route path={ROUTE_REGISTER} component={SignUp} />
       </Switch>
     );
+  } else if (auth.user && !auth.user.isRegistrationCompleted) {
+    return <Route path={'/'} component={WalletMemo} />;
   }
 
   return (
@@ -78,7 +84,7 @@ function Router() {
 }
 
 function App() {
-  const { isAuthorized } = useUser();
+  const { isAuthorized } = useAuth();
   if (!isAuthorized) {
     return (
       <>
@@ -113,7 +119,7 @@ function App() {
       <Box mb={10}>
         <Router />
       </Box>
-      {isAuthorized && <BottomNav />}
+      <BottomNav />
     </Container>
   );
 }
@@ -133,7 +139,9 @@ export function UI() {
               SALESPERSONS: SalespersonsModal,
             }}
           >
-            <App />
+            <SnackbarProvider>
+              <App />
+            </SnackbarProvider>
           </DexUiProvider>
         </UserProvider>
       </QueryClientProvider>

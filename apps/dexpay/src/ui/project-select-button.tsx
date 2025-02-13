@@ -4,7 +4,7 @@ import { useGlobalModalContext } from 'dex-ui';
 import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { useUser } from './hooks/use-user';
+import { useAuth } from './hooks/use-auth';
 
 const StyledButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.primary,
@@ -32,7 +32,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const ProjectSelectButton = () => {
   const { showModal } = useGlobalModalContext();
-  const { user, projects } = useUser();
+  const { user, projects } = useAuth();
 
   const handleClick = () => {
     showModal({
@@ -46,6 +46,7 @@ const ProjectSelectButton = () => {
       variant="contained"
       endIcon={<ChevronDown size={20} />}
       onClick={handleClick}
+      disabled={!user.isRegistrationCompleted}
     >
       {user?.project.name}
     </StyledButton>

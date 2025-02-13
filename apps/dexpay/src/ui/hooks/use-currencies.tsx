@@ -2,10 +2,10 @@ import assetDict from 'dex-helpers/assets-dict';
 
 import { Currency, Wallet } from '../services';
 import { useQuery } from './use-query';
-import { useUser } from './use-user';
+import { useAuth } from './use-auth';
 
 export function useCurrencies() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
     Currency.index,
   );

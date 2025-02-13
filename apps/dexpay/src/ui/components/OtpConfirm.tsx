@@ -4,13 +4,11 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 
-import { ROUTE_HOME } from '../../constants/pages';
-import { useUser } from '../../hooks/use-user';
+import { ROUTE_HOME } from '../constants/pages';
 
-const LoginOtp = ({ old }: { old?: boolean }) => {
+const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
   const [values, setForm] = useState({ otp: '' });
   const { showModal } = useGlobalModalContext();
-  const { twoFA } = useUser();
   const form = useForm();
   const loader = useLoader();
   const [, navigate] = useLocation();
@@ -19,7 +17,7 @@ const LoginOtp = ({ old }: { old?: boolean }) => {
     async (e?: React.FormEvent) => {
       e?.preventDefault();
       try {
-        await loader.runLoader(twoFA(values.otp, !old));
+        await loader.runLoader(method(values.otp));
         navigate(ROUTE_HOME);
       } catch (error) {
         setForm({ otp: '' });
@@ -30,7 +28,7 @@ const LoginOtp = ({ old }: { old?: boolean }) => {
         });
       }
     },
-    [showModal, form, twoFA],
+    [showModal, form],
   );
 
   const handleInputChange = (v: string) => {
@@ -48,7 +46,7 @@ const LoginOtp = ({ old }: { old?: boolean }) => {
       component="form"
       onSubmit={handleSubmit}
       noValidate
-      data-testid="login-otp-form"
+      data-testid="otp-form"
     >
       <Alert sx={{ my: 2 }} severity="info">
         We send you code to email, please check your inbox. Please enter the
@@ -68,10 +66,10 @@ const LoginOtp = ({ old }: { old?: boolean }) => {
         validationForm={form}
         name="otp"
         onChange={handleInputChange}
-        data-testid="login-otp-input" // Added data-testid
+        data-testid="otp-input" // Added data-testid
       />
     </Box>
   );
 };
 
-export default LoginOtp;
+export default OtpConfirm;

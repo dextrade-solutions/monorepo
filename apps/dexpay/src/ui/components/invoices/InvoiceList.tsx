@@ -22,12 +22,12 @@ import { DeleteIcon, Settings, Trash } from 'lucide-react';
 import React from 'react';
 
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { useUser } from '../../hooks/use-user';
+import { useAuth } from '../../hooks/use-auth';
 import { Invoice } from '../../services';
 import { IInvoice } from '../../types';
 
 export default function InvoiceList() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { showModal } = useGlobalModalContext();
   const loader = useLoader();
   const invoices = useQuery(Invoice.list, { projectId: user?.project.id });

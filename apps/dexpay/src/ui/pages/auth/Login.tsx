@@ -2,13 +2,14 @@ import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
 import LoginForm from '../../components/login/LoginForm';
-import LoginOtp from '../../components/login/LoginOtp';
-import { useUser } from '../../hooks/use-user';
+import OtpConfirm from '../../components/OtpConfirm';
+import { useAuth } from '../../hooks/use-auth';
 
 const Login = () => {
   const {
     twoFAdata: { codeToken },
-  } = useUser();
+    twoFA,
+  } = useAuth();
 
   return (
     <Container maxWidth="xs">
@@ -22,10 +23,10 @@ const Login = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', // Center horizontally
+          alignItems: 'center',
         }}
       >
-        {codeToken ? <LoginOtp /> : <LoginForm />} {/* Conditional rendering */}
+        {codeToken ? <OtpConfirm method={twoFA} /> : <LoginForm />}
       </Box>
     </Container>
   );

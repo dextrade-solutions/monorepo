@@ -2,6 +2,7 @@ export const ROUTE_HOME = '/';
 export const ROUTE_LOGIN = '/';
 export const ROUTE_FORGOT_PASSWORD = '/login/forgot-password';
 export const ROUTE_REGISTER = '/register';
+export const ROUTE_REGISTER_COMPLETE = '/register/complete';
 export const ROUTE_WALLET_DEPOSIT = '/wallet/deposit';
 export const ROUTE_WALLET_WITHDRAW = '/wallet/withdraw';
 export const ROUTE_MERCHANT = '/merchant';

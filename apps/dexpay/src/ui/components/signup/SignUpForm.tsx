@@ -3,13 +3,13 @@ import { useForm, useLoader, useGlobalModalContext } from 'dex-ui';
 import React, { useState, ChangeEvent } from 'react';
 
 import { ROUTE_LOGIN } from '../../constants/pages';
-import { useUser } from '../../hooks/use-user';
+import { useAuth } from '../../hooks/use-auth';
 import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
 import Link from '../ui/Link';
 
 const SignUpForm = () => {
-  const user = useUser();
+  const user = useAuth();
   const [values, setValues] = useState({
     email: '',
     password: '',
@@ -47,7 +47,13 @@ const SignUpForm = () => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      noValidate
+      sx={{ mt: 1 }}
+      data-testid="signup-form"
+    >
       <TextFieldWithValidation
         margin="normal"
         fullWidth
@@ -57,6 +63,7 @@ const SignUpForm = () => {
         validationForm={form}
         value={values.email}
         name="email"
+        data-testid="signup-email-input"
         onChange={handleInputChange}
       />
       <VPasswordField
@@ -68,6 +75,7 @@ const SignUpForm = () => {
         value={values.password}
         name="password"
         validationForm={form}
+        data-testid="signup-password-input"
         onChange={handleInputChange}
       />
       <VPasswordField
@@ -79,9 +87,11 @@ const SignUpForm = () => {
         value={values.confirmPassword}
         name="confirmPassword"
         validationForm={form}
+        data-testid="signup-confirm-password-input"
         onChange={handleInputChange}
       />
       <Button
+        data-testid="signup-submit-button"
         type="submit"
         fullWidth
         size="large"
@@ -103,7 +113,11 @@ const SignUpForm = () => {
         <Typography mr={1} color="text.secondary">
           Already have an account?
         </Typography>
-        <Link href={ROUTE_LOGIN} color="text.tertiary">
+        <Link
+          href={ROUTE_LOGIN}
+          color="text.tertiary"
+          data-testid="signup-signin-link"
+        >
           Sign in
         </Link>
       </Box>

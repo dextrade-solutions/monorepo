@@ -1,14 +1,15 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
-import LoginOtp from '../../components/login/LoginOtp';
+import OtpConfirm from '../../components/OtpConfirm';
 import SignUpForm from '../../components/signup/SignUpForm';
-import { useUser } from '../../hooks/use-user';
+import { useAuth } from '../../hooks/use-auth';
 
 const SignUp = () => {
   const {
     twoFAdata: { codeToken },
-  } = useUser();
+    twoFA,
+  } = useAuth();
   return (
     <Container maxWidth="xs">
       <Box
@@ -27,7 +28,11 @@ const SignUp = () => {
         >
           Dex<strong>Pay</strong>
         </Typography>
-        {codeToken ? <LoginOtp old /> : <SignUpForm />}
+        {codeToken ? (
+          <OtpConfirm method={(code) => twoFA(code, false)} />
+        ) : (
+          <SignUpForm />
+        )}
       </Box>
     </Container>
   );
