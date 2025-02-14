@@ -15,7 +15,7 @@ type InferResponse<T> = T extends (...args: infer P) => Promise<infer R>
 // Enhanced useQuery hook
 export function useQuery<TService extends AnyFunction>(
   serviceMethod: TService,
-  params?: InferParams<TService>[0],
+  params?: InferParams<TService> | InferParams<TService>[0],
   options?: Omit<
     UseQueryOptions<InferResponse<TService>>,
     'queryKey' | 'queryFn'
@@ -23,7 +23,8 @@ export function useQuery<TService extends AnyFunction>(
 ) {
   // Create query key from service method name and params
   const queryKey = [serviceMethod.toString(), params];
-  const queryFn = () => serviceMethod(params);
+  const queryFn = () =>
+    serviceMethod(...(Array.isArray(params) ? params : [params]));
 
   return useReactQuery({
     queryKey,

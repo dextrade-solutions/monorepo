@@ -9,9 +9,10 @@ import {
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import React, { useState, useEffect } from 'react';
-
-import SelectCurrency from '../ui/SelectCurrency';
 import { Link } from 'wouter';
+
+import WalletDepositAddress from './WalletDepositAddress';
+import SelectCurrency from '../ui/SelectCurrency';
 
 export default function WalletDeposit() {
   const [activeStep, setActiveStep] = useState(0);
@@ -33,7 +34,9 @@ export default function WalletDeposit() {
           <SelectCurrency value={currency} onChange={(v) => setCurrency(v)} />
           {currency && currency.extra.currency.contract_address && (
             <Box display="flex" mt={1}>
-              <Typography mr={1} color="text.secondary">Contract address: </Typography>
+              <Typography mr={1} color="text.secondary">
+                Contract address:{' '}
+              </Typography>
               <Link href={`https://bscscan.com/address/`}>
                 {shortenAddress(currency.extra.currency.contract_address)}
               </Link>
@@ -44,8 +47,9 @@ export default function WalletDeposit() {
       <Step>
         <StepLabel>Share address</StepLabel>
         <StepContent>
-          <Typography>123123</Typography>
-          <Box sx={{ mb: 2 }}></Box>
+          {currency && (
+            <WalletDepositAddress currency={currency.extra.currency} />
+          )}
         </StepContent>
       </Step>
     </Stepper>

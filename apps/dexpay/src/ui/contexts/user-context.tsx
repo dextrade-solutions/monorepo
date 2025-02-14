@@ -2,7 +2,7 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Memo, Projects } from '../services'; // Import Auth service
+import { Auth, Memo, Projects, Vault } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
 import { IProject, Auth as AuthTypes, IMemo } from '../types';
 
@@ -58,20 +58,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useLocalStorage<User | null>('user-data', null);
   const [twoFA, setTwoFa] = useState({
     codeToken: '',
-  }); // twoFA code token
-
+  });
+  const isAuthorized = Boolean(user?.project);
   const projects = useQuery(
     Projects.my,
     { page: 0 },
     {
-      enabled: Boolean(user),
+      enabled: isAuthorized,
     },
   );
   const memos = useQuery(
     Memo.my,
     { page: 0 },
     {
-      enabled: Boolean(user),
+      enabled: isAuthorized,
     },
   );
 
@@ -150,7 +150,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     twoFAdata: twoFA,
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
-    isAuthorized: Boolean(user?.project),
+    isAuthorized,
     setProject: (project: IProject) => {
       setUser((prev) => ({ ...prev, project }));
     },

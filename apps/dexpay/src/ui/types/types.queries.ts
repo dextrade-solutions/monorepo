@@ -328,10 +328,6 @@ export namespace Vault {
       projectId: number;
     }
 
-    export interface Query {
-      page: number;
-    }
-
     export interface Response {
       list: {
         currentPageResult: IVault[];
