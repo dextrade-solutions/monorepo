@@ -1,4 +1,14 @@
-import { Button, Paper, Typography, Box } from '@mui/material';
+import {
+  Button,
+  Paper,
+  Typography,
+  Box,
+  Skeleton,
+  CardContent,
+  Card,
+} from '@mui/material';
+import { formatCurrency } from 'dex-helpers';
+import { range, sumBy } from 'lodash';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React from 'react';
 import { useLocation } from 'wouter';
@@ -8,9 +18,13 @@ import {
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
 } from '../constants/pages';
+import { useCurrencies } from '../hooks/use-currencies';
 
 export default function Wallet() {
   const [_, navigate] = useLocation();
+  const { items, isLoading } = useCurrencies();
+
+  const totalBalance = sumBy(items, 'balance.total_balance_usdt');
   return (
     <Box>
       <Box mb={4}>
@@ -19,7 +33,7 @@ export default function Wallet() {
             Balance
           </Typography>
           <Typography variant="h4" fontWeight="bold">
-            $1000.00 USD
+            {formatCurrency(totalBalance, 'usd')} USD
           </Typography>
         </Paper>
         <Box display="flex" gap={2}>
@@ -49,7 +63,39 @@ export default function Wallet() {
         <Typography variant="h6" gutterBottom>
           Assets
         </Typography>
-        <AssetList />
+        {isLoading && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {range(10).map(() => (
+              <Card
+                elevation={0}
+                sx={{ borderRadius: 1, bgcolor: 'secondary.dark' }}
+              >
+                <CardContent
+                  sx={{ p: 2, display: 'flex', alignItems: 'center' }}
+                >
+                  <Skeleton
+                    variant="circular"
+                    width={40}
+                    height={40}
+                    sx={{ mr: 2 }}
+                  />
+                  <Box>
+                    <Skeleton height={20} width={80} />
+                    <Skeleton height={16} width={50} sx={{ mt: 0.5 }} />
+                  </Box>
+                  <Box sx={{ marginLeft: 'auto' }}>
+                    {' '}
+                    {/* Push balance to the right */}
+                    <Skeleton height={20} width={60} />
+                    <Skeleton height={16} width={40} sx={{ mt: 0.5 }} />
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        )}
+
+        {!isLoading && <AssetList items={items} />}
       </Box>
     </Box>
   );

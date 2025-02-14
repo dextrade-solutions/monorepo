@@ -1,5 +1,9 @@
 import { Card, CardContent, Box, Typography } from '@mui/material';
-import { getCoinIconByUid } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  getCoinIconByUid,
+} from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { UrlIcon } from 'dex-ui';
 import React from 'react';
@@ -8,7 +12,6 @@ import { IBalance, ICurrency } from '../../types';
 
 export function AssetListItem({
   asset,
-  currency, // Include the currency prop
   balance,
 }: {
   asset: AssetModel;
@@ -39,16 +42,14 @@ export function AssetListItem({
           </Box>
         </Box>
         <Box sx={{ textAlign: 'right' }}>
-          {' '}
-          {/* Added a right-aligned box for balance */}
-          <Typography variant="body2" color="textSecondary">
-            {/* Display balance with proper formatting or fallback */}
-            {balance?.amount ? balance.amount : 'N/A'}
+          <Typography>
+            {balance?.total_balance_currency
+              ? formatFundsAmount(balance.total_balance_currency)
+              : 'N/A'}
           </Typography>
-          {/* Conditionally render USD value if available */}
-          {balance?.usdValue && (
+          {balance?.total_balance_usdt && (
             <Typography variant="caption" color="textSecondary">
-              ${balance.usdValue.toFixed(2)}
+              {formatCurrency(balance.total_balance_usdt, 'USD')}
             </Typography>
           )}
         </Box>

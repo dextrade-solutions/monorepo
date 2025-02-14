@@ -47,9 +47,9 @@ export default function WalletDeposit() {
       <Step>
         <StepLabel>Share address</StepLabel>
         <StepContent>
-          {currency && (
+          {/* {currency && (
             <WalletDepositAddress currency={currency.extra.currency} />
-          )}
+          )} */}
         </StepContent>
       </Step>
     </Stepper>

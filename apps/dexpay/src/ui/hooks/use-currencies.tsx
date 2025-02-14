@@ -1,8 +1,8 @@
 import assetDict from 'dex-helpers/assets-dict';
 
 import { Currency, Wallet } from '../services';
-import { useQuery } from './use-query';
 import { useAuth } from './use-auth';
+import { useQuery } from './use-query';
 
 export function useCurrencies() {
   const { user } = useAuth();
@@ -22,9 +22,14 @@ export function useCurrencies() {
       .map((i) => ({
         currency: i,
         asset: assetDict[i.name],
-        balance: balancesData?.balances?.map((b) => b.currency_id === i.id),
+        balance: balancesData?.balances?.find((b) => b.currency_id === i.id),
       }))
-      .filter((i) => i.asset),
+      .filter((i) => i.asset)
+      .sort((a, b) => {
+        const balanceA = Number(a.balance?.total_balance_usdt) || 0; // Default to 0 if undefined
+        const balanceB = Number(b.balance?.total_balance_usdt) || 0; // Default to 0 if undefined
+        return balanceB - balanceA; // Sort in descending order of balance
+      }),
     isLoading: false,
   };
 }

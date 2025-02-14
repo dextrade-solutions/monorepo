@@ -43,7 +43,7 @@ export default function Merchant() {
             gutterBottom
             data-testid="merchant-income-amount"
           >
-            $4.00 USD
+            $0.00 USD
           </Typography>
         </Paper>
 
