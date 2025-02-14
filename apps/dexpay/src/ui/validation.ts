@@ -1,13 +1,23 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable no-useless-escape */
 import dayjs from 'dayjs';
+import { validateMnemonic } from 'bip39';
 import { object, string, ref, number, date, boolean, array, mixed } from 'yup';
 
 export namespace Validation {
   export namespace Crypto {
     export const seedPhrase = array()
       .min(12, 'Seed phrase must have at least 12 words')
-      .of(string().required('Each word is required'));
+      .of(string().required('Each word is required'))
+      .test(
+        'valid-seed-phrase',
+        'Invalid seed phrase',
+        (value: string[] | undefined) => {
+          if (!value) return false; // Handle undefined/null values
+          const seedPhraseString = value.join(' ');
+          return validateMnemonic(seedPhraseString);
+        },
+      );
   }
   export namespace Auth {
     export const signUp = object({
