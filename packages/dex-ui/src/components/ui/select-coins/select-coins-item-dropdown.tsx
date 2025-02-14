@@ -26,7 +26,7 @@ const Placeholder = ({ loading, searchQuery }) => {
 
   return (
     <div className="dropdown-search-list__placeholder">
-      {t('swapBuildQuotePlaceHolderText', [searchQuery])}
+      {t('Assets not found...', [searchQuery])}
     </div>
   );
 };

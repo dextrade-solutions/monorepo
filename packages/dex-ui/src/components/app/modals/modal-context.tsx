@@ -7,6 +7,7 @@ import ConfirmModal from './confirm-modal';
 import ImageModalComponent from './image-modal';
 import ItemPicker from './item-picker';
 import PayModal from './pay-modal';
+import QrModal from './qr-modal';
 import SetPaymentMethod from './set-payment-method';
 import SlippageModal from './slippage-modal';
 import { ModalContext } from './types';
@@ -21,6 +22,7 @@ export const MODAL_COMPONENTS = {
   BUY_PLAN: BuyPlan,
   CONFIRM_MODAL: ConfirmModal,
   ASSET_SELECT: AssetSelect,
+  QR_MODAL: QrModal,
   DEFAULT: null,
 };
 

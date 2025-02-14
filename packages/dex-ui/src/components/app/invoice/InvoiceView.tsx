@@ -12,7 +12,12 @@ import {
   Avatar,
 } from '@mui/material';
 import { determineConnectionType, useConnections } from 'dex-connect';
-import { formatCurrency, formatFundsAmount, shortenAddress } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  getQRCodeURI,
+  shortenAddress,
+} from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
@@ -31,7 +36,6 @@ import {
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
 import { useGlobalModalContext } from '../modals';
-import { useShowQr } from './hooks/use-show-qr';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import usePayment from './react-queries/queries/usePayment';
@@ -60,13 +64,12 @@ export default function InvoiceView({
   const currencies = useCurrencies();
   const changeAddress = usePaymentAddress();
   const config = useConfig();
-  const showQr = useShowQr();
   const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
 
   const paymentAssetId = payment.data?.currency?.iso_with_network;
   const isLoading = payment.isLoading || currencies.isLoading;
 
-  const paymentAsset = useMemo(() => {
+  const paymentAsset = useMemo<AssetModel | null>(() => {
     if (!paymentAssetId || !assetsDict) {
       return null;
     }
@@ -362,7 +365,7 @@ export default function InvoiceView({
                   <Button variant={secondarySendAmount ? 'text' : 'contained'}>
                     <SelectCoinsItem
                       className="flex-shrink"
-                      asset={paymentAsset}
+                      value={paymentAsset}
                       placeholder={'Select payment Asset'}
                       items={assetList}
                       onChange={onChangeAsset}
@@ -449,7 +452,19 @@ export default function InvoiceView({
                   <>
                     <ListItemButton
                       className="bordered"
-                      onClick={() => showQr(payment.data, secondaryDelta)}
+                      // onClick={() => showQr(payment.data, secondaryDelta)}
+                      onClick={() =>
+                        showModal({
+                          name: 'QR_MODAL',
+                          description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
+                          value: getQRCodeURI(
+                            payment.data.address,
+                            payment.data.amount_requested_f,
+                            payment.data.currency.network_name,
+                            paymentAsset.contract,
+                          ),
+                        })
+                      }
                     >
                       <ListItemAvatar>
                         <Icon ml={1} name="qr-code" size="xl" />
