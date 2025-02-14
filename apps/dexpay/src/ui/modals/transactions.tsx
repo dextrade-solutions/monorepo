@@ -1,4 +1,11 @@
-import { Box, Typography, Card, CardContent, Divider } from '@mui/material';
+import {
+  Box,
+  Skeleton,
+  Typography,
+  Card,
+  CardContent,
+  Divider,
+} from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import { ButtonIcon, CopyData, ModalProps } from 'dex-ui';
 import React from 'react';
@@ -30,17 +37,54 @@ const TransactionsModal: React.FC<TransactionsModalProps & ModalProps> = ({
       </Box>
       <Divider />
 
-      {transactions.map((transaction) => (
-        <TransactionItem
-          key={transaction.id}
-          asset={
-            currencies.items.find(
-              ({ currency }) => currency.id === transaction.currency_id,
-            )?.asset
-          }
-          transaction={transaction}
-        />
-      ))}
+      {currencies.isLoading && (
+        <Card
+          elevation={0}
+          sx={{
+            marginTop: 2,
+            bgcolor: 'primary.light',
+            borderRadius: 1,
+          }}
+        >
+          <CardContent>
+            <Box display="flex">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                sx={{ mr: 2 }}
+              />
+              <Box>
+                <Skeleton height={20} width={100} />
+                <Skeleton height={16} width={80} sx={{ mt: 1 }} />
+              </Box>
+            </Box>
+            <Divider sx={{ my: 1 }} />
+            <Skeleton height={20} width="60%" />
+            <Box mt={1}>
+              <Skeleton height={16} width="100%" />
+              <Skeleton height={16} width="80%" sx={{ mt: 1 }} />
+              <Skeleton height={16} width="60%" sx={{ mt: 1 }} />
+            </Box>
+            <Divider sx={{ my: 1 }} />
+            <Skeleton height={20} width="50%" />
+            <Skeleton height={16} width="30%" sx={{ mt: 1 }} />
+          </CardContent>
+        </Card>
+      )}
+
+      {!currencies.isLoading &&
+        transactions.map((transaction) => (
+          <TransactionItem
+            key={transaction.id}
+            asset={
+              currencies.items.find(
+                ({ currency }) => currency.id === transaction.currency_id,
+              )?.asset
+            }
+            transaction={transaction}
+          />
+        ))}
     </Box>
   );
 };

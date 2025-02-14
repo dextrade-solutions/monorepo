@@ -8,14 +8,14 @@ import { ITransaction } from '../../types';
 
 interface TransactionItemProps {
   transaction: ITransaction;
-  asset: AssetModel;
+  asset?: AssetModel;
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   transaction,
   asset,
 }) => {
-  const currencyIso = asset.symbol || 'Unknown_currency'; // Fallback to BNB if currency is not available
+  const currencyIso = asset?.symbol || 'Unknown_currency'; // Fallback to BNB if currency is not available
 
   return (
     <Card
@@ -29,8 +29,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     >
       <CardContent>
         <Box display="flex">
-          <UrlIcon url={getCoinIconByUid(asset.uid)} size={40} sx={{ mr: 2 }} />
-          <Box ml={2}>
+          {asset?.uid && (
+            <UrlIcon
+              url={getCoinIconByUid(asset.uid)}
+              size={40}
+              sx={{ mr: 2 }}
+            />
+          )}
+          <Box>
             <Typography variant="body1" fontWeight="bold">
               + {formatCurrency(transaction.amount, currencyIso)}
             </Typography>
