@@ -29,6 +29,7 @@ const DatePickerComponent: React.FC<Props> = ({
         label={label}
         value={value}
         onChange={onChange}
+        data-testid="date-picker"
         renderInput={(params) => (
           <TextField {...textFieldProps} {...params} fullWidth />
         )}

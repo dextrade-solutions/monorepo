@@ -37,16 +37,6 @@ function SelectCoinAmount({
   coins: Record<string, ICoin>;
   onChange: (v: InputValue) => void;
 }) {
-  const preloader = () => {
-    return (
-      <Box>
-        <Skeleton width="100%" height={30} />
-        <Skeleton width="100%" height={30} />
-        <Skeleton width="100%" height={30} />
-      </Box>
-    );
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({
       amount: e.target.value,
@@ -68,6 +58,7 @@ function SelectCoinAmount({
           width: '100%',
         }}
         variant="outlined"
+        data-testid="select-coin-amount"
       >
         <OutlinedInput
           value={value?.amount}

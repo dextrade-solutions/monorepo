@@ -181,7 +181,7 @@ const CreateInvoiceForm = () => {
               multiline
               value={invoiceData.description}
               data-testid="invoice-create-description-input"
-              onChange={handleInputChange}
+              onChange={(name, e) => handleInputChange(name, e.target.value)}
             />
           </Box>
           <DatePickerWithValidation

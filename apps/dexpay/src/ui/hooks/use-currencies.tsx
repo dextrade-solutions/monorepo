@@ -15,7 +15,7 @@ export function useCurrencies() {
   );
   const items = currencies?.list.currentPageResult || [];
   if (isLoadingBalances || isLoadingCurrencies) {
-    return { items, isLoading: true };
+    return { items: [], isLoading: true };
   }
   return {
     items: items

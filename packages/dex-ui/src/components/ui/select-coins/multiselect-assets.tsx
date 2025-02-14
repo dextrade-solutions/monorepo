@@ -68,6 +68,7 @@ export function MultiselectAssets({
         borderColor: 'divider',
         marginY: 1,
       }}
+      data-testid="multiselect-assets"
     >
       <FormControl fullWidth>
         <Box display="flex" flexWrap="wrap">
@@ -83,7 +84,7 @@ export function MultiselectAssets({
                   <Typography>{i.symbol}</Typography>
                   {i.standard && (
                     <Typography ml={1} color="text.secondary">
-                      {i.standard}
+                      {i.standard.toLowerCase()}
                     </Typography>
                   )}
                 </Box>
@@ -117,7 +118,7 @@ export function MultiselectAssets({
                     <Typography>{i.symbol}</Typography>
                     {i.standard && (
                       <Typography ml={1} color="text.secondary">
-                        {i.standard}
+                        {i.standard.toLowerCase()}
                       </Typography>
                     )}
                   </Box>

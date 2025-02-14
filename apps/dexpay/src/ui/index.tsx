@@ -27,6 +27,7 @@ import { UserProvider } from './contexts/user-context';
 import { useAuth } from './hooks/use-auth';
 import SalespersonsModal from './modals/salespersons';
 import SelectProject from './modals/select-project';
+import TransactionsModal from './modals/transactions';
 import LoginForm from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import CreateInvoice from './pages/CreateInvoice';
@@ -137,6 +138,7 @@ export function UI() {
             modals={{
               SELECT_PROJECT: SelectProject,
               SALESPERSONS: SalespersonsModal,
+              DEXPAY_TRANSACTIONS_LIST: TransactionsModal,
             }}
           >
             <SnackbarProvider>

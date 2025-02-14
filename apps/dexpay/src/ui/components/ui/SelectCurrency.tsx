@@ -22,6 +22,7 @@ export default function SelectCurrency({
         color: 'text.primary',
       }}
       variant="outlined"
+      data-testid="select-currency"
     >
       <SelectCoinsItem
         value={value}

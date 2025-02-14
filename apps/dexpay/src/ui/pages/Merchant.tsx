@@ -78,15 +78,11 @@ export default function Merchant() {
         </Box>
       </Box>
       <Box data-testid="merchant-invoices-section">
-        {' '}
-        {/* Added data-testid */}
         <Typography
           variant="h6"
           gutterBottom
           data-testid="merchant-invoices-label"
         >
-          {' '}
-          {/* Added data-testid */}
           Invoices
         </Typography>
         <Box
@@ -95,8 +91,6 @@ export default function Merchant() {
           gap={2}
           data-testid="merchant-invoices-list"
         >
-          {' '}
-          {/* Added data-testid */}
           <InvoiceList />
         </Box>
       </Box>
