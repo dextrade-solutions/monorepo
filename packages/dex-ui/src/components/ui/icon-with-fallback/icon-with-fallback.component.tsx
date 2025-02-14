@@ -26,7 +26,7 @@ const IconWithFallback = ({
   };
 
   return (
-    <Box display="flex" className={classnames(wrapperClassName)}>
+    <Box display="flex" className={classnames(wrapperClassName)} sx={props.sx}>
       {!iconError && icon ? (
         <img
           onError={handleOnError}

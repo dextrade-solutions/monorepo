@@ -4,6 +4,11 @@ import dayjs from 'dayjs';
 import { object, string, ref, number, date, boolean, array, mixed } from 'yup';
 
 export namespace Validation {
+  export namespace Crypto {
+    export const seedPhrase = array()
+      .min(12, 'Seed phrase must have at least 12 words')
+      .of(string().required('Each word is required'));
+  }
   export namespace Auth {
     export const signUp = object({
       email: string()

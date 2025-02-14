@@ -12,6 +12,7 @@ export default function UrlIcon({
   className,
   name,
   fallbackClassName,
+  ...props
 }: {
   url: string;
   size?: number;
@@ -26,6 +27,7 @@ export default function UrlIcon({
       name={name}
       size={size}
       fallbackClassName={classnames('url-icon__fallback', fallbackClassName)}
+      {...props}
     />
   );
 }

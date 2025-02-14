@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { GradientButton, useLoader } from 'dex-ui';
+import { GradientButton, useLoader, useGlobalModalContext } from 'dex-ui';
 import React, { useState } from 'react';
 
 import { PGP } from '../../crypto/pgp';
@@ -9,8 +9,10 @@ import { useAuth } from '../hooks/use-auth';
 import { useMutation } from '../hooks/use-query';
 import { Memo } from '../services';
 import { Memo as MemoTypes } from '../types';
+import { Validation } from '../validation';
 
 export default function WalletMemo() {
+  const { showModal } = useGlobalModalContext();
   const [seedPhrase, setSeedPhrase] = useState<string[]>();
   const { setCompleteReginstration } = useAuth();
   const { runLoader } = useLoader();
@@ -49,9 +51,18 @@ export default function WalletMemo() {
     ]);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    runLoader(complete.mutateAsync([{ name: 'Seed Phrase 1' }]));
+    try {
+      if (!seedPhrase) {
+        throw new Error('No seed phrase provided');
+      }
+      await Validation.Crypto.seedPhrase.validate(seedPhrase); // Validate the seed phrase
+      // If validation passes, proceed with the submission
+      await runLoader(complete.mutateAsync([{ name: 'Seed Phrase 1' }]));
+    } catch (err: any) {
+      showModal({ name: 'ALERT_MODAL', severity: 'error', text: err.message });
+    }
   };
 
   return (
