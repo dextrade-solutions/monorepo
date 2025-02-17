@@ -42,16 +42,14 @@ export function AssetListItem({
           </Box>
         </Box>
         <Box sx={{ textAlign: 'right' }}>
-          <Typography>
+          <Typography variant="h6">
             {balance?.total_balance_currency
               ? formatFundsAmount(balance.total_balance_currency)
-              : 'N/A'}
+              : '0'}
           </Typography>
-          {balance?.total_balance_usdt && (
-            <Typography variant="caption" color="textSecondary">
-              {formatCurrency(balance.total_balance_usdt, 'USD')}
-            </Typography>
-          )}
+          <Typography color="textSecondary">
+            {formatCurrency(balance?.total_balance_usdt || '0', 'USD')}
+          </Typography>
         </Box>
       </CardContent>
     </Card>

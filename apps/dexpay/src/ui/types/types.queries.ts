@@ -19,6 +19,7 @@ import type {
   IUser,
   IBalance,
   IDextradeUser,
+  IStatistic,
 } from './types.entities';
 
 export namespace Auth {
@@ -663,6 +664,21 @@ export namespace Callback {
     export interface Query extends Record<string, any> {
       page?: number;
       name?: string;
+    }
+  }
+}
+
+export namespace Statistic {
+  export namespace Invoices {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Response {
+      received: {
+        by_currency: Record<ICurrency['id'], IStatistic>;
+        total_usdt: string;
+      };
     }
   }
 }

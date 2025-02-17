@@ -60,4 +60,13 @@ export default abstract class ProjectService {
       )
       .json<Project.RevokeAccess.Response>();
   }
+
+  static setDrain(
+    params: Project.SetDrain.Params,
+    json: Project.SetDrain.Body,
+  ) {
+    return $api
+      .put(`${ProjectService.PREFIX}/${params.id}/drain`, { json })
+      .json<Project.SetDrain.Response>();
+  }
 }

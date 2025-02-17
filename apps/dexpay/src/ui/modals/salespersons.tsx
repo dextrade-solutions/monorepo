@@ -171,8 +171,8 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() => handleRevoke(userAccess.user_id)}
-                    data-testid={`salespersons-modal-revoke-button-${userAccess.user_id}`}
+                    onClick={() => handleRevoke(userAccess.id)}
+                    data-testid={`salespersons-modal-revoke-button-${userAccess.id}`}
                   >
                     <Trash />
                   </IconButton>

@@ -60,11 +60,11 @@ export interface ICurrency {
 }
 
 export interface ICoin {
-  id: number,
-  iso: string,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null,
+  id: number;
+  iso: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface INetwork {
@@ -122,9 +122,9 @@ export interface ICallback {
 }
 
 export interface IApiToken {
-  id: number,
-  label: string,
-  createdAt: string
+  id: number;
+  label: string;
+  createdAt: string;
 }
 
 export interface IInvoice {
@@ -153,48 +153,48 @@ export interface IInvoice {
 
 export interface IPair {
   rate_source_options: {
-    serviceName: string,
+    serviceName: string;
     serviceParams: {
-      main_iso: string,
-      second_iso: string
-    }
-  },
-  id: number,
-  project_id: number,
-  currency_main_id: number,
-  currency_second_id: number,
-  name: string,
-  is_active: boolean,
-  liquidity_address_main_id: number,
-  liquidity_address_second_id: number,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: null,
-  currency_main: ICurrency | null,
-  currency_second: ICurrency,
+      main_iso: string;
+      second_iso: string;
+    };
+  };
+  id: number;
+  project_id: number;
+  currency_main_id: number;
+  currency_second_id: number;
+  name: string;
+  is_active: boolean;
+  liquidity_address_main_id: number;
+  liquidity_address_second_id: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+  currency_main: ICurrency | null;
+  currency_second: ICurrency;
   liquidity_main_address: {
-    address: string,
-    tag: string,
-    balance: string,
-    balanceUpdatedAt: string
-  },
+    address: string;
+    tag: string;
+    balance: string;
+    balanceUpdatedAt: string;
+  };
   liquidity_second_address: {
-    address: string,
-    tag: string,
-    balance: string,
-    balanceUpdatedAt: string
-  }
+    address: string;
+    tag: string;
+    balance: string;
+    balanceUpdatedAt: string;
+  };
 }
 
 export interface IPriceSource {
-  id: number,
-  currency_id: number,
-  coin_id: number,
-  service_type: string,
-  service_currency_iso: string,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null
+  id: number;
+  currency_id: number;
+  coin_id: number;
+  service_type: string;
+  service_currency_iso: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IPriceSourcePair {
@@ -203,127 +203,133 @@ export interface IPriceSourcePair {
 }
 
 export interface IAdvert {
-  id?: number,
-  dextrade_id?: number,
-  dextrade_reversed_id?: number,
-  pair_id?: number,
-  pair?: IPair,
+  id?: number;
+  dextrade_id?: number;
+  dextrade_reversed_id?: number;
+  pair_id?: number;
+  pair?: IPair;
   details: {
-    id: number,
-    userId: number,
-    active: boolean,
-    priceAdjustment: number,
-    transactionFee: number,
-    walletAddress: string,
-    walletAddressInNetwork2: string,
+    id: number;
+    userId: number;
+    active: boolean;
+    priceAdjustment: number;
+    transactionFee: number;
+    walletAddress: string;
+    walletAddressInNetwork2: string;
     coinPair: {
-      id: number,
-      pair: string,
-      nameFrom: string,
-      nameTo: string,
-      originalPrice: number,
-      price: number,
-      priceCoin1InUsdt: number,
-      priceCoin2InUsdt: number,
-      currencyAggregator: string
-    },
+      id: number;
+      pair: string;
+      nameFrom: string;
+      nameTo: string;
+      originalPrice: number;
+      price: number;
+      priceCoin1InUsdt: number;
+      priceCoin2InUsdt: number;
+      currencyAggregator: string;
+    };
     from: {
-      id: number,
-      ticker: string,
-      tokenName: string,
-      uuid: string,
-      networkType: string,
-      networkName: string,
-      networkId: number
-    },
+      id: number;
+      ticker: string;
+      tokenName: string;
+      uuid: string;
+      networkType: string;
+      networkName: string;
+      networkId: number;
+    };
     to: {
-      id: number,
-      ticker: string,
-      tokenName: string,
-      uuid: string,
-      networkType: string,
-      networkName: string,
-      networkId: number
-    },
+      id: number;
+      ticker: string;
+      tokenName: string;
+      uuid: string;
+      networkType: string;
+      networkName: string;
+      networkId: number;
+    };
     reserve: [
       {
-        id: number,
+        id: number;
         coin: {
-          id: number,
-          ticker: string,
-          tokenName: string,
-          uuid: string,
-          networkType: string,
-          networkName: string,
-          networkId: number
-        },
-        reserveInCoin1: number,
-        reserveInCoin2: number
-      }
-    ],
-    reserveSum: number,
-    minimumExchangeAmountCoin1: number,
-    maximumExchangeAmountCoin1: number,
-    exchangersPolicy: string,
-    paymentMethods: [],
+          id: number;
+          ticker: string;
+          tokenName: string;
+          uuid: string;
+          networkType: string;
+          networkName: string;
+          networkId: number;
+        };
+        reserveInCoin1: number;
+        reserveInCoin2: number;
+      },
+    ];
+    reserveSum: number;
+    minimumExchangeAmountCoin1: number;
+    maximumExchangeAmountCoin1: number;
+    exchangersPolicy: string;
+    paymentMethods: [];
     statistic: {
-      transactionCount: number
-    },
-    isAtomicSwap: boolean,
-    lastActive: number,
-    tradeWithKycUsers: boolean,
-    provider: string,
-    cdt: number
-  }
+      transactionCount: number;
+    };
+    isAtomicSwap: boolean;
+    lastActive: number;
+    tradeWithKycUsers: boolean;
+    provider: string;
+    cdt: number;
+  };
 }
 
 export interface ITrade {
-  id?: number,
+  id?: number;
 }
 
 export interface IPermission {
-  id: number,
-  user_id: number,
-  permission_type: number,
-  is_enabled: boolean,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null
+  id: number;
+  user_id: number;
+  permission_type: number;
+  is_enabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IUser {
-  id: number,
-  email: string,
-  first_name: string,
-  last_name: string,
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
   label?: string;
-  is_email_activated: boolean,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null,
-  permissions?: IPermission[]
+  is_email_activated: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  permissions?: IPermission[];
 }
 
 export interface IBalance {
-  id: number,
-  unique_key: string,
-  total_balance_usdt: string,
-  latest_data_date: string,
-  total_balance_currency: string,
-  project_id: number,
-  currency_id: number,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null
+  id: number;
+  unique_key: string;
+  total_balance_usdt: string;
+  latest_data_date: string;
+  total_balance_currency: string;
+  project_id: number;
+  currency_id: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface IDextradeUser {
-  id: number,
-  dextrade_id: number,
-  project_id: number,
-  username: string,
-  createdAt: string,
-  updatedAt: string,
-  deletedAt: string | null,
-  project?: IProject | null
+  id: number;
+  dextrade_id: number;
+  project_id: number;
+  username: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  project?: IProject | null;
+}
+
+export interface IStatistic {
+  currency_iso: string;
+  amount: string;
+  amount_usdt: string;
 }

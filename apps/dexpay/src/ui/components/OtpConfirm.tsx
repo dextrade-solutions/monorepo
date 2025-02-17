@@ -58,13 +58,10 @@ const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
         autoFocus
         TextFieldsProps={{
           variant: 'outlined',
+          placeholder: '-',
+          inputMode: 'numeric',
         }}
-        type="number"
-        label="OTP"
-        autoComplete="one-time-code"
         value={values.otp}
-        validationForm={form}
-        name="otp"
         onChange={handleInputChange}
         data-testid="otp-input" // Added data-testid
       />

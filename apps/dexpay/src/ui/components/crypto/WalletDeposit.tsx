@@ -11,7 +11,6 @@ import { shortenAddress } from 'dex-helpers';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 
-import WalletDepositAddress from './WalletDepositAddress';
 import SelectCurrency from '../ui/SelectCurrency';
 
 export default function WalletDeposit() {

@@ -1,4 +1,5 @@
-import { Typography, Button, Box, Paper } from '@mui/material';
+import { Typography, Button, Box, Paper, Skeleton } from '@mui/material';
+import { formatCurrency } from 'dex-helpers';
 import { CircleNumber, Icon, useGlobalModalContext } from 'dex-ui';
 import React from 'react';
 import { useLocation } from 'wouter';
@@ -8,6 +9,7 @@ import { ROUTE_INVOICE_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useQuery } from '../hooks/use-query';
 import { Projects } from '../services';
+import StatsService from '../services/service.stats';
 
 export default function Merchant() {
   const [, navigate] = useLocation();
@@ -15,8 +17,18 @@ export default function Merchant() {
 
   const { user } = useAuth();
 
+  const projectId = user?.project?.id;
+
+  if (!projectId) {
+    throw new Error('No projectId');
+  }
+
+  const statistic = useQuery(StatsService.invoices, {
+    projectId,
+  });
+
   const usersWithAccess = useQuery(Projects.getUsersWithAccess, {
-    projectId: user?.project.id,
+    projectId,
     enabled: Boolean(user?.project.id), // Only enable the query if projectId exists
   });
 
@@ -37,14 +49,18 @@ export default function Merchant() {
           >
             Total income
           </Typography>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            gutterBottom
-            data-testid="merchant-income-amount"
-          >
-            $0.00 USD
-          </Typography>
+          {statistic.data ? (
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              gutterBottom
+              data-testid="merchant-income-amount"
+            >
+              {formatCurrency(statistic.data.received.total_usdt, 'usd')} USD
+            </Typography>
+          ) : (
+            <Skeleton width={100} height={60} />
+          )}
         </Paper>
 
         <Box gap={2} display="flex">

@@ -1,9 +1,5 @@
 import { Modal, Box } from '@mui/material';
-import React, {
-  createContext,
-  useContext,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 interface LoaderContextType {
   isLoading: boolean;
@@ -24,8 +20,15 @@ export const LoaderProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const renderLoader = () => {
     return (
-      <Modal keepMounted open={isLoading}>
+      <Modal
+        sx={{
+          zIndex: 1000,
+        }}
+        keepMounted
+        open={isLoading}
+      >
         <Box
+          position="absolute"
           sx={{
             display: 'flex',
             justifyContent: 'center',
