@@ -106,7 +106,7 @@ export function MultiselectAssets({
         {isLoading && preloader()}
         {!isLoading && (
           <Box display="flex" flexWrap="wrap">
-            {searchItems.map((i, idx) => (
+            {searchItems.map((i) => (
               <Chip
                 sx={{
                   m: 0.5,

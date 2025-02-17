@@ -114,6 +114,20 @@ const serializeTokensPlugin = () => ({
       .sort((a, b) => a.weight - b.weight)
       .reverse();
 
+    assetList.push({
+      chainId: null,
+      contract: null,
+      name: 'Bitcoin Lightning',
+      symbol: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.symbol,
+      decimals: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.decimals,
+      uid: BUILT_IN_NETWORKS[NetworkNames.bitcoin].uid,
+      network: NetworkNames.bitcoin,
+      standard: 'LIGHTNING',
+      iso: 'BTC_LIGHTNING',
+      isFiat: false,
+      isNative: true,
+    });
+
     fsPromises.writeFile(`./assets-list.json`, JSON.stringify(assetList));
     fsPromises.writeFile(
       `./assets-dict.json`,

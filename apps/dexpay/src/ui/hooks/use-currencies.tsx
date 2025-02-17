@@ -4,6 +4,30 @@ import { Currency, Wallet } from '../services';
 import { useAuth } from './use-auth';
 import { useQuery } from './use-query';
 
+const BTC_LIGHTNING_CURRENCY = {
+  // stub
+  id: 9999,
+  iso: 'BTC_LIGHTNING',
+  name: 'BTC_LIGHTNING',
+  public_name: 'BTC (SOL)',
+  status: 1,
+  coin_id: 999,
+  is_native_asset: true,
+  icon: null,
+  createdAt: '2024-10-23T13:02:41.000Z',
+  updatedAt: '2025-02-17T10:40:34.000Z',
+  deletedAt: null,
+  network: {
+    id: 9,
+    name: 'BTC',
+    public_name: 'BTC',
+    createdAt: '2024-06-17T19:18:32.000Z',
+    updatedAt: '2025-02-17T10:40:34.000Z',
+    deletedAt: null,
+  },
+  is_active: true,
+};
+
 export function useCurrencies() {
   const { user } = useAuth();
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
@@ -13,7 +37,10 @@ export function useCurrencies() {
     Wallet.list,
     { projectId: user?.project.id },
   );
-  const items = currencies?.list.currentPageResult || [];
+  const items = [
+    ...(currencies?.list.currentPageResult || []),
+    BTC_LIGHTNING_CURRENCY,
+  ];
   if (isLoadingBalances || isLoadingCurrencies) {
     return { items: [], isLoading: true };
   }
