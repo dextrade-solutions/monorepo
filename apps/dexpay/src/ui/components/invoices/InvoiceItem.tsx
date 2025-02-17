@@ -15,10 +15,16 @@ import {
   useGlobalModalContext,
   useLoader,
 } from 'dex-ui';
-import { DeleteIcon, Settings, Trash } from 'lucide-react';
+import { map } from 'lodash';
+import {
+  DeleteIcon,
+  LucideArrowUpRight,
+  LucideLink,
+  Settings,
+  Trash,
+} from 'lucide-react';
 import React from 'react';
 import { useLocation } from 'wouter';
-import { map } from 'lodash';
 
 import { ROUTE_INVOICE_EDIT } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
@@ -117,6 +123,15 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
             className="flex-shrink"
             shorten
             data={invoice.payment_page_url}
+          />
+          <Chip
+            size="small"
+            label="Open"
+            variant="outlined"
+            onClick={() => {
+              window.open(invoice.payment_page_url, '_blank');
+            }}
+            icon={<LucideArrowUpRight size={20} />}
           />
         </Box>
         {expirationTime && (

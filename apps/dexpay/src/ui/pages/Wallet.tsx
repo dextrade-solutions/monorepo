@@ -28,7 +28,7 @@ export default function Wallet() {
   return (
     <Box>
       <Box mb={4}>
-        <Paper elevation={0} sx={{ p: 2, mb: 1 }}>
+        <Paper elevation={0} sx={{ mb: 1 }}>
           <Typography variant="body2" color="textSecondary">
             Balance
           </Typography>

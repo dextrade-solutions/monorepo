@@ -37,11 +37,7 @@ export default function Merchant() {
   return (
     <Box sx={{ mx: 'auto' }} data-testid="merchant-page">
       <Box mb={4}>
-        <Paper
-          elevation={0}
-          sx={{ p: 2, mb: 1 }}
-          data-testid="merchant-income-paper"
-        >
+        <Paper elevation={0} sx={{ mb: 1 }} data-testid="merchant-income-paper">
           <Typography
             variant="body2"
             color="textSecondary"

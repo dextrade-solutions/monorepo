@@ -35,14 +35,13 @@ const CopyData = ({
           onClick={() => {
             handleCopy(data);
           }}
+          sx={{ lineHeight: 'normal' }}
           className="copy-data__button"
         >
           <div className="copy-data__label">
             {shorten ? shortenAddress(data) : data}
           </div>
-          <div className="copy-data__icon">
-            <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
-          </div>
+          <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
         </Button>
       </Tooltip>
     </Box>
