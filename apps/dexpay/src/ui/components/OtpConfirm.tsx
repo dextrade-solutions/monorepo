@@ -59,7 +59,7 @@ const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
         TextFieldsProps={{
           variant: 'outlined',
           placeholder: '-',
-          inputMode: 'numeric',
+          inputProps: { inputMode: 'numeric', pattern: '[0-9]*' },
         }}
         value={values.otp}
         onChange={handleInputChange}
