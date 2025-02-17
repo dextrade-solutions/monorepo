@@ -519,6 +519,7 @@ export default function InvoiceView({
                     {!changeAddress.isPending && (
                       <WalletList
                         wallets={connections}
+                        hideConnectionType
                         connectingWallet={loadingWallet}
                         onSelectWallet={onSelectConnection}
                       />
