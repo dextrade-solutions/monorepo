@@ -52,13 +52,6 @@ export default function InvoiceView({
   const [loadingWallet, setLoadingWallet] = useState(null);
   const [connectedWallet, setConnectedWallet] = useState(null);
 
-  const loadJson = async () => {
-    const jsonData = await import('dex-helpers/assets-dict');
-    setAssetDict(jsonData.default);
-  };
-  useEffect(() => {
-    loadJson();
-  }, []);
   const { showModal } = useGlobalModalContext();
   const payment = usePayment({ id });
   const currencies = useCurrencies();
@@ -67,7 +60,7 @@ export default function InvoiceView({
   const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
 
   const paymentAssetId = payment.data?.currency?.iso_with_network;
-  const isLoading = payment.isLoading || currencies.isLoading;
+  const isLoading = payment.isLoading || currencies.isLoading || !assetsDict;
 
   const paymentAsset = useMemo<AssetModel | null>(() => {
     if (!paymentAssetId || !assetsDict) {
@@ -85,6 +78,12 @@ export default function InvoiceView({
     wagmiConfig: config,
     connectionType,
   });
+
+  useEffect(() => {
+    import('dex-helpers/assets-dict').then((data) => {
+      setAssetDict(data.default);
+    });
+  }, []);
 
   const onChangeAsset = async (asset: AssetModel) => {
     const currency = currencies.data?.data.find((d) => d.iso === asset.iso);
@@ -115,19 +114,49 @@ export default function InvoiceView({
   );
 
   const assetList = useMemo(() => {
-    const supportedCurrencies = payment.data?.supported_currencies || [];
+    let supportedCurrencies = payment.data?.supported_currencies || [];
     const allCurrencies = currencies.data?.data || [];
 
     if (supportedCurrencies.length && allCurrencies.length && assetsDict) {
-      const supportedCurrenciesListIds = _.map(supportedCurrencies, 'id');
+      supportedCurrencies = [
+        ...supportedCurrencies,
+        {
+          id: 9999,
+          coin_id: 999,
+          iso_with_network: 'BTC',
+          type: 0,
+          iso: 'BTC',
+          native_currency_iso: 'BTC',
+          token_type: 'LIGHTNING',
+          network_name: 'BTC',
+        },
+      ];
       return _.compact(
         supportedCurrencies
-          .filter((v) => supportedCurrenciesListIds.includes(v.id))
-          .map((v) => assetsDict[v.iso_with_network]),
+          .filter((v) => assetsDict[v.iso_with_network])
+          .map((v) => ({
+            ...assetsDict[v.iso_with_network],
+            extra: {
+              currency: v,
+            },
+          })),
       );
     }
     return [];
   }, [currencies.data, assetsDict, payment]);
+
+  useEffect(() => {
+    const withoutLightning = assetList.filter(
+      (v) => v.extra.currency.token_type !== 'LIGHTNING',
+    );
+    if (
+      !paymentAssetId &&
+      withoutLightning.length === 1 &&
+      !changeAddress.isPending
+    ) {
+      onChangeAsset(withoutLightning[0]);
+    }
+  }, [paymentAssetId, assetList, changeAddress.isPending, onChangeAsset]);
 
   if (payment.isError) {
     return (
@@ -202,7 +231,8 @@ export default function InvoiceView({
     },
     [InvoiceStatus.unknwn]: {
       icon: mainIcon,
-      status: 'Payment awaiting',
+      color: 'primary.main',
+      status: 'Choose a coin',
     },
     [InvoiceStatus.expired]: {
       icon: mainIcon,

@@ -96,6 +96,7 @@ export const SelectCoinsItemList = ({
               symbol,
               IconComponent,
               notImported,
+              extra,
             } = item;
 
             const handleClick = (e) => {
@@ -144,6 +145,12 @@ export const SelectCoinsItemList = ({
                       {standard && (
                         <Typography fontWeight="light">
                           {standard.toUpperCase()}
+                        </Typography>
+                      )}
+
+                      {!standard && extra?.currency && (
+                        <Typography fontWeight="light">
+                          {extra.currency.token_type}
                         </Typography>
                       )}
                     </div>
