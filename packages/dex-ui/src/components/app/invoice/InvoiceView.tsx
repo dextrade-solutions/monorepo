@@ -129,7 +129,7 @@ export default function InvoiceView({
           native_currency_iso: 'BTC',
           token_type: 'LIGHTNING',
           network_name: 'BTC',
-        },
+        }, // stub
       ];
       return _.compact(
         supportedCurrencies
@@ -148,7 +148,7 @@ export default function InvoiceView({
   useEffect(() => {
     const withoutLightning = assetList.filter(
       (v) => v.extra.currency.token_type !== 'LIGHTNING',
-    );
+    ); // stub
     if (
       !paymentAssetId &&
       withoutLightning.length === 1 &&
