@@ -1,6 +1,11 @@
 import { Typography, Button, Box, Paper, Skeleton } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
-import { CircleNumber, Icon, useGlobalModalContext } from 'dex-ui';
+import {
+  bgPrimaryGradient,
+  CircleNumber,
+  Icon,
+  useGlobalModalContext,
+} from 'dex-ui';
 import React from 'react';
 import { useLocation } from 'wouter';
 
@@ -37,57 +42,63 @@ export default function Merchant() {
   return (
     <Box sx={{ mx: 'auto' }} data-testid="merchant-page">
       <Box mb={4}>
-        <Paper elevation={0} sx={{ mb: 1 }} data-testid="merchant-income-paper">
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            data-testid="merchant-income-label"
-          >
+        <Paper
+          elevation={0}
+          sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 1 }}
+        >
+          <Typography variant="body2" color="textSecondary">
             Total income
           </Typography>
-          {statistic.data ? (
-            <Typography
-              variant="h4"
-              fontWeight="bold"
-              gutterBottom
-              data-testid="merchant-income-amount"
+          <Box display="flex" justifyContent="center" m={3}>
+            {statistic.data ? (
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                color="text.tertiary"
+                data-testid="merchant-income-amount"
+              >
+                {formatCurrency(statistic.data.received.total_usdt, 'usd')} USD
+              </Typography>
+            ) : (
+              <Skeleton width={100} height={60} />
+            )}
+          </Box>
+          <Box display="flex" gap={2}>
+            <Button
+              fullWidth
+              color="secondary"
+              size="large"
+              sx={{ background: bgPrimaryGradient }}
+              variant="contained"
+              startIcon={<Icon name="tag" />}
+              onClick={() => {
+                navigate(ROUTE_INVOICE_CREATE);
+              }}
+              data-testid="merchant-new-invoice-button"
             >
-              {formatCurrency(statistic.data.received.total_usdt, 'usd')} USD
-            </Typography>
-          ) : (
-            <Skeleton width={100} height={60} />
-          )}
+              New invoice
+            </Button>
+            <Button
+              fullWidth
+              size="large"
+              color="tertiary"
+              variant="contained"
+              startIcon={
+                <CircleNumber
+                  color="rgba(255, 255, 255, 0.2)"
+                  size={25}
+                  number={salespersonsCount}
+                />
+              }
+              onClick={() => {
+                showModal({ name: 'SALESPERSONS' });
+              }}
+              data-testid="merchant-salespersons-button"
+            >
+              Salespeople
+            </Button>
+          </Box>
         </Paper>
-
-        <Box gap={2} display="flex">
-          <Button
-            fullWidth
-            onClick={() => {
-              navigate(ROUTE_INVOICE_CREATE);
-            }}
-            color="secondary"
-            size="large"
-            variant="contained"
-            startIcon={<Icon name="tag" />}
-            data-testid="merchant-new-invoice-button" // Added data-testid
-          >
-            New Invoice
-          </Button>
-          <Button
-            sx={{ bgcolor: 'secondary.light' }}
-            fullWidth
-            onClick={() => {
-              showModal({ name: 'SALESPERSONS' });
-            }}
-            color="secondary"
-            size="large"
-            variant="contained"
-            startIcon={<CircleNumber size={25} number={salespersonsCount} />}
-            data-testid="merchant-salespersons-button" // Added data-testid
-          >
-            Salespeople
-          </Button>
-        </Box>
       </Box>
       <Box data-testid="merchant-invoices-section">
         <Typography

@@ -18,6 +18,7 @@ import {
   ROUTE_LOGIN,
   ROUTE_MERCHANT,
   ROUTE_P2P,
+  ROUTE_P2P_CREATE,
   ROUTE_PROFILE,
   ROUTE_REGISTER,
   ROUTE_WALLET_DEPOSIT,
@@ -34,6 +35,7 @@ import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
 import NotFound from './pages/not-found';
 import P2P from './pages/P2P';
+import P2PCreate from './pages/P2PCreate';
 import Profile from './pages/Profile';
 import TransactionHistory from './pages/TransactionHistory';
 import Wallet from './pages/Wallet';
@@ -77,6 +79,7 @@ function Router() {
       <Route path={ROUTE_INVOICE_CREATE} component={CreateInvoice} />
       <Route path={ROUTE_INVOICE_EDIT} component={CreateInvoice} />
       <Route path={ROUTE_P2P} component={P2P} />
+      <Route path={ROUTE_P2P_CREATE} component={P2PCreate} />
       <Route path={ROUTE_HISTORY} component={TransactionHistory} />
       <Route path={ROUTE_PROFILE} component={Profile} />
       <Route component={NotFound} />

@@ -37,75 +37,40 @@ const inviteUserSchema = yup.object().shape({
 
 const SalespersonsModal = ({ hideModal }: ModalProps) => {
   const { user } = useAuth();
-  const { showModal } = useGlobalModalContext();
-  const loader = useLoader();
 
-  const form = useForm({ validationSchema: inviteUserSchema });
-
-  const [inviteEmail, setInviteEmail] = useState('');
+  const projectId = user?.project.id!;
 
   const usersWithAccess = useQuery(Projects.getUsersWithAccess, {
-    projectId: user?.project.id,
-    enabled: Boolean(user?.project.id), // Only enable the query if projectId exists
+    projectId,
+    enabled: Boolean(projectId), // Only enable the query if projectId exists
   });
 
   const inviteUser = useMutation(Projects.inviteUser, {
-    onSuccess: () => {
-      usersWithAccess.refetch();
-      setInviteEmail('');
-    },
-    onError: (error) => {
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: error.message,
-      });
-    },
+    onSuccess: onSuccessInvite,
   });
 
   const revokeAccess = useMutation(Projects.revokeAccess, {
     onSuccess: () => {
       usersWithAccess.refetch();
     },
-    onError: (error) => {
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: error.message,
-      });
-    },
   });
 
-  const handleInvite = async () => {
-    if (!user?.project.id) {
-      return; // Or handle the case where user or project is undefined
-    }
-    try {
-      await loader.runLoader(
-        inviteUser.mutateAsync([
-          { projectId: user.project.id },
-          { email: inviteEmail },
-        ]),
-      );
-    } catch (error) {
-      // Handle error if needed
-      console.error('Failed to invite user:', error);
-    }
-  };
+  const inviteUserForm = useForm({
+    values: {
+      email: '',
+    },
+    validationSchema: inviteUserSchema,
+    method: (values) => inviteUser.mutateAsync([{ projectId }, values]),
+  });
 
-  const handleRevoke = async (userId: string) => {
-    if (!user?.project.id) {
-      return; // Handle the case where user or project is undefined
-    }
+  const revokeAccessForm = useForm({
+    method: (_, userId) => revokeAccess.mutateAsync([{ projectId, userId }]),
+  });
 
-    try {
-      await loader.runLoader(
-        revokeAccess.mutateAsync([{ projectId: user.project.id, userId }]),
-      );
-    } catch (error) {
-      console.error("Failed to revoke user's access", error);
-    }
-  };
+  function onSuccessInvite() {
+    usersWithAccess.refetch();
+    inviteUserForm.reset();
+  }
 
   return (
     <Box padding={5} data-testid="salespersons-modal">
@@ -122,24 +87,23 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
           iconName="close"
           color="secondary"
           size="sm"
-          onClick={hideModal}
           data-testid="salespersons-modal-close-button"
+          onClick={hideModal}
         />
       </Box>
       <Divider />
       <Box sx={{ mt: 2 }} data-testid="salespersons-modal-invite-section">
         <TextFieldWithValidation
           data-testid="salespersons-modal-email-input"
-          validationForm={form}
+          form={inviteUserForm}
           label="Email"
           name="email"
           fullWidth
-          value={inviteEmail}
-          onChange={(name, e) => setInviteEmail(e.target.value)}
+          onChange={(e) => e.target.value}
         />
         <Button
-          onClick={handleInvite}
-          disabled={inviteUser.isPending || form.primaryError}
+          onClick={inviteUserForm.submit}
+          disabled={inviteUser.isPending || inviteUserForm.primaryError}
           variant="contained"
           fullWidth
           sx={{ mt: 2 }}
@@ -171,7 +135,7 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
                   <IconButton
                     edge="end"
                     aria-label="delete"
-                    onClick={() => handleRevoke(userAccess.id)}
+                    onClick={() => revokeAccessForm.submit(userAccess.id)}
                     data-testid={`salespersons-modal-revoke-button-${userAccess.id}`}
                   >
                     <Trash />

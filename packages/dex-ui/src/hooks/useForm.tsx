@@ -2,6 +2,9 @@ import { flatten } from 'lodash';
 import { useEffect, useState } from 'react';
 import { SchemaOf } from 'yup';
 
+import { useLoader } from './useLoader';
+import { useGlobalModalContext } from '../components/app/modals';
+
 export type UseFormReturnType<T> = {
   validationSchema: SchemaOf<T> | undefined;
   errors: { [key: string]: string[] };
@@ -12,15 +15,22 @@ export type UseFormReturnType<T> = {
   setInteracted: (name: string) => void;
   setErrors: (name: string, errors: string[]) => void;
   setValues: React.Dispatch<React.SetStateAction<any>>; // And this to update values
+  submit: (...args: any[]) => Promise<void>;
+  reset: () => void;
 };
 
 export const useForm = <T,>({
   validationSchema,
   values,
+  method,
 }: {
-  validationSchema: SchemaOf<T>;
-  values: any;
-} = {}): UseFormReturnType<T> => {
+  validationSchema?: SchemaOf<T>;
+  values?: T;
+  method: (values: T, ...args: any[]) => Promise<void | any>;
+}): UseFormReturnType<T> => {
+  const { runLoader } = useLoader();
+  const { showModal } = useGlobalModalContext();
+  const [valuesData, setValuesData] = useState<T>(values || ({} as T));
   const [errorsData, setErrorsData] = useState({});
   const [interactedData, setInteractedData] = useState({});
   const [resolvedSchema, setResolvedSchema] = useState<SchemaOf<T> | undefined>(
@@ -39,6 +49,9 @@ export const useForm = <T,>({
     setErrorsData((prev) => ({ ...prev, [name]: errors }));
   };
 
+  const setValue = (name: string, value: any) => {
+    setValuesData((prev) => ({ ...prev, [name]: value }));
+  };
   useEffect(() => {
     if (validationSchema && values) {
       setResolvedSchema(
@@ -55,8 +68,28 @@ export const useForm = <T,>({
     isInitiated,
     isInteracted,
     primaryError,
+    values: valuesData,
     setInteracted,
     setErrors,
-    values, // Make sure these are returned
+    setValue,
+    reset: () => {
+      setValuesData(values || ({} as T));
+      setErrorsData({});
+      setInteractedData({});
+    },
+    submit: async (...args) => {
+      if (args[0] && args[0].preventDefault) {  // Check if the first argument is an event
+        args[0].preventDefault();
+      }
+      try {
+        await runLoader(method(valuesData, ...args));
+      } catch (e) {
+        showModal({
+          name: 'ALERT_MODAL',
+          severity: 'error',
+          text: e.message,
+        });
+      }
+    },
   };
 };

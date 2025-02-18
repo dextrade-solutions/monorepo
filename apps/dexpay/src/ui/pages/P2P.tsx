@@ -1,10 +1,13 @@
 import { Button, Box, Typography, Paper, Tabs, Tab } from '@mui/material';
-import { FormInputIcon, PersonStanding, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 
 import TradingPair from '../components/crypto/TradingPair';
+import { ROUTE_P2P_CREATE } from '../constants/pages';
 
 export default function P2P() {
+  const [_, navigate] = useLocation();
   const [tabValue, setTabValue] = useState('pairs');
 
   return (
@@ -24,6 +27,7 @@ export default function P2P() {
           size="large"
           variant="contained"
           fullWidth
+          onClick={() => navigate(ROUTE_P2P_CREATE)}
         >
           Create pair
         </Button>

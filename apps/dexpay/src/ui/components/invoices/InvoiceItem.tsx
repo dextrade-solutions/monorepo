@@ -6,6 +6,7 @@ import {
   CardContent,
   Card,
   Alert,
+  Button,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import {
@@ -117,21 +118,21 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
         )}
 
         <Divider sx={{ my: 1 }} />
-        <Box display="flex" alignItems="center">
-          <Typography className="flex-grow">Link</Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Button
+            size="small"
+            onClick={() => {
+              window.open(invoice.payment_page_url, '_blank');
+            }}
+            endIcon={<LucideArrowUpRight size={20} />}
+          >
+            Open link
+          </Button>
+          <div className="flex-grow" />
           <CopyData
             className="flex-shrink"
             shorten
             data={invoice.payment_page_url}
-          />
-          <Chip
-            size="small"
-            label="Open"
-            variant="outlined"
-            onClick={() => {
-              window.open(invoice.payment_page_url, '_blank');
-            }}
-            icon={<LucideArrowUpRight size={20} />}
           />
         </Box>
         {expirationTime && (
@@ -152,31 +153,35 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
           </Box>
         )}
         <Box mb={2} />
-        <Chip
-          icon={<Trash size={20} />}
-          label="Remove"
-          onClick={handleRemove}
-        />
-        <Chip sx={{ ml: 1 }} icon={<Settings size={20} />} label="Config" />
-        {invoice.transactions.length > 0 && (
+        <Box>
+          {invoice.transactions.length > 0 && (
+            <Chip
+              sx={{ ml: 1 }}
+              icon={
+                <CircleNumber size={30} number={invoice.transactions.length} />
+              }
+              label={
+                <Box display="flex" alignItems="center">
+                  Transactions
+                </Box>
+              }
+              onClick={() =>
+                showModal({
+                  name: 'DEXPAY_TRANSACTIONS_LIST',
+                  transactions: map(invoice.transactions, 'transaction'),
+                })
+              }
+            />
+          )}
+          <Chip sx={{ ml: 1 }} icon={<Settings size={20} />} label="Config" />
+
           <Chip
             sx={{ ml: 1 }}
-            icon={
-              <CircleNumber size={30} number={invoice.transactions.length} />
-            }
-            label={
-              <Box display="flex" alignItems="center">
-                Transactions
-              </Box>
-            }
-            onClick={() =>
-              showModal({
-                name: 'DEXPAY_TRANSACTIONS_LIST',
-                transactions: map(invoice.transactions, 'transaction'),
-              })
-            }
+            icon={<Trash size={20} />}
+            label="Remove"
+            onClick={handleRemove}
           />
-        )}
+        </Box>
       </CardContent>
     </Card>
   );

@@ -43,32 +43,12 @@ interface InvoiceData {
 }
 
 const CreateInvoiceForm = () => {
-  const [invoiceData, setInvoiceData] = useState<InvoiceData>({
-    primaryCoin: {
-      amount: null,
-      coin: 'USDT',
-    },
-    convertedCurrencies: [],
-    description: '',
-    dueDate: null,
-  });
-  const { showModal } = useGlobalModalContext();
   const [, navigate] = useLocation();
   const { user } = useAuth();
-  const { runLoader } = useLoader();
-
-  const form = useForm({ validationSchema: Validation.Invoice.create });
 
   const currencies = useCurrencies();
 
   const invoiceCreate = useMutation(Invoice.create, {
-    onError: (e) => {
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: e.message,
-      });
-    },
     onSuccess: () => {
       navigate(ROUTE_MERCHANT);
     },
@@ -80,47 +60,53 @@ const CreateInvoiceForm = () => {
     {},
   );
 
-  const handleInputChange = (field: string, value: string) => {
-    setInvoiceData((prev) => ({ ...prev, [field]: value }));
-  };
+  const form = useForm<InvoiceData>({
+    values: {
+      primaryCoin: {
+        amount: null,
+        coin: 'USDT',
+      },
+      convertedCurrencies: [],
+      description: '',
+      dueDate: null,
+    },
+    validationSchema: Validation.Invoice.create,
+    method: async (values) => {
+      event.preventDefault();
+      if (!user) {
+        throw new Error('no user exists');
+      }
+      const dueToEndOfDay = values.dueDate
+        ? new Date(
+            new Date(values.dueDate.toDate()).setUTCHours(23, 59, 59, 999),
+          ).toISOString()
+        : undefined;
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!user) {
-      throw new Error('no user exists');
-    }
-    const values = invoiceData;
-    const dueToEndOfDay = values.dueDate
-      ? new Date(
-          new Date(values.dueDate.toDate()).setUTCHours(23, 59, 59, 999),
-        ).toISOString()
-      : undefined;
+      const body = {
+        description: values.description || undefined,
+        due_to: dueToEndOfDay,
+        converted_amount_requested: values.primaryCoin?.amount,
+        converted_coin_id: allCoins[values.primaryCoin?.coin].id,
+        amount_requested: undefined,
+        currency_id: undefined,
+        coin_id: undefined,
+        ...(values.convertedCurrencies.length
+          ? {
+              supported_currencies: map(
+                values.convertedCurrencies,
+                'extra.currency.id',
+              ),
+            }
+          : {}),
+      };
+      await invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]);
+    },
+  });
 
-    const body = {
-      description: values.description || undefined,
-      due_to: dueToEndOfDay,
-      converted_amount_requested: values.primaryCoin?.amount,
-      converted_coin_id: allCoins[values.primaryCoin?.coin].id,
-      amount_requested: undefined,
-      currency_id: undefined,
-      coin_id: undefined,
-      ...(values.convertedCurrencies.length
-        ? {
-            supported_currencies: map(
-              values.convertedCurrencies,
-              'extra.currency.id',
-            ),
-          }
-        : {}),
-    };
-    runLoader(
-      invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]),
-    );
-  };
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={form.submit}
       noValidate
       sx={{ mt: 1 }}
       data-testid="invoice-create-form"
@@ -130,26 +116,22 @@ const CreateInvoiceForm = () => {
         <Typography ml={1}>Primary coin</Typography>
       </Box>
       <SelectCoinAmount
-        value={invoiceData.primaryCoin}
-        validationForm={form}
+        form={form}
         coins={allCoins}
         isLoading={coins.isLoading}
         name="primaryCoin"
         data-testid="invoice-create-primary-coin-select"
-        onChange={handleInputChange}
       />
       <Box mt={3} display="flex" alignItems="center">
         <CircleNumber color="secondary.light" number={2} />
         <Typography ml={1}>Crypto currency</Typography>
       </Box>
       <MultiselectAssetsWithValidation
-        value={invoiceData.convertedCurrencies}
         name="convertedCurrencies"
         currencies={currencies.items}
         isLoading={currencies.isLoading}
-        validationForm={form}
+        form={form}
         data-testid="invoice-create-crypto-currency-select"
-        onChange={handleInputChange}
       />
 
       <Accordion
@@ -175,21 +157,18 @@ const CreateInvoiceForm = () => {
             <TextFieldWithValidation
               id="description"
               fullWidth
-              validationForm={form}
+              form={form}
               placeholder="Description"
               name="description"
               multiline
-              value={invoiceData.description}
               data-testid="invoice-create-description-input"
-              onChange={(name, e) => handleInputChange(name, e.target.value)}
+              onChange={(e) => e.target.value}
             />
           </Box>
           <DatePickerWithValidation
-            value={invoiceData.dueDate}
             label="Due Date"
             name="dueDate"
-            validationForm={form}
-            onChange={handleInputChange}
+            form={form}
             textFieldProps={{
               margin: 'normal',
             }}

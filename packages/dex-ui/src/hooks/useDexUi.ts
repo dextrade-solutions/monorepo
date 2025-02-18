@@ -61,6 +61,8 @@ export function useDexUI({
             styleOverrides: {
               root: {
                 borderRadius: 8,
+                textTransform: 'none', // Add textTransform: none
+                fontWeight: 600,
               },
             },
             defaultProps: {

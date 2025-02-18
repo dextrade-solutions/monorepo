@@ -7,6 +7,7 @@ import {
   ROUTE_INVOICE_CREATE,
   ROUTE_MERCHANT,
   ROUTE_P2P,
+  ROUTE_P2P_CREATE,
   ROUTE_PROFILE,
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
@@ -21,6 +22,7 @@ const titles = {
   [ROUTE_MERCHANT]: 'Merchant',
   [ROUTE_INVOICE_CREATE]: 'Create invoice',
   [ROUTE_P2P]: 'P2P',
+  [ROUTE_P2P_CREATE]: 'Add pair',
   [ROUTE_HISTORY]: 'Transaction History',
   [ROUTE_PROFILE]: 'Profile',
 };
@@ -31,15 +33,22 @@ const Appbar = () => {
   return (
     <AppBar position="static" elevation={0} color="transparent">
       <Box
-        my={2}
+        mt={1}
+        mb={4}
         display="flex"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <ProjectSelectBtn />
+        <Typography
+          color="text.tertiary"
+          fontWeight="bold"
+          variant="h6"
+          component="div"
+          sx={{ flexShrink: 1 }}
+        >
           {title} {/* Display dynamic title */}
         </Typography>
-        <ProjectSelectBtn />
       </Box>
     </AppBar>
   );

@@ -10,46 +10,24 @@ import Link from '../ui/Link';
 
 const SignUpForm = () => {
   const user = useAuth();
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const form = useForm({
+    values: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationSchema: Validation.Auth.signUp,
+    method: user.signUp,
   });
-  const form = useForm({ validationSchema: Validation.Auth.signUp, values });
-  const loader = useLoader();
-  const { showModal } = useGlobalModalContext();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      await loader.runLoader(
-        user.signUp({
-          email: values.email,
-          password: values.password,
-        }),
-      );
-    } catch (error: any) {
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: error.message,
-        autoClose: 5000,
-      });
-      console.error('Error signing up:', error);
-    }
-  };
-
-  const handleInputChange = (
-    name: string,
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
-    setValues((prev) => ({ ...prev, [name]: e.target.value }));
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    return e.target.value;
   };
 
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={form.submit}
       noValidate
       sx={{ mt: 1 }}
       data-testid="signup-form"
@@ -60,8 +38,7 @@ const SignUpForm = () => {
         label="Email Address"
         autoComplete="email"
         autoFocus
-        validationForm={form}
-        value={values.email}
+        form={form}
         name="email"
         data-testid="signup-email-input"
         onChange={handleInputChange}
@@ -72,9 +49,8 @@ const SignUpForm = () => {
         label="Password"
         type="password"
         autoComplete="new-password"
-        value={values.password}
         name="password"
-        validationForm={form}
+        form={form}
         data-testid="signup-password-input"
         onChange={handleInputChange}
       />
@@ -84,9 +60,8 @@ const SignUpForm = () => {
         label="Confirm Password"
         type="password"
         autoComplete="new-password"
-        value={values.confirmPassword}
         name="confirmPassword"
-        validationForm={form}
+        form={form}
         data-testid="signup-confirm-password-input"
         onChange={handleInputChange}
       />

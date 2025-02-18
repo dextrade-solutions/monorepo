@@ -1,4 +1,4 @@
-import { Card, CardContent, Box, Typography } from '@mui/material';
+import { Card, CardContent, Box, Typography, Paper } from '@mui/material';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -19,13 +19,21 @@ export function AssetListItem({
   balance?: IBalance;
 }) {
   return (
-    <Card elevation={0} sx={{ borderRadius: 1, bgcolor: 'secondary.dark' }}>
-      <CardContent
+    <Paper
+      elevation={0}
+      sx={{
+        color: 'text.secondary',
+        borderRadius: 0.5,
+        bgcolor: 'secondary.dark',
+      }}
+    >
+      <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          p: 2,
+          px: 2,
+          py: 1,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -42,16 +50,16 @@ export function AssetListItem({
           </Box>
         </Box>
         <Box sx={{ textAlign: 'right' }}>
-          <Typography variant="h6">
+          <Typography>
             {balance?.total_balance_currency
               ? formatFundsAmount(balance.total_balance_currency)
               : '0'}
           </Typography>
-          <Typography color="textSecondary">
+          <Typography variant="body2" color="textSecondary">
             {formatCurrency(balance?.total_balance_usdt || '0', 'USD')}
           </Typography>
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+    </Paper>
   );
 }

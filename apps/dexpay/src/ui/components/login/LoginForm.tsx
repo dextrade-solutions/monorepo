@@ -1,11 +1,6 @@
 import { Box, Typography } from '@mui/material';
-import {
-  useGlobalModalContext,
-  useForm,
-  useLoader,
-  GradientButton,
-} from 'dex-ui';
-import React, { useState, ChangeEvent } from 'react';
+import { useForm, GradientButton } from 'dex-ui';
+import React from 'react';
 
 import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
@@ -15,40 +10,21 @@ import Link from '../ui/Link';
 
 const LoginForm = () => {
   const auth = useAuth();
-  const { showModal } = useGlobalModalContext();
-  const form = useForm({ validationSchema: Validation.Auth.signIn });
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
+  const form = useForm({
+    values: {
+      email: '',
+      password: '',
+    },
+    validationSchema: Validation.Auth.signIn,
+    method: (values) => auth.login(values.email, values.password),
   });
-  const loader = useLoader();
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      await loader.runLoader(auth.login(values.email, values.password));
-    } catch (error) {
-      showModal({
-        name: 'ALERT_MODAL',
-        severity: 'error',
-        text: error.message,
-      });
-    }
-  };
-
-  const handleInputChange = (
-    name: string,
-    e: ChangeEvent<HTMLInputElement>,
-  ) => {
-    setValues((prev) => ({ ...prev, [name]: e.target.value }));
-  };
 
   return (
     <Box
       data-testid="login-form"
       component="form"
       textAlign="right"
-      onSubmit={handleSubmit}
+      onSubmit={form.submit}
       noValidate
     >
       <TextFieldWithValidation
@@ -58,10 +34,9 @@ const LoginForm = () => {
         label="Email Address"
         autoComplete="email"
         autoFocus
-        validationForm={form}
-        value={values.email}
+        form={form}
         name="email"
-        onChange={handleInputChange}
+        onChange={(e) => e.target.value}
       />
       <VPasswordField
         data-testid="login-password-input"
@@ -69,10 +44,9 @@ const LoginForm = () => {
         fullWidth
         label="Password"
         autoComplete="current-password"
-        value={values.password}
         name="password"
-        validationForm={form}
-        onChange={handleInputChange}
+        form={form}
+        onChange={(e) => e.target.value}
       />
       <Link href={ROUTE_FORGOT_PASSWORD} noUnderline>
         Forgot password?

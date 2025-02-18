@@ -1,5 +1,8 @@
 import { Modal, Box } from '@mui/material';
+import { isAndroid } from 'dex-helpers';
 import React, { createContext, useContext, useState } from 'react';
+
+import { PulseLoader } from '../components/ui';
 
 interface LoaderContextType {
   isLoading: boolean;
@@ -38,10 +41,14 @@ export const LoaderProvider: React.FC<{ children: React.ReactNode }> = ({
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}
         >
-          <video width="150px" autoPlay loop muted playsInline>
-            <source src="/images/logo/logo-animated.mov" type="video/mp4" />
-            <source src="/images/logo/logo-animated.webm" type="video/webm" />
-          </video>
+          {isAndroid ? (
+            <PulseLoader bgColor="white" /> // TODO: temp solition until we will fix black square
+          ) : (
+            <video width="150px" autoPlay loop muted playsInline>
+              <source src="/images/logo/logo-animated.mov" type="video/mp4" />
+              <source src="/images/logo/logo-animated.webm" type="video/webm" />
+            </video>
+          )}
         </Box>
       </Modal>
     );

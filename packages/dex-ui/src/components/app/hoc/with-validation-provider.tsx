@@ -1,29 +1,31 @@
 import React, { useEffect } from 'react';
 import { ValidationError } from 'yup';
+
 import { UseFormReturnType } from '../../../hooks/useForm';
 
 type FieldProps = {
   validators?: ((v: any) => false | string)[];
-  validationForm: UseFormReturnType<any>;
+  form: UseFormReturnType<any>;
   name: string;
-  value: any;
   onChange: (name: string, v: any) => void;
 } & React.ComponentProps<any>;
 
 const withValidationProvider =
   (Field: any) =>
-  ({ validationForm, name, value, onChange, ...fieldProps }: FieldProps) => {
+  ({ form, name, onChange, ...fieldProps }: FieldProps) => {
+    const value = form.values[name];
+
     useEffect(() => {
       const findErrors = async (v: any) => {
         try {
           // Use reach to handle nested schema structures:
-          await validationForm.resolvedSchema.validateAt(name, { [name]: v }); // Correct validation
-          validationForm.setErrors(name, []);
+          await form.resolvedSchema.validateAt(name, { [name]: v }); // Correct validation
+          form.setErrors(name, []);
         } catch (e) {
           if (e instanceof ValidationError) {
-            validationForm.setErrors(name, e.errors);
+            form.setErrors(name, e.errors);
           } else {
-            validationForm.setErrors(name, [
+            form.setErrors(name, [
               'An unexpected error occurred during validation.',
             ]); // Handle generic errors
           }
@@ -35,20 +37,18 @@ const withValidationProvider =
     }, [value]);
 
     const handleChange = (...args: any[]) => {
-      validationForm.setInteracted(name);
-      onChange(name, ...args);
+      const v = onChange ? onChange(...args) : args[0];
+      form.setInteracted(name);
+      form.setValue(name, v);
     };
     return (
       <Field
         {...fieldProps}
         value={value}
         error={
-          Boolean(validationForm.interacted[name]) &&
-          Boolean(validationForm.errors[name]?.length)
+          Boolean(form.interacted[name]) && Boolean(form.errors[name]?.length)
         }
-        helperText={
-          validationForm.interacted[name] && validationForm.errors[name]?.[0]
-        }
+        helperText={form.interacted[name] && form.errors[name]?.[0]}
         onChange={handleChange}
       />
     );

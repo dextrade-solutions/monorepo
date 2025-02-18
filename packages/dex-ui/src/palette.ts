@@ -15,13 +15,16 @@ const Palette = {
       dark: '#f0f1f7',
     },
     tertiary: {
-      main: '#ecedfa',
+      light: '#ecedfa',
+      main: '#3C76FF',
       dark: '#e0e3e9',
+      contrastText: '#fff',
     },
     text: {
       primary: '#4143A1',
       secondary: '#9091cd',
       tertiary: '#3C76FF',
+      caption: '#9DB2CE',
     },
     action: {
       disabledBackground: '#f2f2f3',

@@ -1,5 +1,5 @@
 import { Alert, Box } from '@mui/material';
-import { useForm, useGlobalModalContext, OtpInput, useLoader } from 'dex-ui';
+import { useGlobalModalContext, OtpInput, useLoader } from 'dex-ui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 
@@ -8,7 +8,6 @@ import { ROUTE_HOME } from '../constants/pages';
 const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
   const [values, setForm] = useState({ otp: '' });
   const { showModal } = useGlobalModalContext();
-  const form = useForm();
   const loader = useLoader();
   const [, navigate] = useLocation();
 
@@ -27,7 +26,7 @@ const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
         });
       }
     },
-    [showModal, form],
+    [showModal, method, navigate, loader, values.otp],
   );
 
   const handleInputChange = (v: string) => {

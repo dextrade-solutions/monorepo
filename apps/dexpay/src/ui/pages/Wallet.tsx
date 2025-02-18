@@ -8,6 +8,7 @@ import {
   Card,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
+import { bgPrimaryGradient } from 'dex-ui';
 import { range, sumBy } from 'lodash';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React from 'react';
@@ -28,39 +29,55 @@ export default function Wallet() {
   return (
     <Box>
       <Box mb={4}>
-        <Paper elevation={0} sx={{ mb: 1 }}>
+        <Paper
+          elevation={0}
+          sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 1 }}
+        >
           <Typography variant="body2" color="textSecondary">
-            Balance
+            Current balance
           </Typography>
-          <Typography variant="h4" fontWeight="bold">
+          <Typography
+            m={3}
+            variant="h4"
+            fontWeight="bold"
+            color="text.tertiary"
+          >
             {formatCurrency(totalBalance, 'usd')} USD
           </Typography>
+
+          <Box display="flex" gap={2}>
+            <Button
+              fullWidth
+              color="secondary"
+              size="large"
+              sx={{ background: bgPrimaryGradient }}
+              variant="contained"
+              startIcon={<ArrowDownLeft />}
+              onClick={() => navigate(ROUTE_WALLET_DEPOSIT)}
+            >
+              Deposit
+            </Button>
+            <Button
+              fullWidth
+              size="large"
+              color="tertiary"
+              variant="contained"
+              startIcon={<ArrowUpRight />}
+              onClick={() => navigate(ROUTE_WALLET_WITHDRAW)}
+            >
+              Withdraw
+            </Button>
+          </Box>
         </Paper>
-        <Box display="flex" gap={2}>
-          <Button
-            fullWidth
-            color="secondary"
-            size="large"
-            variant="contained"
-            startIcon={<ArrowDownLeft />}
-            onClick={() => navigate(ROUTE_WALLET_DEPOSIT)}
-          >
-            Deposit
-          </Button>
-          <Button
-            fullWidth
-            color="secondary"
-            size="large"
-            variant="contained"
-            startIcon={<ArrowUpRight />}
-            onClick={() => navigate(ROUTE_WALLET_WITHDRAW)}
-          >
-            Withdraw
-          </Button>
-        </Box>
       </Box>
       <Box>
-        <Typography variant="h6" gutterBottom>
+        <Typography
+          variant="h6"
+          fontWeight="600"
+          gutterBottom
+          mb={2}
+          color="text.tertiary"
+        >
           Assets
         </Typography>
         {isLoading && (
