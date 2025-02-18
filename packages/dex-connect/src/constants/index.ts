@@ -16,6 +16,7 @@ export enum WalletConnectionType {
   tronlink = 'tron',
   manual = 'manual', // just pasted address from clipboard
   keypair = 'keypair', // local generated private key
+  dextrade = 'dextrade',
 }
 
 export const WC_PROJECT_ID = '1ee56a25a2dad471b92feb59898b7aa6';

@@ -15,4 +15,5 @@ export { default as QRCode } from './qr-code';
 export { default as CircleNumber } from './circle-number';
 export { default as PasswordField } from './password-field';
 export { default as GradientButton } from './gradient-button';
+export { default as OtpInput } from './otp-input';
 export * from './select-coins';

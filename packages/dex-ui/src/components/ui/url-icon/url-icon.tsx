@@ -12,12 +12,14 @@ export default function UrlIcon({
   className,
   name,
   fallbackClassName,
+  borderRadius = '50%',
   ...props
 }: {
   url: string;
   size?: number;
   className?: string;
   name?: string;
+  borderRadius?: string;
   fallbackClassName?: string;
 }) {
   return (
@@ -26,6 +28,7 @@ export default function UrlIcon({
       icon={url || ICON_URL_DEFAULT}
       name={name}
       size={size}
+      borderRadius={borderRadius}
       fallbackClassName={classnames('url-icon__fallback', fallbackClassName)}
       {...props}
     />

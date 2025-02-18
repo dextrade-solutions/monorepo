@@ -78,7 +78,11 @@ export default function WalletList({
   };
 
   let renderList = wallets;
-  const webViewWallet = wallets.filter((i) => i.meta?.isWebView);
+  if (!isMobileWeb) {
+    renderList = renderList.filter((i) => !i.meta?.onlyMobile);
+  }
+
+  const webViewWallet = renderList.filter((i) => i.meta?.isWebView);
   if (webViewWallet.length) {
     renderList = webViewWallet;
   }
@@ -102,7 +106,11 @@ export default function WalletList({
           )}
           {connectingWallet && (
             <>
-              <UrlIcon size={40} url={connectingWallet.icon} />
+              <UrlIcon
+                size={40}
+                borderRadius="10px"
+                url={connectingWallet.icon}
+              />
               <Typography my={1}>
                 {connectingWalletLabel} {connectingWallet.name}
               </Typography>
@@ -113,7 +121,11 @@ export default function WalletList({
           )}
           {toInstallWallet && (
             <>
-              <UrlIcon size={40} url={toInstallWallet.icon} />
+              <UrlIcon
+                size={40}
+                borderRadius="10px"
+                url={toInstallWallet.icon}
+              />
               <Typography my={1}>
                 {toInstallWallet.name} is not detected
               </Typography>
@@ -163,7 +175,7 @@ export default function WalletList({
                 onClick={(e) => onSelect(e, item)}
               >
                 <ListItemAvatar>
-                  <UrlIcon size={40} url={item.icon} />
+                  <UrlIcon size={40} borderRadius="10px" url={item.icon} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={

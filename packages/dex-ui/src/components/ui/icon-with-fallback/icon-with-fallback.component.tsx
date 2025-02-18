@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import classnames from 'classnames';
 import { Box } from '@mui/material';
+import classnames from 'classnames';
+import React, { useState } from 'react';
 
 const IconWithFallback = ({
   name = '',
@@ -9,17 +9,21 @@ const IconWithFallback = ({
   className,
   fallbackClassName,
   wrapperClassName,
+  borderRadius,
   ...props
 }: {
-  name: string;
+  name?: string;
   icon?: string | null;
-  size: number;
+  size?: number;
+  borderRadius?: string;
   className?: string;
   fallbackClassName?: string;
   wrapperClassName?: string;
 }) => {
   const [iconError, setIconError] = useState(false);
-  const style = size ? { height: `${size}px`, width: `${size}px` } : {};
+  const style = size
+    ? { height: `${size}px`, width: `${size}px`, borderRadius }
+    : {};
 
   const handleOnError = () => {
     setIconError(true);

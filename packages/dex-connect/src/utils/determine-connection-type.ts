@@ -3,7 +3,7 @@ import { AssetModel } from 'dex-helpers/types';
 import { WalletConnectionType } from '../constants';
 
 export function determineConnectionType(asset: AssetModel) {
-  const supported: WalletConnectionType[] = [];
+  const supported: WalletConnectionType[] = [WalletConnectionType.dextrade];
 
   if (asset.chainId) {
     supported.push(WalletConnectionType.eip6963);

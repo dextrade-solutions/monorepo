@@ -1,6 +1,5 @@
 import { Alert, Box } from '@mui/material';
-import { useForm, useGlobalModalContext, useLoader } from 'dex-ui';
-import { MuiOtpInput } from 'mui-one-time-password-input';
+import { useForm, useGlobalModalContext, OtpInput, useLoader } from 'dex-ui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 
@@ -52,7 +51,7 @@ const OtpConfirm = ({ method }: { method: (otp: string) => Promise<void> }) => {
         We send you code to email, please check your inbox. Please enter the
         code here.
       </Alert>
-      <MuiOtpInput
+      <OtpInput
         margin="normal"
         length={4}
         autoFocus

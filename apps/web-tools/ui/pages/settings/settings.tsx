@@ -61,8 +61,6 @@ export default function P2PSettings() {
         <div className="flex-grow" />
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
-          color="secondary"
-          variant="contained"
           onClick={() => navigate(HOME_ROUTE)}
         >
           {t('back')}

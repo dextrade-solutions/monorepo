@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { getAdLimitPerExchange, NetworkTypes } from 'dex-helpers';
+import { getAdLimitPerExchange, NetworkNames, NetworkTypes } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
 import { isEqual, floor } from 'lodash';

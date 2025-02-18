@@ -1,4 +1,5 @@
 import { Box, Typography, Button, TextField, Divider } from '@mui/material';
+import { determineConnectionType } from 'dex-connect';
 import { AssetModel } from 'dex-helpers/types';
 import {
   CopyData,
@@ -11,7 +12,6 @@ import {
 import React, { useState } from 'react';
 
 import { WalletConnectionType } from '../../../../helpers/constants/wallets';
-import { determineConnectionType } from '../../../../helpers/utils/determine-connection-type';
 import { getAddressValidator } from '../../../../helpers/utils/get-address-validator';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

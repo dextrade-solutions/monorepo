@@ -115,6 +115,7 @@ export default function P2PAds() {
         className="p2p-ads__search-options"
         display="flex"
         marginTop={2}
+        mx={1}
         marginBottom={2}
         alignItems="center"
       >
@@ -125,25 +126,27 @@ export default function P2PAds() {
           size="small"
           placeholder="Search"
           fullWidth
+          variant="standard"
           InputProps={{
+            disableUnderline: true,
             startAdornment: (
               <InputAdornment position="start">
                 <Icon color="text.secondary" name="search" />
               </InputAdornment>
             ),
-            endAdornment: providerName && (
-              <InputAdornment position="end">
-                <ButtonIcon
-                  color="text.secondary"
-                  size="sm"
-                  iconName="close"
-                  onClick={() => setProviderName('')}
-                />
-              </InputAdornment>
-            ),
           }}
           onChange={(e) => setProviderName(e.target.value)}
         />
+
+        {(fromToken || toToken || providerName) && (
+          <Box marginLeft={2}>
+            <ButtonIcon
+              size="xl"
+              iconName="filter-clean"
+              onClick={() => cleanFilter()}
+            />
+          </Box>
+        )}
         <Box marginLeft={2}>
           <ButtonIcon
             iconProps={{
@@ -154,18 +157,6 @@ export default function P2PAds() {
             onClick={toggleSortPicker}
           />
         </Box>
-        {(fromToken || toToken || providerName) && (
-          <Box marginLeft={2}>
-            <ButtonIcon
-              iconProps={{
-                color: 'text.secondary',
-              }}
-              size="xl"
-              iconName="filter-clean"
-              onClick={() => cleanFilter()}
-            />
-          </Box>
-        )}
       </Box>
       <Box className="p2p-ads__list">
         {isEmptyResult && (

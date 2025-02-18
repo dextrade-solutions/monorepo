@@ -20,6 +20,12 @@ const isMetamaskInstalled = () => {
 
 export const WALLETS_META = [
   {
+    name: 'dextrade wallet',
+    icon: '/images/wallets/dextrade.svg',
+    deepLink: `com.dextrade://open-trade?`,
+    onlyMobile: true,
+  },
+  {
     name: 'walletconnect',
     icon: '/images/wallets/wallet-connect.svg',
     supportMobileBrowser: true,
@@ -27,7 +33,8 @@ export const WALLETS_META = [
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
-    deepLink: 'https://xverse.app/dapp/',
+    // deepLink: 'https://xverse.app/dapp/',
+    supportMobileBrowser: true,
   },
   {
     name: 'coinbase wallet',

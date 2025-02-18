@@ -136,8 +136,6 @@ export default function AdView() {
           <Box>
             <Button
               startIcon={<Icon name="arrow-left-dex" />}
-              color="secondary"
-              variant="contained"
               onClick={handleNavigateBack}
             >
               {t('back')}

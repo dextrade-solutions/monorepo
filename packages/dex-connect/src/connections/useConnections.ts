@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { useQuery } from 'wagmi/query';
 
 import { WalletConnectionType } from '../constants';
+import { DextradeProvider } from '../providers/dextrade-provider';
 import { MultiverseExtension } from '../providers/multiversx-provider';
 import { SatsConnectProvider } from '../providers/sats-connect-provider';
 import { useEVMProviders } from '../providers/useEVMProviders';
@@ -23,6 +24,7 @@ export function useConnections({
   const hub = new EventEmitter();
 
   let providers = [
+    new DextradeProvider(),
     ...evmProviders,
     ...tronProviders,
     ...solanaProviders,
