@@ -23,7 +23,7 @@ const titles = {
   [ROUTE_INVOICE_CREATE]: 'Create invoice',
   [ROUTE_P2P]: 'P2P',
   [ROUTE_P2P_CREATE]: 'Add pair',
-  [ROUTE_HISTORY]: 'Transaction History',
+  [ROUTE_HISTORY]: 'History',
   [ROUTE_PROFILE]: 'Profile',
 };
 

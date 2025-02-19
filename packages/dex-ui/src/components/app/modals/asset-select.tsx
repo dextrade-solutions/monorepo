@@ -1,28 +1,33 @@
+import { AssetModel } from 'dex-helpers/types';
+import React from 'react';
+
+import { useGlobalModalContext } from './modal-context';
 import { ModalProps } from './types';
 import { SelectCoinsItemDropdown } from '../../ui/select-coins/select-coins-item-dropdown';
-import { useGlobalModalContext } from './modal-context';
 
 export default function AssetSelect({
   value,
+  title = 'Pick asset',
   items = [],
   maxListItem = 6,
   onChange,
-}: { value: any; items: any[]; maxListItem: number } & ModalProps) {
+}: {
+  value: AssetModel;
+  items: AssetModel[];
+  maxListItem?: number;
+  title?: string;
+  onChange: (v: AssetModel) => void;
+} & ModalProps) {
   const { hideModal } = useGlobalModalContext();
   return (
     <SelectCoinsItemDropdown
-      // inputRef={inputRef}
       placeholderInput={'Search name or contract address'}
       onClose={hideModal}
       onChange={onChange}
-      coin={value}
+      value={value}
       items={items}
-      title="Pick asset"
-      // loading={loading}
-      // reversed={reversed}
+      title={title}
       maxListItem={maxListItem}
-      // fuseSearchKeys={fuseSearchKeys}
-      // shouldSearchForImports={shouldSearchForImports}
     />
   );
 }

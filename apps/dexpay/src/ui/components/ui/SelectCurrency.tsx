@@ -1,43 +1,49 @@
 import { Box, Button } from '@mui/material';
-import { SelectCoinsItem } from 'dex-ui';
+import { AssetModel } from 'dex-helpers/types';
+import { AssetItem, useGlobalModalContext } from 'dex-ui';
+import React from 'react';
 
 import { useCurrencies } from '../../hooks/use-currencies';
 
 export default function SelectCurrency({
-  label = 'Select currency',
   value,
-  placeholder,
+  reversed,
+  placeholder = 'Select currency',
   onChange,
 }: {
+  value: AssetModel;
   label?: string;
   placeholder?: string;
 }) {
-  const { items: currencies, isLoading } = useCurrencies();
+  const { showModal } = useGlobalModalContext();
+  const { items, isLoading } = useCurrencies();
+  const onClick = () => {
+    showModal({
+      name: 'ASSET_SELECT',
+      value,
+      items: items.map((i) => ({
+        ...i.asset,
+        balance: i.balance?.total_balance_currency,
+        balanceUsdt: i.balance?.total_balance_usdt,
+        currency: i.currency,
+      })),
+      onChange,
+      loading: isLoading,
+      maxListItem: 6,
+    });
+  };
+
   return (
     <Button
       sx={{
-        border: 1,
-        borderRadius: 0.9,
-        borderColor: 'text.secondary',
         color: 'text.primary',
       }}
-      variant="outlined"
+      disabled={isLoading}
       data-testid="select-currency"
+      onClick={onClick}
     >
-      <SelectCoinsItem
-        value={value}
-        label={label}
-        loading={isLoading}
-        placeholder={placeholder}
-        items={currencies.map((i) => ({
-          ...i.asset,
-          extra: {
-            currency: i.currency,
-            balance: i.balance,
-          },
-        }))}
-        onChange={onChange}
-      />
+      {value && <AssetItem alignReverse={reversed} asset={value} />}
+      {!value && placeholder}
     </Button>
   );
 }

@@ -230,6 +230,8 @@ export namespace Validation {
   export namespace DexTrade {
     export namespace Advert {
       export const create = object({
+        coin1: object().required(),
+        coin2: object().required(),
         minimumExchangeAmountCoin1: number().required(
           'Minimum Exchange Amount is required',
         ),

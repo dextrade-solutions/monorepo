@@ -1,14 +1,21 @@
 import { Box, Typography } from '@mui/material';
+import { AssetModel } from 'dex-helpers/types';
 import { ButtonIcon } from 'dex-ui';
-import PropTypes from 'prop-types';
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 
-import { useCoinInputSearch } from './hooks/useCoinInputSearch';
+import { useAssetsSearch } from './hooks/useAssetsSearch';
 import { SelectCoinsItemImportToken } from './select-coins-item-import-token';
 import { SelectCoinsItemList } from './select-coins-item-list';
 import { SelectCoinsItemSearch } from './select-coins-item-search';
 
-const Placeholder = ({ loading, searchQuery }) => {
+interface PlaceholderProps {
+  loading: boolean;
+  searchQuery: string;
+  shouldSearchForImports?: boolean;
+}
+
+
+const Placeholder = ({ loading, searchQuery }: PlaceholderProps) => {
   const t = (v) => v;
 
   if (loading) {
@@ -31,9 +38,25 @@ const Placeholder = ({ loading, searchQuery }) => {
   );
 };
 
+interface SelectCoinsItemDropdownProps {
+  inputRef?: React.RefObject<HTMLInputElement>;
+  value?: AssetModel;
+  items: AssetModel[];
+  reversed?: boolean;
+  title: string;
+  onChange?: (c: AssetModel | null) => void;
+  onClose: () => void;
+  placeholder?: React.ReactNode;
+  hideItemIf?: (item: AssetModel) => boolean;
+  loading?: boolean;
+  placeholderInput?: string;
+  shouldSearchForImports?: boolean;
+  maxListItem: number;
+}
+
 export const SelectCoinsItemDropdown = ({
   inputRef,
-  coin,
+  value,
   items,
   reversed,
   title,
@@ -43,36 +66,28 @@ export const SelectCoinsItemDropdown = ({
   hideItemIf,
   loading,
   placeholderInput,
-  fuseSearchKeys = [
-    { name: 'name', weight: 0.499 },
-    { name: 'symbol', weight: 0.499 },
-    { name: 'address', weight: 0.002 },
-  ],
   shouldSearchForImports,
-}) => {
+}: SelectCoinsItemDropdownProps) => {
   const t = (v) => v;
   const [searchQuery, setSearchQuery] = useState('');
   const [network, setNetwork] = useState(null);
   const [tokenForImport, setTokenForImport] = useState(null);
   const [isImportTokenModalOpen, setIsImportTokenModalOpen] = useState(false);
-  let itemsFiltered = items.filter((i) => i !== coin);
-  if (network) {
-    itemsFiltered = itemsFiltered.filter((i) => i.network === network.key);
-  }
 
-  const [searchItems, handleSearchItems, handleSetFuse] = useCoinInputSearch({
-    fuseSearchKeys,
+  const itemsFiltered = useMemo(() => {
+    let result = items;
+    if (value) {
+      result = result.filter((i) => i.iso !== value.iso);
+    }
+    if (network) {
+      result = result.filter((i) => i.network === network.key);
+    }
+    return result;
+  }, [items, value, network]);
+
+  const [searchItems, handleSearchItems] = useAssetsSearch({
+    assetsList: itemsFiltered,
   });
-
-  const renderList = useMemo(() => {
-    const list = searchQuery
-      ? searchItems
-      : itemsFiltered.slice(0, 6).map((i, idx) => ({ item: i, refIndex: idx }));
-
-    return list.sort(
-      (p, n) => Number(n.selected || false) - Number(p.selected || false),
-    );
-  }, [searchItems, itemsFiltered, searchQuery]);
 
   const handleClose = useCallback(() => {
     setSearchQuery('');
@@ -97,8 +112,8 @@ export const SelectCoinsItemDropdown = ({
   );
 
   useEffect(() => {
-    handleSetFuse(itemsFiltered, searchQuery);
-  }, [itemsFiltered]);
+    handleChangeSearchValue('');
+  }, [handleChangeSearchValue]);
 
   const onImportToken = useCallback((token) => {
     setTokenForImport(token);
@@ -148,8 +163,8 @@ export const SelectCoinsItemDropdown = ({
         placeholder={placeholderInput}
       />
       <SelectCoinsItemList
-        coin={coin}
-        list={renderList}
+        coin={value}
+        list={searchItems}
         searchQuery={searchQuery}
         showRateLabel={reversed}
         onChange={handleChange}
@@ -169,31 +184,4 @@ export const SelectCoinsItemDropdown = ({
       />
     </div>
   );
-};
-
-Placeholder.propTypes = {
-  loading: PropTypes.bool,
-  searchQuery: PropTypes.string,
-  shouldSearchForImports: PropTypes.bool,
-};
-
-SelectCoinsItemDropdown.propTypes = {
-  inputRef: PropTypes.any,
-  maxListItem: PropTypes.number.isRequired,
-  coin: PropTypes.object,
-  items: PropTypes.arrayOf(PropTypes.object).isRequired,
-  reversed: PropTypes.bool,
-  onChange: PropTypes.func,
-  onClose: PropTypes.func,
-  hideItemIf: PropTypes.func,
-  fuseSearchKeys: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      weight: PropTypes.number.isRequired,
-    }),
-  ),
-  loading: PropTypes.bool,
-  placeholder: PropTypes.node,
-  placeholderInput: PropTypes.string,
-  shouldSearchForImports: PropTypes.bool,
 };

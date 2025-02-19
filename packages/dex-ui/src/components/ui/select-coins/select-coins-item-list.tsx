@@ -1,10 +1,34 @@
 import { Box, Button, Chip, Collapse, Typography } from '@mui/material';
 import classnames from 'classnames';
-import { getCoinIconByUid } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  getCoinIconByUid,
+} from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
 import { Icon, UrlIcon } from 'dex-ui';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { TransitionGroup } from 'react-transition-group';
+
+interface AssetModelWithExtra extends AssetModel {
+  selected?: boolean;
+  disabled?: boolean;
+  balance?: string;
+  balanceUsdt?: string;
+  IconComponent?: React.ComponentType<any>; //  for custom icons
+  notImported?: boolean;
+}
+
+interface SelectCoinsItemListProps {
+  list: AssetModelWithExtra[];
+  coin?: AssetModel;
+  placeholder?: React.ReactNode;
+  hideItemIf?: (item: AssetModelWithExtra) => boolean;
+  onChange?: (coin: AssetModelWithExtra | null) => void;
+  onImportToken?: (item: AssetModelWithExtra) => void;
+  onClose?: () => void;
+  onReset?: () => void;
+}
 
 export const SelectCoinsItemList = ({
   list,
@@ -15,7 +39,7 @@ export const SelectCoinsItemList = ({
   placeholder: Placeholder,
   onClose,
   onReset,
-}) => {
+}: SelectCoinsItemListProps) => {
   const t = (v) => v;
 
   const handleReset = useCallback(
@@ -81,7 +105,7 @@ export const SelectCoinsItemList = ({
       <ul className="select-coins__list">
         {Boolean(coin) && renderSelected()}
         <TransitionGroup>
-          {list.map(({ item, refIndex }) => {
+          {list.map((item) => {
             if (hideItemIf?.(item)) {
               return null;
             }
@@ -89,14 +113,14 @@ export const SelectCoinsItemList = ({
             const {
               selected,
               disabled,
-              iconUrl,
               name,
               standard,
               uid,
               symbol,
+              balance,
+              balanceUsdt,
               IconComponent,
               notImported,
-              extra,
             } = item;
 
             const handleClick = (e) => {
@@ -118,9 +142,8 @@ export const SelectCoinsItemList = ({
                 handleClick(e);
               }
             };
-
             return (
-              <Collapse key={refIndex}>
+              <Collapse key={item.iso}>
                 <li
                   className={classnames('select-coins__list__item', {
                     'select-coins__list__item--selected': selected,
@@ -147,28 +170,17 @@ export const SelectCoinsItemList = ({
                           {standard.toUpperCase()}
                         </Typography>
                       )}
-
-                      {!standard && extra?.currency && (
-                        <Typography fontWeight="light">
-                          {extra.currency.token_type}
+                    </div>
+                    <Box textAlign="right">
+                      {typeof balance === 'string' && (
+                        <Typography>{formatFundsAmount(balance)}</Typography>
+                      )}
+                      {typeof balanceUsdt === 'string' && (
+                        <Typography variant="caption" color="text.secondary">
+                          {formatCurrency(balanceUsdt, 'usd')}
                         </Typography>
                       )}
-                    </div>
-                    {/* {showRateLabel &&
-                  (rightname || rightstandard) && (
-                    <div className="select-coins__list__item__label__block select-coins__list__item__label__block--rate">
-                      {rightname && (
-                        <span className="searchable-item-list__right-primary-label">
-                          {rightname}
-                        </span>
-                      )}
-                      {rightstandard && useCurrencyRateCheck && (
-                        <span className="searchable-item-list__right-secondary-label">
-                          {rightstandard}
-                        </span>
-                      )}
-                    </div>
-                  )} */}
+                    </Box>
                   </div>
                   {notImported && (
                     <Button
@@ -187,17 +199,4 @@ export const SelectCoinsItemList = ({
       </ul>
     </>
   );
-};
-
-SelectCoinsItemList.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.object).isRequired,
-  searchQuery: PropTypes.string,
-  coin: PropTypes.object,
-  hideItemIf: PropTypes.func,
-  showRateLabel: PropTypes.bool,
-  onChange: PropTypes.func,
-  onClose: PropTypes.func,
-  onReset: PropTypes.func,
-  onImportToken: PropTypes.func,
-  placeholder: PropTypes.node,
 };

@@ -1,10 +1,13 @@
 import { Button, Box, Typography, Paper, Tabs, Tab } from '@mui/material';
+import { formatCurrency } from 'dex-helpers';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 
 import TradingPair from '../components/crypto/TradingPair';
 import { ROUTE_P2P_CREATE } from '../constants/pages';
+import React from 'react';
+import { bgPrimaryGradient } from 'dex-ui';
 
 export default function P2P() {
   const [_, navigate] = useLocation();
@@ -12,26 +15,31 @@ export default function P2P() {
 
   return (
     <Box sx={{ mx: 'auto' }}>
-      <Box mb={4}>
-        <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
-          <Typography variant="body2" color="textSecondary">
-            Total income
-          </Typography>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            $120.00 USD
-          </Typography>
-        </Paper>
-        <Button
-          startIcon={<Plus />}
-          color="secondary"
-          size="large"
-          variant="contained"
-          fullWidth
-          onClick={() => navigate(ROUTE_P2P_CREATE)}
-        >
-          Create pair
-        </Button>
-      </Box>
+      <Paper
+        elevation={0}
+        sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 5 }}
+      >
+        <Typography variant="body2" color="textSecondary">
+          Total income
+        </Typography>
+        <Typography m={3} variant="h4" fontWeight="bold" color="text.tertiary">
+          {formatCurrency('0', 'usd')} USD
+        </Typography>
+
+        <Box display="flex" gap={2}>
+          <Button
+            fullWidth
+            color="secondary"
+            size="large"
+            sx={{ background: bgPrimaryGradient }}
+            variant="contained"
+            startIcon={<Plus />}
+            onClick={() => navigate(ROUTE_P2P_CREATE)}
+          >
+            Create ad
+          </Button>
+        </Box>
+      </Paper>
 
       <Tabs
         value={tabValue}

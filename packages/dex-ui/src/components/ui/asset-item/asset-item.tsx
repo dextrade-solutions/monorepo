@@ -34,7 +34,12 @@ const AssetItem = ({
   const networkType = asset?.standard || coin?.networkType;
 
   return (
-    <Box display="flex" alignItems="center" {...(reverseProps || {})}>
+    <Box
+      display="flex"
+      textAlign="left"
+      alignItems="center"
+      {...(reverseProps || {})}
+    >
       {loading && (
         <>
           <Skeleton variant="circular" width={25} height={25} />

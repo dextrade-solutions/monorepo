@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Step,
   StepContent,
   StepLabel,
@@ -31,13 +30,13 @@ export default function WalletDeposit() {
         <StepLabel>Choose crypto to deposit</StepLabel>
         <StepContent>
           <SelectCurrency value={currency} onChange={(v) => setCurrency(v)} />
-          {currency && currency.extra.currency.contract_address && (
+          {currency && currency.currency.contract_address && (
             <Box display="flex" mt={1}>
               <Typography mr={1} color="text.secondary">
                 Contract address:{' '}
               </Typography>
               <Link href={`https://bscscan.com/address/`}>
-                {shortenAddress(currency.extra.currency.contract_address)}
+                {shortenAddress(currency.currency.contract_address)}
               </Link>
             </Box>
           )}
