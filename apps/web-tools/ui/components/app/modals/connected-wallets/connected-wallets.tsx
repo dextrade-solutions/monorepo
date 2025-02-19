@@ -15,7 +15,6 @@ const WalletsList = ({ hideModal }: ModalProps) => {
         <Typography>Connected wallets</Typography>
         <ButtonIcon
           iconName="close"
-          color="secondary"
           ariaLabel={t('close')}
           size="sm"
           onClick={hideModal}

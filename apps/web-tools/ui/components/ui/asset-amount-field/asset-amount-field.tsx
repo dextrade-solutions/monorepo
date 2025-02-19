@@ -78,10 +78,10 @@ export const AssetAmountField = ({
                       disabled={Boolean(reserve)}
                       onClick={() => onChange(assetInput.balance.value)}
                     >
-                      <Typography as="span" marginRight={1}>
+                      <Typography component="span" marginRight={1}>
                         {assetInput.balance.formattedValue}
                       </Typography>
-                      <Typography as="span">
+                      <Typography component="span">
                         {`(${formatCurrency(assetInput.balance.inUsdt, 'usd')})`}
                       </Typography>
                     </CardActionArea>
@@ -177,8 +177,10 @@ export const AssetAmountField = ({
           {assetInput.permissions.canChoosePaymentMethod && (
             <Button
               className="configure-holder-btn"
-              variant="contained"
-              color="tertiary"
+              sx={{
+                bgcolor: 'tertiary.light',
+                color: 'text.primary',
+              }}
               size="large"
               fullWidth
               disableElevation
@@ -199,8 +201,10 @@ export const AssetAmountField = ({
             <Button
               className="configure-holder-btn"
               size="large"
-              variant="contained"
-              color="tertiary"
+              sx={{
+                bgcolor: 'tertiary.light',
+                color: 'text.primary',
+              }}
               disableElevation
               fullWidth
               onClick={() => assetInput.showConfigureWallet()}

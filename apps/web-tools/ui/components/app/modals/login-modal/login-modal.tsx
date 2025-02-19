@@ -46,7 +46,6 @@ const LoginModal = ({
 
         <ButtonIcon
           iconName="close"
-          color="secondary"
           size="sm"
           onClick={hideModal}
           ariaLabel={t('close')}

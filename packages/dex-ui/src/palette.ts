@@ -44,8 +44,10 @@ const Palette = {
       dark: '#252527',
     },
     tertiary: {
+      light: '#3d2f4c',
       main: '#3d2f4c',
-      dark: '#0c1323',
+      dark: '#fff',
+      contrastText: '#fff',
     },
     success: {
       main: '#4caf50',

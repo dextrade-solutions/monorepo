@@ -52,7 +52,6 @@ const DepositWallet = ({
         </Box>
         <ButtonIcon
           iconName="close"
-          color="secondary"
           size="sm"
           onClick={() => hideModal(onClose)}
           ariaLabel={t('close')}

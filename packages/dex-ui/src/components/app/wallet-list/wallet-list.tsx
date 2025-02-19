@@ -1,21 +1,11 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Grow,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemSecondaryAction,
-  ListItemText,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, Grow, Typography } from '@mui/material';
 import { WalletConnection, WalletItem } from 'dex-connect';
-import { isMobileWeb, shortenAddress } from 'dex-helpers';
-import { isEqual } from 'lodash';
-import { useState } from 'react';
+import { isMobileWeb } from 'dex-helpers';
+import React, { useState } from 'react';
 
-import { ButtonIcon, PulseLoader, UrlIcon } from '../ui';
-import { useGlobalModalContext } from './modals';
+import WalletListItem from './wallet-list-item';
+import { PulseLoader, UrlIcon } from '../../ui';
+import { useGlobalModalContext } from '../modals';
 
 export default function WalletList({
   value,
@@ -66,7 +56,10 @@ export default function WalletList({
     }
   };
 
-  const onSelect = (e: Event, wallet: WalletItem) => {
+  const onSelect = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    wallet: WalletItem,
+  ) => {
     if (
       !isMobileWeb ||
       wallet.meta?.isWebView ||
@@ -157,55 +150,15 @@ export default function WalletList({
       {showWalletsList &&
         renderList.map((item, idx) => (
           <Grow in={true} timeout={600 * (idx / 2)}>
-            <Box data-testid={item.id} key={idx} marginTop={1}>
-              <ListItemButton
-                sx={{
-                  bgcolor:
-                    item.connected && isEqual(item.connected, value)
-                      ? 'secondary.dark'
-                      : undefined,
-                }}
-                className="bordered"
-                href={
-                  item.meta?.deepLink
-                    ? item.meta.deepLink + window.location.href
-                    : undefined
-                }
-                target="_blank"
-                onClick={(e) => onSelect(e, item)}
-              >
-                <ListItemAvatar>
-                  <UrlIcon size={40} borderRadius="10px" url={item.icon} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Box display="flex">
-                      <Typography>{item.name}</Typography>
-                      {!hideConnectionType && (
-                        <Typography color="text.secondary" ml={1}>
-                          {item.connectionType}
-                        </Typography>
-                      )}
-                    </Box>
-                  }
-                  secondary={
-                    item.connected ? shortenAddress(item.connected.address) : ''
-                  }
-                />
-                {item.connected && (
-                  <ListItemSecondaryAction>
-                    <ButtonIcon
-                      size="lg"
-                      iconName="disconnect"
-                      onClick={(e: Event) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onDisconnect(item);
-                      }}
-                    />
-                  </ListItemSecondaryAction>
-                )}
-              </ListItemButton>
+            <Box data-testid={item.id} key={item.id}>
+              <WalletListItem
+                key={item.id}
+                item={item}
+                value={value}
+                hideConnectionType={hideConnectionType}
+                onDisconnect={onDisconnect}
+                onSelect={onSelect}
+              />
             </Box>
           </Grow>
         ))}

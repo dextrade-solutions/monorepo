@@ -78,10 +78,8 @@ const SetWallet = ({
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
         <AssetItem asset={asset} />
-
         <ButtonIcon
           iconName="close"
-          color="secondary"
           size="sm"
           ariaLabel={t('close')}
           onClick={hideModal}
