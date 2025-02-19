@@ -22,7 +22,7 @@ export const WALLETS_META = [
   {
     name: 'dextrade wallet',
     icon: '/images/wallets/dextrade.svg',
-    deepLink: `com.dextrade://open-trade?`,
+    deepLink: `/dapp/open?url=`,
     onlyMobile: true,
   },
   {

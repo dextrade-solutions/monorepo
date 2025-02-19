@@ -1,4 +1,5 @@
 export const HOME_ROUTE = `/`;
+export const DAPP_ROUTE = `/dapp/open`;
 export const EXCHANGE_VIEW_ROUTE = `/swap-view`;
 export const AWAITING_SWAP_ROUTE = '/swap-awaiting';
 export const SWAPS_ERROR_ROUTE = '/swap-error';

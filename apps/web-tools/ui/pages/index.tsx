@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { NoMatchPage } from './404';
+import DappOpen from './dapp';
 import Home from './home';
 import InvoicePage from './invoice';
 import AppSettings from './settings';
@@ -27,6 +28,7 @@ import {
   SETTINGS_GENERAL_ROUTE,
   PLANS_ROUTE,
   INVOICE_ROUTE,
+  DAPP_ROUTE,
 } from '../helpers/constants/routes';
 import { useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -53,6 +55,7 @@ export default function RoutesRoot() {
       <SigningModal />
       <Routes>
         <Route path={HOME_ROUTE} element={<Home />} />
+        <Route path={DAPP_ROUTE} element={<DappOpen />} />
         <Route path={EXCHANGE_VIEW_ROUTE} element={<SwapView />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
