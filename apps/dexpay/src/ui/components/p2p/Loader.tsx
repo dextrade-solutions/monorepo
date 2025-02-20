@@ -1,5 +1,6 @@
 import { Box, Paper, Skeleton, Typography } from '@mui/material';
 import React from 'react';
+import AdItemSkeleton from './AdItemSkeleton';
 
 export default function Loader() {
   return (
@@ -26,7 +27,7 @@ export default function Loader() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Skeletons for the trading pairs */}
           {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} height={80} />
+            <AdItemSkeleton key={index} height={80} />
           ))}
         </Box>
       </Box>

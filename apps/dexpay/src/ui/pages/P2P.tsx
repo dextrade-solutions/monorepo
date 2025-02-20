@@ -14,10 +14,9 @@ import { Plus, User, User2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
-import TradingPair from '../components/crypto/TradingPair';
-import CreateDexTradeUser from '../components/p2p/createDextradeUser';
+import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
 import Loader from '../components/p2p/Loader';
-import StyledLink from '../components/ui/Link';
+import TradingPair from '../components/p2p/TradingPair';
 import { ROUTE_P2P_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useQuery } from '../hooks/use-query';
@@ -119,11 +118,21 @@ export default function P2P() {
         value={tabValue}
         onChange={(event, newValue) => setTabValue(newValue)}
         variant="fullWidth"
-        textColor="primary"
-        indicatorColor="primary"
+        sx={{
+          '& .MuiTabs-indicator': {
+            backgroundColor: 'text.tertiary', // Indicator color
+          },
+          '& .MuiTab-root': {
+            fontWeight: 'bold',
+            color: 'text.secondary', // Unselected tab color
+            '&.Mui-selected': {
+              color: 'text.tertiary', // Selected tab color
+            },
+          },
+        }}
       >
         <Tab label="Pairs" value="pairs" />
-        <Tab label="Trades History" value="trades" />
+        <Tab disabled label="Trades History" value="trades" />
       </Tabs>
 
       <Box mt={2}>
