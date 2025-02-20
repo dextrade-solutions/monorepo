@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   DEXTRADE_APP_STORE_LINK,
   DEXTRADE_GOOGLE_PLAY_LINK,
-  isIOS,
+  isWebIOS,
 } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import React, { useMemo, useEffect } from 'react';
@@ -45,12 +45,12 @@ export default function DappOpen() {
       try {
         window.location.href = appDeepLink.toString();
         setTimeout(() => {
-          window.location.href = isIOS
+          window.location.href = isWebIOS
             ? DEXTRADE_APP_STORE_LINK
             : DEXTRADE_GOOGLE_PLAY_LINK;
         }, 1000);
       } catch (error) {
-        window.location.href = isIOS
+        window.location.href = isWebIOS
           ? DEXTRADE_APP_STORE_LINK
           : DEXTRADE_GOOGLE_PLAY_LINK;
       }
