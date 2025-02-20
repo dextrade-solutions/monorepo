@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
 import React from 'react';
 
@@ -20,14 +21,16 @@ export default function AssetSelect({
 } & ModalProps) {
   const { hideModal } = useGlobalModalContext();
   return (
-    <SelectCoinsItemDropdown
-      placeholderInput={'Search name or contract address'}
-      onClose={hideModal}
-      onChange={onChange}
-      value={value}
-      items={items}
-      title={title}
-      maxListItem={maxListItem}
-    />
+    <Box p={2}>
+      <SelectCoinsItemDropdown
+        placeholderInput={'Search name or contract address'}
+        onClose={hideModal}
+        onChange={onChange}
+        value={value}
+        items={items}
+        title={title}
+        maxListItem={maxListItem}
+      />
+    </Box>
   );
 }

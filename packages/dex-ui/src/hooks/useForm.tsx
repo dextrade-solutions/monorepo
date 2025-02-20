@@ -12,6 +12,7 @@ export type UseFormReturnType<T> = {
   isInitiated: boolean;
   isInteracted: boolean;
   primaryError: string | undefined;
+  values: T;
   setInteracted: (name: string) => void;
   setErrors: (name: string, errors: string[]) => void;
   setValues: React.Dispatch<React.SetStateAction<any>>; // And this to update values

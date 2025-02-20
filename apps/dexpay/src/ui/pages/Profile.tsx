@@ -1,10 +1,18 @@
-import { Button, Card, CardContent, Box, Typography } from '@mui/material';
-import { Icon } from 'dex-ui';
-import { LogOut } from 'lucide-react';
+import {
+  Button,
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  TextField,
+} from '@mui/material';
+import { DownloadCloud, LogOut } from 'lucide-react';
+import React from 'react';
+
 import { useAuth } from '../hooks/use-auth';
 
 export default function Profile() {
-  const { logout } = useAuth();
+  const { logout, me } = useAuth();
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
       <Card
@@ -16,6 +24,27 @@ export default function Profile() {
         }}
       >
         <CardContent sx={{ p: 4 }}>
+          <TextField
+            label="Email"
+            margin="normal"
+            disabled
+            fullWidth
+            value={me?.email}
+          />
+          <TextField
+            label="First name"
+            margin="normal"
+            disabled
+            fullWidth
+            value={me?.first_name}
+          />
+          <TextField
+            label="Last name"
+            margin="normal"
+            disabled
+            fullWidth
+            value={me?.last_name}
+          />
           <Box
             sx={{
               display: 'flex',
@@ -25,20 +54,18 @@ export default function Profile() {
               mb: 4,
             }}
           >
-            {/* <Box
+            <Box
               sx={{
-                width: 96,
-                height: 96,
                 borderRadius: '50%',
                 bgcolor: 'action.disabledBackground',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                mb: 2,
+                my: 2,
               }}
             >
-              <Icon size="xl" name="download" />
-            </Box> */}
+              <DownloadCloud size={40} />
+            </Box>
             <Typography variant="body2" color="text.secondary">
               Drag and drop a file here to update
             </Typography>

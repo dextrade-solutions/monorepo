@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable no-useless-escape */
-import dayjs from 'dayjs';
 import { validateMnemonic } from 'bip39';
+import dayjs from 'dayjs';
 import { object, string, ref, number, date, boolean, array, mixed } from 'yup';
 
 export namespace Validation {
@@ -13,7 +13,9 @@ export namespace Validation {
         'valid-seed-phrase',
         'Invalid seed phrase',
         (value: string[] | undefined) => {
-          if (!value) return false; // Handle undefined/null values
+          if (!value) {
+            return false;
+          } // Handle undefined/null values
           const seedPhraseString = value.join(' ');
           return validateMnemonic(seedPhraseString);
         },
@@ -228,8 +230,14 @@ export namespace Validation {
   }
 
   export namespace DexTrade {
+    export namespace User {
+      export const create = object({
+        username: string().required(),
+      });
+    }
     export namespace Advert {
       export const create = object({
+        priceSourceProvider: object().required(),
         coin1: object().required(),
         coin2: object().required(),
         minimumExchangeAmountCoin1: number().required(

@@ -2,9 +2,9 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Memo, Projects, Vault } from '../services'; // Import Auth service
+import { Auth, Memo, Projects, User, Vault } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes, IMemo } from '../types';
+import { IProject, Auth as AuthTypes, IMemo, IUser } from '../types';
 
 interface User {
   auth: {
@@ -18,6 +18,7 @@ interface User {
 
 interface UserContextType {
   user: User | null;
+  me: IUser | null;
   isAuthorized: boolean;
   isAuthorizeInProgress: boolean;
   projects: IProject[] | undefined;
@@ -35,6 +36,7 @@ interface UserContextType {
 
 export const UserContext = createContext<UserContextType>({
   user: null,
+  me: null,
   isAuthorized: false,
   isAuthorizeInProgress: false,
   projects: undefined,
@@ -71,9 +73,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     Memo.my,
     { page: 0 },
     {
-      enabled: isAuthorized,
+      enabled: false,
     },
   );
+  const me = useQuery(User.view, [], {
+    enabled: isAuthorized,
+  });
 
   useEffect(() => {
     if (!user?.auth) {
@@ -145,6 +150,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValue = {
     user,
+    me: me.data,
     projects: projects.data?.list.currentPageResult || [],
     memos: memos.data?.list.currentPageResult || [],
     twoFAdata: twoFA,

@@ -2,8 +2,16 @@ import { Card, CardContent } from '@mui/material';
 import { formatDistanceToNow } from 'date-fns';
 
 import { tradingPairs } from '../../data/mockData';
+import { useAuth } from '../../hooks/use-auth';
+import { useQuery } from '../../hooks/use-query';
+import { DexTrade } from '../../services';
 
 export default function TradingPair() {
+  const { user } = useAuth();
+  const projectId = user?.project?.id!;
+
+  const ads = useQuery(DexTrade.advertsList, { projectId });
+
   return (
     <div className="space-y-4">
       {tradingPairs.map((pair) => (

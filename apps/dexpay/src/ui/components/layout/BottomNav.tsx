@@ -106,8 +106,9 @@ export default function BottomNav() {
           boxShadow: '0px 4px 30px 0px rgba(0, 0, 0, 0.1)',
           borderRadius: '50%',
           height: 72,
-          bgcolor: 'white',
+          bgcolor: 'background.default',
           transform: 'translateX(-50%)',
+
           '&:before': {
             content: '""',
             position: 'absolute',
