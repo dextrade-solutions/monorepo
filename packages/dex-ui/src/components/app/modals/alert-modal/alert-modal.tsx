@@ -1,5 +1,5 @@
 import { Alert, AlertProps, Box, Button, Typography } from '@mui/material';
-import { Component, ReactNode } from 'react';
+import React, { Component, ReactNode } from 'react';
 
 import { ModalProps } from '../types';
 

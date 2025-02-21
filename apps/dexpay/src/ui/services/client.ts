@@ -2,8 +2,6 @@ import ky from 'ky';
 
 import AuthService from './service.auth';
 
-const ACCESS_TOKEN_KEY = 'access_token';
-const REFRESH_TOKEN_KEY = 'refresh_token';
 const BASE_API_CONFIG = {
   prefixUrl: 'https://api-int.dextrade.com/v1', // Consider using environment variables for this
   headers: {
@@ -36,6 +34,7 @@ export const saveAuthData = (accessToken: string, refreshToken: string) => {
 
 export const $api = ky.create({
   ...BASE_API_CONFIG,
+  retry: 0,
   hooks: {
     beforeRequest: [
       (request) => {

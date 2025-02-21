@@ -2,28 +2,23 @@ import {
   Box,
   Typography,
   Divider,
-  Chip,
   CardContent,
   Card,
   Alert,
-  Button,
+  Chip,
+  Paper,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import {
   CircleNumber,
   CopyData,
   CountdownTimer,
+  Button,
   useGlobalModalContext,
   useLoader,
 } from 'dex-ui';
 import { map } from 'lodash';
-import {
-  DeleteIcon,
-  LucideArrowUpRight,
-  LucideLink,
-  Settings,
-  Trash,
-} from 'lucide-react';
+import { DeleteIcon, LucideArrowUpRight, Settings, Trash } from 'lucide-react';
 import React from 'react';
 import { useLocation } from 'wouter';
 
@@ -93,96 +88,128 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
     });
   };
 
+  const STATUS_COLOR = {
+    2: 'error.dark', // error
+    3: 'success.dark', // success'
+  };
+
   return (
-    <Card
+    <Paper
       elevation={0}
       sx={{
+        color: 'text.tertiary',
         bgcolor: 'primary.light',
         borderRadius: 1,
+        p: 2,
       }}
-      key={invoice.id}
     >
-      <CardContent>
-        {invoice.converted_coin?.iso && (
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="h6" fontWeight="bold">
-              {formatCurrency(
+      <Box display="flex" justifyContent="space-between">
+        <Typography variant="h6" fontWeight="bold">
+          {invoice.converted_coin
+            ? formatCurrency(
                 invoice.converted_amount_requested,
                 invoice.converted_coin?.iso,
-              )}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {invoice.status_label}
-            </Typography>
-          </Box>
-        )}
-
-        <Divider sx={{ my: 1 }} />
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Button
-            size="small"
-            onClick={() => {
-              window.open(invoice.payment_page_url, '_blank');
-            }}
-            endIcon={<LucideArrowUpRight size={20} />}
+              )
+            : formatCurrency(invoice.amount_requested, invoice.currency.iso)}
+        </Typography>
+        <Box textAlign="right">
+          <Typography
+            color={STATUS_COLOR[invoice.status] || 'textSecondary'}
+            variant="body2"
           >
-            Open link
-          </Button>
-          <div className="flex-grow" />
-          <CopyData
-            className="flex-shrink"
-            shorten
-            data={invoice.payment_page_url}
-          />
-        </Box>
-        {expirationTime && (
-          <Box display="flex" alignItems="center" mb={1}>
-            <Typography className="flex-grow">Expiration</Typography>
-            <Typography>
-              <CountdownTimer
-                timeStarted={new Date().getTime()}
-                timerBase={expirationTime}
-                timeOnly
-              />
-            </Typography>
-          </Box>
-        )}
-        {invoice.description && (
-          <Box display="flex" alignItems="center" mb={1}>
-            <Alert severity="info">{invoice.description}</Alert>
-          </Box>
-        )}
-        <Box mb={2} />
-        <Box>
+            {invoice.status_label}
+          </Typography>
           {invoice.transactions.length > 0 && (
-            <Chip
+            <Button
               sx={{ ml: 1 }}
-              icon={
-                <CircleNumber size={30} number={invoice.transactions.length} />
+              startIcon={
+                <CircleNumber
+                  color="success.main"
+                  size={25}
+                  number={invoice.transactions.length}
+                />
               }
-              label={
-                <Box display="flex" alignItems="center">
-                  Transactions
-                </Box>
-              }
+              size="small"
+              rounded
+              fullWidth
+              color="success"
               onClick={() =>
                 showModal({
                   name: 'DEXPAY_TRANSACTIONS_LIST',
                   transactions: map(invoice.transactions, 'transaction'),
                 })
               }
-            />
+            >
+              Transactions
+            </Button>
           )}
-          <Chip sx={{ ml: 1 }} icon={<Settings size={20} />} label="Config" />
-
-          <Chip
-            sx={{ ml: 1 }}
-            icon={<Trash size={20} />}
-            label="Remove"
-            onClick={handleRemove}
-          />
         </Box>
-      </CardContent>
-    </Card>
+      </Box>
+
+      <Divider sx={{ my: 1 }} />
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Button
+          size="small"
+          color="tertiary"
+          onClick={() => {
+            window.open(invoice.payment_page_url, '_blank');
+          }}
+          endIcon={<LucideArrowUpRight size={20} />}
+        >
+          Open link
+        </Button>
+        <div className="flex-grow" />
+        <CopyData
+          className="flex-shrink"
+          color="tertiary"
+          shorten
+          data={invoice.payment_page_url}
+        />
+      </Box>
+      {expirationTime && (
+        <Box display="flex" alignItems="center" mb={1}>
+          <Typography className="flex-grow">Expiration</Typography>
+          <Typography>
+            <CountdownTimer
+              timeStarted={new Date().getTime()}
+              timerBase={expirationTime}
+              timeOnly
+            />
+          </Typography>
+        </Box>
+      )}
+      {invoice.description && (
+        <Box display="flex" alignItems="center" mb={1}>
+          <Alert severity="info">{invoice.description}</Alert>
+        </Box>
+      )}
+      <Box mb={2} />
+      <Box display="flex" gap={2}>
+        <Button
+          sx={{ ml: 1 }}
+          size="small"
+          rounded
+          fullWidth
+          variant="contained"
+          color="tertiary"
+          startIcon={<Settings size={20} />}
+          onClick={handleRemove}
+        >
+          Config
+        </Button>
+        <Button
+          sx={{ ml: 1 }}
+          size="small"
+          fullWidth
+          rounded
+          variant="outlined"
+          color="tertiary"
+          startIcon={<Trash size={20} />}
+          onClick={handleRemove}
+        >
+          Remove
+        </Button>
+      </Box>
+    </Paper>
   );
 };

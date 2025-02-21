@@ -11,12 +11,13 @@ import {
   Alert,
 } from '@mui/material';
 // import { ArrowForward } from 'lucide-react'; // Import the icon
-import { formatCurrency } from 'dex-helpers';
+import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
 import { CoinModel } from 'dex-helpers/types';
-import { AssetItem } from 'dex-ui';
+import { AssetItem, Button, CopyData } from 'dex-ui';
 import {
   ChevronDown,
   ChevronRight,
+  LucideArrowUpRight,
   Pause,
   Pencil,
   Play,
@@ -38,7 +39,10 @@ interface AdItemProps {
   marketPrice: number;
   priceSource: string;
   statusMessage?: string;
+  active: boolean;
+  exchangerName: string;
   onDelete: (adId: number) => void;
+  toggleActive: (adId: number) => void;
 }
 
 const AdItem: React.FC<AdItemProps> = ({
@@ -55,6 +59,9 @@ const AdItem: React.FC<AdItemProps> = ({
   marketPrice = '-',
   priceSource,
   statusMessage,
+  active,
+  exchangerName,
+  toggleActive,
   onDelete,
 }) => {
   const [expanded, setExpanded] = useState({
@@ -70,6 +77,8 @@ const AdItem: React.FC<AdItemProps> = ({
   const toggleExpand = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
+
+  const link = `${DEXTRADE_P2P_LINK}/swap-view?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
 
   return (
     <Paper
@@ -91,14 +100,11 @@ const AdItem: React.FC<AdItemProps> = ({
         <ChevronRight size={20} />
 
         <Box ml="auto">
-          <IconButton color="error">
-            {
-              /* Replace ad.active with your actual ad status property */ true ? (
-                <Pause size={16} />
-              ) : (
-                <Play size={16} />
-              )
-            }
+          <IconButton
+            color={active ? 'error' : 'success'}
+            onClick={toggleActive}
+          >
+            {active ? <Pause size={16} /> : <Play size={16} />}
           </IconButton>
           <IconButton color="tertiary" /* Add appropriate onClick handlers */>
             <Pencil size={16} />
@@ -142,7 +148,6 @@ const AdItem: React.FC<AdItemProps> = ({
           sx={{
             position: 'absolute',
             left: 0,
-            top: 0,
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
@@ -195,6 +200,31 @@ const AdItem: React.FC<AdItemProps> = ({
       <Divider />
       <Collapse in={expanded.options}>
         <Stack spacing={2} sx={{ mt: 2 }} divider={<Divider />}>
+          {active && (
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Button
+                size="small"
+                color="tertiary"
+                onClick={() => {
+                  window.open(link, '_blank');
+                }}
+                endIcon={<LucideArrowUpRight size={20} />}
+              >
+                Open ad
+              </Button>
+              <div className="flex-grow" />
+              <CopyData
+                className="flex-shrink"
+                color="tertiary"
+                shorten
+                data={link}
+              />
+            </Box>
+          )}
           <ItemRow label="Transaction Count" value={transactionCount} />
           <ItemRow
             label="Earnings"

@@ -1,5 +1,4 @@
-import { Button } from '@mui/material';
-import { GradientButton, useForm } from 'dex-ui';
+import { Button, useForm } from 'dex-ui';
 import React from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
@@ -38,9 +37,9 @@ const CreateDexTradeUser = ({ onSuccess }: { onSuccess: () => void }) => {
         margin="normal"
         onChange={(e) => e.target.value}
       />
-      <GradientButton type="submit" disabled={createUser.isPending}>
+      <Button gradient type="submit" disabled={createUser.isPending}>
         {createUser.isPending ? 'Creating...' : 'Create DexTrade User'}
-      </GradientButton>
+      </Button>
     </form>
   );
 };

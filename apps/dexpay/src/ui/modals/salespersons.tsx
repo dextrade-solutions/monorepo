@@ -12,15 +12,9 @@ import {
   IconButton,
   ListItemSecondaryAction,
 } from '@mui/material';
-import {
-  ButtonIcon,
-  ModalProps,
-  useGlobalModalContext,
-  useLoader,
-  useForm,
-} from 'dex-ui';
+import { ButtonIcon, ModalProps, useForm } from 'dex-ui';
 import { Trash } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
 import * as yup from 'yup';
 
 import { TextFieldWithValidation } from '../components/fields';
@@ -130,9 +124,16 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
                 <ListItemAvatar>
                   <Avatar>{userAccess.user?.email[0]?.toUpperCase()}</Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={userAccess.user?.email} />
-                <ListItemSecondaryAction>
+                <ListItemText
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                  primary={userAccess.user?.email}
+                />
+                <Box color="error">
                   <IconButton
+                    color="error"
                     edge="end"
                     aria-label="delete"
                     onClick={() => revokeAccessForm.submit(userAccess.id)}
@@ -140,7 +141,7 @@ const SalespersonsModal = ({ hideModal }: ModalProps) => {
                   >
                     <Trash />
                   </IconButton>
-                </ListItemSecondaryAction>
+                </Box>
               </ListItemButton>
               <Divider />
             </Box>

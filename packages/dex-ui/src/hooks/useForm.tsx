@@ -90,6 +90,7 @@ export const useForm = <T,>({
           severity: 'error',
           text: e.message,
         });
+        throw new Error(e);
       }
     },
   };

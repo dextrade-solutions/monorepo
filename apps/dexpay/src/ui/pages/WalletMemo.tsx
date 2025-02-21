@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { GradientButton, useLoader, useGlobalModalContext } from 'dex-ui';
+import { Button, useLoader, useGlobalModalContext } from 'dex-ui';
 import React, { useState } from 'react';
 
 import { PGP } from '../../crypto/pgp';
@@ -92,14 +92,15 @@ export default function WalletMemo() {
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <SeedPhraseForm value={seedPhrase} onChange={setSeedPhrase} />
 
-            <GradientButton
+            <Button
               type="submit"
+              gradient
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Continue
-            </GradientButton>
+            </Button>
           </Box>
         </>
       )}

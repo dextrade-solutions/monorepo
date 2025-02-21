@@ -52,6 +52,7 @@ export const ModalProvider = ({ children, modals }) => {
   };
   const ModalComponent =
     store.modalState.props.component || allModals[store.modalState.name];
+  console.log(store.open, store.modalState.name);
 
   const renderContent = () =>
     ModalComponent && (

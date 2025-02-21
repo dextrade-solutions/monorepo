@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Tabs, Tab, Box, Typography } from '@mui/material';
+import { Tab, Box } from '@mui/material';
 import TransactionList from '../components/transaction/TransactionList';
+import Tabs from '../components/ui/Tabs';
 
 export default function TransactionHistory() {
   const [activeTab, setActiveTab] = useState('all');
@@ -11,7 +12,7 @@ export default function TransactionHistory() {
 
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderColor: 'divider' }}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
@@ -23,7 +24,7 @@ export default function TransactionHistory() {
         </Tabs>
       </Box>
 
-      <Box sx={{ pt: 2 }}>
+      <Box>
         {activeTab === 'all' && <TransactionList />}
         {activeTab === 'withdrawals' && <TransactionList />}
       </Box>

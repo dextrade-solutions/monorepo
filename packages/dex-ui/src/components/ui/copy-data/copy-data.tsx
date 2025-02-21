@@ -14,10 +14,12 @@ const CopyData = ({
   tooltipPosition = 'bottom',
   className,
   shorten,
+  color = 'primary',
   ...args
 }: {
   data: string;
   shorten?: boolean;
+  color?: string;
   tooltipPosition?: 'top' | 'left' | 'bottom' | 'right';
   className?: string;
 } & BoxProps) => {
@@ -35,6 +37,7 @@ const CopyData = ({
           onClick={() => {
             handleCopy(data);
           }}
+          color={color}
           sx={{ lineHeight: 'normal' }}
           className="copy-data__button"
         >

@@ -48,7 +48,11 @@ log.setLevel(log.levels.DEBUG);
 
 function Router() {
   const auth = useAuth();
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   useEffect(() => {
     if (

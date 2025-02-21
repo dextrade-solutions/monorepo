@@ -3,9 +3,7 @@ import {
   Box,
   Typography,
   Paper,
-  Tabs,
   Tab,
-  Chip,
   Divider,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
@@ -21,6 +19,7 @@ import { ROUTE_P2P_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useQuery } from '../hooks/use-query';
 import { DexTrade } from '../services';
+import Tabs from '../components/ui/Tabs';
 
 export default function P2P() {
   const [_, navigate] = useLocation();
@@ -118,18 +117,6 @@ export default function P2P() {
         value={tabValue}
         onChange={(event, newValue) => setTabValue(newValue)}
         variant="fullWidth"
-        sx={{
-          '& .MuiTabs-indicator': {
-            backgroundColor: 'text.tertiary', // Indicator color
-          },
-          '& .MuiTab-root': {
-            fontWeight: 'bold',
-            color: 'text.secondary', // Unselected tab color
-            '&.Mui-selected': {
-              color: 'text.tertiary', // Selected tab color
-            },
-          },
-        }}
       >
         <Tab label="Pairs" value="pairs" />
         <Tab disabled label="Trades History" value="trades" />

@@ -3,8 +3,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
-  Collapse,
   InputAdornment,
   Paper,
   Typography,
@@ -12,7 +10,7 @@ import {
 import { AssetModel } from 'dex-helpers/types';
 import {
   CircleNumber,
-  GradientButton,
+  Button,
   Icon,
   SelectCoinsSwap,
   useForm,
@@ -337,15 +335,16 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             </AccordionDetails>
           </Accordion>
 
-          <GradientButton
+          <Button
             type="submit"
             fullWidth
+            gradient
             color="primary"
             disabled={Boolean(form.primaryError)}
             sx={{ mt: 3, mb: 2 }}
           >
             {form.primaryError || 'Create Advert'}
-          </GradientButton>
+          </Button>
         </>
       )}
     </Box>

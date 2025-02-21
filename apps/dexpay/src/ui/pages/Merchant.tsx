@@ -103,12 +103,15 @@ export default function Merchant() {
       <Box data-testid="merchant-invoices-section">
         <Typography
           variant="h6"
+          fontWeight="bold"
+          color="text.tertiary"
           gutterBottom
           data-testid="merchant-invoices-label"
         >
           Invoices
         </Typography>
         <Box
+          mt={2}
           display="flex"
           flexDirection="column"
           gap={2}

@@ -9,7 +9,6 @@ import {
   TextField,
 } from '@mui/material';
 import { generateMnemonic } from 'bip39';
-import { GradientButton } from 'dex-ui';
 import { Copy } from 'lucide-react';
 import { useSnackbar } from 'notistack';
 import * as React from 'react';

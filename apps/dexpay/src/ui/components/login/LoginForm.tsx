@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { useForm, GradientButton } from 'dex-ui';
+import { useForm, Button } from 'dex-ui';
 import React from 'react';
 
 import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
@@ -52,15 +52,16 @@ const LoginForm = () => {
         Forgot password?
       </Link>
 
-      <GradientButton
+      <Button
         data-testid="login-submit-button"
         type="submit"
         fullWidth
+        gradient
         size="large"
         sx={{ mt: 3, mb: 2 }}
       >
         Sign in
-      </GradientButton>
+      </Button>
 
       <Box
         display="flex"

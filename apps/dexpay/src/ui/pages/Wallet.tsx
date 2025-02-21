@@ -25,7 +25,9 @@ export default function Wallet() {
   const [_, navigate] = useLocation();
   const { items, isLoading } = useCurrencies();
 
-  const totalBalance = sumBy(items, 'balance.total_balance_usdt');
+  const totalBalance = sumBy(items, (item) =>
+    Number(item.balance?.total_balance_usdt || 0),
+  );
   return (
     <Box>
       <Box mb={4}>
