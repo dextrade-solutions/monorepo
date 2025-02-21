@@ -240,13 +240,13 @@ export namespace Validation {
         priceSourceProvider: object().required(),
         coin1: object().required(),
         coin2: object().required(),
-        minimumExchangeAmountCoin1: number().required(
+        minimumExchangeAmountCoin1: string().required(
           'Minimum Exchange Amount is required',
         ),
-        maximumExchangeAmountCoin1: number().required(
+        maximumExchangeAmountCoin1: string().required(
           'Maximum Exchange Amount is required',
         ),
-        priceAdjustment: number().required('Price is required'),
+        priceAdjustment: string().required('Price adjustment is required'),
         transactionFee: string(),
         exchangersPolicy: string(),
         username: string(),

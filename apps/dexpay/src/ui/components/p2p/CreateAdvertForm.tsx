@@ -5,11 +5,18 @@ import {
   Box,
   Button,
   Collapse,
+  InputAdornment,
   Paper,
   Typography,
 } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { CircleNumber, GradientButton, Icon, SelectCoinsSwap, useForm } from 'dex-ui';
+import {
+  CircleNumber,
+  GradientButton,
+  Icon,
+  SelectCoinsSwap,
+  useForm,
+} from 'dex-ui';
 import React from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
@@ -159,7 +166,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     <Box component="form" onSubmit={form.submit} noValidate sx={{ mt: 1 }}>
       <Box display="flex" my={1} alignItems="center">
         <CircleNumber number={1} color="tertiary.main" />
-        <Typography ml={1}>Pair selection</Typography>
+        <Typography ml={2} fontWeight="bold" color="text.tertiary">
+          Pair selection
+        </Typography>
       </Box>
       <Paper
         elevation={0}
@@ -208,6 +217,10 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           elevation={0}
           sx={{
             my: 2,
+            color: 'text.tertiary',
+            borderColor: 'tertiary.light',
+            borderStyle: 'solid',
+            borderWidth: 1,
             borderRadius: 1,
             '&:before': {
               display: 'none',
@@ -217,8 +230,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         >
           <AccordionSummary expandIcon={<Icon size="sm" name="chevron-down" />}>
             <Typography mr={1}>
-              Price source{' '}
-              <strong>{form.values.priceSourceProvider.label}</strong>
+              {form.values.priceSourceProvider.label}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -238,68 +250,104 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           </AccordionDetails>
         </Accordion>
       )}
-      <Box display="flex" mt={2} alignItems="center">
-        <CircleNumber number={2} color="tertiary.main" />
-        <Typography ml={1}>Ad options</Typography>
-      </Box>
-      <TextFieldWithValidation
-        margin="normal"
-        fullWidth
-        label="Exchangers Policy"
-        name="exchangersPolicy"
-        form={form}
-        onChange={(e) => e.target.value}
-      />
+      {form.values.coin1 && form.values.coin2 && (
+        <>
+          <Box display="flex" mt={2} alignItems="center">
+            <CircleNumber number={2} color="tertiary.main" />
+            <Typography ml={2} fontWeight="bold" color="text.tertiary">
+              Trade configuration
+            </Typography>
+          </Box>
 
-      <TextFieldWithValidation
-        margin="normal"
-        fullWidth
-        label="Minimum Exchange Amount"
-        type="number"
-        name="minimumExchangeAmountCoin1"
-        form={form}
-        onChange={(e) => e.target.value}
-      />
+          <TextFieldWithValidation
+            margin="normal"
+            fullWidth
+            label="Price Adjustment"
+            type="number"
+            form={form}
+            name="priceAdjustment"
+            InputProps={{
+              // Add InputProps for the adornment
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
+            }}
+            onChange={(e) => e.target.value}
+          />
 
-      <TextFieldWithValidation
-        margin="normal"
-        fullWidth
-        label="Maximum Exchange Amount (Coin 1)"
-        type="number"
-        form={form}
-        name="maximumExchangeAmountCoin1"
-        onChange={(e) => e.target.value}
-      />
+          <TextFieldWithValidation
+            margin="normal"
+            fullWidth
+            label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
+            type="number"
+            name="minimumExchangeAmountCoin1"
+            form={form}
+            onChange={(e) => e.target.value}
+          />
 
-      <TextFieldWithValidation
-        margin="normal"
-        fullWidth
-        label="Price Adjustment"
-        type="number"
-        form={form}
-        name="priceAdjustment"
-        onChange={(e) => e.target.value}
-      />
+          <TextFieldWithValidation
+            margin="normal"
+            fullWidth
+            label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
+            type="number"
+            form={form}
+            name="maximumExchangeAmountCoin1"
+            onChange={(e) => e.target.value}
+          />
 
-      <TextFieldWithValidation
-        margin="normal"
-        fullWidth
-        label="Transaction Fee"
-        type="number"
-        form={form}
-        name="transactionFee"
-        onChange={(e) => e.target.value}
-      />
+          <Accordion
+            disableGutters
+            elevation={0}
+            sx={{
+              my: 2,
+              color: 'text.tertiary',
+              borderColor: 'tertiary.light',
+              borderStyle: 'solid',
+              borderWidth: 1,
+              borderRadius: 1,
+              '&:before': {
+                display: 'none',
+              },
+            }}
+            data-testid="invoice-create-options-accordion"
+          >
+            <AccordionSummary
+              expandIcon={<Icon size="sm" name="chevron-down" />}
+            >
+              <Typography mr={1}>Options</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TextFieldWithValidation
+                margin="normal"
+                fullWidth
+                multiline
+                rows={4}
+                label="Exchangers Policy"
+                name="exchangersPolicy"
+                form={form}
+                onChange={(e) => e.target.value}
+              />
+              <TextFieldWithValidation
+                margin="normal"
+                fullWidth
+                label="Transaction Fee"
+                type="number"
+                form={form}
+                name="transactionFee"
+                onChange={(e) => e.target.value}
+              />
+            </AccordionDetails>
+          </Accordion>
 
-      <GradientButton
-        type="submit"
-        fullWidth
-        color="primary"
-        disabled={Boolean(form.primaryError)}
-        sx={{ mt: 3, mb: 2 }}
-      >
-        {form.primaryError || 'Create Advert'}
-      </GradientButton>
+          <GradientButton
+            type="submit"
+            fullWidth
+            color="primary"
+            disabled={Boolean(form.primaryError)}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            {form.primaryError || 'Create Advert'}
+          </GradientButton>
+        </>
+      )}
     </Box>
   );
 };

@@ -62,8 +62,8 @@ const AdItem: React.FC<AdItemProps> = ({
     statusMessage: false,
   });
   const shortMessage = statusMessage
-    ? statusMessage.length > 50
-      ? `${statusMessage.substring(0, 50)}...`
+    ? statusMessage.length > 100
+      ? `${statusMessage.substring(0, 100)}...`
       : statusMessage
     : null; // Shortened message
 
@@ -111,12 +111,19 @@ const AdItem: React.FC<AdItemProps> = ({
       {statusMessage && (
         <Alert
           severity="error"
-          sx={{ whiteSpace: 'break-spaces', mb: 1 }}
+          sx={{
+            cursor: expanded.statusMessage ? 'auto' : 'pointer',
+            mb: 1,
+          }}
           onClick={() => toggleExpand('statusMessage')}
         >
           <Typography
             variant="body2"
-            sx={{ cursor: expanded.statusMessage ? 'auto' : 'pointer' }}
+            sx={{
+              whiteSpace: expanded.statusMessage ? 'break-spaces' : 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}
           >
             {expanded.statusMessage ? statusMessage : shortMessage}
           </Typography>
