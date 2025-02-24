@@ -6,54 +6,68 @@ import {
   Box,
 } from '@mui/material';
 import { bgPrimaryGradient } from 'dex-ui';
-import { Wallet, Store, Users, History, User } from 'lucide-react';
+import {
+  Wallet,
+  Store,
+  Users,
+  History,
+  User,
+  Terminal,
+  Smartphone,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 
 import { ROUTE_HOME } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
 
+const MERCHANT = {
+  icon: <Store strokeWidth={1.5} />,
+  label: 'Merchant',
+  href: '/merchant',
+  testId: 'bottom-nav-merchant',
+};
+
+const P2P = {
+  icon: <Users strokeWidth={1.5} />,
+  label: 'P2P',
+  href: '/p2p',
+  testId: 'bottom-nav-p2p',
+};
+
+const HISTORY = {
+  icon: <History strokeWidth={1.5} />,
+  label: 'History',
+  href: '/history',
+  testId: 'bottom-nav-history',
+};
+const HOME = {
+  icon: null,
+  label: '',
+  href: '/',
+  testId: 'bottom-nav-home',
+};
+const USER = {
+  icon: <User strokeWidth={1.5} />,
+  label: 'Profile',
+  href: '/profile',
+  testId: 'bottom-nav-profile',
+};
+
 export default function BottomNav() {
   const [location, setLocation] = useLocation();
   const [value, setValue] = useState(location);
-  const { user } = useAuth();
+  const { user, isCashier } = useAuth();
 
   useEffect(() => {
     setValue(location);
   }, [location]);
 
-  const items = [
-    {
-      icon: <Store strokeWidth={1.5} />,
-      label: 'Merchant',
-      href: '/merchant',
-      testId: 'bottom-nav-merchant',
-    },
-    {
-      icon: <Users strokeWidth={1.5} />,
-      label: 'P2P',
-      href: '/p2p',
-      testId: 'bottom-nav-p2p',
-    },
-    {
-      icon: null,
-      label: '',
-      href: '/',
-      testId: 'bottom-nav-wallet',
-    },
-    {
-      icon: <History strokeWidth={1.5} />,
-      label: 'History',
-      href: '/history',
-      testId: 'bottom-nav-history',
-    },
-    {
-      icon: <User strokeWidth={1.5} />,
-      label: 'Profile',
-      href: '/profile',
-      testId: 'bottom-nav-profile',
-    },
-  ];
+  let items = [MERCHANT, P2P, HOME, HISTORY, USER];
+
+  if (isCashier) {
+    items = [HISTORY, HOME, USER];
+  }
 
   return (
     <Paper
@@ -153,7 +167,7 @@ export default function BottomNav() {
         onClick={() => setLocation('/')}
         data-testid="bottom-nav-fab"
       >
-        <Wallet strokeWidth={1.5} />
+        {isCashier ? <Smartphone /> : <Wallet strokeWidth={1.5} />}
       </Fab>
     </Paper>
   );

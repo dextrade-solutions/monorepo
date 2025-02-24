@@ -33,7 +33,7 @@ export const WALLETS_META = [
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
-    // deepLink: 'https://xverse.app/dapp/',
+    // deepLink: 'https://connect.xverse.app/browser?url=',
     supportMobileBrowser: true,
   },
   {

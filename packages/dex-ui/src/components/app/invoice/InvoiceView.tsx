@@ -480,7 +480,7 @@ export default function InvoiceView({
                   </>
                 ) : (
                   <>
-                    <ListItemButton
+                    {/* <ListItemButton
                       className="bordered"
                       // onClick={() => showQr(payment.data, secondaryDelta)}
                       onClick={() =>
@@ -503,7 +503,7 @@ export default function InvoiceView({
                         primary="QR Code"
                         secondary="Scan qr code using any wallet"
                       />
-                    </ListItemButton>
+                    </ListItemButton> */}
                     <ListItemButton
                       className="bordered"
                       onClick={() => showCopy(payment.data)}

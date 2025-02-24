@@ -1,6 +1,5 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/system';
 import { bgPrimaryGradient, useGlobalModalContext } from 'dex-ui';
 import { ChevronDown } from 'lucide-react';
 import React from 'react';

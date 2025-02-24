@@ -22,6 +22,7 @@ interface UserContextType {
   isAuthorized: boolean;
   isAuthorizeInProgress: boolean;
   projects: IProject[] | undefined;
+  isCashier: boolean;
   twoFAdata: {
     codeToken: string;
     method?: number;
@@ -37,6 +38,7 @@ interface UserContextType {
 export const UserContext = createContext<UserContextType>({
   user: null,
   me: null,
+  isCashier: false,
   isAuthorized: false,
   isAuthorizeInProgress: false,
   projects: undefined,
@@ -61,6 +63,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [twoFA, setTwoFa] = useState({
     codeToken: '',
   });
+
   const isAuthorized = Boolean(user?.project);
   const projects = useQuery(
     Projects.my,
@@ -79,6 +82,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const me = useQuery(User.view, [], {
     enabled: isAuthorized,
   });
+
+  const currentProjectHasPermissions = (
+    me.data?.project_permissions || []
+  ).find((i) => i.project_id === user?.project?.id);
+
+  const isCashier = isAuthorized && !currentProjectHasPermissions;
 
   useEffect(() => {
     if (!user?.auth) {
@@ -157,6 +166,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
     isAuthorized,
+    isCashier,
     setProject: (project: IProject) => {
       setUser((prev) => ({ ...prev, project }));
     },
