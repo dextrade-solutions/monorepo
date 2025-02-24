@@ -33,8 +33,15 @@ export const WALLETS_META = [
   {
     name: 'xverse',
     icon: '/images/wallets/xverse.svg',
-    // deepLink: 'https://connect.xverse.app/browser?url=',
+    deepLink: 'https://connect.xverse.app/browser?url=',
     supportMobileBrowser: true,
+    downloadLink: 'https://www.xverse.app/download',
+    get installed() {
+      return typeof window !== 'undefined' && Boolean(window.btc_providers);
+    },
+    get isWebView() {
+      return isMobileWeb && this.installed;
+    },
   },
   {
     name: 'coinbase wallet',

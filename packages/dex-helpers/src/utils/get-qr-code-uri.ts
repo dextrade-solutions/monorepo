@@ -36,10 +36,7 @@ export function getQRCodeURI(
     }
   } else if (network === 'trc20') {
     if (tokenContract) {
-      return `tron:${tokenContract}/transfer?recipient=${address}&amount=${amount}`;
-
-      // const scaledAmount = BigInt(Math.floor(Number(amount) * 10 ** decimals)).toString();
-      // return `tron:${tokenContract}/transfer?address=${address}&uint256=${scaledAmount}`;
+      return `${address}`; // todo: this sending coins way propbably is not supported
     }
     return `tron:${address}?amount=${amount}`;
   }
