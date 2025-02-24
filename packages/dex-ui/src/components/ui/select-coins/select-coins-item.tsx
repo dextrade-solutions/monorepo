@@ -47,7 +47,11 @@ export const SelectCoinsItem = memo(
         searchPlaceholder,
       });
     return (
-      <div className={classnames('select-coins__item', className)} tabIndex="0">
+      <div
+        className={classnames('select-coins__item', className)}
+        tabIndex="0"
+        data-testid="select-coin"
+      >
         <SelectCoinsItemLabel
           coin={value}
           reversed={reversed}

@@ -10,7 +10,7 @@ bitcoin.initEccLib(ecc);
 
 export function getAddressValidator(
   networkName: NetworkNames,
-  networkType?: NetworkTypes,
+  networkType?: NetworkTypes, // probably in will be used in the future
 ) {
   switch (networkName) {
     case NetworkNames.ethereum:

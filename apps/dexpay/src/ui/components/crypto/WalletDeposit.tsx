@@ -10,6 +10,7 @@ import { shortenAddress } from 'dex-helpers';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 
+import WalletDepositAddress from './WalletDepositAddress';
 import SelectCurrency from '../ui/SelectCurrency';
 
 export default function WalletDeposit() {
@@ -29,7 +30,11 @@ export default function WalletDeposit() {
       <Step active>
         <StepLabel>Choose crypto to deposit</StepLabel>
         <StepContent>
-          <SelectCurrency value={currency} onChange={(v) => setCurrency(v)} />
+          <SelectCurrency
+            variant="contained"
+            value={currency}
+            onChange={(v) => setCurrency(v)}
+          />
           {currency && currency.currency.contract_address && (
             <Box display="flex" mt={1}>
               <Typography mr={1} color="text.secondary">
@@ -45,9 +50,7 @@ export default function WalletDeposit() {
       <Step>
         <StepLabel>Share address</StepLabel>
         <StepContent>
-          {/* {currency && (
-            <WalletDepositAddress currency={currency.extra.currency} />
-          )} */}
+          {currency && <WalletDepositAddress currency={currency.currency} />}
         </StepContent>
       </Step>
     </Stepper>

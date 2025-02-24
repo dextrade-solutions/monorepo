@@ -20,6 +20,7 @@ import type {
   IBalance,
   IDextradeUser,
   IStatistic,
+  ITransactionWithdrawal,
 } from './types.entities';
 
 export namespace Auth {
@@ -508,25 +509,7 @@ export namespace Transaction {
       }
 
       export interface Response {
-        currentPageResult: [
-          {
-            id: number;
-            project_id: number;
-            status: number;
-            creator_id: number;
-            transaction_id: string;
-            address_from_id: number;
-            address_to_id: string;
-            currency_id: number;
-            amount: string;
-            from_address: string;
-            to_address: string;
-            to_tag: string;
-            createdAt: string;
-            updatedAt: string;
-            deletedAt: string;
-          },
-        ];
+        currentPageResult: ITransactionWithdrawal[];
         totalPages: number;
         page: number;
       }
@@ -541,7 +524,7 @@ export namespace Transaction {
         address_from_id: number;
         address_to_id?: number;
         address_to?: string;
-        amount: number;
+        amount: string;
       }
 
       export interface Response {

@@ -10,9 +10,12 @@ export default function SelectCurrency({
   reversed,
   placeholder = 'Select currency',
   onChange,
+  variant,
+  ...rest
 }: {
   value: AssetModel;
   label?: string;
+  variant?: string;
   placeholder?: string;
 }) {
   const { showModal } = useGlobalModalContext();
@@ -35,12 +38,11 @@ export default function SelectCurrency({
 
   return (
     <Button
-      sx={{
-        color: 'text.primary',
-      }}
       disabled={isLoading}
       data-testid="select-currency"
       onClick={onClick}
+      variant={value ? 'text' : variant}
+      {...rest}
     >
       {value && <AssetItem alignReverse={reversed} asset={value} />}
       {!value && placeholder}

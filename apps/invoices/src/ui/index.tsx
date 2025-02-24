@@ -7,7 +7,7 @@ import {
   Button,
 } from '@mui/material';
 import { useLocalStorage } from '@uidotdev/usehooks';
-import { DexUiProvider, Icon, useDexUI, Invoice } from 'dex-ui';
+import { DexUiProvider, useDexUI, Invoice } from 'dex-ui';
 import log from 'loglevel';
 import React from 'react';
 
@@ -48,7 +48,7 @@ export function UI() {
                   SOLANA_CONNECT_WALLETS,
                   SOLANA_CONNECT_API,
                 }}
-                onBack={handleBackButtonClick}
+                onBack={window.history.length > 1 && handleBackButtonClick}
               />
             ) : (
               <>

@@ -16,4 +16,5 @@ export { default as CircleNumber } from './circle-number';
 export { default as PasswordField } from './password-field';
 export { default as Button } from './button';
 export { default as OtpInput } from './otp-input';
+export { default as NumericTextField } from './numeric-text-field';
 export * from './select-coins';

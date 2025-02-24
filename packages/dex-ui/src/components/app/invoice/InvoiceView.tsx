@@ -76,7 +76,7 @@ export default function InvoiceView({
     connections: { data: connections = [] },
   } = useConnections({
     wagmiConfig: config,
-    connectionType,
+    connectionType: connectionType.filter((i) => i !== 'dextrade'), // TODO: make dextrade wallet support
   });
 
   useEffect(() => {

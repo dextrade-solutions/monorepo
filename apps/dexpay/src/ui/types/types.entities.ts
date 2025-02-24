@@ -97,6 +97,36 @@ export interface ITransaction {
   deletedAt: string | null;
 }
 
+export interface ITransactionWithdrawal {
+  id: number;
+  project_id: number;
+  status: number;
+  creator_id: number;
+  transaction_id: string | null;
+  address_from_id: number | null;
+  address_to_id: number | null;
+  currency_id: number;
+  amount: string;
+  from_address: string | null;
+  to_address: string | null;
+  to_tag: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  address_from: IAddress;
+  address_to: IAddress | null;
+  currency: ICurrency;
+  project: {
+    id: number;
+    name: string;
+    creator_id: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+  };
+  status_label: string;
+}
+
 export interface IMemo {
   id: number;
   name: string;

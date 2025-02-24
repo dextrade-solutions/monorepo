@@ -34,11 +34,6 @@ export function getQRCodeURI(
     } catch (error) {
       return undefined;
     }
-  } else if (network === 'trc20') {
-    if (tokenContract) {
-      return `${address}`; // todo: this sending coins way propbably is not supported
-    }
-    return `tron:${address}?amount=${amount}`;
   }
   return address;
 }

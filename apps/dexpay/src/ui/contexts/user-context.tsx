@@ -87,7 +87,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     me.data?.project_permissions || []
   ).find((i) => i.project_id === user?.project?.id);
 
-  const isCashier = isAuthorized && !currentProjectHasPermissions;
+  const isCashier =
+    !projects.isLoading &&
+    !me.isLoading &&
+    isAuthorized &&
+    !currentProjectHasPermissions;
 
   useEffect(() => {
     if (!user?.auth) {

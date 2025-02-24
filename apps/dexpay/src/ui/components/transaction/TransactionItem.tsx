@@ -9,11 +9,13 @@ import { ITransaction } from '../../types';
 interface TransactionItemProps {
   transaction: ITransaction;
   asset?: AssetModel;
+  outgoing: boolean;
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   transaction,
   asset,
+  outgoing,
 }) => {
   const currencyIso = asset?.symbol || 'Unknown_currency'; // Fallback to BNB if currency is not available
 
@@ -38,7 +40,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           )}
           <Box>
             <Typography variant="body1" fontWeight="bold">
-              + {formatCurrency(transaction.amount, currencyIso)}
+              {`${outgoing ? '-' : '+'} ${formatCurrency(transaction.amount, currencyIso)}`}
             </Typography>
             {transaction.network_fee && (
               <Typography variant="body2" color="text.secondary">
@@ -49,10 +51,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           </Box>
         </Box>
         <Divider sx={{ my: 1 }} />
-        <Box display="flex" alignItems="center">
-          <Typography variant="body1">Hash:</Typography>
-          <CopyData data={transaction.txid} />
-        </Box>
+        {transaction.txid && (
+          <Box display="flex" alignItems="center">
+            <Typography variant="body1">Hash:</Typography>
+            <CopyData data={transaction.txid} />
+          </Box>
+        )}
         <Box>
           <Typography variant="body2" color="text.secondary">
             Date: {new Date(transaction.createdAt).toLocaleString()}
@@ -75,7 +79,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             Status: {transaction.status === 3 ? 'Confirmed' : 'Pending'}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Confirmations: {transaction.confirmations}
+            Confirmations: {transaction.confirmations || 0}
           </Typography>
         </Box>
       </CardContent>
