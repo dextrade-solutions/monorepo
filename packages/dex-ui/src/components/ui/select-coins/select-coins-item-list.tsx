@@ -149,6 +149,7 @@ export const SelectCoinsItemList = ({
                     'select-coins__list__item--selected': selected,
                     'select-coins__list__item--disabled': !selected && disabled,
                   })}
+                  data-testid={item.iso}
                   tabIndex={0}
                   onClick={handleClick}
                   onKeyUp={handleKeyUp.bind(item)}

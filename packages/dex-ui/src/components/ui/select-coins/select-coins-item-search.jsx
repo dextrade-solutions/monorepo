@@ -118,6 +118,7 @@ export const SelectCoinsItemSearch = ({
     <div className="select-coins__search">
       <TextField
         inputRef={inputRef}
+        data-testid="select-coins-input"
         className="select-coins__search__input"
         placeholder={placeholder}
         type="text"
