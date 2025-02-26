@@ -11,9 +11,6 @@
     "preview": "vite preview"
   },
   "peerDependencies": {
-    "lucide-react": "^0.474.0"
-  },
-  "dependencies": {
     "@mui/material": "5.16.1",
     "bignumber.js": "^9.1.2",
     "bowser": "^2.11.0",
@@ -22,9 +19,12 @@
     "dex-helpers": "workspace:^",
     "i18next": "^23.15.1",
     "lodash": "^4.17.21",
+    "lucide-react": "^0.474.0",
     "luxon": "^3.5.0",
+    "punycode": "^2.3.1"
+  },
+  "dependencies": {
     "mui-one-time-password-input": "^3.0.2",
-    "punycode": "^2.3.1",
     "qr-code-styling": "^1.9.1",
     "react-i18next": "^15.0.2",
     "react-number-format": "^5.4.2"

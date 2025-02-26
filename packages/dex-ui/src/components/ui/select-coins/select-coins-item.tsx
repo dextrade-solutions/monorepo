@@ -1,11 +1,28 @@
+import { Typography } from '@mui/material';
 import classnames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
+import { AssetModel } from 'dex-helpers/types'; // Assuming AssetModel is defined here or in a similar location
+import { ChevronDown } from 'lucide-react';
+import React, { memo, useState, useRef, useEffect } from 'react';
 
-import { SelectCoinsItemLabel } from './select-coins-item-label';
 import { useGlobalModalContext } from '../../app/modals';
+import UrlIcon from '../url-icon';
+import { getCoinIconByUid } from 'dex-helpers';
 
-export const SelectCoinsItem = memo(
+interface SelectCoinsItemProps {
+  value: AssetModel | null;
+  items: AssetModel[];
+  onChange: (newAsset: AssetModel | null) => void;
+  reversed?: boolean;
+  className?: string;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  maxListItem?: number;
+  loading?: boolean;
+  fuseSearchKeys?: any; // You might want to define a more specific type for this
+  shouldSearchForImports?: boolean;
+}
+
+export const SelectCoinsItem = memo<SelectCoinsItemProps>(
   ({
     value,
     onChange,
@@ -21,18 +38,16 @@ export const SelectCoinsItem = memo(
   }) => {
     const t = (v) => v;
     const { showModal } = useGlobalModalContext();
-    const inputRef = useRef(null);
+    const inputRef = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
       if (open) {
-        inputRef.current.focus();
+        // While you used focus method in the original code, it's not applicable for div element.
+        // You might want to change inputRef to input if you'll put input into this component.
+        // inputRef.current?.focus();
       }
     }, [open]);
-
-    const onClose = useCallback(() => {
-      setOpen(false);
-    }, []);
 
     const onToggle = () =>
       showModal({
@@ -49,30 +64,45 @@ export const SelectCoinsItem = memo(
     return (
       <div
         className={classnames('select-coins__item', className)}
-        tabIndex="0"
+        tabIndex={0}
         data-testid="select-coin"
       >
-        <SelectCoinsItemLabel
-          coin={value}
-          reversed={reversed}
-          placeholder={placeholder || t('coin')}
+        <div
           onClick={onToggle}
-        />
+          className={classnames('select-coins__item__label', {
+            'select-coins__item__label-reversed': reversed,
+          })}
+        >
+          {value && (
+            <UrlIcon
+              url={getCoinIconByUid(value.uid)}
+              className="select-coins__item__label__icon"
+              name={value.name} // Assuming value has a 'name' property
+            />
+          )}
+          {value ? (
+            <div className="select-coins__item__label__title">
+              <Typography
+                fontWeight="bold"
+                className="select-coins__item__label__title__symbol"
+              >
+                {value.symbol}
+              </Typography>
+              <Typography
+                fontWeight="light"
+                className="select-coins__item__label__title__type"
+              >
+                {value.standard?.toUpperCase()}
+              </Typography>
+            </div>
+          ) : (
+            <div className="select-coins__item__label__title__placeholder">
+              {placeholder}
+            </div>
+          )}
+          <ChevronDown />
+        </div>
       </div>
     );
   },
 );
-
-SelectCoinsItem.propTypes = {
-  value: PropTypes.object,
-  items: PropTypes.arrayOf(PropTypes.object),
-  onChange: PropTypes.func,
-  reversed: PropTypes.bool,
-  className: PropTypes.string,
-  placeholder: PropTypes.string,
-  searchPlaceholder: PropTypes.string,
-  maxListItem: PropTypes.number,
-  loading: PropTypes.bool,
-  fuseSearchKeys: PropTypes.object,
-  shouldSearchForImports: PropTypes.bool,
-};

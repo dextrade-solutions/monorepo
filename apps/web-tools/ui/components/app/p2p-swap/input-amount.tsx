@@ -1,4 +1,5 @@
 import { Box, InputAdornment, TextField } from '@mui/material';
+import { ButtonIcon } from 'dex-ui';
 import { NumericFormat } from 'react-number-format';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,7 +9,6 @@ import {
   getToToken,
   setFromTokenInputValue,
 } from '../../../ducks/swaps/swaps';
-import { ButtonIcon } from 'dex-ui';
 
 export default function InputAmount() {
   const fromToken = useSelector(getFromToken);

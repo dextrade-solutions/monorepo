@@ -34,6 +34,7 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
       customInput={TextField}
       disabled={loading}
       placeholder={placeholder}
+      decimalSeparator=","
       data-testid={reserve ? 'input-to' : 'input-from'}
       onValueChange={({ value: v }) => onChange(v)} // update value when formated
       InputProps={{

@@ -1,42 +1,41 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Skeleton,
-  Typography,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { AdItem } from 'dex-helpers/types';
-import { Icon } from 'dex-ui';
-import { useMemo } from 'react';
+import { SECOND } from 'dex-helpers';
+import { AdItem, AssetModel } from 'dex-helpers/types';
+import { Icon, Button } from 'dex-ui';
+import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { SwapViewContent } from './swap-view-content';
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
-import P2PSwapView from '../../components/app/p2p-swap-view';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { SECOND } from 'dex-helpers';
 
 export default function AdView() {
   const t = useI18nContext();
   const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
-  const isIframe = Boolean(searchParams.get('iframe'));
+  const isWidget = Boolean(searchParams.get('widget'));
+  const merchant = searchParams.get('name');
+
+  const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
+  const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
+  const [selectionMode, setSelectionMode] = useState(isWidget);
+
   const filterModel = useMemo(
     () => ({
       fromNetworkName: searchParams.get('fromNetworkName'),
       fromTicker: searchParams.get('fromTicker'),
       toNetworkName: searchParams.get('toNetworkName'),
       toTicker: searchParams.get('toTicker'),
-      name: searchParams.get('name'),
+      name: merchant,
       page: 1,
       size: 1,
       notSupportedCoins: [],
     }),
-    [searchParams],
+    [searchParams, merchant],
   );
 
   const { isLoading, data } = useQuery<AdItem[]>({
@@ -46,12 +45,6 @@ export default function AdView() {
     refetchInterval: 10 * SECOND,
   });
 
-  let content = (
-    <Box marginTop={3}>
-      <Alert severity="info">Ad not found...</Alert>
-    </Box>
-  );
-
   const handleNavigateBack = () => {
     if (navigate(-1) === undefined) {
       // Check if navigate(-1) returns undefined (meaning no history)
@@ -60,79 +53,35 @@ export default function AdView() {
   };
 
   const [ad] = data || [];
-  if (ad) {
-    const assetFrom = parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt);
-    const assetTo = parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt);
-
-    if (assetFrom && assetTo) {
-      content = <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
-    } else {
-      content = (
-        <Alert variant="outlined" severity="warning">
-          Sorry, this pair currently does not supported
-        </Alert>
-      );
+  useEffect(() => {
+    if (ad) {
+      setAssetFrom(parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt));
+      setAssetTo(parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt));
     }
-  } else if (isLoading) {
-    content = (
-      <>
-        <Box marginBottom={2}>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            marginBottom={1}
-            marginLeft={1}
-          >
-            {t('youGive')}
-          </Typography>
-          <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" marginBottom={2}>
-                <Skeleton variant="circular" height={40} width={40} />
-                <Box marginLeft={1}>
-                  <Skeleton width={40} />
-                  <Skeleton width={60} />
-                </Box>
-              </Box>
-              <Skeleton />
-            </CardContent>
-          </Card>
-        </Box>
-        <Box marginBottom={2}>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            marginBottom={1}
-            marginLeft={1}
-          >
-            {t('youGet')}
-          </Typography>
-          <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
-            <CardContent>
-              <Box display="flex" alignItems="center" marginBottom={2}>
-                <Skeleton variant="circular" height={40} width={40} />
-                <Box marginLeft={1}>
-                  <Skeleton width={40} />
-                  <Skeleton width={60} />
-                </Box>
-              </Box>
-              <Skeleton />
-            </CardContent>
-          </Card>
-        </Box>
-        <Skeleton width="100%" height={50} />
-        <Skeleton width="80%" height={50} />
-        <Skeleton width="30%" height={50} />
-      </>
-    );
-  }
+  }, [ad]);
+
+  const handleGoTradeClick = () => {
+    const params = new URLSearchParams(searchParams);
+    if (assetFrom) {
+      params.set('fromNetworkName', assetFrom.network);
+      params.set('fromTicker', assetFrom.symbol);
+    }
+    if (assetTo) {
+      params.set('toNetworkName', assetTo.network);
+      params.set('toTicker', assetTo.symbol);
+    }
+    setSelectionMode(false);
+    navigate(`?${params.toString()}`);
+  };
 
   return (
     <Box>
       <Box display="flex" alignItems="center" padding={1}>
         <Typography variant="h6">Swap</Typography>
         <div className="flex-grow" />
-        {!isIframe && (
+        {isWidget ? (
+          <Typography>{merchant}</Typography>
+        ) : (
           <Box>
             <Button
               startIcon={<Icon name="arrow-left-dex" />}
@@ -143,7 +92,16 @@ export default function AdView() {
           </Box>
         )}
       </Box>
-      {content}
+      <SwapViewContent
+        ad={ad}
+        handleGoTradeClick={handleGoTradeClick}
+        onChangeAssetFrom={setAssetFrom}
+        onChangeAssetTo={setAssetTo}
+        selectionMode={selectionMode}
+        assetFrom={assetFrom}
+        assetTo={assetTo}
+        isLoading={isLoading}
+      />
     </Box>
   );
 }
