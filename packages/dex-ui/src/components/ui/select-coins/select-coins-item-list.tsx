@@ -105,7 +105,7 @@ export const SelectCoinsItemList = ({
       <ul className="select-coins__list">
         {Boolean(coin) && renderSelected()}
         <TransitionGroup>
-          {list.map((item, idx) => {
+          {list.map((item) => {
             if (hideItemIf?.(item)) {
               return null;
             }
@@ -149,7 +149,7 @@ export const SelectCoinsItemList = ({
                     'select-coins__list__item--selected': selected,
                     'select-coins__list__item--disabled': !selected && disabled,
                   })}
-                  data-testid={idx === 0 && 'select-coins-first-item'}
+                  data-testid={item.iso}
                   tabIndex={0}
                   onClick={handleClick}
                   onKeyUp={handleKeyUp.bind(item)}
