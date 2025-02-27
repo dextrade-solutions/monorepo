@@ -1,5 +1,4 @@
-import { Box, Card, CardContent, Skeleton, Typography } from '@mui/material';
-import assetList from 'dex-helpers/assets-list';
+import { Box, Card, CardContent, Grow, Skeleton, Typography } from '@mui/material';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Swap, Button } from 'dex-ui';
 import React from 'react';
@@ -15,6 +14,8 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 // Define the type for the props of SwapViewContent
 export interface SwapViewContentProps {
   ad: AdItem | null; // 'ad' can be an AdItem or null if no ad is found
+  fromAssetsList: AssetModel[];
+  toAssetsList: AssetModel[];
   assetFrom: AssetModel | null; // 'assetFrom' can be an AssetModel or null
   assetTo: AssetModel | null; // 'assetTo' can be an AssetModel or null
   isLoading: boolean;
@@ -26,6 +27,8 @@ export interface SwapViewContentProps {
 
 export const SwapViewContent = ({
   ad,
+  fromAssetsList = [],
+  toAssetsList = [],
   assetFrom,
   assetTo,
   isLoading,
@@ -55,7 +58,8 @@ export const SwapViewContent = ({
         height="calc(100vh - 100px)"
       >
         <Swap
-          assets={assetList}
+          assetsListSell={fromAssetsList}
+          assetsListBuy={toAssetsList}
           buyAsset={assetTo}
           sellAsset={assetFrom}
           sellAmount={value}
@@ -69,14 +73,18 @@ export const SwapViewContent = ({
           onSellAmountChange={updateValue}
           onSellAssetChange={onChangeAssetFrom}
         />
-        <Button
-          sx={{ mt: 3, minHeight: 60, fontWeight: 'bold', fontSize: 20 }}
-          gradient
-          fullWidth
-          onClick={handleGoTradeClick}
-        >
-          Go trade
-        </Button>
+        <Grow in={Boolean(assetFrom && assetTo)}>
+          <Box width="100%">
+            <Button
+              sx={{ mt: 3, minHeight: 60, fontWeight: 'bold', fontSize: 20 }}
+              gradient
+              fullWidth
+              onClick={handleGoTradeClick}
+            >
+              Go trade
+            </Button>
+          </Box>
+        </Grow>
       </Box>
     );
   }

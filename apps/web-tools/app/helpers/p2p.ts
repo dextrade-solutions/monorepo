@@ -1,9 +1,12 @@
 import { NetworkNames } from 'dex-helpers';
 import assetList from 'dex-helpers/assets-list';
-import { AssetModel, CoinModel } from 'dex-helpers/types';
+import { AssetModel } from 'dex-helpers/types';
 
 export function parseCoin(
-  coin: CoinModel,
+  coin: {
+    networkName: NetworkNames;
+    ticker: string;
+  },
   priceInUsdt?: number,
 ): AssetModel | null {
   const asset = assetList.find(

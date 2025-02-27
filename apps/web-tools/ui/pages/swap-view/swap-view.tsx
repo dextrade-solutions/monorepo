@@ -31,8 +31,8 @@ export default function AdView() {
       toNetworkName: searchParams.get('toNetworkName'),
       toTicker: searchParams.get('toTicker'),
       name: merchant,
+      size: 100,
       page: 1,
-      size: 1,
       notSupportedCoins: [],
     }),
     [searchParams, merchant],
@@ -52,27 +52,59 @@ export default function AdView() {
     }
   };
 
-  const [ad] = data || [];
-  useEffect(() => {
-    if (ad) {
-      setAssetFrom(parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt));
-      setAssetTo(parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt));
-    }
-  }, [ad]);
+  const allAds = data || [];
 
-  const handleGoTradeClick = () => {
+  const fromAssetsList = allAds.map((ad) =>
+    parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt),
+  );
+  const toAssetsList = allAds.map((ad) =>
+    parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt),
+  );
+
+  const [ad] = allAds;
+
+  const setAsset = (asset: AssetModel, reversed?: boolean) => {
     const params = new URLSearchParams(searchParams);
-    if (assetFrom) {
-      params.set('fromNetworkName', assetFrom.network);
-      params.set('fromTicker', assetFrom.symbol);
+
+    const network = reversed ? 'toNetworkName' : 'fromNetworkName';
+    const ticker = reversed ? 'toTicker' : 'fromTicker';
+    if (asset?.network) {
+      params.set(network, asset.network);
+    } else {
+      params.delete(network);
     }
-    if (assetTo) {
-      params.set('toNetworkName', assetTo.network);
-      params.set('toTicker', assetTo.symbol);
+    if (asset?.symbol) {
+      params.set(ticker, asset.symbol);
+    } else {
+      params.delete(ticker);
     }
-    setSelectionMode(false);
     navigate(`?${params.toString()}`);
   };
+
+  const handleGoTradeClick = () => {
+    setSelectionMode(false);
+  };
+
+  useEffect(() => {
+    const from = {
+      networkName: searchParams.get('fromNetworkName'),
+      ticker: searchParams.get('fromTicker'),
+    };
+    const to = {
+      networkName: searchParams.get('toNetworkName'),
+      ticker: searchParams.get('toTicker'),
+    };
+    if (from.networkName && from.ticker) {
+      setAssetFrom(parseCoin(from));
+    } else {
+      setAssetFrom(null);
+    }
+    if (to.networkName && to.ticker) {
+      setAssetTo(parseCoin(to));
+    } else {
+      setAssetTo(null);
+    }
+  }, [searchParams]);
 
   return (
     <Box>
@@ -95,9 +127,11 @@ export default function AdView() {
       <SwapViewContent
         ad={ad}
         handleGoTradeClick={handleGoTradeClick}
-        onChangeAssetFrom={setAssetFrom}
-        onChangeAssetTo={setAssetTo}
+        onChangeAssetFrom={setAsset}
+        onChangeAssetTo={(v) => setAsset(v, true)}
         selectionMode={selectionMode}
+        fromAssetsList={fromAssetsList}
+        toAssetsList={toAssetsList}
         assetFrom={assetFrom}
         assetTo={assetTo}
         isLoading={isLoading}
