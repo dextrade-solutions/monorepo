@@ -2,8 +2,7 @@ import { Box, Typography, TextField, Grid, Paper } from '@mui/material';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import { transform } from 'lodash';
-import React, { useState, useCallback, useEffect } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import React, { useCallback } from 'react';
 
 import { NumericTextField, SelectCoinsItem, SelectCoinsSwap } from '..';
 
@@ -80,7 +79,6 @@ const SwapInput: React.FC<SwapInputProps> = ({
       )}
     </Box>
   );
-
   return (
     <Paper
       elevation={0}
@@ -114,7 +112,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
             }}
           />
           <Typography color="text.secondary" mt={-1}>
-            {formatCurrency(0, 'usd')}
+            {formatCurrency(asset?.priceInUsdt, 'usd')}
           </Typography>
         </Box>
       </Box>
@@ -134,7 +132,8 @@ const SwapInput: React.FC<SwapInputProps> = ({
 };
 
 interface SwapFormProps {
-  assets: AssetModel[];
+  assetsListBuy: AssetModel[];
+  assetsListSell: AssetModel[];
   sellAsset: AssetModel | null;
   buyAsset: AssetModel | null;
   sellAmount: string;
@@ -154,7 +153,8 @@ interface SwapFormProps {
 }
 
 export const SwapForm: React.FC<SwapFormProps> = ({
-  assets,
+  assetsListBuy,
+  assetsListSell,
   sellAsset,
   buyAsset,
   sellAmount,
@@ -181,7 +181,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
           asset={sellAsset}
           onChange={onSellAmountChange}
           onAssetChange={onSellAssetChange}
-          assets={assets}
+          assets={assetsListSell}
           balance={sellBalance}
           balanceUsdt={sellBalanceUsdt}
           placeholder={t('0')}
@@ -206,7 +206,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
           asset={buyAsset}
           onChange={onBuyAmountChange}
           onAssetChange={onBuyAssetChange}
-          assets={assets}
+          assets={assetsListBuy}
           balance={buyBalance}
           balanceUsdt={buyBalanceUsdt}
           placeholder={t('0')}
