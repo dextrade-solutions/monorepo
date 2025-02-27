@@ -1,7 +1,6 @@
-import { Box, Typography, TextField, Grid, Paper } from '@mui/material';
+import { Box, Typography, Grid, Paper } from '@mui/material';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { transform } from 'lodash';
 import React, { useCallback } from 'react';
 
 import { NumericTextField, SelectCoinsItem, SelectCoinsSwap } from '..';
@@ -36,7 +35,6 @@ const SwapInput: React.FC<SwapInputProps> = ({
   placeholder,
   reversed,
   maxListItem = 10,
-  disabled,
   loading,
   fuseSearchKeys,
   shouldSearchForImports,
@@ -102,7 +100,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
             value={value}
             allowNegative={false}
             onChange={handleInputChange}
-            disabled={disabled}
+            disabled={loading}
             min="0"
             InputProps={{
               disableUnderline: true,
@@ -112,7 +110,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
             }}
           />
           <Typography color="text.secondary" mt={-1}>
-            {formatCurrency(asset?.priceInUsdt, 'usd')}
+            {formatCurrency(value * asset?.priceInUsdt, 'usd')}
           </Typography>
         </Box>
       </Box>
@@ -148,8 +146,7 @@ interface SwapFormProps {
   buyBalance?: string;
   buyBalanceUsdt?: string;
   loading?: boolean;
-  fuseSearchKeys?: any;
-  shouldSearchForImports?: boolean;
+  disableReverse?: boolean;
 }
 
 export const SwapForm: React.FC<SwapFormProps> = ({
@@ -169,6 +166,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
   buyBalance,
   buyBalanceUsdt,
   loading,
+  disableReverse,
 }) => {
   const t = (v) => v;
 
@@ -196,7 +194,12 @@ export const SwapForm: React.FC<SwapFormProps> = ({
         justifyContent="center"
       >
         <Box sx={{ position: 'absolute', transform: 'translateY(-50%)' }}>
-          <SelectCoinsSwap vertical onClick={onReverse} />
+          <SelectCoinsSwap
+            disabled={disableReverse}
+            loading={loading}
+            vertical
+            onClick={onReverse}
+          />
         </Box>
       </Box>
       <Grid item xs={12}>

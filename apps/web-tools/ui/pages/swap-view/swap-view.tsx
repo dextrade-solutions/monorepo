@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Icon, Button } from 'dex-ui';
+import { groupBy, map, orderBy, uniqBy } from 'lodash';
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -19,30 +20,43 @@ export default function AdView() {
   const [searchParams] = useSearchParams();
   const isWidget = Boolean(searchParams.get('widget'));
   const merchant = searchParams.get('name');
-
+  const [currentAd, setCurrentAd] = React.useState<AdItem>();
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
   const [selectionMode, setSelectionMode] = useState(isWidget);
 
-  const filterModel = useMemo(
+  const firstAdFilter = useMemo(
     () => ({
       fromNetworkName: searchParams.get('fromNetworkName'),
       fromTicker: searchParams.get('fromTicker'),
       toNetworkName: searchParams.get('toNetworkName'),
       toTicker: searchParams.get('toTicker'),
       name: merchant,
-      size: 100,
-      page: 1,
-      notSupportedCoins: [],
+      size: 1,
     }),
     [searchParams, merchant],
   );
 
+  const currentFilter = {
+    ...(selectionMode ? { name: merchant, size: 100 } : firstAdFilter),
+    page: 1,
+    notSupportedCoins: [],
+  };
+
   const { isLoading, data } = useQuery<AdItem[]>({
-    queryKey: ['p2pAds', filterModel],
+    queryKey: ['p2pAds', currentFilter],
     queryFn: () =>
-      P2PService.filterAds(filterModel).then((response) => response.data),
-    refetchInterval: 10 * SECOND,
+      P2PService.filterAds(currentFilter).then((response) =>
+        response.data.map((ad) => ({
+          ...ad,
+          fromAsset: parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt),
+          toAsset: {
+            ...parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt),
+            balanceUsdt: ad.reserveSum * ad.coinPair.priceCoin2InUsdt,
+          },
+        })),
+      ),
+    refetchInterval: 20 * SECOND,
   });
 
   const handleNavigateBack = () => {
@@ -52,59 +66,79 @@ export default function AdView() {
     }
   };
 
-  const allAds = data || [];
+  const allAds = orderBy(data || [], 'toAsset.balanceUsdt', 'desc');
 
-  const fromAssetsList = allAds.map((ad) =>
-    parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt),
-  );
-  const toAssetsList = allAds.map((ad) =>
-    parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt),
-  );
-
-  const [ad] = allAds;
+  const fromAssets = {
+    grouped: groupBy(allAds, (i) => i.fromAsset.iso),
+    list: map(
+      uniqBy(allAds, (i) => i.fromAsset.iso),
+      'fromAsset',
+    ),
+  };
+  const toAssets = {
+    grouped: groupBy(allAds, (i) => i.toAsset.iso),
+    list: map(
+      uniqBy(allAds, (i) => i.toAsset.iso),
+      'toAsset',
+    ),
+  };
 
   const setAsset = (asset: AssetModel, reversed?: boolean) => {
-    const params = new URLSearchParams(searchParams);
-
-    const network = reversed ? 'toNetworkName' : 'fromNetworkName';
-    const ticker = reversed ? 'toTicker' : 'fromTicker';
-    if (asset?.network) {
-      params.set(network, asset.network);
+    // const params = new URLSearchParams(searchParams);
+    if (reversed) {
+      setAssetTo(asset);
     } else {
-      params.delete(network);
+      setAssetFrom(asset);
     }
-    if (asset?.symbol) {
-      params.set(ticker, asset.symbol);
-    } else {
-      params.delete(ticker);
-    }
-    navigate(`?${params.toString()}`);
   };
 
   const handleGoTradeClick = () => {
     setSelectionMode(false);
   };
+  const [ad] = allAds;
 
   useEffect(() => {
-    const from = {
-      networkName: searchParams.get('fromNetworkName'),
-      ticker: searchParams.get('fromTicker'),
-    };
-    const to = {
-      networkName: searchParams.get('toNetworkName'),
-      ticker: searchParams.get('toTicker'),
-    };
-    if (from.networkName && from.ticker) {
-      setAssetFrom(parseCoin(from));
-    } else {
-      setAssetFrom(null);
+    if (ad) {
+      if (!isWidget) {
+        setAsset(ad.fromAsset);
+      }
+      setAsset(ad.toAsset, true);
+      if (!selectionMode) {
+        setCurrentAd(ad);
+      }
     }
-    if (to.networkName && to.ticker) {
-      setAssetTo(parseCoin(to));
-    } else {
-      setAssetTo(null);
+  }, [ad, selectionMode]);
+
+  useEffect(() => {
+    if (selectionMode) {
+      if (assetFrom) {
+        searchParams.set('fromNetworkName', assetFrom.network);
+        searchParams.set('fromTicker', assetFrom.symbol);
+      } else {
+        searchParams.delete('fromNetworkName');
+        searchParams.delete('fromTicker');
+      }
+      if (assetTo) {
+        searchParams.set('toNetworkName', assetTo?.network);
+        searchParams.set('toTicker', assetTo?.symbol);
+      } else {
+        searchParams.delete('toNetworkName');
+        searchParams.delete('toTicker');
+      }
+      if (assetFrom && assetTo) {
+        setCurrentAd(
+          allAds.find(
+            (i) =>
+              i.fromAsset.iso === assetFrom.iso &&
+              i.toAsset.iso === assetTo.iso,
+          ),
+        );
+      } else {
+        setCurrentAd(undefined);
+      }
+      navigate(`?${searchParams.toString()}`);
     }
-  }, [searchParams]);
+  }, [assetFrom, assetTo, selectionMode]);
 
   return (
     <Box>
@@ -125,13 +159,25 @@ export default function AdView() {
         )}
       </Box>
       <SwapViewContent
-        ad={ad}
+        ad={currentAd}
         handleGoTradeClick={handleGoTradeClick}
         onChangeAssetFrom={setAsset}
         onChangeAssetTo={(v) => setAsset(v, true)}
         selectionMode={selectionMode}
-        fromAssetsList={fromAssetsList}
-        toAssetsList={toAssetsList}
+        toAssetsList={
+          assetFrom
+            ? (fromAssets.grouped[assetFrom.iso] || []).map((i) => i.toAsset)
+            : toAssets.list
+        }
+        fromAssetsList={
+          assetTo
+            ? (toAssets.grouped[assetTo.iso] || []).map((i) => i.fromAsset)
+            : fromAssets.list
+        }
+        disableReverse={
+          (assetFrom && !toAssets.grouped[assetFrom.iso]) ||
+          (assetTo && !fromAssets.grouped[assetTo.iso])
+        }
         assetFrom={assetFrom}
         assetTo={assetTo}
         isLoading={isLoading}

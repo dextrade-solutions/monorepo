@@ -1,8 +1,6 @@
-import { Box, Fab, Tooltip } from '@mui/material';
+import { Fab, Tooltip, CircularProgress } from '@mui/material';
 import classnames from 'classnames';
-import { Icon, UrlIcon } from 'dex-ui';
-import { ArrowUpDown } from 'lucide-react';
-import PropTypes from 'prop-types';
+import { Icon } from 'dex-ui';
 import React, { memo, useState, useCallback } from 'react';
 
 // TODO: refactor to IconButton or ButtonIcon or Icon without mask-image styles
@@ -13,10 +11,11 @@ interface SelectCoinsSwapProps {
   onClick?: () => void;
   disabled?: boolean;
   vertical?: boolean;
+  loading?: boolean; // Add loading prop
 }
 
 export const SelectCoinsSwap = memo<SelectCoinsSwapProps>(
-  ({ onClick, vertical, disabled, ...rest }) => {
+  ({ onClick, vertical, disabled, loading, ...rest }) => {
     const t = (v) => v;
     const [clicked, setClicked] = useState(false);
 
@@ -31,15 +30,16 @@ export const SelectCoinsSwap = memo<SelectCoinsSwapProps>(
 
     return (
       <Tooltip
-        text={t('swapSwapSwitch')}
-        position="top"
+        title={t('swapSwapSwitch')}
+        placement="top"
         arrow
-        disabled={disabled}
+        disableInteractive={disabled}
       >
         <Fab
           className={classnames('select-coins__swap', {
             'select-coins__swap-clicked': clicked,
             'select-coins__swap-disabled': disabled,
+            'select-coins__swap-loading': loading, // Add loading class
           })}
           sx={{
             boxShadow: 'none',
@@ -48,15 +48,19 @@ export const SelectCoinsSwap = memo<SelectCoinsSwapProps>(
           color="tertiary"
           disableTouchRipple
           tabIndex={1}
-          onClick={handleClick}
+          onClick={loading ? undefined : handleClick} // Disable onClick when loading
+          disabled={disabled || loading} // Disable Fab when loading
           {...rest}
         >
-          {/* <ArrowUpDown /> */}
-          <Icon
-            name={vertical ? ICON_VERTICAL : ICON_HORIZONTAL}
-            color="primary"
-            className="select-coins__swap__icon"
-          />
+          {loading ? (
+            <CircularProgress color="tertiary" size={20} /> // Show spinner when loading
+          ) : (
+            <Icon
+              name={vertical ? ICON_VERTICAL : ICON_HORIZONTAL}
+              color="primary"
+              className="select-coins__swap__icon"
+            />
+          )}
         </Fab>
       </Tooltip>
     );

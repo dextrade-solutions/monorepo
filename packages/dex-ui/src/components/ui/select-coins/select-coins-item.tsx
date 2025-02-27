@@ -1,12 +1,12 @@
-import { Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import classnames from 'classnames';
+import { formatCurrency, getCoinIconByUid } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types'; // Assuming AssetModel is defined here or in a similar location
 import { ChevronDown } from 'lucide-react';
 import React, { memo, useState, useRef, useEffect } from 'react';
 
 import { useGlobalModalContext } from '../../app/modals';
 import UrlIcon from '../url-icon';
-import { getCoinIconByUid } from 'dex-helpers';
 
 interface SelectCoinsItemProps {
   value: AssetModel | null;
@@ -49,26 +49,40 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
       }
     }, [open]);
 
-    const onToggle = () =>
-      showModal({
-        name: 'ASSET_SELECT',
-        value,
-        items,
-        onChange,
-        loading,
-        fuseSearchKeys,
-        maxListItem,
-        shouldSearchForImports,
-        searchPlaceholder,
-      });
+    const onToggle = () => {
+      if (!loading) {
+        showModal({
+          name: 'ASSET_SELECT',
+          value,
+          items,
+          onChange,
+          loading,
+          fuseSearchKeys,
+          maxListItem,
+          shouldSearchForImports,
+          searchPlaceholder,
+        });
+      }
+    };
+
+    const disabledProps = {
+      color: 'text.secondary',
+      cursor: 'default',
+    };
+
     return (
-      <div
-        className={classnames('select-coins__item', className)}
+      <Box
+        className={classnames('select-coins__item', className, {
+          'select-coins__item--loading': loading, // Add loading class
+        })}
+        sx={{
+          ...(loading ? disabledProps : {}),
+        }}
         tabIndex={0}
         data-testid="select-coin"
       >
         <div
-          onClick={onToggle}
+          onClick={onToggle} // Call onToggle only if not loading
           className={classnames('select-coins__item__label', {
             'select-coins__item__label-reversed': reversed,
           })}
@@ -88,12 +102,19 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
               >
                 {value.symbol}
               </Typography>
-              <Typography
-                fontWeight="light"
-                className="select-coins__item__label__title__type"
-              >
-                {value.standard?.toUpperCase()}
-              </Typography>
+              {value.standard && (
+                <Typography
+                  fontWeight="light"
+                  className="select-coins__item__label__title__type"
+                >
+                  {value.standard?.toUpperCase()}
+                </Typography>
+              )}
+              {value.balanceUsdt && (
+                <Typography fontWeight="light" color="text.secondary">
+                  {`(${formatCurrency(value.balanceUsdt, 'usd')})`}
+                </Typography>
+              )}
             </div>
           ) : (
             <div className="select-coins__item__label__title__placeholder">
@@ -102,7 +123,7 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
           )}
           <ChevronDown />
         </div>
-      </div>
+      </Box>
     );
   },
 );

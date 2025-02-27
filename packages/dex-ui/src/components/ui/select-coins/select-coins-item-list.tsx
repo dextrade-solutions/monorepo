@@ -41,7 +41,6 @@ export const SelectCoinsItemList = ({
   onReset,
 }: SelectCoinsItemListProps) => {
   const t = (v) => v;
-
   const handleReset = useCallback(
     (e) => {
       e && e.preventDefault();
@@ -81,6 +80,15 @@ export const SelectCoinsItemList = ({
             {coin.standard && (
               <Typography marginLeft={1} fontWeight="light">
                 {coin.standard.toUpperCase()}
+              </Typography>
+            )}
+            {typeof coin.balanceUsdt !== 'undefined' && (
+              <Typography
+                marginLeft={1}
+                fontWeight="light"
+                color="text.secondary"
+              >
+                {`(${formatCurrency(coin.balanceUsdt, 'usd')})`}
               </Typography>
             )}
             <Icon marginLeft={1} name="close" size="sm" />
@@ -173,10 +181,10 @@ export const SelectCoinsItemList = ({
                       )}
                     </div>
                     <Box textAlign="right">
-                      {typeof balance === 'string' && (
+                      {typeof balance !== 'undefined' && (
                         <Typography>{formatFundsAmount(balance)}</Typography>
                       )}
-                      {typeof balanceUsdt === 'string' && (
+                      {typeof balanceUsdt !== 'undefined' && (
                         <Typography variant="caption" color="text.secondary">
                           {formatCurrency(balanceUsdt, 'usd')}
                         </Typography>

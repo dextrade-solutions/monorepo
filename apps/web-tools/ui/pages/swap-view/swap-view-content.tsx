@@ -1,7 +1,14 @@
-import { Box, Card, CardContent, Grow, Skeleton, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grow,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Swap, Button } from 'dex-ui';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import P2PSwapView from '../../components/app/p2p-swap-view';
@@ -20,6 +27,7 @@ export interface SwapViewContentProps {
   assetTo: AssetModel | null; // 'assetTo' can be an AssetModel or null
   isLoading: boolean;
   selectionMode: boolean;
+  disableReverse: boolean;
   onChangeAssetFrom: (asset: AssetModel | null) => void; // 'onChangeAssetFrom' is a function that takes an AssetModel or null and returns void
   onChangeAssetTo: (asset: AssetModel | null) => void; // 'onChangeAssetTo' is a function that takes an AssetModel or null and returns void
   handleGoTradeClick: () => void; // 'handleGoTradeClick' is a function that takes no arguments and returns void
@@ -33,20 +41,32 @@ export const SwapViewContent = ({
   assetTo,
   isLoading,
   selectionMode,
+  disableReverse,
   onChangeAssetFrom,
   onChangeAssetTo,
   handleGoTradeClick,
 }: SwapViewContentProps) => {
   const value = useSelector(getFromTokenInputValue);
+  const [toValue, setToValue] = useState();
   const dispatch = useDispatch();
 
-  const updateValue = (v: string) => {
-    dispatch(setFromTokenInputValue(v));
+  const updateValue = (v: string, reversed?: boolean) => {
+    if (reversed) {
+      dispatch(setFromTokenInputValue(v / ad?.coinPair.price));
+    } else {
+      setToValue(v * ad?.coinPair.price);
+    }
   };
   const t = useI18nContext();
   // <Box marginTop={3}>
   //   <Alert severity="info">Ad not found...</Alert>
   // </Box>
+
+  useEffect(() => {
+    if (!ad) {
+      updateValue('');
+    }
+  }, [ad]);
 
   if (selectionMode) {
     return (
@@ -63,13 +83,15 @@ export const SwapViewContent = ({
           buyAsset={assetTo}
           sellAsset={assetFrom}
           sellAmount={value}
-          buyAmount={value * ad?.coinPair.price}
+          loading={isLoading}
+          buyAmount={toValue}
           onReverse={() => {
             onChangeAssetFrom(assetTo);
             onChangeAssetTo(assetFrom);
           }}
+          disableReverse={disableReverse}
           onBuyAssetChange={onChangeAssetTo}
-          // onBuyAmountChange={(v) => updateValue(1 / (v * ad?.coinPair.price))}
+          onBuyAmountChange={(v) => updateValue(v, true)}
           onSellAmountChange={updateValue}
           onSellAssetChange={onChangeAssetFrom}
         />
@@ -89,7 +111,7 @@ export const SwapViewContent = ({
     );
   }
 
-  if (isLoading) {
+  if (!ad && isLoading) {
     return (
       <>
         <Box marginBottom={2}>
