@@ -38,22 +38,22 @@ export default function DappOpen() {
     const redirectToApp = async (adId: number) => {
       const appDeepLink = new URL(`com.dextrade://open-trade?id=${adId}`);
 
-      searchParams.forEach((value, key) => {
-        appDeepLink.searchParams.append(key, value);
-      });
-
-      try {
-        window.location.href = appDeepLink.toString();
-        setTimeout(() => {
+      let change = false;
+      setTimeout(() => {
+        if (!change) {
           window.location.href = isWebIOS
             ? DEXTRADE_APP_STORE_LINK
             : DEXTRADE_GOOGLE_PLAY_LINK;
-        }, 1000);
-      } catch (error) {
-        window.location.href = isWebIOS
-          ? DEXTRADE_APP_STORE_LINK
-          : DEXTRADE_GOOGLE_PLAY_LINK;
-      }
+        }
+      }, 3000);
+      window.location.href = appDeepLink;
+      // handle event to check app installed or not
+      window.onblur = function () {
+        change = true;
+      };
+      window.onfocus = function () {
+        change = false;
+      };
     };
 
     if (data) {

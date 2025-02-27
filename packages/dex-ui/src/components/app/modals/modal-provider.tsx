@@ -68,6 +68,7 @@ export const ModalProvider = ({ children, modals }) => {
       return (
         <SwipeableDrawer
           anchor="bottom"
+          disableEnforceFocus
           onOpen={() => {}}
           onClose={hideModal}
           open={store.open}
@@ -92,7 +93,7 @@ export const ModalProvider = ({ children, modals }) => {
       );
     }
     return (
-      <Modal onClose={hideModal} open={store.open}>
+      <Modal onClose={hideModal} open={store.open} disableEnforceFocus>
         <Box sx={{ bgcolor: 'background.default' }} className="modal-generic">
           {renderContent()}
         </Box>

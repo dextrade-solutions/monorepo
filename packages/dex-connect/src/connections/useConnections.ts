@@ -50,6 +50,7 @@ export function useConnections({
         return connectState.isConnected(id);
       },
       async connect() {
+        hub.emit('connection:start', id);
         const address = await instance.connect();
         const walletConnection = {
           connectionType: type,
@@ -57,7 +58,7 @@ export function useConnections({
           address,
         };
         connectState.addWalletConnection(walletConnection);
-        hub.emit('connected', walletConnection);
+        hub.emit('connection:success', walletConnection);
         return walletConnection;
       },
       async disconnect() {
