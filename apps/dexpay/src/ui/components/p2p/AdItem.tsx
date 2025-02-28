@@ -79,6 +79,15 @@ const AdItem: React.FC<AdItemProps> = ({
   };
 
   const link = `${DEXTRADE_P2P_LINK}/swap-view?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
+  const widgetUrl = `${link}&widget=1`;
+
+  const widgetCode = `<iframe
+      src="${widgetUrl}"
+      width="100%"
+      height="600px"
+      title="DexPay Swap"
+      className="border-none rounded-lg"
+    />`;
 
   return (
     <Paper
@@ -200,29 +209,54 @@ const AdItem: React.FC<AdItemProps> = ({
       <Divider />
       <Collapse in={expanded.options}>
         <Stack spacing={2} sx={{ mt: 2 }} divider={<Divider />}>
-          {active && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Button
-                size="small"
-                color="tertiary"
-                onClick={() => {
-                  window.open(link, '_blank');
-                }}
-                endIcon={<LucideArrowUpRight size={20} />}
+          {!active && (
+            <Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
               >
-                Open ad
-              </Button>
-              <div className="flex-grow" />
-              <CopyData
-                className="flex-shrink"
-                color="tertiary"
-                shorten
-                data={link}
-              />
+                <Button
+                  size="small"
+                  color="tertiary"
+                  onClick={() => {
+                    window.open(link, '_blank');
+                  }}
+                  endIcon={<LucideArrowUpRight size={20} />}
+                >
+                  Open ad
+                </Button>
+                <div className="flex-grow" />
+                <CopyData
+                  className="flex-shrink"
+                  color="tertiary"
+                  shorten
+                  data={link}
+                />
+              </Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Button
+                  size="small"
+                  color="tertiary"
+                  onClick={() => {
+                    window.open(widgetUrl, '_blank');
+                  }}
+                  endIcon={<LucideArrowUpRight size={20} />}
+                >
+                  Widget code
+                </Button>
+                <div className="flex-grow" />
+                <CopyData
+                  className="flex-shrink"
+                  color="tertiary"
+                  shorten
+                  data={widgetCode}
+                />
+              </Box>
             </Box>
           )}
           <ItemRow label="Transaction Count" value={transactionCount} />

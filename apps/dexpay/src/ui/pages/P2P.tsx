@@ -54,7 +54,7 @@ export default function P2P() {
   }
 
   return (
-    <Box sx={{ mx: 'auto' }}>
+    <Box>
       <Paper
         elevation={0}
         sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 5 }}

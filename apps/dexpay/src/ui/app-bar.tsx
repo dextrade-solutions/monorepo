@@ -28,8 +28,13 @@ const titles = {
 };
 
 const Appbar = () => {
+  const auth = useAuth();
   const [location] = useLocation();
   const title = titles[location] || ''; // Get title based on route or default to empty string
+
+  if (auth.user!.isCashier) {
+    return null;
+  }
   return (
     <AppBar position="static" elevation={0} color="transparent">
       <Box

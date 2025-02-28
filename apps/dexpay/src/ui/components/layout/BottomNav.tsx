@@ -57,7 +57,7 @@ const USER = {
 export default function BottomNav() {
   const [location, setLocation] = useLocation();
   const [value, setValue] = useState(location);
-  const { user, isCashier } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     setValue(location);
@@ -65,7 +65,7 @@ export default function BottomNav() {
 
   let items = [MERCHANT, P2P, HOME, HISTORY, USER];
 
-  if (isCashier) {
+  if (user!.isCashier) {
     items = [HISTORY, HOME, USER];
   }
 
@@ -167,7 +167,7 @@ export default function BottomNav() {
         onClick={() => setLocation('/')}
         data-testid="bottom-nav-fab"
       >
-        {isCashier ? <Smartphone /> : <Wallet strokeWidth={1.5} />}
+        {user!.isCashier ? <Smartphone /> : <Wallet strokeWidth={1.5} />}
       </Fab>
     </Paper>
   );

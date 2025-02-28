@@ -16,11 +16,12 @@ import SelectProject from './modals/select-project';
 import TransactionsModal from './modals/transactions';
 import Router from './router';
 import './css/index.scss';
+import { LayoutDefault } from './components/layouts';
 
 log.setLevel(log.levels.DEBUG);
 
 function App() {
-  const { isAuthorized, isCashier } = useAuth();
+  const { isAuthorized } = useAuth();
   if (!isAuthorized) {
     return (
       <>
@@ -50,13 +51,9 @@ function App() {
     );
   }
   return (
-    <Container maxWidth="sm">
-      {!isCashier && <Appbar />}
-      <Box mb={10}>
-        <Router />
-      </Box>
-      <BottomNav />
-    </Container>
+    <LayoutDefault>
+      <Router />
+    </LayoutDefault>
   );
 }
 

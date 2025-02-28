@@ -40,7 +40,7 @@ export default function Merchant() {
   const salespersonsCount = usersWithAccess.data?.currentPageResult.length || 0;
 
   return (
-    <Box sx={{ mx: 'auto' }} data-testid="merchant-page">
+    <Box data-testid="merchant-page">
       <Box mb={4}>
         <Paper
           elevation={0}

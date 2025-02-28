@@ -61,7 +61,10 @@ export default function Router() {
 
   return (
     <Switch>
-      <Route path={ROUTE_HOME} component={auth.isCashier ? Terminal : Wallet} />
+      <Route
+        path={ROUTE_HOME}
+        component={auth.user?.isCashier ? Terminal : Wallet}
+      />
       <Route path={ROUTE_WALLET_DEPOSIT} component={WalletDepositPage} />
       <Route path={ROUTE_WALLET_WITHDRAW} component={WalletWithdrawPage} />
       <Route path={ROUTE_MERCHANT} component={Merchant} />

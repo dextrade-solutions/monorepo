@@ -2,27 +2,29 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Memo, Projects, User, Vault } from '../services'; // Import Auth service
+import { Auth, Memo, Projects, User } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes, IMemo, IUser } from '../types';
+import { IProject, Auth as AuthTypes, IUser } from '../types';
 
-interface User {
+interface IStoredUser {
   auth: {
     accessToken: string;
     refreshToken: string;
   };
   project?: IProject;
   isRegistrationCompleted?: boolean;
+  isCashier?: boolean;
+  primaryCurrency?: string;
   // ... any other user properties
 }
 
 interface UserContextType {
-  user: User | null;
+  user: IStoredUser | null;
   me: IUser | null;
   isAuthorized: boolean;
   isAuthorizeInProgress: boolean;
   projects: IProject[] | undefined;
-  isCashier: boolean;
+  isLoading: boolean;
   twoFAdata: {
     codeToken: string;
     method?: number;
@@ -33,12 +35,13 @@ interface UserContextType {
   signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
   setCompleteReginstration: () => void;
+  setPrimaryCurrency: (v: string) => void;
 }
 
 export const UserContext = createContext<UserContextType>({
   user: null,
   me: null,
-  isCashier: false,
+  isLoading: false,
   isAuthorized: false,
   isAuthorizeInProgress: false,
   projects: undefined,
@@ -58,8 +61,20 @@ export const UserContext = createContext<UserContextType>({
   signUp: () => {},
 });
 
+const getRole = (projectPermissions = [], currentProjectId: number) => {
+  const currentProjectHasPermissions = projectPermissions.find(
+    (i) => i.project_id === currentProjectId,
+  );
+
+  const isCashier = !currentProjectHasPermissions;
+  return { isCashier };
+};
+
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useLocalStorage<User | null>('user-data', null);
+  const [user, setUser] = useLocalStorage<IStoredUser | null>(
+    'user-data',
+    null,
+  );
   const [twoFA, setTwoFa] = useState({
     codeToken: '',
   });
@@ -83,15 +98,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     enabled: isAuthorized,
   });
 
-  const currentProjectHasPermissions = (
-    me.data?.project_permissions || []
-  ).find((i) => i.project_id === user?.project?.id);
-
-  const isCashier =
-    !projects.isLoading &&
-    !me.isLoading &&
-    isAuthorized &&
-    !currentProjectHasPermissions;
+  const isLoading = projects.isLoading || me.isLoading;
 
   useEffect(() => {
     if (!user?.auth) {
@@ -103,8 +110,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     onSuccess: async (data) => {
       const { access_token: accessToken, refresh_token: refreshToken } = data;
       saveAuthData(accessToken, refreshToken);
-      const resultProjects = await projects.refetch();
-      const resultMemos = await memos.refetch();
+
+      const [resultProjects, resultMemos, resultMe] = await Promise.all([
+        projects.refetch(),
+        memos.refetch(),
+        me.refetch(),
+      ]);
+
       const projectsList = resultProjects.data?.list.currentPageResult || [];
       const memosList = resultMemos.data?.list.currentPageResult || [];
 
@@ -119,6 +131,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         },
         project,
         isRegistrationCompleted: Boolean(memo),
+        isCashier: getRole(resultMe.data.project_permissions, project.id)
+          .isCashier,
       }));
       setTwoFa((v) => ({
         ...v,
@@ -163,6 +177,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValue = {
     user,
+    isLoading,
     me: me.data,
     projects: projects.data?.list.currentPageResult || [],
     memos: memos.data?.list.currentPageResult || [],
@@ -170,9 +185,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
     isAuthorized,
-    isCashier,
     setProject: (project: IProject) => {
-      setUser((prev) => ({ ...prev, project }));
+      setUser((prev) => ({
+        ...prev,
+        project,
+        isCashier: getRole(me.data.project_permissions, project.id).isCashier,
+      }));
     },
     login: (email: string, password: string) => {
       return loginMutation.mutateAsync([{ email, password, old_2fa: false }]);
@@ -195,6 +213,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUser((prev) => ({
         ...prev!,
         isRegistrationCompleted: true,
+      }));
+    },
+    setPrimaryCurrency: (v: string) => {
+      setUser((prev) => ({
+        ...prev!,
+        primaryCurrency: v,
       }));
     },
   };
