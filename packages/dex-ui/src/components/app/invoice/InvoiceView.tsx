@@ -457,7 +457,7 @@ export default function InvoiceView({
               <MenuList>
                 {connectedWallet ? (
                   <>
-                    <ListItemButton onClick={connectedWallet.disconnect}>
+                    <ListItemButton>
                       <ListItemAvatar>
                         <UrlIcon url={connectedWallet.icon} />
                       </ListItemAvatar>
@@ -482,7 +482,7 @@ export default function InvoiceView({
                   <>
                     <ListItemButton
                       className="bordered"
-                      // onClick={() => showQr(payment.data, secondaryDelta)}
+                      disabled={changeAddress.isPending}
                       onClick={() =>
                         showModal({
                           name: 'QR_MODAL',
@@ -506,6 +506,7 @@ export default function InvoiceView({
                     </ListItemButton>
                     <ListItemButton
                       className="bordered"
+                      disabled={changeAddress.isPending}
                       onClick={() => showCopy(payment.data)}
                     >
                       <ListItemAvatar>
