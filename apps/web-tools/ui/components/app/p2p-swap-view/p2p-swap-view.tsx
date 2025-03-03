@@ -162,11 +162,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   };
 
   useEffect(() => {
-    if (assetInputTo.native) {
-      onInputAmountFrom(fromTokenInputValue);
-    }
+    onInputAmountFrom(fromTokenInputValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTokenInputValue, assetInputTo.native]);
+  }, []);
 
   const startExchange = async ({
     exchangerPaymentMethodId,

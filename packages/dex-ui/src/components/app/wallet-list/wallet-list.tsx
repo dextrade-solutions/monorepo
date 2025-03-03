@@ -149,10 +149,9 @@ export default function WalletList({
       )}
       {showWalletsList &&
         renderList.map((item, idx) => (
-          <Grow in={true} timeout={600 * (idx / 2)}>
-            <Box data-testid={item.id} key={item.id}>
+          <Grow in={true} key={item.id} timeout={600 * (idx / 2)}>
+            <Box data-testid={item.id}>
               <WalletListItem
-                key={item.id}
                 item={item}
                 value={value}
                 hideConnectionType={hideConnectionType}

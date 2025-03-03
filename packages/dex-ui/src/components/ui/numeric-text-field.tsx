@@ -10,9 +10,9 @@ interface NumericTextFieldProps
   value: string;
   onChange: (value: string) => void;
   loading?: boolean;
-  hasValidationErrors?: boolean;
   reserve?: boolean;
   placeholder?: string;
+  InputProps: TextFieldProps['InputProps'];
   endAdornment?: ReactNode;
   textFieldProps?: Omit<TextFieldProps, 'value' | 'onChange' | 'InputProps'>; // Allow pass other text field props
 }
@@ -21,11 +21,11 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
   value,
   onChange,
   loading = false,
-  hasValidationErrors = false,
   reserve = false,
   placeholder = '0',
   endAdornment,
   textFieldProps,
+  InputProps = {},
   ...rest
 }) => {
   return (
@@ -34,9 +34,9 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
       customInput={TextField}
       disabled={loading}
       placeholder={placeholder}
-      decimalSeparator=","
       data-testid={reserve ? 'input-to' : 'input-from'}
-      onValueChange={({ value: v }) => onChange(v)} // update value when formated
+      // onValueChange={({ value: v }) => onChange(v)} // update value when formated
+      onChange={(e) => onChange(e.target.value)}
       InputProps={{
         autoComplete: 'off',
         inputMode: 'numeric',
@@ -53,7 +53,7 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
             {endAdornment}
           </InputAdornment>
         ),
-        ...(rest.InputProps || {}),
+        ...InputProps,
       }}
       {...textFieldProps}
       {...rest}

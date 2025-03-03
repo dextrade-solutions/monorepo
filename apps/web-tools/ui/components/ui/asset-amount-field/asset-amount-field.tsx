@@ -19,7 +19,7 @@ import {
   getStrPaymentMethodInstance,
   shortenAddress,
 } from 'dex-helpers';
-import { ButtonIcon, UrlIcon } from 'dex-ui';
+import { ButtonIcon, NumericTextField, UrlIcon } from 'dex-ui';
 import React from 'react';
 import { NumericFormat } from 'react-number-format';
 
@@ -32,12 +32,7 @@ interface IProps {
   reserve?: number;
 }
 
-export const AssetAmountField = ({
-  assetInput,
-  onChange,
-  reserve,
-  hasValidationErrors,
-}: IProps) => {
+export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
   return (
@@ -97,11 +92,10 @@ export const AssetAmountField = ({
       <Divider />
 
       <Box paddingX={2} marginY={1}>
-        <NumericFormat
+        <NumericTextField
           value={assetInput.amount}
           customInput={TextField}
           disabled={assetInput.loading}
-          decimalSeparator=","
           placeholder="0"
           allowNegative={false}
           fullWidth
@@ -109,29 +103,13 @@ export const AssetAmountField = ({
           valueIsNumericString
           data-testid={reserve ? 'input-to' : 'input-from'}
           InputProps={{
-            className: classNames({
-              'asset-amount-field__error': hasValidationErrors,
-            }),
             disableUnderline: true,
             style: {
               fontSize: 25,
             },
-            autoComplete: 'off',
-            endAdornment: (
-              <InputAdornment position="end">
-                {Number(assetInput.amount) > 0 && !assetInput.loading && (
-                  <ButtonIcon
-                    iconName="close"
-                    size="sm"
-                    onClick={() => onChange('')}
-                  />
-                )}
-              </InputAdornment>
-            ),
           }}
-          onChange={(e) => {
-            let { value } = e.target;
-            value = value.replace(',', '.');
+          onChange={(v) => {
+            let value = v;
             if (value.startsWith('.')) {
               value = value.replace('.', '0.');
             }

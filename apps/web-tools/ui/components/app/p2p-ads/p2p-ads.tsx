@@ -142,6 +142,9 @@ export default function P2PAds() {
           <Box marginLeft={2}>
             <ButtonIcon
               size="xl"
+              sx={{
+                color: 'text.primary',
+              }}
               iconName="filter-clean"
               onClick={() => cleanFilter()}
             />

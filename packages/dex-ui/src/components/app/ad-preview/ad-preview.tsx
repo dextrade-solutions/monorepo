@@ -6,13 +6,20 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { formatCurrency, formatFundsAmount, getAdLimitPerExchange, getUserAvatarUrl } from 'dex-helpers';
+import {
+  formatCurrency,
+  formatFundsAmount,
+  getAdLimitPerExchange,
+  getUserAvatarUrl,
+} from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AssetItem, Icon } from '../../ui';
 import AssetPriceOutput from '../../ui/asset-price-output';
 import ExchangerUserPreview from '../exchanger-user-preview';
+import { Atom } from '../../ui/custom-icons';
 
 interface IProps {
   ad: AdItem;
@@ -78,7 +85,11 @@ const AdPreview = ({
                 alignItems="center"
               >
                 <AssetItem iconSize={30} coin={ad.fromCoin} />
-                <Icon name="exchange-direction" size="xl" />
+                {ad.isAtomicSwap ? (
+                  <Atom />
+                ) : (
+                  <Icon name="exchange-direction" size="xl" />
+                )}
                 <AssetItem iconSize={30} coin={ad.toCoin} alignReverse />
               </Box>
               <Box marginTop={1} marginBottom={1}>

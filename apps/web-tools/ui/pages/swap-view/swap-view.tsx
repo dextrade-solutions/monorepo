@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
-import { Icon, Button } from 'dex-ui';
+import { Icon, Button, Atom } from 'dex-ui';
 import { groupBy, map, orderBy, uniqBy } from 'lodash';
 import React, { useMemo, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -143,7 +143,16 @@ export default function AdView() {
   return (
     <Box>
       <Box display="flex" alignItems="center" padding={1}>
-        <Typography variant="h6">Swap</Typography>
+        {isLoading ? (
+          <Typography color="text.secondary">Loading...</Typography>
+        ) : (
+          <>
+            {currentAd?.isAtomicSwap && <Atom mr={1} />}
+            <Typography variant="h6">
+              {currentAd?.isAtomicSwap ? 'Atomic Swap' : 'Swap'}
+            </Typography>
+          </>
+        )}
         <div className="flex-grow" />
         {isWidget ? (
           <Typography>{merchant}</Typography>
@@ -151,6 +160,7 @@ export default function AdView() {
           <Box>
             <Button
               startIcon={<Icon name="arrow-left-dex" />}
+              sx={{ color: 'text.primary' }}
               onClick={handleNavigateBack}
             >
               {t('back')}

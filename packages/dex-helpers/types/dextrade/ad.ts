@@ -93,6 +93,8 @@ export type AdItem = {
   rating: {
     totalRating: number;
   };
+  exchangeCount: number;
+  exchangeCompletionRate: number;
   fromCoin: CoinModel;
   toCoin: CoinModel;
   isExchangerActive: boolean;

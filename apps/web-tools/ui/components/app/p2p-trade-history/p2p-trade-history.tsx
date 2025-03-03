@@ -29,7 +29,11 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   const tradesTerminal = allTrades.filter((t) => !activeTradesById[t.id]);
 
   const backbutton = (
-    <Button startIcon={<Icon name="arrow-left-dex" />} onClick={onBack}>
+    <Button
+      sx={{ color: 'text.primary' }}
+      startIcon={<Icon name="arrow-left-dex" />}
+      onClick={onBack}
+    >
       {t('back')}
     </Button>
   );
