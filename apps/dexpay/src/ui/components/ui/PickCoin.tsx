@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Skeleton,
 } from '@mui/material';
 import { UrlIcon } from 'dex-ui';
 import { map, isEmpty } from 'lodash';
@@ -17,7 +18,7 @@ import { Currency } from '../../services';
 import { getCoinIconByIso } from '../../utils/common';
 
 interface SelectCoinProps {
-  value: string;
+  value?: string;
   onChange: (coin: string) => void;
   error?: boolean;
   disabled?: boolean;
@@ -48,8 +49,17 @@ export default function PickCoin({
     );
   }, [searchQuery, allCoins]);
 
+  const CoinSkeleton = () => (
+    <ListItem disableGutters sx={{ padding: 1, borderRadius: 1 }}>
+      <ListItemAvatar>
+        <Skeleton variant="circular" width={40} height={40} />
+      </ListItemAvatar>
+      <ListItemText primary={<Skeleton width="40%" />} />
+    </ListItem>
+  );
+
   return (
-    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%' }}>
+    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%', minHeight: 370 }}>
       <Box
         sx={{
           width: '100%',
@@ -104,6 +114,16 @@ export default function PickCoin({
             <ListItemText primary={option} sx={{ color: 'text.tertiary' }} />
           </ListItem>
         ))}
+        {coinsQuery.isLoading && (
+          <>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <CoinSkeleton key={index} />
+            ))}
+          </>
+        )}
+        {!coinsQuery.isLoading && filteredCoins.length === 0 && (
+          <ListItem>No coins found.</ListItem>
+        )}
       </List>
     </Box>
   );

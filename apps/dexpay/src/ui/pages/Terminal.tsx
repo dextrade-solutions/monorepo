@@ -1,45 +1,68 @@
-import {
-  alpha,
-  Box,
-  Grid,
-  Grow,
-  keyframes,
-  styled,
-  Typography,
-} from '@mui/material';
+import { alpha, Box, Grid, Grow, Typography } from '@mui/material';
 import currencies from 'currency-formatter/currencies';
-import assetDict from 'dex-helpers/assets-dict';
-import { AssetItem, Button } from 'dex-ui';
-import React, { useState } from 'react';
+import { useForm } from 'dex-ui';
+import React, { useMemo, useState } from 'react';
 
-import NumpadInput from '../components/ui/NumpadInput';
+import InputPayment from '../components/terminal/InputPayment';
+import PaymentProcessing from '../components/terminal/PaymentProcessing';
 import PickCoin from '../components/ui/PickCoin';
 import { useAuth } from '../hooks/use-auth';
+import { useMutation, useQuery } from '../hooks/use-query';
+import { Currency, Invoice } from '../services';
+import { IInvoice } from '../types';
 
-const DEFAULT_ASSETS = ['USDT_TRX', 'USDT_BSC', 'USDT_ETH', 'BTC', 'ETH'].map(
-  (c) => assetDict[c],
-);
+const MOCK = {
+  supported_currencies: null,
+  converted_amount_requested: '400',
+  converted_coin_id: 97,
+  currency_id: 87,
+  project_id: 1863,
+  id: 2288,
+  amount_requested: '11.68',
+  amount_received_total: '0',
+  status: 1,
+  coin_id: null,
+  description: null,
+  due_to: null,
+  public_id:
+    'a6821694-9614-4077-acb4-301d962d1f23-bc30afb4f64bfff5ab3b7454650383f3',
+  address_to: '0xbE31F1ac38f75401Ba3cA6a56b5419132146D1bf',
+  status_label: 'Waiting for payment',
+  payment_page_url:
+    'https://ecom.dextrade.com/a6821694-9614-4077-acb4-301d962d1f23-bc30afb4f64bfff5ab3b7454650383f3',
+};
+
+const Paper = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Box
+      width="100%"
+      sx={{
+        boxShadow: '0px 0px 20px 0px #0000001A',
+        borderRadius: 1,
+        bgcolor: 'background.default',
+        p: 2,
+        display: 'flex', // Add this
+        justifyContent: 'center', // And this
+        alignItems: 'center', // And this
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
 
 export default function Terminal() {
   const { user, setPrimaryCurrency } = useAuth();
   const [amount, setAmount] = useState('');
   const [selectedAsset, setAsset] = useState();
+  const [invoice, setInvoice] = useState<IInvoice>();
+  const coinsQuery = useQuery(Currency.coins);
 
-  const numberAnimation = keyframes`
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(1.1);
-    }
-    `;
-  const AnimatedValue = styled(Typography)`
-    animation: ${numberAnimation} 0.1s linear;
-    transition: transform 0.1s;
-    &:active {
-      transform: scale(0.95);
-    }
-  `;
+  const createInvoice = useMutation(Invoice.create, {
+    onSuccess: (v) => {
+      setInvoice(v);
+    },
+  });
 
   const primaryCurrency = user?.primaryCurrency;
 
@@ -50,6 +73,80 @@ export default function Terminal() {
       symbolOnLeft: false,
     };
   }
+
+  const createInvoiceForm = useForm({
+    method: () => {
+      const primaryCoin = (coinsQuery.data?.list.currentPageResult || []).find(
+        (c) => c.iso === primaryCurrency,
+      );
+
+      if (!primaryCoin) {
+        throw new Error('createInvoiceForm - Primary currency id not found');
+      }
+
+      return createInvoice.mutateAsync([
+        { projectId: user?.project.id },
+        {
+          converted_amount_requested: amount,
+          converted_coin_id: primaryCoin.id,
+          currency_id: selectedAsset.currencyId,
+        },
+      ]);
+    },
+  });
+
+  const content = useMemo(() => {
+    if (!primaryCurrency) {
+      return (
+        <>
+          <Typography
+            mb={4}
+            color="tertiary.contrastText"
+            variant="h6"
+            fontWeight="bold"
+            textAlign="center"
+          >
+            Please, set primary currency
+          </Typography>
+          <Paper>
+            <PickCoin value={primaryCurrency} onChange={setPrimaryCurrency} />
+          </Paper>
+        </>
+      );
+    } else if (invoice && selectedAsset) {
+      return (
+        <Paper>
+          <PaymentProcessing
+            invoiceId={invoice.public_id}
+            asset={selectedAsset}
+          />
+        </Paper>
+      );
+    }
+    return (
+      <InputPayment
+        amount={amount}
+        currency={currency}
+        selectedAsset={selectedAsset}
+        setAsset={setAsset}
+        setPrimaryCurrency={setPrimaryCurrency}
+        setAmount={setAmount}
+        isLoading={createInvoice.isPending}
+        onConfirm={createInvoiceForm.submit}
+      />
+    );
+  }, [
+    createInvoice.isPending,
+    createInvoiceForm,
+    primaryCurrency,
+    invoice,
+    selectedAsset,
+    amount,
+    currency,
+    setPrimaryCurrency,
+    setAsset,
+    setAmount,
+  ]);
 
   return (
     <Box
@@ -69,87 +166,7 @@ export default function Terminal() {
       >
         Dex<strong>Pay Terminal</strong>
       </Typography>
-      {primaryCurrency && (
-        <>
-          <AnimatedValue
-            color="tertiary.contrastText"
-            sx={{
-              opacity: amount ? 1 : 0.5,
-            }}
-            variant="h4"
-            my={2}
-            display="flex"
-          >
-            {amount && (
-              <Box mr={1} sx={{ opacity: 0.5 }}>
-                {currency.symbol}
-              </Box>
-            )}
-            {amount || 'Enter Amount'}
-          </AnimatedValue>
-
-          <NumpadInput maxWidth={400} value={amount} onChange={setAmount} />
-          <Grid mt={2} container spacing={1}>
-            {DEFAULT_ASSETS.map((asset) => (
-              <Grid item xs={4} key={asset.iso}>
-                <Button
-                  fullWidth
-                  variant={
-                    selectedAsset?.iso === asset.iso ? 'contained' : 'text'
-                  }
-                  color="tertiary"
-                  onClick={() => setAsset(asset)}
-                >
-                  <AssetItem asset={asset} />
-                </Button>
-              </Grid>
-            ))}
-
-            <Grid item xs={4}>
-              <Button color="tertiary" fullWidth>
-                Others
-              </Button>
-            </Grid>
-          </Grid>
-          <Grow in={Boolean(amount) && Boolean(selectedAsset)}>
-            <Box mt={4} maxWidth={400} width="100%">
-              <Button
-                fullWidth
-                gradient
-                sx={{
-                  height: 43,
-                }}
-              >
-                Continue
-              </Button>
-            </Box>
-          </Grow>
-        </>
-      )}
-      {!primaryCurrency && (
-        <>
-          <Typography
-            mb={4}
-            color="tertiary.contrastText"
-            variant="h6"
-            fontWeight="bold"
-            textAlign="center"
-          >
-            Please, set primary currency
-          </Typography>
-          <Box
-            width="100%"
-            sx={{
-              boxShadow: '0px 0px 20px 0px #0000001A',
-              borderRadius: 1,
-              bgcolor: 'background.default',
-              p: 2,
-            }}
-          >
-            <PickCoin value={primaryCurrency} onChange={setPrimaryCurrency} />
-          </Box>
-        </>
-      )}
+      {content}
     </Box>
   );
 }

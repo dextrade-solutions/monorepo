@@ -28,7 +28,11 @@ const BTC_LIGHTNING_CURRENCY = {
   is_active: true,
 };
 
-export function useCurrencies() {
+export function useCurrencies({
+  disableLoadBalances,
+}: {
+  disableLoadBalances?: boolean;
+} = {}) {
   const { user } = useAuth();
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
     Currency.index,
@@ -36,6 +40,7 @@ export function useCurrencies() {
   const { data: balancesData, isLoading: isLoadingBalances } = useQuery(
     Wallet.list,
     { projectId: user?.project.id },
+    { enabled: !disableLoadBalances },
   );
   const items = [
     ...(currencies?.list.currentPageResult || []),

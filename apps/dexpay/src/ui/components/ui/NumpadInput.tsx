@@ -91,7 +91,7 @@ const NumpadInput = ({
                   borderRadius: 2,
                   height: 60,
                   fontWeight: 'bold',
-                  fontSize: 20,
+                  fontSize: 30,
                   '&:hover': {
                     filter: 'brightness(1.1)',
                   },

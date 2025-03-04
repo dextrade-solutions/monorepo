@@ -32,6 +32,10 @@ export const saveAuthData = (accessToken: string, refreshToken: string) => {
   );
 };
 
+export const $invoiceApi = ky.create({
+  prefixUrl: 'https://dexpay-api.dextrade.com',
+});
+
 export const $api = ky.create({
   ...BASE_API_CONFIG,
   retry: 0,

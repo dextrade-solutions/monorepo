@@ -11,20 +11,14 @@ import {
   Typography,
   Avatar,
 } from '@mui/material';
-import { determineConnectionType, useConnections } from 'dex-connect';
-import {
-  formatCurrency,
-  formatFundsAmount,
-  getQRCodeURI,
-  shortenAddress,
-} from 'dex-helpers';
+import { Connection, determineConnectionType } from 'dex-connect';
+import { formatCurrency, getQRCodeURI, shortenAddress } from 'dex-helpers';
+import assetsDict from 'dex-helpers/assets-dict';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { useConfig } from 'wagmi';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 
 import { InvoicePayBtn } from './InvoicePayBtn';
-import InvoicePreloader from './InvoicePreloader';
 import {
   Icon,
   UrlIcon,
@@ -38,52 +32,44 @@ import { InvoiceStatus } from './constants';
 import { useGlobalModalContext } from '../modals';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
-import usePayment from './react-queries/queries/usePayment';
+import { IInvoiceFull } from './types/entities';
 import { Invoice as InvoiceNamespace } from './types/invoices';
 
 export default function InvoiceView({
-  id,
+  invoice,
+  connections: allConnections = [],
   onBack,
 }: {
-  id: string;
+  invoice: IInvoiceFull;
+  connections?: Connection[];
   onBack?: () => void;
 }) {
-  const [assetsDict, setAssetDict] = useState(null);
-  const [loadingWallet, setLoadingWallet] = useState(null);
-  const [connectedWallet, setConnectedWallet] = useState(null);
+  const [loadingWallet, setLoadingWallet] = useState<Connection>();
+  const [connectedWallet, setConnectedWallet] = useState<Connection>();
 
   const { showModal } = useGlobalModalContext();
-  const payment = usePayment({ id });
   const currencies = useCurrencies();
   const changeAddress = usePaymentAddress();
-  const config = useConfig();
-  const canCurrencyChange = Boolean(payment.data?.converted_coin_id);
+  // const config = useConfig();
+  const canCurrencyChange = Boolean(
+    (invoice.supported_currencies?.length || 0) > 1,
+  );
 
-  const paymentAssetId = payment.data?.currency?.iso_with_network;
-  const isLoading = payment.isLoading || currencies.isLoading || !assetsDict;
+  const paymentAssetId = invoice.currency?.iso_with_network;
 
   const paymentAsset = useMemo<AssetModel | null>(() => {
     if (!paymentAssetId || !assetsDict) {
       return null;
     }
     return assetsDict[paymentAssetId];
-  }, [paymentAssetId, assetsDict]);
+  }, [paymentAssetId]);
 
   const connectionType = paymentAsset
     ? determineConnectionType(paymentAsset)
     : [];
-  const {
-    connections: { data: connections = [] },
-  } = useConnections({
-    wagmiConfig: config,
-    connectionType: connectionType.filter((i) => i !== 'dextrade'), // TODO: make dextrade wallet support
-  });
-
-  useEffect(() => {
-    import('dex-helpers/assets-dict').then((data) => {
-      setAssetDict(data.default);
-    });
-  }, []);
+  const connections = allConnections.filter((item) =>
+    connectionType.includes(item.connectionType),
+  );
 
   const onChangeAsset = async (asset: AssetModel) => {
     const currency = currencies.data?.data.find((d) => d.iso === asset.iso);
@@ -94,27 +80,24 @@ export default function InvoiceView({
     setConnectedWallet(null);
   };
 
-  const onSelectConnection = useCallback(
-    async (item: (typeof connections)[number]) => {
-      setLoadingWallet(item);
-      try {
-        if (item.connected) {
-          setConnectedWallet(item);
-        } else {
-          const connected = await item.connect();
-          setConnectedWallet({ ...item, connected });
-        }
-        setLoadingWallet(null);
-      } catch (e) {
-        console.error(e);
-        setLoadingWallet(null);
+  const onSelectConnection = useCallback(async (item: Connection) => {
+    setLoadingWallet(item);
+    try {
+      if (item.connected) {
+        setConnectedWallet(item);
+      } else {
+        const connected = await item.connect();
+        setConnectedWallet({ ...item, connected });
       }
-    },
-    [],
-  );
+      setLoadingWallet(undefined);
+    } catch (e) {
+      console.error(e);
+      setLoadingWallet(undefined);
+    }
+  }, []);
 
   const assetList = useMemo(() => {
-    let supportedCurrencies = payment.data?.supported_currencies || [];
+    let supportedCurrencies = invoice.supported_currencies || [];
     const allCurrencies = currencies.data?.data || [];
 
     if (supportedCurrencies.length && allCurrencies.length && assetsDict) {
@@ -143,7 +126,7 @@ export default function InvoiceView({
       );
     }
     return [];
-  }, [currencies.data, assetsDict, payment]);
+  }, [currencies.data, invoice]);
 
   useEffect(() => {
     const withoutLightning = assetList.filter(
@@ -158,45 +141,32 @@ export default function InvoiceView({
     }
   }, [paymentAssetId, assetList, changeAddress.isPending, onChangeAsset]);
 
-  if (payment.isError) {
-    return (
-      <Alert severity="info">
-        Invoice with id <strong>{id}</strong> cannot be loaded
-      </Alert>
-    );
-  }
-
-  const expirationTime = payment.data?.due_to
-    ? new Date(payment.data.due_to).getTime() - new Date().getTime()
+  const expirationTime = invoice.due_to
+    ? new Date(invoice.due_to).getTime() - new Date().getTime()
     : null;
-
-  if (isLoading || !payment.data) {
-    return <InvoicePreloader />;
-  }
 
   const isTerminated = [
     InvoiceStatus.canceled,
     InvoiceStatus.success,
     InvoiceStatus.expired,
-  ].includes(payment.data.status);
+  ].includes(invoice.status);
 
-  const primarySendAmount = Number(payment.data.converted_amount_requested_f);
-  const primarySendCoin = payment.data.converted_coin?.iso;
+  const primarySendAmount = Number(invoice.converted_amount_requested_f);
+  const primarySendCoin = invoice.converted_coin?.iso;
   const primaryRecievedAmount = Number(
-    payment.data.converted_amount_received_total_f,
+    invoice.converted_amount_received_total_f,
   );
   const primaryDelta = primarySendAmount - primaryRecievedAmount;
 
-  const secondarySendAmount = Number(payment.data.amount_requested_f);
-  const secondarySendCoin = payment.data.coin?.iso;
-  const secondaryRecievedAmount = Number(payment.data.amount_received_total_f);
+  const secondarySendAmount = Number(invoice.amount_requested_f);
+  const secondarySendCoin = invoice.coin?.iso;
+  const secondaryRecievedAmount = Number(invoice.amount_received_total_f);
   const secondaryDelta = secondarySendAmount - secondaryRecievedAmount;
-
   let payStr = formatCurrency(
     primarySendAmount || secondarySendAmount,
     primarySendCoin || secondarySendCoin,
   );
-  if (payment.data.status === InvoiceStatus.success) {
+  if (invoice.status === InvoiceStatus.success) {
     payStr = `Paid ${payStr}`;
   } else {
     payStr = `Pay ${payStr}`;
@@ -310,7 +280,7 @@ export default function InvoiceView({
   }
   let partiallyPaid = false;
   if (
-    payment.data.status === InvoiceStatus.pending &&
+    invoice.status === InvoiceStatus.pending &&
     Number(primaryRecievedAmount) > 0
   ) {
     partiallyPaid = true;
@@ -330,10 +300,10 @@ export default function InvoiceView({
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" mb={2}>
-        {payment.data.logo_url ? (
+        {invoice.logo_url ? (
           <Avatar
             alt="Payment Logo" // Provide alternative text for accessibility
-            src={payment.data.logo_url}
+            src={invoice.logo_url}
             sx={{
               height: 50,
               width: 'auto',
@@ -355,14 +325,14 @@ export default function InvoiceView({
         <Avatar
           sx={{
             my: 1,
-            backgroundColor: alertParams[payment.data.status].color,
+            backgroundColor: alertParams[invoice.status].color,
           }}
         >
-          {alertParams[payment.data.status].icon}
+          {alertParams[invoice.status].icon}
         </Avatar>
         <Typography variant="h6">{payStr}</Typography>
         <Typography mb={2} color="text.secondary">
-          {alertParams[payment.data.status].status}
+          {alertParams[invoice.status].status}
         </Typography>
       </Box>
       {partiallyPaid && (
@@ -423,17 +393,17 @@ export default function InvoiceView({
             )}
           </Box>
 
-          {payment.data.description && (
+          {invoice.description && (
             <Alert
               sx={{ justifyContent: 'center' }}
               severity="info"
               icon={<Icon name="bookmark" />}
             >
-              {payment.data.description}
+              {invoice.description}
             </Alert>
           )}
 
-          {payment.data.amount_requested_f && (
+          {invoice.amount_requested_f && (
             <Box>
               <Divider sx={{ my: 2 }} />
               {connectedWallet ? (
@@ -473,7 +443,7 @@ export default function InvoiceView({
                         connectedWallet.txSend({
                           asset: paymentAsset,
                           amount: secondaryDelta,
-                          recipient: payment.data.address,
+                          recipient: invoice.address,
                         })
                       }
                     />
@@ -488,9 +458,9 @@ export default function InvoiceView({
                           name: 'QR_MODAL',
                           description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
                           value: getQRCodeURI(
-                            payment.data.address,
-                            payment.data.amount_requested_f,
-                            payment.data.currency.network_name,
+                            invoice.address,
+                            invoice.amount_requested_f,
+                            invoice.currency.network_name,
                             paymentAsset.contract,
                           ),
                         })
@@ -507,7 +477,7 @@ export default function InvoiceView({
                     <ListItemButton
                       className="bordered"
                       disabled={changeAddress.isPending}
-                      onClick={() => showCopy(payment.data)}
+                      onClick={() => showCopy(invoice)}
                     >
                       <ListItemAvatar>
                         <Icon ml={1} name="copy" size="xl" />
@@ -517,7 +487,7 @@ export default function InvoiceView({
                         secondary="Manual copy address and send assets"
                       />
                     </ListItemButton>
-                    {!changeAddress.isPending && (
+                    {!changeAddress.isPending && connections.length > 0 && (
                       <WalletList
                         wallets={connections}
                         hideConnectionType

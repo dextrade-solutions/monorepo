@@ -1,4 +1,11 @@
-import { number, string } from 'yup';
+export interface INetwork {
+  id: number;
+  name: string;
+  public_name: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
 
 export interface IProject {
   id: number;
@@ -28,19 +35,6 @@ export interface IVault {
   deletedAt: string | null;
 }
 
-export interface IAddress {
-  id: number;
-  currency_id: number;
-  currency: ICurrency;
-  vault_id: number;
-  vault: IVault;
-  address: string;
-  tag: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
-
 export interface ICurrency {
   id: number;
   iso: string;
@@ -59,6 +53,19 @@ export interface ICurrency {
   deletedAt: string | null;
 }
 
+export interface IAddress {
+  id: number;
+  currency_id: number;
+  currency: ICurrency;
+  vault_id: number;
+  vault: IVault;
+  address: string;
+  tag: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface ICoin {
   id: number;
   iso: string;
@@ -67,14 +74,6 @@ export interface ICoin {
   deletedAt: string | null;
 }
 
-export interface INetwork {
-  id: number;
-  name: string;
-  public_name: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-}
 
 export interface ITransaction {
   id: number;
@@ -155,6 +154,48 @@ export interface IApiToken {
   id: number;
   label: string;
   createdAt: string;
+}
+
+export interface IInvoiceFull {
+  id: string;
+  address: string;
+  amount_requested: string;
+  amount_requested_f: string;
+  amount_received_total: string;
+  amount_received_total_f: string;
+  converted_amount_received_total_f: string;
+  converted_amount_requested: string;
+  converted_amount_requested_f: string;
+  discounts_f: string | null;
+  converted_discounts_f: string | null;
+  tax_f: string | null;
+  converted_tax_f: string | null;
+  status: number;
+  coin: ICoin | null;
+  coin_id: number | null;
+  converted_coin: ICoin | null;
+  converted_coin_id: number | null;
+  currency_id: number;
+  currency: ICurrency;
+  description: string;
+  invoice_number: string;
+  due_to: string | null;
+  discounts: string | null;
+  tax: string | null;
+  payment_page_url: string;
+  logo_url: string | null;
+
+  // Поле supported_currencies: массив объектов или undefined
+  supported_currencies?: Array<{
+    id: number;
+    coin_id: number;
+    iso_with_network: string;
+    type: number;
+    iso: string;
+    native_currency_iso: string;
+    token_type: string | null;
+    network_name: string;
+  }>;
 }
 
 export interface IInvoice {

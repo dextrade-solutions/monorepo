@@ -1,6 +1,7 @@
 import { Paper, Typography, Box, Button } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
 import { useEffect, useRef } from 'react';
+
 import Icon from '../icon';
 
 interface QRCodeProps {
@@ -67,6 +68,7 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
 
   return (
     <Box
+      data-testid="qrcode"
       sx={{
         p: 2,
         m: 2,
@@ -78,6 +80,7 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
     >
       <Box
         ref={qrRef}
+        data-testid="qrcode-svg"
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -87,8 +90,8 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
         }}
       />
       {description && (
-        <Typography 
-          variant="body2" 
+        <Typography
+          variant="body2"
           color="text.secondary"
           align="center"
           sx={{ maxWidth: size }}
@@ -97,6 +100,7 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
         </Typography>
       )}
       <Button
+        data-testid="qrcode-downloadbtn"
         variant="contained"
         startIcon={<Icon name="save" />}
         onClick={handleDownload}
