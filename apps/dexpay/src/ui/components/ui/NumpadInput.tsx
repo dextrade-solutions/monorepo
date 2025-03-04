@@ -1,16 +1,7 @@
-import {
-  Box,
-  BoxProps,
-  Grid,
-  Grow,
-  keyframes,
-  styled,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, BoxProps, Grid } from '@mui/material';
 import { Button } from 'dex-ui';
-import { ArrowRight, Delete } from 'lucide-react';
-import React, { useState, useRef, useEffect } from 'react';
+import { Delete } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
 
 const NumpadInput = ({
   value,

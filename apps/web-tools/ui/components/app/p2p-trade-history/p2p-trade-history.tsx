@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Skeleton, Typography } from '@mui/material';
 import { Icon } from 'dex-ui';
 import { flatMap, groupBy } from 'lodash';
+import React from 'react';
 import { InView } from 'react-intersection-observer';
 
 import { TradePreview } from './trade-preview';

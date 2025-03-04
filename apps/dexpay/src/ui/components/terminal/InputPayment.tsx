@@ -3,14 +3,12 @@ import {
   Chip,
   Grid,
   Grow,
-  IconButton,
   keyframes,
   styled,
   Typography,
 } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
 import { AssetItem, Button, useGlobalModalContext } from 'dex-ui';
-import { XIcon } from 'lucide-react';
 import React from 'react';
 
 import { useCurrencies } from '../../hooks/use-currencies';
