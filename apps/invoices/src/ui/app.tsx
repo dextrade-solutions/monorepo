@@ -2,11 +2,11 @@ import { Box, Container, Typography } from '@mui/material';
 import { useConnections } from 'dex-connect';
 import { Invoice } from 'dex-ui';
 import React from 'react';
-import { useConfig } from 'wagmi';
+
+import { config } from './web3-config';
 
 export default function App() {
-  const wagmiConfig = useConfig();
-  const { connections } = useConnections({ wagmiConfig });
+  const { connections } = useConnections({ wagmiConfig: config });
 
   const pathParts = window.location.pathname.split('/');
   const invoiceId = pathParts[pathParts.length - 1];
