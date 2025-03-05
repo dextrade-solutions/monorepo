@@ -98,9 +98,10 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           placeholder="0"
           allowNegative={false}
           fullWidth
+          inputMode="decimal"
           variant="standard"
           valueIsNumericString
-          inputProps={{ inputMode: 'numeric' }}
+          inputProps={{ inputMode: 'numeric', pattern: '[0-9,]*' }}
           data-testid={reserve ? 'input-to' : 'input-from'}
           InputProps={{
             disableUnderline: true,
