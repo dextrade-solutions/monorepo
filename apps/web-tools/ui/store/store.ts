@@ -3,6 +3,7 @@ import { persistStore } from 'redux-persist';
 
 import enLocales from '../../public/locales/en/messages.json';
 import rootReducer from '../ducks';
+import { fetchLocale } from '../helpers/utils/i18n-helper';
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
@@ -58,10 +59,28 @@ export type RootState = ReturnType<Store['getState']>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = Store['dispatch'];
 
+let initialLocale: string;
+try {
+  const persistedState = localStorage.getItem('persist:localeMessages');
+  if (persistedState) {
+    const parsedState = JSON.parse(persistedState);
+    initialLocale = parsedState?.currentLocale
+      ? parsedState.currentLocale.replace(/"/g, '')
+      : 'en';
+  } else {
+    initialLocale = 'en';
+  }
+} catch (error) {
+  console.error('Error reading persisted state:', error);
+  initialLocale = 'en';
+}
+
+const initialMessages = await fetchLocale(initialLocale);
+
 export const store = configureStore({
   localeMessages: {
-    currentLocale: 'en',
-    current: enLocales,
+    currentLocale: initialLocale,
+    current: initialMessages,
   },
 });
 

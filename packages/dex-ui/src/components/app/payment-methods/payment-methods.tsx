@@ -15,9 +15,6 @@ import {
 } from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
 import React, { useState } from 'react';
-
-// import { UserPaymentMethod } from '../../../../app/types/dextrade';
-// import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTranslation } from 'react-i18next';
 
 import Icon from '../../ui/icon';
@@ -32,7 +29,7 @@ interface IProps {
   getUserPaymentMethods?: () => Promise<any>;
 }
 
-export const PaymentMethods = ({
+const PaymentMethods = ({
   value,
   currency,
   onSelect,
@@ -85,7 +82,7 @@ export const PaymentMethods = ({
             color="secondary"
             onClick={() => setCreateMode(false)}
           >
-            Back
+            {t('back')}
           </Button>
         )}
       </Box>
@@ -140,16 +137,14 @@ export const PaymentMethods = ({
           </FormControl>
           {paymentMethods.length === 0 && !isLoading && (
             <Box marginBottom={4}>
-              <Alert severity="info">
-                You haven't added payment methods yet.
-              </Alert>
+              <Alert severity="info">{t('noPaymentMethods')}</Alert>
             </Box>
           )}
-          {isLoading && <Box>Loading...</Box>}
+          {isLoading && <Box>{t('loading')}</Box>}
           <Box marginTop={1}>
             <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
               <Box display="flex" alignItems="center">
-                <Typography>{t('add')}</Typography>
+                <Typography>{t('addPaymentMethod')}</Typography>
               </Box>
             </Button>
           </Box>
@@ -158,3 +153,5 @@ export const PaymentMethods = ({
     </Box>
   );
 };
+
+export default PaymentMethods;

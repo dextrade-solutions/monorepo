@@ -1,7 +1,239 @@
-
 {
-  "plans": { "message": "Plans" },
-  "viewAllTrades": { "message": "View all trades" },
+  "My current address:": {
+    "message": "My current address:"
+  },
+  "This address using for": {
+    "message": "This address is used for"
+  },
+  "receiving": {
+    "message": "receiving"
+  },
+  "sending": {
+    "message": "sending"
+  },
+  "Change": {
+    "message": "Change"
+  },
+  "Disconnect Wallet": {
+    "message": "Disconnect Wallet"
+  },
+  "OR": {
+    "message": "OR"
+  },
+  "Paste recipient wallet address": {
+    "message": "Paste recipient wallet address"
+  },
+  "Recipient address": {
+      "message": "Recipient address"
+  },
+  "Attach address":{
+      "message": "Attach address"
+  },
+  "Connected wallets": {
+        "message": "Connected wallets"
+  },
+  "Swap ID": {
+    "message": "Swap ID"
+  },
+    "Hash": {
+    "message": "Hash"
+  },
+    "You refunded": {
+    "message": "You refunded"
+  },
+    "Refund": {
+    "message": "Refund"
+  },
+    "Approve refund": {
+    "message": "Approve refund"
+  },
+    "Plan": {
+    "message": "Plan"
+  },
+     "Fact": {
+    "message": "Fact"
+  },
+    "Claim": {
+    "message": "Claim"
+  },
+     "Approve claim in your wallet": {
+    "message": "Approve claim in your wallet"
+  },
+    "Exchanger refunded": {
+    "message": "Exchanger refunded"
+  },
+    "Try again": {
+    "message": "Try again"
+  },
+    "View swap": {
+    "message": "View swap"
+  },
+
+  "Pending": {
+    "message": "Pending"
+  },
+  "History": {
+    "message": "History"
+  },
+  "Trades not found...": {
+    "message": "Trades not found..."
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "Sort by": {
+    "message": "Sort by"
+  },
+  "Search": {
+    "message": "Search"
+  },
+  "There are no ads with the selected coin(s).": {
+    "message": "There are no ads with the selected coin(s)."
+  },
+  "Start Swap": {
+    "message": "Start Swap"
+  },
+  "Min amount is": {
+    "message": "Min amount is"
+  },
+  "Enter the amount to swap": {
+    "message": "Enter the amount to swap"
+  },
+  "Insufficient": {
+    "message": "Insufficient"
+  },
+  "balance": {
+    "message": "balance"
+  },
+  "Max limit in": {
+    "message": "Max limit in"
+  },
+  "exceeded": {
+    "message": "exceeded"
+  },
+  "Set your": {
+    "message": "Set your"
+  },
+  "wallet": {
+    "message": "wallet"
+  },
+  "Set payment method": {
+    "message": "Set payment method"
+  },
+  "Total fee": {
+    "message": "Total fee"
+  },
+  "Super fee": {
+    "message": "Super fee"
+  },
+  "Applied": {
+    "message": "Applied"
+  },
+  "Activate": {
+    "message": "Activate"
+  },
+  "Exchanger fee": {
+    "message": "Exchanger fee"
+  },
+  "Network outbound": {
+    "message": "Network outbound"
+  },
+  "Network inbound": {
+    "message": "Network inbound"
+  },
+  "Balance": {
+    "message": "Balance"
+  },
+  "Limit": {
+    "message": "Limit"
+  },
+  "Payment method": {
+    "message": "Payment method"
+  },
+  "Set Wallet": {
+    "message": "Set Wallet"
+  },
+  "read_policy_alert": {
+    "message": "Please read the exchanger's terms and conditions before placing an order. Failure to do so may result in a failed transaction and financial losses."
+  },
+  "choosePaymentMethod": {
+    "message": "Choose Payment Method"
+  },
+  "slippageTolerance": {
+    "message": "Slippage Tolerance"
+  },
+  "requestEnergy": {
+    "message": "Request Energy"
+  },
+  "atomic-swap": {
+    "message": "Atomic Swap"
+  },
+  "swap": {
+    "message": "Swap"
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "system": {
+    "message": "System"
+  },
+  "dark": {
+    "message": "Dark"
+  },
+  "light": {
+    "message": "Light"
+  },
+  "metamask-alert": {
+    "message": "Make sure you have the latest version of Metamask app"
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
+  "wallet-not-detected": {
+    "message": "{{walletName}} is not detected"
+  },
+  "setup-guide": {
+    "message": "Setup guide"
+  },
+  "install": {
+    "message": "Install"
+  },
+  "no-wallets-detected": {
+    "message": "No wallets detected..."
+  },
+  "user-info": {
+    "message": "User info"
+  },
+  "personal-data-alert": {
+    "message": "Your personal data is stored locally in the web browser. You can assign it to your own wallet."
+  },
+  "logout": {
+    "message": "Logout"
+  },
+  "login-via-wallet": {
+    "message": "Login via wallet"
+  },
+  "login-via": {
+    "message": "Login via"
+  },
+  "auth-wallet": {
+    "message": "Auth wallet"
+  },
+  "upgrade": {
+    "message": "Upgrade"
+  },
+  "light-mode": {
+    "message": "Light mode"
+  },
+  "dark-mode": {
+    "message": "Dark mode"
+  },
+  "plans": {
+    "message": "Plans"
+  },
+  "viewAllTrades": {
+    "message": "View all trades"
+  },
   "ADDITIONAL_INFO": {
     "message": "Additional info"
   },
@@ -91,7 +323,7 @@
     "message": "Online"
   },
   "reserve": {
-    "message": "Reserve"
+    "message": "Available quantity"
   },
   "min": {
     "message": "Min"
@@ -184,48 +416,117 @@
     "message": "Rating"
   },
   "WAIT_EXCHANGER_VERIFY": {
-		"message": "Wait exchanger verify"
-	},
+    "message": "Wait exchanger verify"
+  },
   "NEW": {
-		"message": "New"
-	},
+    "message": "New"
+  },
   "CANCELED": {
-		"message": "Canceled"
-	},
+    "message": "Canceled"
+  },
   "CLIENT_TRANSACTION_VERIFY": {
-		"message": "Verifying transaction"
-	},
+    "message": "Verifying transaction"
+  },
   "CLIENT_TRANSACTION_FAILED": {
-		"message": "Transaction failed"
-	},
+    "message": "Transaction failed"
+  },
   "WAIT_EXCHANGER_TRANSFER": {
-		"message": "Exchange"
-	},
+    "message": "Exchange"
+  },
   "EXCHANGER_TRANSACTION_VERIFY": {
-		"message": "Verifying transaction"
-	},
+    "message": "Verifying transaction"
+  },
   "EXCHANGER_TRANSACTION_FAILED": {
-		"message": "Transaction failed"
-	},
+    "message": "Transaction failed"
+  },
   "VERIFIED": {
-		"message": "Verified"
-	},
+    "message": "Verified"
+  },
   "COMPLETED": {
-		"message": "Completed"
-	},
+    "message": "Completed"
+  },
   "EXPIRED": {
-		"message": "Expired"
-	},
+    "message": "Expired"
+  },
   "DISPUTE": {
-		"message": "Dispute"
-	},
-  "kyc": { "message": "KYC" },
-  "settings": { "message": "Settings" },
-  "payment-methods": { "message": "Payment methods" },
-  "general": { "message": "General" },
-  "language": { "message": "Language" },
-  "activity": { "message": "Activity" },
-  "back": { "message": "Back" },
-  "youGive": { "message": "You give" },
-  "youGet": { "message": "You get" }
+    "message": "Dispute"
+  },
+  "kyc": {
+    "message": "KYC"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "payment-methods": {
+    "message": "Payment methods"
+  },
+  "general": {
+    "message": "General"
+  },
+  "language": {
+    "message": "Language"
+  },
+  "activity": {
+    "message": "Activity"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "youGive": {
+    "message": "You give"
+  },
+  "youGet": {
+    "message": "You get"
+  },
+  "Trade": {
+    "message": "Trade"
+  },
+  "with": {
+    "message": "with"
+  },
+  "Swap not found...": {
+    "message": "Swap not found..."
+  },
+  "You are confirmed": {
+    "message": "You are confirmed"
+  },
+  "transfer": {
+    "message": "transfer"
+  },
+  "Please, send": {
+    "message": "Please, send"
+  },
+  "using your bank account and press the confirm button": {
+    "message": "using your bank account and press the confirm button"
+  },
+  "Exchanger Payment Method": {
+    "message": "Exchanger Payment Method"
+  },
+  "If exchanger is not responding, you can cancel the exchange": {
+    "message": "If exchanger is not responding, you can cancel the exchange"
+  },
+  "You are confirmed the payment": {
+    "message": "You are confirmed the payment"
+  },
+  "The exchanger has confirmed the payment. Please approve that the": {
+    "message": "The exchanger has confirmed the payment. Please approve that the"
+  },
+  "has been transferred.": {
+    "message": "has been transferred."
+  },
+    "By": {
+    "message": "By"
+  },
+    "Allowance": {
+    "message": "Allowance"
+  },
+    "Safe init": {
+    "message": "Safe init"
+  },
+    "Safe claim": {
+    "message": "Safe claim"
+  },
+    "Direct transfer": {
+    "message": "Direct transfer"
+  }
 }

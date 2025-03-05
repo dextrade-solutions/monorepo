@@ -9,9 +9,16 @@ import { Trade } from '../../../types';
 
 // Crypto --> Crypto
 // Reserving funds --> Sending coins —> Pending trader transfer --> Completed|Dispute
-export const P2P_STAGES = [
+
+export interface P2PStage {
+  labelKey: string; // Key for i18n translation
+  pairTypes: TradeType[];
+  checkStatus: (trade: Trade) => boolean | undefined;
+}
+
+export const P2P_STAGES: P2PStage[] = [
   {
-    label: 'Starting swap',
+    labelKey: 'trade.stage.startingSwap', // Example i18n key
     pairTypes: [
       TradeType.atomicSwap,
       TradeType.cryptoCrypto,
@@ -25,7 +32,7 @@ export const P2P_STAGES = [
     },
   },
   {
-    label: 'Transfer confirmation',
+    labelKey: 'trade.stage.transferConfirmation', // Example i18n key
     pairTypes: [TradeType.fiatCrypto, TradeType.fiatFiat],
     checkStatus: (trade: Trade) => {
       const statuses = [TradeStatus.new];
@@ -33,7 +40,7 @@ export const P2P_STAGES = [
     },
   },
   {
-    label: 'Client transfer',
+    labelKey: 'trade.stage.clientTransfer', // Example i18n key
     pairTypes: [
       TradeType.atomicSwap,
       TradeType.cryptoCrypto,
@@ -45,7 +52,7 @@ export const P2P_STAGES = [
     },
   },
   {
-    label: 'Exchanger transfer',
+    labelKey: 'trade.stage.exchangerTransfer', // Example i18n key
     pairTypes: [
       TradeType.atomicSwap,
       TradeType.cryptoCrypto,
@@ -59,7 +66,7 @@ export const P2P_STAGES = [
     },
   },
   {
-    label: 'Confirmation',
+    labelKey: 'trade.stage.confirmation', // Example i18n key
     pairTypes: [TradeType.cryptoFiat, TradeType.fiatFiat],
     checkStatus: (trade: Trade) => {
       const statuses = [
@@ -70,7 +77,7 @@ export const P2P_STAGES = [
     },
   },
   {
-    label: 'Completed',
+    labelKey: 'trade.stage.completed', // Example i18n key
     pairTypes: [
       TradeType.atomicSwap,
       TradeType.cryptoCrypto,

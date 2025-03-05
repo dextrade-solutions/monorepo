@@ -33,13 +33,14 @@ const CONTENT_TYPE_VALIDATORS = {
 };
 
 const FieldProvider = ({ label, name, validators, onChange, renderInput }) => {
+  const { t } = useTranslation();
   const [errors, setErrors] = useState([]);
   const handleChange = (v) => {
     const targetName = name;
     const targetValue = v?.target ? v.target.value : v;
 
     const foundErrors = validators.reduce((acc, validate) => {
-      const error = (validate(targetValue) || '').replace('{v}', 'Field');
+      const error = (validate(targetValue) || '').replace('{v}', t('field'));
       return error ? [...acc, error] : acc;
     }, []);
     setErrors(foundErrors);
@@ -54,7 +55,9 @@ const FieldProvider = ({ label, name, validators, onChange, renderInput }) => {
     <Box marginTop={2} marginBottom={2}>
       <Typography marginBottom={1}>{label}</Typography>
       {renderInput(handleChange)}
-      {Boolean(errors.length) && <Typography>{errors.join(',')}</Typography>}
+      {Boolean(errors.length) && (
+        <Typography>{errors.join(',')}</Typography>
+      )}
     </Box>
   );
 };
@@ -72,7 +75,8 @@ export const PaymentMethodForm = ({
   currency = null,
   onCancel,
   onCreated,
-  paymentMethodCurrencies = () => paymentService.listAllCurrency().then((r) => r.data),
+  paymentMethodCurrencies = () =>
+    paymentService.listAllCurrency().then((r) => r.data),
   paymentMethodList = () => paymentService.listAllBanks().then((r) => r.data),
   paymentMethodCreateOrUpdate = (data) =>
     paymentService.save(data, { method: data.id ? 'PUT' : 'POST' }),
@@ -84,7 +88,6 @@ export const PaymentMethodForm = ({
     },
   );
   const [errors, setErrors] = useState({});
-  // const [paymentMethods, setPaymentMethods] = useState([]);
 
   const { isLoading: currenciesLoading, data: currencies = [] } = useQuery({
     queryKey: ['paymentMethodsCurrencies'],
@@ -101,9 +104,6 @@ export const PaymentMethodForm = ({
     const forUpdate = {
       [targetName]: targetValue,
     };
-    // if (targetName === 'currency') {
-    //   forUpdate.paymentMethod = null;
-    // }
     setFormValues({ ...formValues, ...forUpdate });
     setErrors({
       ...errors,
@@ -145,7 +145,7 @@ export const PaymentMethodForm = ({
       <FieldProvider
         name="currency"
         validators={[isRequired]}
-        label="Currency"
+        label={t('currency')}
         renderInput={(onChangeWrapper) => (
           <Autocomplete
             value={formValues.currency}
@@ -165,7 +165,7 @@ export const PaymentMethodForm = ({
       <FieldProvider
         name="paymentMethod"
         validators={[isRequired]}
-        label="Payment method"
+        label={t('paymentMethod')}
         renderInput={(onChangeWrapper) => (
           <Autocomplete
             value={formValues.paymentMethod}
@@ -178,17 +178,6 @@ export const PaymentMethodForm = ({
             }
             renderInput={(props) => <TextField {...props} />}
           />
-          // <Select
-          //   value={formValues.paymentMethod}
-          //   onChange={onChangeWrapper}
-          //   options={paymentMethods}
-          //   itemText="name"
-          //   fullWidth
-          //   autocomplete
-          //   placeholder="123"
-          //   renderLabel={(_, { name }) => humanizePaymentMethodName(name, t)}
-          //   itemValue="paymentMethodId"
-          // />
         )}
         onChange={handleOnChange}
       />
@@ -226,10 +215,7 @@ export const PaymentMethodForm = ({
           })}
       </Box>
       <Alert severity="info">
-        Hint: during the trade, the details of the added payment method will be
-        shown to the buyer to make the proper payment, while sellers will see
-        the buyer's real name. Make sure the information is correct, genuine and
-        matches your KYC information on Dextrade
+        {t('paymentMethodHint')}
       </Alert>
       {formValues.paymentMethod && (
         <Box display="flex" marginTop={1}>

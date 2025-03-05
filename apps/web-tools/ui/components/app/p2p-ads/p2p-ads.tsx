@@ -44,7 +44,7 @@ export default function P2PAds() {
   const toggleSortPicker = () => {
     showModal({
       name: 'ITEM_PICKER',
-      title: 'Sort by',
+      title: t('Sort by'), // Changed here
       value: sortBy,
       options: Object.values(SortTypes).map((value) => ({
         text: t(value),
@@ -124,7 +124,7 @@ export default function P2PAds() {
           data-testid="p2p-ads__search-by-merchant"
           className="flex-grow"
           size="small"
-          placeholder="Search"
+          placeholder={t('Search')} // Changed here
           fullWidth
           variant="standard"
           InputProps={{
@@ -164,7 +164,7 @@ export default function P2PAds() {
       <Box className="p2p-ads__list">
         {isEmptyResult && (
           <Alert variant="outlined" severity="info">
-            There are no ads with the selected coin(s).
+            {t('There are no ads with the selected coin(s).')}
           </Alert>
         )}
         <TransitionGroup>

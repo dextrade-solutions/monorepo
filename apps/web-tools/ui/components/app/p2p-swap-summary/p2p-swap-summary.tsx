@@ -51,7 +51,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           />
         </Box>
         <Typography display="flex" alignItems="center">
-          <span className="flex-grow">Available quantity</span>
+          <span className="flex-grow">{t('reserve')}</span> {/* Changed here */}
           <span className="row-summary__value">
             <AssetPriceOutput
               amount={ad.reserveSum}
@@ -101,7 +101,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
       </div>
       {showPaymentMethods && (
         <Box display="flex" marginTop={2}>
-          <Typography>Payment methods</Typography>
+          <Typography>{t('payment-methods')}</Typography> {/* Changed here */}
           <Box className="flex-grow" />
           <Box textAlign="right">
             {ad.paymentMethods.map((paymentMethod, idx) => (
@@ -120,9 +120,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           <Card variant="outlined" sx={{ bgcolor: 'transparent' }}>
             <CardContent>
               <Alert severity="info">
-                Please read the exchanger's terms and conditions before placing
-                an order. Failure to do so may result in a failed transaction
-                and financial losses.
+                {t('read_policy_alert')} {/* Changed here */}
               </Alert>
               <Typography marginTop={2} whiteSpace="pre-wrap">
                 {ad.exchangersPolicy}

@@ -5,6 +5,7 @@ import currencies from 'currency-formatter/currencies';
 import * as lodash from 'lodash';
 import { DateTime } from 'luxon';
 import * as punycode from 'punycode/punycode';
+import i18next from 'i18next';
 
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import {
@@ -27,7 +28,7 @@ export function relativeFromCurrentDate(date: number) {
   }
   return DateTime.fromMillis(date)
     .plus(new Date().getUTCMilliseconds())
-    .toRelative();
+    .toRelative({ locale: i18next.language });
 }
 
 export function formatDateWithYearContext(

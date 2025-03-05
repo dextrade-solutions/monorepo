@@ -10,7 +10,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SwapViewContent } from './swap-view-content';
 import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
-import { HOME_ROUTE } from '../../helpers/constants/routes';
+import {
+  EXCHANGE_VIEW_ROUTE,
+  HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function AdView() {
@@ -93,8 +96,15 @@ export default function AdView() {
   };
 
   const handleGoTradeClick = () => {
-    setSelectionMode(false);
+    if (currentAd) {
+      const tradequery = new URLSearchParams(searchParams);
+      tradequery.delete('widget');
+
+      const url = `${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`;
+      window.open(url, '_blank');
+    }
   };
+
   const [ad] = allAds;
 
   useEffect(() => {
@@ -144,12 +154,12 @@ export default function AdView() {
     <Box>
       <Box display="flex" alignItems="center" padding={1}>
         {isLoading ? (
-          <Typography color="text.secondary">Loading...</Typography>
+          <Typography color="text.secondary">{t('loading')}</Typography>
         ) : (
           <>
             {currentAd?.isAtomicSwap && <Atom mr={1} />}
             <Typography variant="h6">
-              {currentAd?.isAtomicSwap ? 'Atomic Swap' : 'Swap'}
+              {currentAd?.isAtomicSwap ? t('atomic-swap') : t('swap')}
             </Typography>
           </>
         )}

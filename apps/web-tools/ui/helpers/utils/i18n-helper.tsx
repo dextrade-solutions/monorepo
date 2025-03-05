@@ -6,6 +6,7 @@ import getFetchWithTimeout from './fetch/fetch-with-timeout';
 export const ISO_LANGS = {
   en: 'English',
   ru: 'Русский',
+  'zh-CN': '简体中文',
 };
 
 const fetchWithTimeout = getFetchWithTimeout();

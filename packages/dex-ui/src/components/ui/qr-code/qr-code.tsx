@@ -1,4 +1,4 @@
-import { Paper, Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
 import { useEffect, useRef } from 'react';
 

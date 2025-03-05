@@ -13,13 +13,12 @@ import {
   getUserAvatarUrl,
 } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AssetItem, Icon } from '../../ui';
 import AssetPriceOutput from '../../ui/asset-price-output';
-import ExchangerUserPreview from '../exchanger-user-preview';
 import { Atom } from '../../ui/custom-icons';
+import ExchangerUserPreview from '../exchanger-user-preview';
 
 interface IProps {
   ad: AdItem;

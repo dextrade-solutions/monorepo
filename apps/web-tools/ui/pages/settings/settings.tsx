@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -57,7 +56,7 @@ export default function P2PSettings() {
   return (
     <Box>
       <Box display="flex" marginBottom={2} paddingX={1}>
-        <Typography variant="h6">User info</Typography>
+        <Typography variant="h6">{t('user-info')}</Typography>
         <div className="flex-grow" />
         <Button
           startIcon={<Icon name="arrow-left-dex" />}
@@ -99,6 +98,7 @@ export default function P2PSettings() {
                       size="lg"
                       color="primary"
                       onClick={onLogout}
+                      ariaLabel={t('logout')}
                     />
                   </Box>
                 </Box>
@@ -110,12 +110,11 @@ export default function P2PSettings() {
                 severity="warning"
                 action={
                   <Button variant="outlined" onClick={login}>
-                    Auth wallet
+                    {t('auth-wallet')}
                   </Button>
                 }
               >
-                Your personal data is stored locally in the web browser. You can
-                assign it to your own wallet.
+                {t('personal-data-alert')}
               </Alert>
             </Box>
           )}
@@ -124,10 +123,9 @@ export default function P2PSettings() {
               const to = `/${pathnames.slice(0, index + 1).join('/')}`;
               const isLast = index === pathnames.length - 1;
               return (
-                <>
+                <React.Fragment key={value}>
                   {isLast ? (
                     <Typography
-                      key={value}
                       variant="h6"
                       marginLeft={2}
                       color="text.secondary"
@@ -136,7 +134,6 @@ export default function P2PSettings() {
                     </Typography>
                   ) : (
                     <Typography
-                      key={value}
                       className="cursor-pointer"
                       variant="h6"
                       marginLeft={2}
@@ -154,7 +151,7 @@ export default function P2PSettings() {
                       size="sm"
                     />
                   )}
-                </>
+                </React.Fragment>
               );
             })}
           </Box>

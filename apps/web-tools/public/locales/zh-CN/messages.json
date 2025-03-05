@@ -1,0 +1,561 @@
+{
+  "My current address:": {
+    "message": "我的当前地址："
+  },
+  "This address using for": {
+    "message": "此地址用于{action} {symbol}"
+  },
+  "receiving": {
+    "message": "接收"
+  },
+  "sending": {
+    "message": "发送"
+  },
+  "Change": {
+    "message": "更改"
+  },
+  "Disconnect Wallet": {
+    "message": "断开钱包连接"
+  },
+  "OR": {
+    "message": "或"
+  },
+  "Paste recipient wallet address": {
+    "message": "粘贴收款人钱包地址"
+  },
+  "Recipient address": {
+    "message": "收款人地址"
+  },
+  "Attach address": {
+    "message": "附加地址"
+  },
+  "Connected wallets": {
+    "message": "已连接的钱包"
+  },
+  "Swap ID": {
+    "message": "兑换 ID"
+  },
+  "Hash": {
+    "message": "哈希"
+  },
+  "You refunded": {
+    "message": "您已退款"
+  },
+  "Refund": {
+    "message": "退款"
+  },
+  "Approve refund": {
+    "message": "批准退款"
+  },
+  "Plan": {
+    "message": "计划"
+  },
+  "Fact": {
+    "message": "实际"
+  },
+  "Claim": {
+    "message": "领取"
+  },
+  "Approve claim in your wallet": {
+    "message": "在您的钱包中批准领取"
+  },
+  "Exchanger refunded": {
+    "message": "兑换商已退款"
+  },
+  "Try again": {
+    "message": "重试"
+  },
+  "View swap": {
+    "message": "查看兑换"
+  },
+  "Pending": {
+    "message": "待处理"
+  },
+  "History": {
+    "message": "历史记录"
+  },
+  "Trades not found...": {
+    "message": "未找到交易记录..."
+  },
+  "Trade": {
+    "message": "交易"
+  },
+  "with": {
+    "message": "与"
+  },
+  "Swap not found...": {
+    "message": "未找到兑换记录..."
+  },
+  "You are confirmed": {
+    "message": "您已确认"
+  },
+  "transfer": {
+    "message": "转账"
+  },
+  "Please, send": {
+    "message": "请发送"
+  },
+  "using your bank account and press the confirm button": {
+    "message": "使用您的银行账户并按下确认按钮"
+  },
+  "Exchanger Payment Method": {
+    "message": "兑换商支付方式"
+  },
+  "If exchanger is not responding, you can cancel the exchange": {
+    "message": "如果兑换商没有响应，您可以取消兑换"
+  },
+  "You are confirmed the payment": {
+    "message": "您已确认付款"
+  },
+  "The exchanger has confirmed the payment. Please approve that the": {
+    "message": "兑换商已确认付款。请批准已"
+  },
+  "has been transferred.": {
+    "message": "已转账。"
+  },
+  "By": {
+    "message": "通过"
+  },
+  "Allowance": {
+    "message": "授权"
+  },
+  "Safe init": {
+    "message": "保险箱初始化"
+  },
+  "Safe claim": {
+    "message": "保险箱领取"
+  },
+  "Direct transfer": {
+    "message": "直接转账"
+  },
+  "loading": {
+    "message": "加载中..."
+  },
+  "Sort by": {
+    "message": "排序方式"
+  },
+  "Search": {
+    "message": "搜索"
+  },
+  "There are no ads with the selected coin(s).": {
+    "message": "没有与所选币种相关的广告。"
+  },
+  "Start Swap": {
+    "message": "开始兑换"
+  },
+  "Min amount is": {
+    "message": "最小金额为"
+  },
+  "Enter the amount to swap": {
+    "message": "输入要兑换的金额"
+  },
+  "Insufficient": {
+    "message": "不足"
+  },
+  "balance": {
+    "message": "余额"
+  },
+  "Max limit in": {
+    "message": "超出最大限制"
+  },
+  "exceeded": {
+    "message": "超出"
+  },
+  "Set your": {
+    "message": "设置您的"
+  },
+  "wallet": {
+    "message": "钱包"
+  },
+  "Set payment method": {
+    "message": "设置支付方式"
+  },
+  "Total fee": {
+    "message": "总费用"
+  },
+  "Super fee": {
+    "message": "超级费用"
+  },
+  "Applied": {
+    "message": "已应用"
+  },
+  "Activate": {
+    "message": "激活"
+  },
+  "Exchanger fee": {
+    "message": "兑换商费用"
+  },
+  "Network outbound": {
+    "message": "网络转出费用"
+  },
+  "Network inbound": {
+    "message": "网络转入费用"
+  },
+  "Balance": {
+    "message": "余额"
+  },
+  "Limit": {
+    "message": "限额"
+  },
+  "Payment method": {
+    "message": "支付方式"
+  },
+  "Set Wallet": {
+    "message": "设置钱包"
+  },
+  "read_policy_alert": {
+    "message": "请在下单前阅读兑换商的条款。不遵守这些规则可能会导致交易失败和资金损失。"
+  },
+  "choosePaymentMethod": {
+    "message": "选择支付方式"
+  },
+  "slippageTolerance": {
+    "message": "滑点容差"
+  },
+  "requestEnergy": {
+    "message": "请求能量"
+  },
+  "atomic-swap": {
+    "message": "原子交换"
+  },
+  "swap": {
+    "message": "兑换"
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "system": {
+    "message": "系统默认"
+  },
+  "dark": {
+    "message": "深色"
+  },
+  "light": {
+    "message": "浅色"
+  },
+  "metamask-alert": {
+    "message": "请确保您已安装最新版本的 Metamask 应用程序"
+  },
+  "disconnect": {
+    "message": "断开"
+  },
+  "wallet-not-detected": {
+    "message": "未检测到 {{walletName}}"
+  },
+  "setup-guide": {
+    "message": "设置指南"
+  },
+  "install": {
+    "message": "安装"
+  },
+  "no-wallets-detected": {
+    "message": "未检测到钱包..."
+  },
+  "user-info": {
+    "message": "用户信息"
+  },
+  "personal-data-alert": {
+    "message": "您的个人数据存储在本地浏览器中。您可以将其与您的钱包关联。"
+  },
+  "logout": {
+    "message": "退出"
+  },
+  "login-via-wallet": {
+    "message": "通过钱包登录"
+  },
+  "login-via": {
+    "message": "通过以下方式登录"
+  },
+  "auth-wallet": {
+    "message": "连接钱包"
+  },
+  "upgrade": {
+    "message": "升级"
+  },
+  "light-mode": {
+    "message": "浅色模式"
+  },
+  "dark-mode": {
+    "message": "深色模式"
+  },
+  "plans": {
+    "message": "计划"
+  },
+  "viewAllTrades": {
+    "message": "查看所有交易"
+  },
+  "ADDITIONAL_INFO": {
+    "message": "附加信息"
+  },
+  "CARD_NUMBER": {
+    "message": "银行卡号"
+  },
+  "IBAN": {
+    "message": "国际银行账户号码 (IBAN)"
+  },
+  "IBAN_OR_CARD_NUMBER": {
+    "message": "国际银行账户号码 (IBAN) 或银行卡号"
+  },
+  "IMAGE_QR": {
+    "message": "二维码图片"
+  },
+  "IMAGE": {
+    "message": "图片"
+  },
+  "EMAIL": {
+    "message": "电子邮件"
+  },
+  "NUMBER_ONLY": {
+    "message": "仅限数字"
+  },
+  "LAST_4_DIGITS": {
+    "message": "后四位数字"
+  },
+  "PHONE": {
+    "message": "电话"
+  },
+  "USER_NAME": {
+    "message": "用户名"
+  },
+  "FULL_NAME": {
+    "message": "全名"
+  },
+  "BANK_NAME": {
+    "message": "银行名称"
+  },
+  "ACCOUNT_OPENING_DEPARTMENT": {
+    "message": "开户行"
+  },
+  "BAN": {
+    "message": "银行账号"
+  },
+  "BANK_TRANSFER": {
+    "message": "银行转账"
+  },
+  "WIRE_TRANSFER": {
+    "message": "电汇"
+  },
+  "approvalTimerP2PLabel": {
+    "message": "确认时间 $1"
+  },
+  "approvalTimerP2PInfo": {
+    "message": "如果您没有及时确认交换，它将自动取消"
+  },
+  "Search name or contract address": {
+    "message": "搜索名称或合约地址"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "没有与 $1 匹配的可用代币",
+    "description": "告知用户给定的搜索字符串与我们的代币列表中的任何代币都不匹配。$1 可以是任何文本字符串"
+  },
+  "swapSwapSwitch": {
+    "message": "切换代币"
+  },
+  "close": {
+    "message": "关闭"
+  },
+  "Select Coin": {
+    "message": "选择币种"
+  },
+  "provider": {
+    "message": "兑换商"
+  },
+  "rating": {
+    "message": "评分"
+  },
+  "status": {
+    "message": "状态"
+  },
+  "offline": {
+    "message": "离线"
+  },
+  "online": {
+    "message": "在线"
+  },
+  "reserve": {
+    "message": "总可用量"
+  },
+  "min": {
+    "message": "最小"
+  },
+  "max": {
+    "message": "最大"
+  },
+  "myPaymentMethods": {
+    "message": "我的支付方式"
+  },
+  "selectPaymentMehtodPlaceholder": {
+    "message": "选择 P2P 支付方式"
+  },
+  "selectBankAccount": {
+    "message": "选择银行账户"
+  },
+  "add": {
+    "message": "添加"
+  },
+  "addNew": {
+    "message": "添加新的"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "cancelTrade": {
+    "message": "取消交易"
+  },
+  "viewOnBlockExplorer": {
+    "message": "在区块链浏览器中查看"
+  },
+  "transactionFee": {
+    "message": "交易手续费"
+  },
+  "auto": {
+    "message": "自动"
+  },
+  "quantity": {
+    "message": "数量"
+  },
+  "price": {
+    "message": "价格"
+  },
+  "limits": {
+    "message": "限额"
+  },
+  "reset": {
+    "message": "重置"
+  },
+  "bankAccountPickerTitle": {
+    "message": "我的支付方式"
+  },
+  "Trade Processing": {
+    "message": "交易处理中"
+  },
+  "Trade Canceled": {
+    "message": "交易已取消"
+  },
+  "Trade Failed": {
+    "message": "交易失败"
+  },
+  "Reservation": {
+    "message": "开始兑换"
+  },
+  "Completed": {
+    "message": "已完成"
+  },
+  "Expired": {
+    "message": "已过期"
+  },
+  "Client transaction sending": {
+    "message": "客户正在发送交易"
+  },
+  "sortBy": {
+    "message": "排序方式"
+  },
+  "BY_RESERVE": {
+    "message": "按总可用量"
+  },
+  "BY_ONLINE": {
+    "message": "按在线状态"
+  },
+  "BY_PRICE": {
+    "message": "按价格"
+  },
+  "BY_RATING": {
+    "message": "按评分"
+  },
+  "WAIT_EXCHANGER_VERIFY": {
+    "message": "等待兑换商验证"
+  },
+  "NEW": {
+    "message": "新订单"
+  },
+  "CANCELED": {
+    "message": "已取消"
+  },
+  "CLIENT_TRANSACTION_VERIFY": {
+    "message": "验证客户交易"
+  },
+  "CLIENT_TRANSACTION_FAILED": {
+    "message": "客户交易失败"
+  },
+  "WAIT_EXCHANGER_TRANSFER": {
+    "message": "等待兑换商转账"
+  },
+  "EXCHANGER_TRANSACTION_VERIFY": {
+    "message": "验证兑换商交易"
+  },
+  "EXCHANGER_TRANSACTION_FAILED": {
+    "message": "兑换商交易失败"
+  },
+  "VERIFIED": {
+    "message": "已验证"
+  },
+  "COMPLETED": {
+    "message": "已完成"
+  },
+  "EXPIRED": {
+    "message": "已过期"
+  },
+  "DISPUTE": {
+    "message": "争议中"
+  },
+  "kyc": {
+    "message": "KYC 认证"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "payment-methods": {
+    "message": "支付方式"
+  },
+  "general": {
+    "message": "常规"
+  },
+  "language": {
+    "message": "语言"
+  },
+  "activity": {
+    "message": "活动"
+  },
+  "back": {
+    "message": "返回"
+  },
+  "youGive": {
+    "message": "您支付"
+  },
+  "youGet": {
+    "message": "您将收到"
+  },
+  "amlRequests": {
+    "message": "反洗钱请求"
+  },
+  "requests": {
+    "message": "个请求"
+  },
+  "refillGasRequests": {
+    "message": "补充gas请求"
+  },
+  "includeKyc": {
+    "message": "包含KYC"
+  },
+  "Included": {
+    "message": "已包含"
+  },
+  "Not included": {
+    "message": "不包含"
+  },
+  "Free": {
+    "message": "免费"
+  },
+  "Personal plans": {
+    "message": "个人计划"
+  },
+  "Compare": {
+    "message": "对比"
+  },
+   "Self custodian payment gateway": {
+    "message": "自托管支付网关"
+  }
+}

@@ -4,6 +4,7 @@ export { default as AdPreviewSkeleton } from './ad-preview-skeleton';
 export { default as PaymentMethodDisplay } from './payment-method-display';
 export { default as ExchangerUserPreview } from './exchanger-user-preview';
 export { default as PaymentMethodExpanded } from './payment-method-expanded';
+export { default as PaymentMethods } from './payment-methods';
 export { default as DexPlans } from './dex-plans';
 export { default as Invoice } from './invoice';
 export { default as InvoiceView } from './invoice/InvoiceView';

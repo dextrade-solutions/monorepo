@@ -202,7 +202,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     showModal({
       name: 'ITEM_PICKER',
       options: availablePaymentMethods,
-      title: 'Choose payment method',
+      title: t('choosePaymentMethod'), // i18n added here
       getOptionLabel: (paymentMethod: UserPaymentMethod) =>
         paymentMethod.paymentMethod.name,
       getOptionKey: (paymentMethod: UserPaymentMethod) =>
@@ -254,7 +254,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <P2PSwapSummary exchange={ad} />
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">
-            <Typography marginRight={1}>Slippage Tolerance</Typography>
+            <Typography marginRight={1}>{t('slippageTolerance')}</Typography>
           </Box>
           <Typography fontWeight="bold">
             {slippage}%{' '}
@@ -306,7 +306,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
                 P2PService.requestEnergy(assetInputFrom.account.address);
               }}
             >
-              Request energy
+              {t('requestEnergy')} {/* i18n added here */}
             </Button>
           )}
         <Button

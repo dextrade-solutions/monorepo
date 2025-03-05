@@ -26,7 +26,8 @@ export function PlanItem({
     <Card
       sx={{
         boxShadow: 'none',
-        bgcolor: 'primary.light',
+        bgcolor: 'primary.dark',
+        color: 'primary.contrastText',
         borderColor: value.recommended ? 'primary' : 'primary.light',
       }}
     >
@@ -67,7 +68,7 @@ export function PlanItem({
             </Box>
             {Boolean(value.includeKyc) && (
               <Box display="flex" justifyContent="space-between">
-                <Typography>KYC</Typography>
+                <Typography>{t('includeKyc')}</Typography>
                 <Typography color="text.secondary">
                   {value.includeKyc ? t('Included') : t('Not included')}
                 </Typography>
@@ -75,17 +76,17 @@ export function PlanItem({
             )}
             {Boolean(value.amlRequests) && (
               <Box display="flex" justifyContent="space-between">
-                <Typography>{t('AML Requests')}</Typography>
+                <Typography>{t('amlRequests')}</Typography>
                 <Typography color="text.secondary">
-                  {value.amlRequests} requests
+                  {value.amlRequests} {t('requests')}
                 </Typography>
               </Box>
             )}
             {Boolean(value.refillGasRequests) && (
               <Box display="flex" justifyContent="space-between">
-                <Typography>Super fees for TRC20 network</Typography>
+                <Typography>{t('refillGasRequests')}</Typography>
                 <Typography color="text.secondary">
-                  {value.refillGasRequests} requests
+                  {value.refillGasRequests} {t('requests')}
                 </Typography>
               </Box>
             )}

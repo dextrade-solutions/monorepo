@@ -91,14 +91,16 @@ const SetWallet = ({
       </Box>
       {value?.address ? (
         <Box>
-          <Typography>My current address:</Typography>
+          {/* Translated text: "My current address:" */}
+          <Typography>{t('My current address:')}</Typography>
+          {/* Translated text: "This address using for {isToAsset ? 'receiving' : 'sending'} {asset.symbol}" */}
           <Typography color="text.secondary" variant="body2" marginBottom={1}>
-            This address using for {isToAsset ? 'receiving' : 'sending'}{' '}
-            {asset.symbol}
+            {t('This address using for')} {isToAsset ? t('receiving') : t('sending')} {asset.symbol}
           </Typography>
           <Box marginBottom={3}>
             <CopyData tooltipPosition="top" width="100%" data={value.address} />
           </Box>
+          {/* Translated text: "Change" */}
           <Button
             variant="outlined"
             fullWidth
@@ -107,16 +109,17 @@ const SetWallet = ({
             }}
             sx={{ marginBottom: 1 }}
           >
-            Change
+            {t('Change')}
           </Button>
           {value.walletName && (
+            // Translated text: "Disconnect Wallet"
             <Button
               startIcon={<Icon name="disconnect" />}
               variant="outlined"
               fullWidth
               onClick={handleDisconnect}
             >
-              Disconnect Wallet
+              {t('Disconnect Wallet')}
             </Button>
           )}
         </Box>
@@ -133,17 +136,19 @@ const SetWallet = ({
           )}
           {canPasteAddress && canConnectExternalWallet && (
             <Typography color="text.secondary" marginY={3}>
-              OR
+              {t('OR')}
             </Typography>
           )}
           {canPasteAddress && (
             <Box>
+              {/* Translated text: "Paste recipient wallet address" */}
               <Typography marginBottom={1} variant="h6">
-                Paste recipient wallet address
+                {t('Paste recipient wallet address')}
               </Typography>
               <Box>
+                {/* Translated text: "Recipient address" */}
                 <TextField
-                  placeholder="Recipient address"
+                  placeholder={t("Recipient address")}
                   fullWidth
                   size="medium"
                   error={inputWalletAddress && inputWalletAddressError}
@@ -152,13 +157,14 @@ const SetWallet = ({
                 />
                 {inputWalletAddress && (
                   <Box marginTop={1}>
+                    {/* Translated text: "Attach address" */}
                     <Button
                       fullWidth
                       disabled={Boolean(inputWalletAddressError)}
                       variant="contained"
                       onClick={onSetInputWallet}
                     >
-                      Attach address
+                      {t('Attach address')}
                     </Button>
                   </Box>
                 )}

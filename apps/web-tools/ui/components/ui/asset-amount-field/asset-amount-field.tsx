@@ -5,13 +5,11 @@ import {
   CardHeader,
   Typography,
   Box,
-  InputAdornment,
   Skeleton,
   CardActionArea,
   Button,
   Divider,
 } from '@mui/material';
-import classNames from 'classnames';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -19,11 +17,11 @@ import {
   getStrPaymentMethodInstance,
   shortenAddress,
 } from 'dex-helpers';
-import { ButtonIcon, NumericTextField, UrlIcon } from 'dex-ui';
+import { NumericTextField, UrlIcon } from 'dex-ui';
 import React from 'react';
-import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
@@ -35,6 +33,7 @@ interface IProps {
 export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
+  const t = useI18nContext();
   return (
     <Card
       className="asset-amount-field"
@@ -59,7 +58,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
             {displayBalance && (
               <Box textAlign="right">
                 <Typography variant="body2" fontWeight="bold">
-                  Balance
+                  {t('Balance')}
                 </Typography>
                 {assetInput.balance ? (
                   <Card
@@ -141,7 +140,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
             >
               <CardActionArea>
                 <Typography variant="body2">
-                  Limit: {formatFundsAmount(reserve, asset.symbol)}
+                  {t('Limit')}: {formatFundsAmount(reserve, asset.symbol)}
                 </Typography>
               </CardActionArea>
             </Card>
@@ -171,7 +170,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                   </Box>
                 </Box>
               )}
-              {!assetInput.paymentMethod && 'Payment method'}
+              {!assetInput.paymentMethod && t('Payment method')}
             </Button>
           )}
           {(assetInput.permissions.canPasteWallet ||
@@ -197,7 +196,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                   </Box>
                 </Box>
               )}
-              {!assetInput.account && 'Set Wallet'}
+              {!assetInput.account && t('Set Wallet')}
             </Button>
           )}
         </Box>

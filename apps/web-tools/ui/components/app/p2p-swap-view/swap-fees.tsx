@@ -19,6 +19,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { useAuthWallet } from '../../../hooks/useAuthWallet';
 import usePaymodalHandlers from '../../../hooks/usePaymodalHandlers';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const TRX_ENERGY_SAVE_FEE = 8; // currently is 8 TRX
 
@@ -32,6 +33,7 @@ export function SwapFees(fees: {
   const { showModal } = useGlobalModalContext();
   const [expanded, setExpanded] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const t = useI18nContext();
 
   const { data: tariffLimits } = useQuery<Tariff>({
     queryKey: ['tariffLimit'],
@@ -86,7 +88,7 @@ export function SwapFees(fees: {
                     justifyContent="space-between"
                     mr={2}
                   >
-                    <Typography>Total fee</Typography>
+                    <Typography>{t('Total fee')}</Typography>
                     {fees.loading ? (
                       <Skeleton width={70} />
                     ) : (
@@ -103,11 +105,11 @@ export function SwapFees(fees: {
                     justifyContent="space-between"
                   >
                     <Box display="flex" alignItems="center">
-                      <Typography mr={1}>Super fee</Typography>
+                      <Typography mr={1}>{t('Super fee')}</Typography>
                       {isSuperFeeApplied && (
                         <>
                           <Typography color="success.light" mr={0.5}>
-                            Applied
+                            {t('Applied')}
                           </Typography>
                           <Icon color="success.light" name="check" />
                         </>
@@ -120,7 +122,7 @@ export function SwapFees(fees: {
                             icon={<Icon name="info" color="white" />}
                             label={
                               <Typography variant="body2" color="white">
-                                Activate
+                                {t('Activate')}
                               </Typography>
                             }
                             onClick={() => {
@@ -157,8 +159,8 @@ export function SwapFees(fees: {
             <Box display="flex" justifyContent="space-between" marginTop={1}>
               <Typography>
                 {fees.outbound.asset.isFiat
-                  ? 'Exchanger fee'
-                  : 'Network outbound'}
+                  ? t('Exchanger fee')
+                  : t('Network outbound')}
               </Typography>
               <Box display="flex">
                 <Typography>
@@ -182,8 +184,8 @@ export function SwapFees(fees: {
             <Box display="flex" justifyContent="space-between" marginTop={1}>
               <Typography>
                 {fees.inbound.asset.isFiat
-                  ? 'Exchanger fee'
-                  : 'Network inbound'}
+                  ? t('Exchanger fee')
+                  : t('Network inbound')}
               </Typography>
               <Box display="flex">
                 <Typography>

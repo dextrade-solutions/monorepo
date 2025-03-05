@@ -34,6 +34,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function ButtonAppConfig() {
   const { logout } = useAuthP2P();
@@ -41,6 +42,7 @@ export default function ButtonAppConfig() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { wallet, isAuthenticated } = useAuthWallet();
+  const t = useI18nContext();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -112,7 +114,7 @@ export default function ButtonAppConfig() {
               <ListItemIcon>
                 <Icon name="link" />
               </ListItemIcon>
-              <ListItemText>Auth wallet</ListItemText>
+              <ListItemText>{t('auth-wallet')}</ListItemText>
             </ListItem>
           </MenuItem>
         )}
@@ -124,7 +126,7 @@ export default function ButtonAppConfig() {
             <ListItemIcon>
               <Icon name="menu" />
             </ListItemIcon>
-            <ListItemText>Activity</ListItemText>
+            <ListItemText>{t('activity')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem
@@ -135,7 +137,7 @@ export default function ButtonAppConfig() {
             <ListItemIcon>
               <Icon name="setting-dex" />
             </ListItemIcon>
-            <ListItemText>General</ListItemText>
+            <ListItemText>{t('general')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem
@@ -146,7 +148,7 @@ export default function ButtonAppConfig() {
             <ListItemIcon>
               <Icon name="setting-dex-2" />
             </ListItemIcon>
-            <ListItemText>Payment methods</ListItemText>
+            <ListItemText>{t('payment-methods')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem
@@ -157,7 +159,7 @@ export default function ButtonAppConfig() {
             <ListItemIcon>
               <Icon name="info" />
             </ListItemIcon>
-            <ListItemText>KYC</ListItemText>
+            <ListItemText>{t('kyc')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem
@@ -168,7 +170,7 @@ export default function ButtonAppConfig() {
             <ListItemIcon>
               <Icon name="card" />
             </ListItemIcon>
-            <ListItemText>Upgrade</ListItemText>
+            <ListItemText>{t('upgrade')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem onClick={toggleDarkMode} data-testid="settings-theme">
@@ -182,7 +184,7 @@ export default function ButtonAppConfig() {
               />
             </ListItemIcon>
             <ListItemText>
-              {isDarkMode ? 'Light mode' : 'Dark mode'}
+              {isDarkMode ? t('light-mode') : t('dark-mode')}
             </ListItemText>
           </ListItem>
         </MenuItem>

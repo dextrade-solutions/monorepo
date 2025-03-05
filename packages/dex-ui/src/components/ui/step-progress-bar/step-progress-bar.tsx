@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import type { P2P_STAGES } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   value: { trade: Trade; swapClaimed: boolean };
@@ -12,6 +13,7 @@ interface IProps {
 }
 
 export const StepProgressBar = ({ value, stages = [] }: IProps) => {
+  const { t } = useTranslation();
   const activeStages = stages.filter(({ checkStatus }) =>
     checkStatus(value.trade, value.swapClaimed),
   );
@@ -28,7 +30,7 @@ export const StepProgressBar = ({ value, stages = [] }: IProps) => {
           })}
         >
           <Typography variant="caption" textTransform="capitalize">
-            {stage.label}
+            {t(stage.labelKey)}
           </Typography>
         </li>
       ))}

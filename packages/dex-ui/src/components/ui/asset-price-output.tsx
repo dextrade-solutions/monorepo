@@ -1,6 +1,7 @@
 import { Box, Link } from '@mui/material';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Output = {
   price: number;
@@ -19,6 +20,7 @@ export default function AssetPriceOutput({
   secondary,
   disableToggle,
 }: Output) {
+  const { t } = useTranslation();
   const [reversed, setReversed] = useState(false);
   const togglePrice = () => {
     setReversed((v) => !v);
@@ -53,7 +55,7 @@ export default function AssetPriceOutput({
           onClick={onClick}
           color="inherit"
         >
-          Per 1 {output.tickerFrom}
+          {t('perOne', { ticker: output.tickerFrom })}
         </Link>
       )}
       <Link

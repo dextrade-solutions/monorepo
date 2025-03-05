@@ -7,14 +7,14 @@ import { clearAuthState } from '../../../../ducks/auth';
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// import WalletList from '../../wallet-list';
 
 const LoginModal = ({
   hideModal,
   onSuccess,
 }: { onSuccess: () => void } & ModalProps) => {
   const t = useI18nContext();
-  const [loadingWallet, setLoadingWallet] = useState();
+  const [loadingWallet, setLoadingWallet] =
+    useState<(typeof wallets)[number]>();
   const dispatch = useDispatch();
   const wallets = useWallets();
   const { login } = useAuthP2P();
@@ -34,7 +34,7 @@ const LoginModal = ({
         onSuccess && onSuccess();
       } catch (e) {
         console.error(e);
-        setLoadingWallet(null);
+        setLoadingWallet(undefined);
       }
     },
     [hideModal, login, dispatch, onSuccess],
@@ -42,7 +42,7 @@ const LoginModal = ({
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
-        <Typography>Login via wallet</Typography>
+        <Typography>{t('login-via-wallet')}</Typography>
 
         <ButtonIcon
           iconName="close"
@@ -59,7 +59,7 @@ const LoginModal = ({
         <WalletList
           wallets={wallets}
           connectingWallet={loadingWallet}
-          connectingWalletLabel="Login via"
+          connectingWalletLabel={t('login-via')}
           onSelectWallet={onSelectWallet}
         />
       </Box>
