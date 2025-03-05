@@ -12,11 +12,11 @@ import {
   Avatar,
 } from '@mui/material';
 import { Connection, determineConnectionType } from 'dex-connect';
-import { formatCurrency, getQRCodeURI, shortenAddress } from 'dex-helpers';
+import { formatCurrency, getQRuriPayment, shortenAddress } from 'dex-helpers';
 import assetsDict from 'dex-helpers/assets-dict';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 
 import { InvoicePayBtn } from './InvoicePayBtn';
 import {
@@ -34,6 +34,7 @@ import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import { IInvoiceFull } from './types/entities';
 import { Invoice as InvoiceNamespace } from './types/invoices';
+import { InvoiceCopyAmount } from './InvoiceCopyAmount';
 
 export default function InvoiceView({
   invoice,
@@ -50,7 +51,6 @@ export default function InvoiceView({
   const { showModal } = useGlobalModalContext();
   const currencies = useCurrencies();
   const changeAddress = usePaymentAddress();
-  // const config = useConfig();
   const canCurrencyChange = Boolean(
     (invoice.supported_currencies?.length || 0) > 1,
   );
@@ -97,23 +97,23 @@ export default function InvoiceView({
   }, []);
 
   const assetList = useMemo(() => {
-    let supportedCurrencies = invoice.supported_currencies || [];
+    const supportedCurrencies = invoice.supported_currencies || [];
     const allCurrencies = currencies.data?.data || [];
 
     if (supportedCurrencies.length && allCurrencies.length && assetsDict) {
-      supportedCurrencies = [
-        ...supportedCurrencies,
-        {
-          id: 9999,
-          coin_id: 999,
-          iso_with_network: 'BTC',
-          type: 0,
-          iso: 'BTC',
-          native_currency_iso: 'BTC',
-          token_type: 'LIGHTNING',
-          network_name: 'BTC',
-        }, // stub
-      ];
+      // supportedCurrencies = [
+      //   ...supportedCurrencies,
+      //   {
+      //     id: 9999,
+      //     coin_id: 999,
+      //     iso_with_network: 'BTC',
+      //     type: 0,
+      //     iso: 'BTC',
+      //     native_currency_iso: 'BTC',
+      //     token_type: 'LIGHTNING',
+      //     network_name: 'BTC',
+      //   }, // stub
+      // ];
       return _.compact(
         supportedCurrencies
           .filter((v) => assetsDict[v.iso_with_network])
@@ -129,15 +129,11 @@ export default function InvoiceView({
   }, [currencies.data, invoice]);
 
   useEffect(() => {
-    const withoutLightning = assetList.filter(
-      (v) => v.extra.currency.token_type !== 'LIGHTNING',
-    ); // stub
-    if (
-      !paymentAssetId &&
-      withoutLightning.length === 1 &&
-      !changeAddress.isPending
-    ) {
-      onChangeAsset(withoutLightning[0]);
+    // const withoutLightning = assetList.filter(
+    //   (v) => v.extra.currency.token_type !== 'LIGHTNING',
+    // ); // stub
+    if (!paymentAssetId && assetList.length === 1 && !changeAddress.isPending) {
+      onChangeAsset(assetList[0]);
     }
   }, [paymentAssetId, assetList, changeAddress.isPending, onChangeAsset]);
 
@@ -210,50 +206,9 @@ export default function InvoiceView({
     },
   };
 
-  const showCopy = (item: InvoiceNamespace.View.Response) => {
+  const showCopy = (item: IInvoiceFull) => {
     showModal({
-      component: () => (
-        <Box margin={3}>
-          <Box display="flex">
-            <Typography
-              variant="h5"
-              textAlign="left"
-              className="flex-grow nowrap"
-            >
-              Amount
-            </Typography>
-            <Typography variant="h5">
-              {secondaryDelta} {item.coin?.iso}
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Network
-            </Typography>
-            <Typography fontWeight="bold">
-              {item.currency.network_name}
-            </Typography>
-          </Box>
-          <Box my={2}>
-            <Divider />
-          </Box>
-          <Box display="flex" textAlign="right" alignItems="center">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Address
-            </Typography>
-            <CopyData data={item.address} />
-          </Box>
-          <Box display="flex" textAlign="right" alignItems="center">
-            <Typography textAlign="left" className="flex-grow nowrap">
-              Link
-            </Typography>
-            <CopyData data={item.payment_page_url} title="Payment link" />
-          </Box>
-          <Alert sx={{ mt: 2 }} severity="info">
-            Please send the exact amount to the provided address.
-          </Alert>
-        </Box>
-      ),
+      component: () => <InvoiceCopyAmount invoice={item} amount={secondaryDelta} />,
     });
   };
 
@@ -457,7 +412,7 @@ export default function InvoiceView({
                         showModal({
                           name: 'QR_MODAL',
                           description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
-                          value: getQRCodeURI(
+                          value: getQRuriPayment(
                             invoice.address,
                             invoice.amount_requested_f,
                             invoice.currency.network_name,
@@ -470,8 +425,27 @@ export default function InvoiceView({
                         <Icon ml={1} name="qr-code" size="xl" />
                       </ListItemAvatar>
                       <ListItemText
-                        primary="QR Code"
-                        secondary="Scan qr code using any wallet"
+                        primary="Payment QR"
+                        secondary="Scan payment link"
+                      />
+                    </ListItemButton>
+                    <ListItemButton
+                      className="bordered"
+                      disabled={changeAddress.isPending}
+                      onClick={() =>
+                        showModal({
+                          name: 'QR_MODAL',
+                          description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
+                          value: invoice.address,
+                        })
+                      }
+                    >
+                      <ListItemAvatar>
+                        <Icon ml={1} name="qr-code" size="xl" />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary="Address and Amount QR"
+                        secondary="Scan address"
                       />
                     </ListItemButton>
                     <ListItemButton

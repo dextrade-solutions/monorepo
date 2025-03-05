@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from '@mui/material';
-import { useConnections } from 'dex-connect';
+import { useConnections, WalletConnectionType } from 'dex-connect';
 import { Invoice } from 'dex-ui';
 import React from 'react';
 
@@ -22,7 +22,9 @@ export default function App() {
         {invoiceId ? (
           <Invoice
             id={invoiceId}
-            connections={connections.data}
+            connections={connections.data?.filter(
+              (c) => c.connectionType !== WalletConnectionType.dextrade,
+            )}
             onBack={window.history.length > 1 && handleBackButtonClick}
           />
         ) : (
