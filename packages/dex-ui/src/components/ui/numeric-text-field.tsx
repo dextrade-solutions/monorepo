@@ -35,12 +35,9 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
       disabled={loading}
       placeholder={placeholder}
       data-testid={reserve ? 'input-to' : 'input-from'}
-      // onValueChange={({ value: v }) => onChange(v)} // update value when formated
       onChange={(e) => onChange(e.target.value)}
       InputProps={{
         autoComplete: 'off',
-        inputMode: 'numeric',
-        pattern: '[0-9]*',
         endAdornment: (
           <InputAdornment position="end">
             {Number(value) > 0 && !loading && (

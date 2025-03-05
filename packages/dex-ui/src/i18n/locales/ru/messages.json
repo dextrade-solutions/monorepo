@@ -1,4 +1,9 @@
 {
+  "Loading...": "Загрузка...",
+  "Left": "Осталось",
+  "KYC: Included": "KYC: Включено",
+  "KYC: Disabled": "KYC: Отключено",
+  "KYC verification was disabled after 1 failed attempt, you can activate it, buying plan": "Верификация KYC была отключена после 1 неудачной попытки. Вы можете активировать ее, приобретя тарифный план",
   "Compare": "Сравнение",
   "Personal plans": "Тарифы",
   "Free": "Бесплатно",

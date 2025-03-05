@@ -100,6 +100,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
           fullWidth
           variant="standard"
           valueIsNumericString
+          inputProps={{ inputMode: 'numeric' }}
           data-testid={reserve ? 'input-to' : 'input-from'}
           InputProps={{
             disableUnderline: true,
