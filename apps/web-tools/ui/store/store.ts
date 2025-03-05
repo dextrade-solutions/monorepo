@@ -61,17 +61,23 @@ export type AppDispatch = Store['dispatch'];
 
 let initialLocale: string;
 try {
-  const persistedState = localStorage.getItem('persist:localeMessages');
-  if (persistedState) {
-    const parsedState = JSON.parse(persistedState);
-    initialLocale = parsedState?.currentLocale
-      ? parsedState.currentLocale.replace(/"/g, '')
-      : 'en';
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get('lang');
+  if (langParam) {
+    initialLocale = langParam;
   } else {
-    initialLocale = 'en';
+    const persistedState = localStorage.getItem('persist:localeMessages');
+    if (persistedState) {
+      const parsedState = JSON.parse(persistedState);
+      initialLocale = parsedState?.currentLocale
+        ? parsedState.currentLocale.replace(/"/g, '')
+        : 'en';
+    } else {
+      initialLocale = 'en';
+    }
   }
 } catch (error) {
-  console.error('Error reading persisted state:', error);
+  console.error('Error reading persisted state or url params:', error);
   initialLocale = 'en';
 }
 
