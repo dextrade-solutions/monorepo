@@ -55,8 +55,5 @@ export default combineReducers({
     appReducer,
   ),
   swaps: swapsReducer,
-  localeMessages: persistReducer(
-    { key: 'localeMessages', storage, blacklist: ['current'] },
-    localeMessagesReducer,
-  ),
+  localeMessages: localeMessagesReducer,
 });

@@ -66,15 +66,7 @@ try {
   if (langParam) {
     initialLocale = langParam;
   } else {
-    const persistedState = localStorage.getItem('persist:localeMessages');
-    if (persistedState) {
-      const parsedState = JSON.parse(persistedState);
-      initialLocale = parsedState?.currentLocale
-        ? parsedState.currentLocale.replace(/"/g, '')
-        : 'en';
-    } else {
-      initialLocale = 'en';
-    }
+    initialLocale = localStorage.getItem('lang') || 'en';
   }
 } catch (error) {
   console.error('Error reading persisted state or url params:', error);
