@@ -64,7 +64,7 @@ export default defineConfig({
       // registerType: 'autoUpdate',
       injectRegister: false,
       workbox: {
-        maximumFileSizeToCacheInBytes: 9 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: 11 * 1024 * 1024,
       },
       // devOptions: {
       //   enabled: true,
