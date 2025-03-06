@@ -8966,6 +8966,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@re-dev/react-truncate@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@re-dev/react-truncate@npm:0.5.0"
+  peerDependencies:
+    react: ">=19.0.0 || >=18.0.0 || >=17.0.0 || >=16.0.0"
+    react-dom: ">=19.0.0 || >=18.0.0 || >=17.0.0 || >=16.0.0"
+  checksum: 10/a5a846d8995f8fbde9e6f2d1b97d854156ecbaf4f0ce7c78356dc3ce473cfddba22bc732b6099aa493ed1a7088bf39b4e7053cb3ab05be110dcfa77a508bb484
+  languageName: node
+  linkType: hard
+
 "@react-native-async-storage/async-storage@npm:^1.17.7":
   version: 1.24.0
   resolution: "@react-native-async-storage/async-storage@npm:1.24.0"
@@ -24038,6 +24048,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dex-ui@workspace:packages/dex-ui"
   dependencies:
+    "@re-dev/react-truncate": "npm:^0.5.0"
     "@types/lodash": "npm:^4.17.4"
     "@types/luxon": "npm:^3"
     "@types/punycode": "npm:^2"

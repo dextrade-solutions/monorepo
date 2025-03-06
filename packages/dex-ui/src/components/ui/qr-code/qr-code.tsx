@@ -1,16 +1,23 @@
-import { Typography, Box, Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Icon from '../icon';
+import CopyData from '../copy-data/copy-data';
 
 interface QRCodeProps {
   value: string;
+  showQrValue?: boolean;
   description?: string;
   size?: number;
 }
 
-export function QRCode({ value, description, size = 300 }: QRCodeProps) {
+export function QRCode({
+  value,
+  showQrValue,
+  description,
+  size = 300,
+}: QRCodeProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
 
@@ -89,15 +96,16 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
           height: size,
         }}
       />
-      {description && (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          align="center"
-          sx={{ maxWidth: size }}
+      {description}
+      {showQrValue && (
+        <Box
+          textAlign="center"
+          width="100%"
+          whiteSpace="nowrap"
+          fontWeight="bold"
         >
-          {description}
-        </Typography>
+          <CopyData data={value} />
+        </Box>
       )}
       <Button
         data-testid="qrcode-downloadbtn"

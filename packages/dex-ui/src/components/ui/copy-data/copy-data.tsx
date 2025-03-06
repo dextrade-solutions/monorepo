@@ -1,6 +1,7 @@
 import './index.scss';
 
 import { Box, BoxProps, Button, Tooltip } from '@mui/material';
+import { MiddleTruncate } from '@re-dev/react-truncate';
 import classnames from 'classnames';
 import { shortenAddress } from 'dex-helpers';
 import React from 'react';
@@ -42,7 +43,11 @@ const CopyData = ({
           className="copy-data__button"
         >
           <div className="copy-data__label">
-            {shorten ? shortenAddress(data) : data}
+            {shorten ? (
+              shortenAddress(data)
+            ) : (
+              <MiddleTruncate end={15}>{data}</MiddleTruncate>
+            )}
           </div>
           <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
         </Button>

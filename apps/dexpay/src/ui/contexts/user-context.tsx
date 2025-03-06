@@ -30,12 +30,13 @@ interface UserContextType {
     method?: number;
   };
   login: (email: string, pass: string) => Promise<void>;
-  twoFA: (
-    code: string,
-    isNewMode?: boolean,
-    codeToken?: string,
-    method?: number,
-  ) => Promise<void>;
+  twoFA: (options: {
+    code: string;
+    isNewMode?: boolean;
+    codeToken?: string;
+    method?: number;
+    newPassword?: string;
+  }) => Promise<void>;
   logout: () => void;
   signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
@@ -206,18 +207,25 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
     signUp: (params: AuthTypes.SignUp.Body) =>
       signUpMutation.mutateAsync([params]),
-    twoFA: (
-      code: string,
+    twoFA: ({
+      code,
       isNewMode = true,
       codeToken = twoFA.codeToken,
       method = twoFA.method,
-    ) => {
+      newPassword,
+    }: {
+      code: string;
+      isNewMode?: boolean;
+      codeToken?: string;
+      method?: number;
+      newPassword?: string;
+    }) => {
       if (!codeToken) {
         throw new Error('Login failed - No code token');
       }
       return twoFACode.mutateAsync([
         { isNewMode },
-        { code_token: codeToken, method, code },
+        { code_token: codeToken, method, code, new_password: newPassword },
       ]);
     },
     logout: () => {

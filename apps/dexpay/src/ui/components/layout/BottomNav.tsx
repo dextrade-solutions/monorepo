@@ -66,7 +66,8 @@ export default function BottomNav() {
   let items = [MERCHANT, P2P, HOME, HISTORY, USER];
 
   if (user!.isCashier) {
-    items = [HISTORY, HOME, USER];
+    return null;
+    // items = [HISTORY, HOME, USER];
   }
 
   return (

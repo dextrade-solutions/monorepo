@@ -1,6 +1,7 @@
 import { alpha, Box, Grid, Grow, Typography } from '@mui/material';
 import currencies from 'currency-formatter/currencies';
 import { useForm } from 'dex-ui';
+import { LogOut } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
 import InputPayment from '../components/terminal/InputPayment';
@@ -52,7 +53,7 @@ const Paper = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function Terminal() {
-  const { user, setPrimaryCurrency } = useAuth();
+  const { user, setPrimaryCurrency, logout } = useAuth();
   const [amount, setAmount] = useState('');
   const [selectedAsset, setAsset] = useState();
   const [invoice, setInvoice] = useState<IInvoice>();
@@ -159,13 +160,14 @@ export default function Terminal() {
         alignItems: 'center', // Horizontally center content
       }}
     >
-      <Typography
-        position="absolute"
-        color="tertiary.contrastText"
-        sx={{ top: 40 }}
-      >
-        Dex<strong>Pay Terminal</strong>
-      </Typography>
+      <Box display="flex" position="absolute" sx={{ top: 40 }}>
+        <Typography color="tertiary.contrastText">
+          Dex<strong>Pay Terminal</strong>
+        </Typography>
+        <Typography ml={1} sx={{ opacity: 0.5 }} color="tertiary.contrastText">
+          <LogOut onClick={() => logout()} />
+        </Typography>
+      </Box>
       {content}
     </Box>
   );

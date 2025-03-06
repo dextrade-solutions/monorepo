@@ -29,7 +29,7 @@ const SignUp = () => {
           Dex<strong>Pay</strong>
         </Typography>
         {codeToken ? (
-          <OtpConfirm method={(code) => twoFA(code, false)} />
+          <OtpConfirm method={(code) => twoFA({ code, isNewMode: false })} />
         ) : (
           <SignUpForm />
         )}

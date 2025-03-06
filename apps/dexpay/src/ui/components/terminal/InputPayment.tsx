@@ -4,6 +4,7 @@ import {
   Grid,
   Grow,
   keyframes,
+  Skeleton,
   styled,
   Typography,
 } from '@mui/material';
@@ -96,52 +97,66 @@ export default function InputPayment({
       </AnimatedValue>
 
       <NumpadInput maxWidth={400} value={amount} onChange={setAmount} />
-      {selectedAsset ? (
-        <Chip
-          label={<AssetItem asset={selectedAsset} />}
-          sx={{
-            mt: 5,
-            height: 50,
-          }}
-          onDelete={() => setAsset()}
-          onClick={() => setAsset()}
-        ></Chip>
-      ) : (
-        <Grid mt={2} container spacing={1}>
-          {mostUsedCurrencies.map((asset) => (
-            <Grid item xs={4} key={asset.iso}>
-              <Button
-                fullWidth
-                variant={
-                  selectedAsset?.iso === asset.iso ? 'contained' : 'text'
-                }
-                color="tertiary"
-                onClick={() => setAsset(asset)}
-              >
-                <AssetItem asset={asset} />
-              </Button>
+      {currencies.isLoading ? (
+        <Grid mt={1} container spacing={1}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Grid item xs={4} key={index}>
+              <Skeleton height={60} />
             </Grid>
           ))}
-
-          <Grid item xs={4}>
-            <Button
-              color="tertiary"
-              fullWidth
-              onClick={() => {
-                showModal({
-                  name: 'ASSET_SELECT',
-                  items: allCurrencies.filter(
-                    (c) => !DEFAULT_ASSETS.includes(c.iso),
-                  ),
-                  value: selectedAsset,
-                  onChange: setAsset,
-                });
-              }}
-            >
-              Others
-            </Button>
-          </Grid>
         </Grid>
+      ) : (
+        <>
+          {selectedAsset ? (
+            <Chip
+              label={<AssetItem asset={selectedAsset} />}
+              sx={{
+                mt: 5,
+                height: 50,
+              }}
+              onDelete={() => setAsset()}
+              onClick={() => setAsset()}
+            ></Chip>
+          ) : (
+            <Grid mt={2} container spacing={1}>
+              {mostUsedCurrencies.map((asset) => (
+                <Grid item xs={4} key={asset.iso}>
+                  <Button
+                    fullWidth
+                    variant={
+                      selectedAsset?.iso === asset.iso ? 'contained' : 'text'
+                    }
+                    color="tertiary"
+                    onClick={() => setAsset(asset)}
+                  >
+                    <AssetItem asset={asset} />
+                  </Button>
+                </Grid>
+              ))}
+
+              {mostUsedCurrencies.length > 0 && (
+                <Grid item xs={4}>
+                  <Button
+                    color="tertiary"
+                    fullWidth
+                    onClick={() => {
+                      showModal({
+                        name: 'ASSET_SELECT',
+                        items: allCurrencies.filter(
+                          (c) => !DEFAULT_ASSETS.includes(c.iso),
+                        ),
+                        value: selectedAsset,
+                        onChange: setAsset,
+                      });
+                    }}
+                  >
+                    Others
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
+          )}
+        </>
       )}
       <Grow in={Boolean(amount) && Boolean(selectedAsset)}>
         <Box mt={4} maxWidth={400} width="100%">

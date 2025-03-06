@@ -30,11 +30,11 @@ import {
 import WalletList from '../wallet-list';
 import { InvoiceStatus } from './constants';
 import { useGlobalModalContext } from '../modals';
+import { InvoiceCopyAmount } from './InvoiceCopyAmount';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import { IInvoiceFull } from './types/entities';
 import { Invoice as InvoiceNamespace } from './types/invoices';
-import { InvoiceCopyAmount } from './InvoiceCopyAmount';
 
 export default function InvoiceView({
   invoice,
@@ -208,7 +208,9 @@ export default function InvoiceView({
 
   const showCopy = (item: IInvoiceFull) => {
     showModal({
-      component: () => <InvoiceCopyAmount invoice={item} amount={secondaryDelta} />,
+      component: () => (
+        <InvoiceCopyAmount invoice={item} amount={secondaryDelta} />
+      ),
     });
   };
 
@@ -253,7 +255,7 @@ export default function InvoiceView({
   ) : null;
 
   return (
-    <Box>
+    <Box width="100%">
       <Box display="flex" justifyContent="space-between" mb={2}>
         {invoice.logo_url ? (
           <Avatar
@@ -407,11 +409,22 @@ export default function InvoiceView({
                   <>
                     <ListItemButton
                       className="bordered"
+                      data-testid="qrcode-payment-uri"
                       disabled={changeAddress.isPending}
                       onClick={() =>
                         showModal({
                           name: 'QR_MODAL',
-                          description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
+                          description: (
+                            <Box>
+                              <Alert severity="warning">
+                                Autocomplete qr works only with{' '}
+                                <strong>MetaMask</strong> and{' '}
+                                <strong>TrustWallet</strong> apps. Do not scan
+                                it in the address input, or you may lose your
+                                funds permanently.
+                              </Alert>
+                            </Box>
+                          ),
                           value: getQRuriPayment(
                             invoice.address,
                             invoice.amount_requested_f,
@@ -426,16 +439,31 @@ export default function InvoiceView({
                       </ListItemAvatar>
                       <ListItemText
                         primary="Payment QR"
-                        secondary="Scan payment link"
+                        secondary="Autocomple address and amount"
                       />
                     </ListItemButton>
                     <ListItemButton
                       className="bordered"
+                      data-testid="qrcode-address"
                       disabled={changeAddress.isPending}
                       onClick={() =>
                         showModal({
                           name: 'QR_MODAL',
-                          description: `Use QR-code scanner in your wallet, to send ${secondaryDelta} ${paymentAsset.symbol} to the address below.`,
+                          showQrValue: true,
+                          description: (
+                            <Box textAlign="center">
+                              <Typography color="text.secondary">
+                                Use QR-code scanner in your wallet, to send to
+                                the address below.
+                              </Typography>
+                              <Typography mt={3} variant="h6">
+                                To send:{' '}
+                                <strong>
+                                  {secondaryDelta} {paymentAsset.symbol}
+                                </strong>
+                              </Typography>
+                            </Box>
+                          ),
                           value: invoice.address,
                         })
                       }

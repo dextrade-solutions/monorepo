@@ -22,6 +22,26 @@ export namespace Validation {
       );
   }
   export namespace Auth {
+    export const invation = object({
+      newPassword: string()
+        .required('Password is a required field')
+        .min(8, (ctx) => `Password must be at least ${ctx.min} characters`)
+        .max(20, (ctx) => `Password must be at most ${ctx.max} characters`)
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~])/,
+          'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
+        ),
+      confirmNewPassword: string()
+        .required('Confirm password is a required field')
+        .min(
+          8,
+          (ctx) => `Confirm password must be at least ${ctx.min} characters`,
+        )
+        .max(
+          20,
+          (ctx) => `Confirm password must be at most ${ctx.max} characters`,
+        ),
+    });
     export const signUp = object({
       email: string()
         .required('Email is a required field')
