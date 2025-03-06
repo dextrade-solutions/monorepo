@@ -30,7 +30,12 @@ interface UserContextType {
     method?: number;
   };
   login: (email: string, pass: string) => Promise<void>;
-  twoFA: (code: string, isNewMode?: boolean) => Promise<void>;
+  twoFA: (
+    code: string,
+    isNewMode?: boolean,
+    codeToken?: string,
+    method?: number,
+  ) => Promise<void>;
   logout: () => void;
   signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
@@ -123,6 +128,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const [project] = projectsList.reverse();
       const [memo] = memosList;
 
+      const { isCashier } = getRole(
+        resultMe.data.project_permissions,
+        project.id,
+      );
+
       setUser((prev) => ({
         ...prev,
         auth: {
@@ -130,9 +140,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
           refreshToken,
         },
         project,
-        isRegistrationCompleted: Boolean(memo),
-        isCashier: getRole(resultMe.data.project_permissions, project.id)
-          .isCashier,
+        isRegistrationCompleted: Boolean(memo) || isCashier,
+        isCashier,
       }));
       setTwoFa((v) => ({
         ...v,
@@ -197,13 +206,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
     signUp: (params: AuthTypes.SignUp.Body) =>
       signUpMutation.mutateAsync([params]),
-    twoFA: (code: string, isNewMode = true) => {
-      if (!twoFA.codeToken) {
+    twoFA: (
+      code: string,
+      isNewMode = true,
+      codeToken = twoFA.codeToken,
+      method = twoFA.method,
+    ) => {
+      if (!codeToken) {
         throw new Error('Login failed - No code token');
       }
       return twoFACode.mutateAsync([
         { isNewMode },
-        { code_token: twoFA.codeToken, method: twoFA.method, code },
+        { code_token: codeToken, method, code },
       ]);
     },
     logout: () => {

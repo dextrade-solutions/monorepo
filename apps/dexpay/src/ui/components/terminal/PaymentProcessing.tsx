@@ -1,7 +1,6 @@
-import { Box, Skeleton } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { InvoiceView, QRCode } from 'dex-ui';
-import React, { useEffect, useState } from 'react';
+import { InvoiceView } from 'dex-ui';
+import React from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
 import { useQuery } from '../../hooks/use-query';
@@ -15,11 +14,15 @@ export default function PaymentProcessing({
   asset: AssetModel;
   invoiceId: string;
 }) {
-  const invoice = useQuery(Invoice.paymentGet, [
-    {
-      id: invoiceId,
-    },
-  ]);
+  const invoice = useQuery(
+    Invoice.paymentGet,
+    [
+      {
+        id: invoiceId,
+      },
+    ],
+    { refetchInterval: 3000 },
+  );
 
   if (invoice.isLoading) {
     return 'Loading';

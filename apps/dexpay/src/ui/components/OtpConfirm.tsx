@@ -5,8 +5,14 @@ import { useLocation } from 'wouter';
 
 import { ROUTE_HOME } from '../constants/pages';
 
-const OtpConfirm = ({ method }: { method: (otp: string) => Promise<any> }) => {
-  const [values, setForm] = useState({ otp: '' });
+const OtpConfirm = ({
+  value: initialValue = '',
+  method,
+}: {
+  value?: string;
+  method: (otp: string) => Promise<any>;
+}) => {
+  const [values, setForm] = useState({ otp: initialValue });
   const { showModal } = useGlobalModalContext();
   const loader = useLoader();
   const [, navigate] = useLocation();
