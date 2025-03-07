@@ -30,7 +30,7 @@ export default function PickCoin({
   onChange,
   maxWidth,
 }: SelectCoinProps) {
-  const coinsQuery = useQuery(Currency.coins);
+  const coinsQuery = useQuery(Currency.coins, [{ type: 'fiat' }]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSelectChange = (newValue: string) => {
@@ -59,7 +59,7 @@ export default function PickCoin({
   );
 
   return (
-    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%', minHeight: 300 }}>
+    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%' }}>
       <Box
         sx={{
           width: '100%',

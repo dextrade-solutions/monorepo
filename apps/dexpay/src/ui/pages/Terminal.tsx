@@ -1,4 +1,4 @@
-import { alpha, Box, Grid, Grow, Typography } from '@mui/material';
+import { alpha, Box, Button, Grid, Grow, Typography } from '@mui/material';
 import currencies from 'currency-formatter/currencies';
 import { useForm } from 'dex-ui';
 import { LogOut } from 'lucide-react';
@@ -116,12 +116,28 @@ export default function Terminal() {
       );
     } else if (invoice && selectedAsset) {
       return (
-        <Paper>
-          <PaymentProcessing
-            invoiceId={invoice.public_id}
-            asset={selectedAsset}
-          />
-        </Paper>
+        <Box>
+          <Paper>
+            <PaymentProcessing
+              invoiceId={invoice.public_id}
+              asset={selectedAsset}
+            />
+          </Paper>
+          <Button
+            fullWidth
+            sx={{ mt: 3 }}
+            variant="contained"
+            color="tertiary"
+            size="large"
+            onClick={() => {
+              setInvoice(undefined);
+              setAmount('');
+              setAsset(undefined);
+            }}
+          >
+            New invoice
+          </Button>
+        </Box>
       );
     }
     return (

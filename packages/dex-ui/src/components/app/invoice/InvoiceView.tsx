@@ -23,7 +23,6 @@ import {
   Icon,
   UrlIcon,
   SelectCoinsItem,
-  CopyData,
   CountdownTimer,
   AssetItem,
 } from '../../ui';
@@ -34,14 +33,15 @@ import { InvoiceCopyAmount } from './InvoiceCopyAmount';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import { IInvoiceFull } from './types/entities';
-import { Invoice as InvoiceNamespace } from './types/invoices';
 
 export default function InvoiceView({
   invoice,
+  hideHeader,
   connections: allConnections = [],
   onBack,
 }: {
   invoice: IInvoiceFull;
+  hideHeader?: boolean;
   connections?: Connection[];
   onBack?: () => void;
 }) {
@@ -265,28 +265,30 @@ export default function InvoiceView({
 
   return (
     <Box width="100%">
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        {invoice.logo_url ? (
-          <Avatar
-            alt="Payment Logo" // Provide alternative text for accessibility
-            src={invoice.logo_url}
-            sx={{
-              height: 50,
-              width: 'auto',
-              maxHeight: 100,
-              maxWidth: 200,
-              borderRadius: 0.5, // Maintain rounded corners
-            }}
-            variant="square" // Keep it square, remove for circular avatar
-          />
-        ) : (
-          <Typography variant="h5">
-            Dex<strong>Pay</strong>
-          </Typography>
-        )}
+      {!hideHeader && (
+        <Box display="flex" justifyContent="space-between" mb={2}>
+          {invoice.logo_url ? (
+            <Avatar
+              alt="Payment Logo" // Provide alternative text for accessibility
+              src={invoice.logo_url}
+              sx={{
+                height: 50,
+                width: 'auto',
+                maxHeight: 100,
+                maxWidth: 200,
+                borderRadius: 0.5, // Maintain rounded corners
+              }}
+              variant="square" // Keep it square, remove for circular avatar
+            />
+          ) : (
+            <Typography variant="h5">
+              Dex<strong>Pay</strong>
+            </Typography>
+          )}
 
-        {backbutton}
-      </Box>
+          {backbutton}
+        </Box>
+      )}
       <Box display="flex" alignItems="center" flexDirection="column">
         <Avatar
           sx={{
@@ -448,7 +450,7 @@ export default function InvoiceView({
                       </ListItemAvatar>
                       <ListItemText
                         primary="Payment QR"
-                        secondary="Autocomple address and amount"
+                        secondary="Autocomplete address and amount"
                       />
                     </ListItemButton>
                     <ListItemButton

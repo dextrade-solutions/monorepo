@@ -2,20 +2,22 @@ import { Box, Button } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
 import React, { useEffect, useRef } from 'react';
 
-import Icon from '../icon';
 import CopyData from '../copy-data/copy-data';
+import Icon from '../icon';
 
 interface QRCodeProps {
   value: string;
   showQrValue?: boolean;
   description?: string;
   size?: number;
+  hideDownloadQr?: boolean;
 }
 
 export function QRCode({
   value,
   showQrValue,
   description,
+  hideDownloadQr,
   size = 300,
 }: QRCodeProps) {
   const qrRef = useRef<HTMLDivElement>(null);
@@ -107,15 +109,17 @@ export function QRCode({
           <CopyData data={value} />
         </Box>
       )}
-      <Button
-        data-testid="qrcode-downloadbtn"
-        variant="contained"
-        startIcon={<Icon name="save" />}
-        onClick={handleDownload}
-        sx={{ mt: 1 }}
-      >
-        Download QR Code
-      </Button>
+      {!hideDownloadQr && (
+        <Button
+          data-testid="qrcode-downloadbtn"
+          variant="contained"
+          startIcon={<Icon name="save" />}
+          onClick={handleDownload}
+          sx={{ mt: 1 }}
+        >
+          Download QR Code
+        </Button>
+      )}
     </Box>
   );
 }

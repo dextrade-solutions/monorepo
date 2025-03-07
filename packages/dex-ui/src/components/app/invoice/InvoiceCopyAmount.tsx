@@ -1,10 +1,10 @@
 import { Alert, Box, Button, Divider, Grid, Typography } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { IInvoiceFull } from './types/entities';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { CopyData } from '../../ui';
+import { CopyData, QRCode } from '../../ui';
 
 export const InvoiceCopyAmount = ({
   invoice,
@@ -15,17 +15,9 @@ export const InvoiceCopyAmount = ({
 }) => {
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
   const [copiedAmount, handleCopyAmount] = useCopyToClipboard();
-
+  const paymentLink = invoice.payment_page_url.replace('pay.', 'ecom.');
   return (
     <Box margin={3}>
-      <Box display="flex">
-        <Typography variant="h5" textAlign="left" className="flex-grow nowrap">
-          Amount
-        </Typography>
-        <Typography variant="h5">
-          {amount} {invoice.coin?.iso}
-        </Typography>
-      </Box>
       <Box display="flex">
         <Typography textAlign="left" className="flex-grow nowrap">
           Network
@@ -47,10 +39,13 @@ export const InvoiceCopyAmount = ({
         <Typography textAlign="left" className="flex-grow nowrap">
           Link
         </Typography>
-        <CopyData data={invoice.payment_page_url} title="Payment link" />
+        <CopyData data={paymentLink} title="Payment link" />
+      </Box>
+      <Box>
+        <QRCode value={paymentLink} hideDownloadQr />
       </Box>
       <Alert sx={{ mt: 2 }} severity="info">
-        Please send the exact amount to the provided address.
+        Scan qr to open invoice on your device
       </Alert>
       <Grid container spacing={1} my={2}>
         <Grid item xs={6}>

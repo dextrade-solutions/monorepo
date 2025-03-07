@@ -439,6 +439,7 @@ export namespace Currency {
       sort?: string;
       iso?: string;
       public_name?: string;
+      type?: string;
       token_type?: string;
       contract_address?: string;
     }
