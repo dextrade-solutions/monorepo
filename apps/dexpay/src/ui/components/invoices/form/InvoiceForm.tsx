@@ -64,7 +64,7 @@ const CreateInvoiceForm = () => {
     values: {
       primaryCoin: {
         amount: null,
-        coin: 'USDT',
+        coin: 'THB',
       },
       convertedCurrencies: [],
       description: '',

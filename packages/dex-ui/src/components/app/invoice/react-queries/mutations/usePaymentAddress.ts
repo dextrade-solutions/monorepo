@@ -10,7 +10,7 @@ export default function usePaymentAddress() {
       return Api.Invoice.paymentAddress(params);
     },
     onSuccess: (data, variables) => {
-      queryClient.setQueryData(['dexpay-payment', { id: variables.id }], data);
+      queryClient.setQueryData(['dexpay-invoice', { id: variables.id }], data);
     },
   });
 }

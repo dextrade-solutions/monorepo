@@ -76,8 +76,11 @@ export default function InvoiceView({
     if (!currency) {
       throw new Error('onChangeAsset - Currency not found');
     }
-    await changeAddress.mutateAsync({ id, currency_id: currency.id });
-    setConnectedWallet(null);
+    await changeAddress.mutateAsync({
+      id: invoice.id,
+      currency_id: currency.id,
+    });
+    setConnectedWallet(undefined);
   };
 
   const onSelectConnection = useCallback(async (item: Connection) => {
@@ -132,10 +135,16 @@ export default function InvoiceView({
     // const withoutLightning = assetList.filter(
     //   (v) => v.extra.currency.token_type !== 'LIGHTNING',
     // ); // stub
-    if (!paymentAssetId && assetList.length === 1 && !changeAddress.isPending) {
+    if (
+      !paymentAssetId &&
+      assetList.length === 1 &&
+      !changeAddress.isPending &&
+      !changeAddress.isSuccess
+    ) {
       onChangeAsset(assetList[0]);
     }
-  }, [paymentAssetId, assetList, changeAddress.isPending, onChangeAsset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentAssetId, assetList, changeAddress.isPending]);
 
   const expirationTime = invoice.due_to
     ? new Date(invoice.due_to).getTime() - new Date().getTime()
