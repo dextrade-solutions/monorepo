@@ -155,13 +155,13 @@ export default function Terminal() {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: '90vh', // Make container take up full viewport height
+        // height: '90vh', // Make container take up full viewport height
         justifyContent: 'center', // Vertically center content
         alignItems: 'center', // Horizontally center content
       }}
     >
-      <Box display="flex" position="absolute" sx={{ top: 40 }}>
-        <Typography color="tertiary.contrastText">
+      <Box mt={4} display="flex" sx={{ top: 40 }}>
+        <Typography mb={3} color="tertiary.contrastText">
           Dex<strong>Pay Terminal</strong>
         </Typography>
         <Typography ml={1} sx={{ opacity: 0.5 }} color="tertiary.contrastText">

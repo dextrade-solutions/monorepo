@@ -59,7 +59,7 @@ export default function PickCoin({
   );
 
   return (
-    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%', minHeight: 370 }}>
+    <Box sx={{ maxWidth: maxWidth || '100%', width: '100%', minHeight: 300 }}>
       <Box
         sx={{
           width: '100%',
@@ -87,7 +87,7 @@ export default function PickCoin({
           }}
         />
       </Box>
-      <List sx={{ maxHeight: 300, overflow: 'auto', padding: 0 }}>
+      <List sx={{ maxHeight: 250, overflow: 'auto', padding: 0 }}>
         {filteredCoins.map((option) => (
           <ListItem
             key={option}
