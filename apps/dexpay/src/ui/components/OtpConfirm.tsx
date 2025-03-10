@@ -96,8 +96,8 @@ const OtpConfirm = ({
     >
       {email && (
         <Alert sx={{ my: 2 }} severity="info">
-          We send you code to <strong>{email}</strong>, please check your inbox.
-          Please enter the code here.
+          The code is sent to <strong>{email}</strong>. Please check your Inbox{' '}
+          and Spam folders.
         </Alert>
       )}
       <OtpInput
