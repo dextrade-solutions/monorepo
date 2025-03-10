@@ -40,7 +40,8 @@ export namespace Validation {
         .max(
           20,
           (ctx) => `Confirm password must be at most ${ctx.max} characters`,
-        ),
+        )
+        .oneOf([ref('newPassword')], 'Password mismatch'),
     });
     export const signUp = object({
       email: string()
