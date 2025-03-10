@@ -1,4 +1,16 @@
 {
+  "The swap was canceled": {
+    "message": "The swap was canceled"
+  },
+  "The swap failed": {
+    "message": "The swap failed"
+  },
+  "Confirm payment": {
+    "message": "Confirm payment"
+  },
+  "Dispute": {
+      "message": "Dispute"
+  },
   "My current address:": {
     "message": "My current address:"
   },

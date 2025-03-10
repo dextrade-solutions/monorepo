@@ -1,4 +1,16 @@
 {
+  "The swap was canceled": {
+    "message": "交换已取消"
+  },
+  "The swap failed": {
+    "message": "交换失败"
+  },
+  "Confirm payment": {
+    "message": "确认付款"
+  },
+  "Dispute": {
+      "message": "争议"
+  },
   "My current address:": {
     "message": "我的当前地址："
   },

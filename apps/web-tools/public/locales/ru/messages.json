@@ -1,4 +1,16 @@
 {
+  "The swap was canceled": {
+    "message": "Обмен был отменен"
+  },
+  "The swap failed": {
+    "message": "Обмен не удался"
+  },
+  "Confirm payment": {
+    "message": "Подтвердить оплату"
+  },
+  "Dispute": {
+      "message": "Спор"
+  },
   "My current address:": {
     "message": "Мой текущий адрес:"
   },
