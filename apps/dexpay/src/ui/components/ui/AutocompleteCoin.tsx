@@ -28,7 +28,7 @@ export default function AutocompleteCoin({
   error = false,
   disabled = false,
 }: SelectCoinProps) {
-  const coinsQuery = useQuery(Currency.coins);
+  const coinsQuery = useQuery(Currency.coins, [{ type: 'fiat' }]);
 
   const handleSelectChange = (_: any, newValue: string | null) => {
     if (newValue) {

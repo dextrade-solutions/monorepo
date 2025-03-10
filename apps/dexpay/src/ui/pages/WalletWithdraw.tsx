@@ -27,7 +27,7 @@ export default function WalletDeposit() {
   const [activeStep, setActiveStep] = useState(0);
   const [currency, setCurrency] = useState();
   const [twoFa, setTwoFa] = useState<{ id: number; codeToken: string }>();
-  const { user } = useAuth();
+  const { user, me } = useAuth();
   const projectId = user?.project.id!;
 
   const addresses = useAddresses({ currencyId: currency?.currency.id });
@@ -73,6 +73,7 @@ export default function WalletDeposit() {
           Confirm withdrawal
         </Typography>
         <OtpConfirm
+          email={me?.email}
           method={(code) =>
             widthdrawalConfirm.mutateAsync([
               { projectId },

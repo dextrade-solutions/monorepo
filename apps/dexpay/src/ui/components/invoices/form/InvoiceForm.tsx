@@ -53,7 +53,7 @@ const CreateInvoiceForm = () => {
       navigate(ROUTE_MERCHANT);
     },
   });
-  const coins = useQuery(Currency.coins);
+  const coins = useQuery(Currency.coins, [{ type: 'fiat' }]);
 
   const allCoins = (coins.data?.list.currentPageResult || []).reduce(
     (acc, coin) => ({ ...acc, [coin.iso]: coin }),

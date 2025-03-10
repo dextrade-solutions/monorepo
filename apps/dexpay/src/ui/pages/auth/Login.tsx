@@ -9,6 +9,15 @@ import { useAuth } from '../../hooks/use-auth';
 import { Validation } from '../../validation';
 
 const Login = () => {
+  const auth = useAuth();
+  const loginForm = useForm({
+    values: {
+      email: '',
+      password: '',
+    },
+    validationSchema: Validation.Auth.signIn,
+    method: (values) => auth.login(values.email, values.password),
+  });
   const [inviteParams, setInviteParams] = useState<{
     codeToken: string;
     otpValue: string;
@@ -31,16 +40,17 @@ const Login = () => {
     }
   }, []);
 
-  const codeToken = inviteParams ? inviteParams.codeToken : loginCodeToken;
-  const otpValue = inviteParams?.otpValue;
-
   const defaultLogin = useMemo(() => {
-    return codeToken ? (
-      <OtpConfirm value={otpValue} method={(code) => twoFA({ code })} />
+    return loginCodeToken ? (
+      <OtpConfirm
+        email={loginForm.values.email}
+        method={(code) => twoFA({ code })}
+        resendMethod={loginForm.submit}
+      />
     ) : (
-      <LoginForm />
+      <LoginForm form={loginForm} />
     );
-  }, [codeToken, twoFA, otpValue]);
+  }, [loginCodeToken, loginForm, twoFA]);
 
   const invationForm = useForm({
     values: {

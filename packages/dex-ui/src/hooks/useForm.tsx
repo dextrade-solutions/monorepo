@@ -34,9 +34,6 @@ export const useForm = <T,>({
   const [valuesData, setValuesData] = useState<T>(values || ({} as T));
   const [errorsData, setErrorsData] = useState({});
   const [interactedData, setInteractedData] = useState({});
-  const [resolvedSchema, setResolvedSchema] = useState<SchemaOf<T> | undefined>(
-    validationSchema,
-  );
 
   const isInitiated = Object.values(errorsData).length > 0;
   const isInteracted = Object.values(interactedData).length > 0;
@@ -53,17 +50,9 @@ export const useForm = <T,>({
   const setValue = (name: string, value: any) => {
     setValuesData((prev) => ({ ...prev, [name]: value }));
   };
-  useEffect(() => {
-    if (validationSchema && values) {
-      setResolvedSchema(
-        validationSchema.resolve({ value: values, context: values }),
-      );
-    }
-  }, [validationSchema, values]);
 
   return {
     validationSchema,
-    resolvedSchema, // Include resolvedSchema in the return
     errors: errorsData,
     interacted: interactedData,
     isInitiated,

@@ -14,6 +14,7 @@ import { Validation } from '../validation';
 export default function WalletMemo() {
   const { showModal } = useGlobalModalContext();
   const [seedPhrase, setSeedPhrase] = useState<string[]>();
+  const auth = useAuth();
   const { setCompleteReginstration } = useAuth();
   const { runLoader } = useLoader();
   const [beginImportResponse, setBeginImportResponse] =
@@ -76,7 +77,7 @@ export default function WalletMemo() {
       }}
     >
       {beginImportResponse ? (
-        <OtpConfirm method={handleOtp} />
+        <OtpConfirm email={auth.me?.email} method={handleOtp} />
       ) : (
         <>
           <Typography variant="h5" gutterBottom>

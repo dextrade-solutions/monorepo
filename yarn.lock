@@ -24099,6 +24099,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     typescript: "npm:^5.5.3"
     vite: "npm:^5.2.0"
+    vite-plugin-pwa: "npm:^0.21.1"
     wouter: "npm:^3.5.0"
     yup: "npm:^1.6.1"
   languageName: unknown
@@ -27362,6 +27363,18 @@ __metadata:
     picomatch:
       optional: true
   checksum: 10/5ff80d1d2034e75cc68be175401c9f64c4938a6b2c1e9a0c27f2d211ffbe491fd86d29e4576825d9da8aff9bd465f0283427c2dddc11653457906c46d3bbc448
+  languageName: node
+  linkType: hard
+
+"fdir@npm:^6.4.3":
+  version: 6.4.3
+  resolution: "fdir@npm:6.4.3"
+  peerDependencies:
+    picomatch: ^3 || ^4
+  peerDependenciesMeta:
+    picomatch:
+      optional: true
+  checksum: 10/8e6d20f4590dc168de1374a9cadaa37e20ca6e0b822aa247c230e7ea1d9e9674a68cd816146435e4ecc98f9285091462ab7e5e56eebc9510931a1794e4db68b2
   languageName: node
   linkType: hard
 
@@ -46349,6 +46362,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tinyglobby@npm:^0.2.10":
+  version: 0.2.12
+  resolution: "tinyglobby@npm:0.2.12"
+  dependencies:
+    fdir: "npm:^6.4.3"
+    picomatch: "npm:^4.0.2"
+  checksum: 10/4ad28701fa9118b32ef0e27f409e0a6c5741e8b02286d50425c1f6f71e6d6c6ded9dd5bbbbb714784b08623c4ec4d150151f1d3d996cfabe0495f908ab4f7002
+  languageName: node
+  linkType: hard
+
 "title-case@npm:^2.1.0":
   version: 2.1.1
   resolution: "title-case@npm:2.1.1"
@@ -48726,6 +48749,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vite-plugin-pwa@npm:^0.21.1":
+  version: 0.21.1
+  resolution: "vite-plugin-pwa@npm:0.21.1"
+  dependencies:
+    debug: "npm:^4.3.6"
+    pretty-bytes: "npm:^6.1.1"
+    tinyglobby: "npm:^0.2.10"
+    workbox-build: "npm:^7.3.0"
+    workbox-window: "npm:^7.3.0"
+  peerDependencies:
+    "@vite-pwa/assets-generator": ^0.2.6
+    vite: ^3.1.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+    workbox-build: ^7.3.0
+    workbox-window: ^7.3.0
+  peerDependenciesMeta:
+    "@vite-pwa/assets-generator":
+      optional: true
+  checksum: 10/7959598e47adc3ba93ca9bfec670c969a3a034f8c667d125f9dd0f0f4fe5d9a2fad01dc2b9177bcab8c84986bf61b8b5d70b8a4cf0b3d0dc7e16ff38677f9d72
+  languageName: node
+  linkType: hard
+
 "vite-plugin-radar@npm:^0.9.6":
   version: 0.9.6
   resolution: "vite-plugin-radar@npm:0.9.6"
@@ -50119,7 +50163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-build@npm:^7.1.0":
+"workbox-build@npm:^7.1.0, workbox-build@npm:^7.3.0":
   version: 7.3.0
   resolution: "workbox-build@npm:7.3.0"
   dependencies:
@@ -50406,7 +50450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-window@npm:7.3.0, workbox-window@npm:^7.1.0":
+"workbox-window@npm:7.3.0, workbox-window@npm:^7.1.0, workbox-window@npm:^7.3.0":
   version: 7.3.0
   resolution: "workbox-window@npm:7.3.0"
   dependencies:

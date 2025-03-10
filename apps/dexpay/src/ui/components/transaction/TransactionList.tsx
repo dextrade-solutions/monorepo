@@ -34,7 +34,11 @@ const TransactionList = () => {
   }
 
   if (allTransactions.length === 0) {
-    return <Typography>No transactions found.</Typography>;
+    return (
+      <Typography textAlign="center" mt={2} color="text.secondary">
+        No transactions found.
+      </Typography>
+    );
   }
 
   return (

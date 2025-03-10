@@ -38,7 +38,7 @@ export default function P2P() {
     return (
       <Box>
         <Typography mb={0} color="text.secondary" paragraph>
-          To start trading on{' '}
+          To create liquidity on{' '}
           <Typography
             component="a"
             href="https://p2p.dextrade.com"

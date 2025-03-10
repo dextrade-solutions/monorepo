@@ -1,25 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useForm, useLoader, useGlobalModalContext } from 'dex-ui';
-import React, { useState, ChangeEvent } from 'react';
+import { useForm } from 'dex-ui';
+import React, { ChangeEvent } from 'react';
 
 import { ROUTE_LOGIN } from '../../constants/pages';
-import { useAuth } from '../../hooks/use-auth';
-import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
 import Link from '../ui/Link';
 
-const SignUpForm = () => {
-  const user = useAuth();
-  const form = useForm({
-    values: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-    validationSchema: Validation.Auth.signUp,
-    method: user.signUp,
-  });
-
+const SignUpForm = ({ form }: { form: ReturnType<typeof useForm> }) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     return e.target.value;
   };

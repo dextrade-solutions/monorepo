@@ -1,11 +1,23 @@
 import { Box, Container, Typography } from '@mui/material';
+import { useForm } from 'dex-ui';
 import React from 'react';
 
 import OtpConfirm from '../../components/OtpConfirm';
 import SignUpForm from '../../components/signup/SignUpForm';
 import { useAuth } from '../../hooks/use-auth';
+import { Validation } from '../../validation';
 
 const SignUp = () => {
+  const user = useAuth();
+  const form = useForm({
+    values: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationSchema: Validation.Auth.signUp,
+    method: user.signUp,
+  });
   const {
     twoFAdata: { codeToken },
     twoFA,
@@ -29,9 +41,12 @@ const SignUp = () => {
           Dex<strong>Pay</strong>
         </Typography>
         {codeToken ? (
-          <OtpConfirm method={(code) => twoFA({ code, isNewMode: false })} />
+          <OtpConfirm
+            email={form.values.email}
+            method={(code) => twoFA({ code, isNewMode: false })}
+          />
         ) : (
-          <SignUpForm />
+          <SignUpForm form={form} />
         )}
       </Box>
     </Container>

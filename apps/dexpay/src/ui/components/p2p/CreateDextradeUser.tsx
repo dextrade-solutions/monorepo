@@ -37,7 +37,13 @@ const CreateDexTradeUser = ({ onSuccess }: { onSuccess: () => void }) => {
         margin="normal"
         onChange={(e) => e.target.value}
       />
-      <Button gradient type="submit" disabled={createUser.isPending}>
+      <Button
+        fullWidth
+        sx={{ mt: 2 }}
+        gradient
+        type="submit"
+        disabled={createUser.isPending}
+      >
         {createUser.isPending ? 'Creating...' : 'Create DexTrade User'}
       </Button>
     </form>

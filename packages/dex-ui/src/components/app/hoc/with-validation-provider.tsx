@@ -3,23 +3,22 @@ import { ValidationError } from 'yup';
 
 import { UseFormReturnType } from '../../../hooks/useForm';
 
-type FieldProps = {
-  validators?: ((v: any) => false | string)[];
-  form: UseFormReturnType<any>;
+type FieldProps<T> = {
+  form: UseFormReturnType<T>;
   name: string;
-  onChange: (name: string, v: any) => void;
+  onChange: (name: string, v: unknown) => void;
 } & React.ComponentProps<any>;
 
 const withValidationProvider =
   (Field: any) =>
-  ({ form, name, onChange, ...fieldProps }: FieldProps) => {
+  <T,>({ form, name, onChange, ...fieldProps }: FieldProps<T>) => {
     const value = form.values[name];
 
     useEffect(() => {
-      const findErrors = async (v: any) => {
+      const findErrors = async () => {
         try {
           // Use reach to handle nested schema structures:
-          await form.resolvedSchema.validateAt(name, { [name]: v }); // Correct validation
+          await form.validationSchema.validateAt(name, form.values); // Correct validation
           form.setErrors(name, []);
         } catch (e) {
           if (e instanceof ValidationError) {
@@ -32,11 +31,11 @@ const withValidationProvider =
         }
       };
 
-      findErrors(value);
+      findErrors();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
+    }, [form.values]);
 
-    const handleChange = (...args: any[]) => {
+    const handleChange = (...args: unknown[]) => {
       const v = onChange ? onChange(...args) : args[0];
       form.setInteracted(name);
       form.setValue(name, v);
