@@ -1,12 +1,14 @@
 import { Box, Typography } from '@mui/material';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useForm, useGlobalModalContext } from 'dex-ui';
 import { Pause, Play, TrashIcon } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import AdItem from './AdItem';
 import AdItemSkeleton from './AdItemSkeleton';
 import { useAuth } from '../../hooks/use-auth';
-import { useMutation, useQuery } from '../../hooks/use-query';
+import { useMutation } from '../../hooks/use-query';
 import { DexTrade } from '../../services';
 import { IAdvert } from '../../types';
 
@@ -16,12 +18,34 @@ export default function TradingPair() {
 
   const { showModal } = useGlobalModalContext();
 
-  const ads = useQuery(DexTrade.advertsList, { projectId });
-  const deleteAd = useMutation(DexTrade.advertDelete); // Add delete mutation
-  const updateAd = useMutation(DexTrade.advertUpdate); // Add update mutation
+  const { ref: intersectionRef, inView } = useInView({
+    threshold: 0.5,
+  });
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['ads-list'],
+    queryFn: ({ pageParam = 0 }) =>
+      DexTrade.advertsList({ projectId }, { page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.length || lastPage.length < 10) {
+        return undefined;
+      }
+      return allPages.length + 1;
+    },
+  });
+
+  const deleteAd = useMutation(DexTrade.advertDelete);
+  const updateAd = useMutation(DexTrade.advertUpdate);
 
   const form = useForm({
-    // useForm setup
     method: async (_, ad: IAdvert, action: 'delete' | 'toggleActive') => {
       const ACTIONS = {
         delete: () =>
@@ -41,7 +65,7 @@ export default function TradingPair() {
           ]),
       };
       await ACTIONS[action]();
-      ads.refetch();
+      refetch(); // we no need refetch because data updated automaticly
     },
   });
 
@@ -74,34 +98,51 @@ export default function TradingPair() {
       onConfirm: () => form.submit(ad, 'toggleActive'),
     });
   };
-  const renderList = ads.data || [];
 
-  if (ads.isLoading) {
-    return Array.from({ length: 3 }).map(() => <AdItemSkeleton />);
+  // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
+  const renderList = data?.pages.flat() || [];
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  if (isLoading) {
+    return Array.from({ length: 3 }).map((_, index) => (
+      <AdItemSkeleton key={index} />
+    ));
   }
-
   return (
     <Box>
-      {renderList.map((ad) => (
-        <AdItem
-          key={ad.details.id}
-          fromCoin={ad.details.from}
-          toCoin={ad.details.to}
-          price={ad.details.coinPair.price}
-          profitCommission={ad.details.priceAdjustment}
-          priceSource={ad.pair?.rate_source_options.serviceName}
-          statusMessage={ad.comment}
-          exchangerName={ad.dextrade_user.username}
-          onDelete={() => handleDelete(ad)}
-          toggleActive={() => toggleActive(ad)}
-          active={ad.details.active}
-        />
-      ))}
+      {renderList.map((ad, index) => {
+        const lastElement = renderList.length - 1 === index;
+        return (
+          <Box
+            ref={lastElement ? intersectionRef : undefined}
+            key={ad.details.id}
+          >
+            <AdItem
+              fromCoin={ad.details.from}
+              toCoin={ad.details.to}
+              price={ad.details.coinPair.price}
+              profitCommission={ad.details.priceAdjustment}
+              priceSource={ad.pair?.rate_source_options.serviceName}
+              statusMessage={ad.comment}
+              exchangerName={ad.dextrade_user.username}
+              onDelete={() => handleDelete(ad)}
+              toggleActive={() => toggleActive(ad)}
+              active={ad.details.active}
+            />
+          </Box>
+        );
+      })}
       {renderList.length === 0 && (
         <Typography textAlign="center" color="text.secondary">
           No created ads found. Create your first
         </Typography>
       )}
+      {isFetchingNextPage && <AdItemSkeleton />}
     </Box>
   );
 }
