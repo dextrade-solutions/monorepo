@@ -60,15 +60,10 @@ export default defineConfig({
         display_override: ['fullscreen', 'window-controls-overlay'],
         categories: ['finance'],
       },
-      // strategies: 'injectManifest',
-      // registerType: 'autoUpdate',
       injectRegister: false,
       workbox: {
         maximumFileSizeToCacheInBytes: 11 * 1024 * 1024,
       },
-      // devOptions: {
-      //   enabled: true,
-      // },
     }),
     wasm(),
     nodePolyfills({

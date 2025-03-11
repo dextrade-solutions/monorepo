@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-GHPAGES_REPO_PATH="../web-tools.gh-pages"
+GHPAGES_REPO_PATH="../p2p-app-dist"
 
 # Build the Vite project
 yarn build
