@@ -5,6 +5,7 @@ import {
   Box,
   Typography,
   TextField,
+  CardHeader,
 } from '@mui/material';
 import { DownloadCloud, LogOut } from 'lucide-react';
 import React from 'react';
@@ -23,7 +24,10 @@ export default function Profile() {
           borderRadius: 1,
         }}
       >
-        <CardContent sx={{ p: 4 }}>
+        <CardContent>
+          <Typography color="text.secondary" variant="h5" mb={2}>
+            Profile
+          </Typography>
           <TextField
             label="Email"
             margin="normal"
@@ -45,7 +49,7 @@ export default function Profile() {
             fullWidth
             value={me?.last_name}
           />
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -72,7 +76,7 @@ export default function Profile() {
           </Box>
           <Button fullWidth variant="contained">
             Save Changes
-          </Button>
+          </Button> */}
         </CardContent>
       </Card>
 

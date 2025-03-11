@@ -44,7 +44,7 @@ export function useCurrencies({
   );
   const items = [
     ...(currencies?.list.currentPageResult || []),
-    BTC_LIGHTNING_CURRENCY,
+    // BTC_LIGHTNING_CURRENCY,
   ];
   if (isLoadingBalances || isLoadingCurrencies) {
     return { items: [], isLoading: true };

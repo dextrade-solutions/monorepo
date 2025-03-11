@@ -45,7 +45,7 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
     amount_requested: amount,
     status_label: status,
   } = invoice;
-  const { user } = useAuth();
+  const { user, me } = useAuth();
   const loader = useLoader();
   const { showModal } = useGlobalModalContext();
   const [_, navigate] = useLocation();
@@ -166,10 +166,24 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
           data={invoice.payment_page_url}
         />
       </Box>
-      {expirationTime && (
-        <Box display="flex" alignItems="center" mb={1}>
-          <Typography className="flex-grow">Expiration</Typography>
-          <Typography>
+      {invoice.creator && me?.id !== invoice.creator?.id && (
+        <Box
+          display="flex"
+          mx={0.5}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="body2">Salesperson</Typography>
+          <div className="flex-grow" />
+          <Typography variant="body2">{invoice.creator?.email}</Typography>
+        </Box>
+      )}
+      {expirationTime && expirationTime > 0 && (
+        <Box display="flex" mx={0.5} alignItems="center" mb={1}>
+          <Typography variant="body2" className="flex-grow">
+            Expiration
+          </Typography>
+          <Typography variant="body2">
             <CountdownTimer
               timeStarted={new Date().getTime()}
               timerBase={expirationTime}
@@ -183,10 +197,8 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
           <Alert severity="info">{invoice.description}</Alert>
         </Box>
       )}
-      <Box mb={2} />
-      <Box display="flex" gap={2}>
+      {/* <Box display="flex" gap={2}>
         <Button
-          sx={{ ml: 1 }}
           size="small"
           rounded
           fullWidth
@@ -209,7 +221,7 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
         >
           Remove
         </Button>
-      </Box>
+      </Box> */}
     </Paper>
   );
 };

@@ -112,8 +112,10 @@ const CreateInvoiceForm = () => {
       data-testid="invoice-create-form"
     >
       <Box my={1} display="flex" alignItems="center">
-        <CircleNumber color="secondary.light" number={1} />
-        <Typography ml={1}>Primary coin</Typography>
+        <CircleNumber color="tertiary.main" number={1} />
+        <Typography ml={1} color="text.secondary">
+          Primary coin
+        </Typography>
       </Box>
       <SelectCoinAmount
         form={form}
@@ -123,8 +125,10 @@ const CreateInvoiceForm = () => {
         data-testid="invoice-create-primary-coin-select"
       />
       <Box mt={3} display="flex" alignItems="center">
-        <CircleNumber color="secondary.light" number={2} />
-        <Typography ml={1}>Crypto currency</Typography>
+        <CircleNumber color="tertiary.main" number={2} />
+        <Typography ml={1} color="text.secondary">
+          Crypto currency
+        </Typography>
       </Box>
       <MultiselectAssetsWithValidation
         name="convertedCurrencies"
@@ -176,7 +180,6 @@ const CreateInvoiceForm = () => {
           />
         </AccordionDetails>
       </Accordion>
-
       <Button
         type="submit"
         disabled={

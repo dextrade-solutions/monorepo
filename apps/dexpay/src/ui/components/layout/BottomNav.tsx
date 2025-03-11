@@ -85,6 +85,7 @@ export default function BottomNav() {
       <BottomNavigation
         showLabels
         sx={{
+          mb: 2,
           display: 'flex',
           justifyContent: 'center', // Center the BottomNavigation
         }}
@@ -114,6 +115,7 @@ export default function BottomNav() {
       <Box
         size="large"
         sx={{
+          mb: 2,
           position: 'absolute',
           zIndex: -1,
           bottom: 8,
@@ -152,6 +154,7 @@ export default function BottomNav() {
       <Fab
         aria-label="add"
         sx={{
+          mb: 2,
           bgcolor: 'tertiary.main', // Use tertiary.main for background
           color: 'tertiary.contrastText',
           '&:hover': {

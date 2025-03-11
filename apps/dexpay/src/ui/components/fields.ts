@@ -7,6 +7,7 @@ import {
 
 import DatePickerComponent from './ui/DatePicker';
 import SelectCurrency from './ui/SelectCurrency';
+import PickCoin from './ui/PickCoin';
 
 export const TextFieldWithValidation = withValidationProvider(TextField);
 export const DatePickerWithValidation = withValidationProvider(
@@ -25,3 +26,4 @@ export const MultiselectAssetsWithValidation =
   withValidationProvider(MultiselectAssets);
 
 export const VPasswordField = withValidationProvider(PasswordField);
+export const VPickCoin = withValidationProvider(PickCoin);
