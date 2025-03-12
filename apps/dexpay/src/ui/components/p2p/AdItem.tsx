@@ -209,7 +209,7 @@ const AdItem: React.FC<AdItemProps> = ({
       <Divider />
       <Collapse in={expanded.options}>
         <Stack spacing={2} sx={{ mt: 2 }} divider={<Divider />}>
-          {!active && (
+          {active && (
             <Box>
               <Box
                 display="flex"
