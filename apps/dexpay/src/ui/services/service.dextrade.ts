@@ -27,7 +27,10 @@ export default abstract class DexTradeService {
    * @param params
    * @param json
    */
-  static userCreate(params: DexTrade.User.Create.Params, json: DexTrade.User.Create.Body) {
+  static userCreate(
+    params: DexTrade.User.Create.Params,
+    json: DexTrade.User.Create.Body,
+  ) {
     return $api
       .post(`${params.projectId}/${DexTradeService.PREFIX}/users`, { json })
       .json<DexTrade.User.Create.Response>();
@@ -38,7 +41,10 @@ export default abstract class DexTradeService {
    * @param params
    * @param json
    */
-  static userUpdate(params: DexTrade.User.Update.Params, json: DexTrade.User.Update.Body) {
+  static userUpdate(
+    params: DexTrade.User.Update.Params,
+    json: DexTrade.User.Update.Body,
+  ) {
     return $api
       .put(`${params.projectId}/${DexTradeService.PREFIX}/users`, { json })
       .json<DexTrade.User.Update.Response>();
@@ -47,10 +53,16 @@ export default abstract class DexTradeService {
   /**
    *
    * @param params
+   * @param query
    */
-  static advertsList(params: DexTrade.Advert.List.Params) {
+  static advertsList(
+    params: DexTrade.Advert.List.Params,
+    query?: DexTrade.Advert.List.Query,
+  ) {
     return $api
-      .get(`${params.projectId}/${DexTradeService.PREFIX}/ads/list`)
+      .get(`${params.projectId}/${DexTradeService.PREFIX}/ads/list`, {
+        searchParams: query,
+      })
       .json<DexTrade.Advert.List.Response>();
   }
 
@@ -59,9 +71,14 @@ export default abstract class DexTradeService {
    * @param params
    * @param json
    */
-  static advertCreateFromPair(params: DexTrade.Advert.Create.Params, json: DexTrade.Advert.Create.Body) {
+  static advertCreateFromPair(
+    params: DexTrade.Advert.Create.Params,
+    json: DexTrade.Advert.Create.Body,
+  ) {
     return $api
-      .post(`${params.projectId}/${DexTradeService.PREFIX}/ads/from-pair`, { json })
+      .post(`${params.projectId}/${DexTradeService.PREFIX}/ads/from-pair`, {
+        json,
+      })
       .json<DexTrade.Advert.Create.Response>();
   }
 
@@ -70,7 +87,10 @@ export default abstract class DexTradeService {
    * @param params
    * @param json
    */
-  static advertUpdate(params: DexTrade.Advert.Update.Params, json: DexTrade.Advert.Update.Body) {
+  static advertUpdate(
+    params: DexTrade.Advert.Update.Params,
+    json: DexTrade.Advert.Update.Body,
+  ) {
     return $api
       .put(`${params.projectId}/${DexTradeService.PREFIX}/ads/ad`, { json })
       .json<DexTrade.Advert.Update.Response>();
@@ -81,7 +101,10 @@ export default abstract class DexTradeService {
    * @param params
    * @param json
    */
-  static advertDelete(params: DexTrade.Advert.Delete.Params, json: DexTrade.Advert.Delete.Body) {
+  static advertDelete(
+    params: DexTrade.Advert.Delete.Params,
+    json: DexTrade.Advert.Delete.Body,
+  ) {
     return $api
       .delete(`${params.projectId}/${DexTradeService.PREFIX}/ads`, { json })
       .json<DexTrade.Advert.Delete.Response>();

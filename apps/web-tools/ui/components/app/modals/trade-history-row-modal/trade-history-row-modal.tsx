@@ -127,17 +127,13 @@ const TradeHistoryRowModal = ({
           <Typography textAlign="left" className="flex-grow nowrap">
             {t('provider')} {/* Added i18n */}
           </Typography>
-          <CopyData
-            width="100%"
-            className="flex-shrink"
-            data={trade?.exchangerName || ''}
-          />
+          <CopyData data={trade?.exchangerName || ''} />
         </Box>
         <Box display="flex" textAlign="right" alignItems="center">
           <Typography textAlign="left" className="flex-grow nowrap">
             {t('Swap ID')} {/* Added i18n */}
           </Typography>
-          <CopyData shorten className="flex-shrink" data={trade?.id || ''} />
+          <CopyData width="100%" data={trade?.id || ''} />
         </Box>
         <Box display="flex" marginTop={1}>
           <Typography className="flex-grow">{t('transactionFee')}</Typography>
@@ -189,10 +185,7 @@ const TradeHistoryRowModal = ({
                 <Typography textAlign="left" className="flex-grow nowrap">
                   {t('Hash')} {/* Added i18n */}
                 </Typography>
-                <CopyData
-                  className="flex-shrink"
-                  data={trade.clientTransactionHash}
-                />
+                <CopyData data={trade.clientTransactionHash} />
               </Box>
               <Box display="flex" justifyContent="flex-end">
                 <Box>
@@ -213,7 +206,7 @@ const TradeHistoryRowModal = ({
 
           {safe1 && safe1.refunded && (
             <Alert severity="success">
-              {t('You refunded')}{' '} {/* Added i18n */}
+              {t('You refunded')} {/* Added i18n */}
               {formatFundsAmount(
                 trade.amount1,
                 trade.exchangerSettings.from.ticker,
@@ -236,7 +229,7 @@ const TradeHistoryRowModal = ({
                     infoTooltipLabelKey="approvalTimerP2PInfo"
                   />
                   <Button variant="contained" size="small" disabled>
-                  {t('Refund')} {/* Added i18n */}
+                    {t('Refund')} {/* Added i18n */}
                   </Button>
                 </Box>
               ) : (
@@ -267,7 +260,7 @@ const TradeHistoryRowModal = ({
                     </Button>
                   }
                 >
-                 {t('Approve refund')} {/* Added i18n */}
+                  {t('Approve refund')} {/* Added i18n */}
                 </Alert>
               )}
             </Box>
@@ -281,7 +274,7 @@ const TradeHistoryRowModal = ({
             <Box display="flex">
               <strong className="flex-grow">{t('youGet')}</strong>
               <Typography marginLeft={1} color="text.secondary">
-              {t('Plan')} {/* Added i18n */}
+                {t('Plan')} {/* Added i18n */}
               </Typography>
             </Box>
             <Box display="flex">
@@ -305,7 +298,7 @@ const TradeHistoryRowModal = ({
               <Box display="flex">
                 <strong className="flex-grow">{t('youGet')}</strong>
                 <Typography marginLeft={1} color="text.secondary">
-                {t('Fact')} {/* Added i18n */}
+                  {t('Fact')} {/* Added i18n */}
                 </Typography>
               </Box>
               <Box display="flex">
@@ -337,10 +330,7 @@ const TradeHistoryRowModal = ({
                 <Typography textAlign="left" className="flex-grow nowrap">
                   {t('Hash')} {/* Added i18n */}
                 </Typography>
-                <CopyData
-                  className="flex-shrink"
-                  data={trade.exchangerTransactionHash}
-                />
+                <CopyData data={trade.exchangerTransactionHash} />
               </Box>
               <Box display="flex" justifyContent="flex-end">
                 <Box>
@@ -386,12 +376,12 @@ const TradeHistoryRowModal = ({
                 </Button>
               }
             >
-            {t('Approve claim in your wallet')} {/* Added i18n */}
+              {t('Approve claim in your wallet')} {/* Added i18n */}
             </Alert>
           )}
           {safe2 && safe2.refunded && (
             <Alert severity="error">
-            {t('Exchanger refunded')}{' '} {/* Added i18n */}
+              {t('Exchanger refunded')} {/* Added i18n */}
               {formatFundsAmount(
                 trade.amount2,
                 trade.exchangerSettings.to.ticker,
@@ -402,12 +392,12 @@ const TradeHistoryRowModal = ({
       </Card>
       <Box marginTop={2}>
         <Button onClick={openAd} variant="outlined" fullWidth>
-         {t('Try again')} {/* Added i18n */}
+          {t('Try again')} {/* Added i18n */}
         </Button>
       </Box>
       <Box marginTop={1}>
         <Button fullWidth onClick={openTrade}>
-        {t('View swap')} {/* Added i18n */}
+          {t('View swap')} {/* Added i18n */}
         </Button>
       </Box>
     </Box>

@@ -227,11 +227,7 @@ export function PayModalProcessing({
                   <Typography color="text.secondary" className="flex-grow">
                     Your tx hash
                   </Typography>
-                  <CopyData
-                    className="flex-shrink"
-                    shorten
-                    data={paymentResult.hash}
-                  />
+                  <CopyData shorten data={paymentResult.hash} />
                 </Box>
               ) : null
             }

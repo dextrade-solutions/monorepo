@@ -21,7 +21,7 @@ export default abstract class InvoicesService {
    * @param params
    * @param query
    */
-  static list(params: Invoice.List.Params, query: Invoice.List.Query) {
+  static list(params: Invoice.List.Params, query?: Invoice.List.Query) {
     return $api
       .get(`${params.projectId}/${InvoicesService.PREFIX}`, {
         searchParams: query,

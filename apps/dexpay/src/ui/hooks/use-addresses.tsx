@@ -1,25 +1,21 @@
 import { useAuth } from './use-auth';
 import { useQuery } from './use-query';
-import { Address, Vault } from '../services';
+import { Address } from '../services';
 
 export default function useAddresses({
   currencyId,
 }: { currencyId?: number } = {}) {
-  const { user } = useAuth();
-  const projectId = user?.project?.id!;
-
-  const vaults = useQuery(Vault.my, [{ projectId }, { page: 0 }]);
-
-  const hotWallet = (vaults.data?.list.currentPageResult || []).find(
-    (v) => v.name === 'Hot Wallet',
-  );
+  const {
+    user: { project },
+    vaults: { hotWallet },
+  } = useAuth();
 
   const addressList = useQuery(
     Address.list,
     [
       {
         vaultId: hotWallet?.id!,
-        projectId,
+        projectId: project.id,
       },
       {
         page: 0,

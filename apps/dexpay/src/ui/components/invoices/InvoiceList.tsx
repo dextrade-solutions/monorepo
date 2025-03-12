@@ -6,19 +6,48 @@ import {
   Divider,
   Skeleton,
 } from '@mui/material';
-import React from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import { InvoiceItem } from './InvoiceItem';
 import { useAuth } from '../../hooks/use-auth';
-import { useQuery } from '../../hooks/use-query';
 import { Invoice } from '../../services';
 
 export default function InvoiceList() {
   const { user } = useAuth();
-  const invoices = useQuery(Invoice.list, { projectId: user?.project?.id });
-  const renderInvoicesList = invoices.data?.currentPageResult || [];
+  const projectId = user?.project?.id!;
+  const { ref: intersectionRef, inView } = useInView({
+    threshold: 0.5,
+  });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['invoices-list'],
+    queryFn: ({ pageParam = 0 }) =>
+      Invoice.list({ projectId }, { page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page >= lastPage.totalPages - 1) {
+        return undefined;
+      }
+      return lastPage.page + 1;
+    },
+  });
+  const renderInvoicesList =
+    data?.pages.flatMap((i) => i.currentPageResult) || [];
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (invoices.isLoading) {
+  if (isLoading) {
     return (
       <Card
         elevation={0}
@@ -49,15 +78,37 @@ export default function InvoiceList() {
 
   return (
     <>
-      {renderInvoicesList.map((invoice) => (
-        <InvoiceItem
-          key={invoice.id}
-          invoice={invoice}
-          onDelete={() => {
-            invoices.refetch();
-          }}
-        />
-      ))}
+      {renderInvoicesList.map((invoice, index) => {
+        const lastElement = renderInvoicesList.length - 1 === index;
+        return (
+          <Box ref={lastElement ? intersectionRef : undefined} key={invoice.id}>
+            <InvoiceItem
+              invoice={invoice}
+              onDelete={() => {
+                refetch();
+              }}
+            />
+          </Box>
+        );
+      })}
+      {isFetchingNextPage && (
+        <Card
+          elevation={0}
+          sx={{ bgcolor: 'secondary.dark', borderRadius: 1, mb: 2 }}
+        >
+          <CardContent>
+            <Skeleton height={20} width="60%" />
+            <Skeleton height={40} width="100%" sx={{ mt: 1 }} />
+            <Divider sx={{ my: 1 }} />
+            <Skeleton height={20} width="100%" />
+            <Skeleton height={20} width="100%" sx={{ mt: 1 }} />
+            <Box display="flex" alignItems="center" mt={1}>
+              <Skeleton height={36} width={80} />
+              <Skeleton height={36} width={80} sx={{ ml: 1 }} />
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }

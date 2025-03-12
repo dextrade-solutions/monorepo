@@ -63,6 +63,10 @@ const priceSourceProviders = [
 ];
 
 const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const {
+    vaults: { hotWallet },
+  } = useAuth();
+  // debugger;
   const { user } = useAuth();
   const projectId = user?.project?.id!;
 
@@ -135,8 +139,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {
         currency_main_id: values.coin1.currency.id,
         currency_second_id: values.coin2.currency.id,
-        liquidity_address_main_id: null,
-        liquidity_address_second_id: null,
+        liquidity_address_main_id: hotWallet.id,
+        liquidity_address_second_id: hotWallet.id,
         [values.priceSourceProvider.query]: {
           main_iso: getIsoPriceSourceCoin({ raiseError: true })
             .service_currency_iso,

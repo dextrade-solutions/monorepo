@@ -2,9 +2,9 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Memo, Projects, User } from '../services'; // Import Auth service
+import { Auth, Memo, Projects, User, Vault } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes, IUser } from '../types';
+import { IProject, Auth as AuthTypes, IUser, IVault } from '../types';
 
 interface IStoredUser {
   auth: {
@@ -28,6 +28,10 @@ interface UserContextType {
   twoFAdata: {
     codeToken: string;
     method?: number;
+  };
+  vaults: {
+    all: IVault[];
+    hotWallet: IVault | undefined;
   };
   login: (email: string, pass: string) => Promise<void>;
   twoFA: (options: {
@@ -54,6 +58,10 @@ export const UserContext = createContext<UserContextType>({
   twoFAdata: {
     codeToken: '',
     method: 1,
+  },
+  vaults: {
+    all: [],
+    hotWallet: undefined,
   },
   setProject: () => {},
   setCompleteReginstration: () => {},
@@ -103,6 +111,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const me = useQuery(User.view, [], {
     enabled: isAuthorized,
   });
+
+  const vaults = useQuery(
+    Vault.my,
+    [{ projectId: user?.project?.id }, { page: 0 }],
+    {
+      enabled: Boolean(user?.project),
+    },
+  );
+  const allVaults = vaults.data?.list.currentPageResult || [];
+  const hotWallet = allVaults.find((v) => v.name === 'Hot Wallet');
 
   const isLoading = projects.isLoading || me.isLoading;
 
@@ -195,6 +213,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
     isAuthorized,
+    vaults: {
+      all: allVaults,
+      hotWallet,
+    },
     setProject: (project: IProject) => {
       setUser((prev) => ({
         ...prev,
