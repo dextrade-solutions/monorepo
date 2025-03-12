@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Card,
   CardContent,
@@ -168,4 +169,11 @@ export const SwapViewContent = ({
   if (ad && assetFrom && assetTo) {
     return <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
   }
+
+  return (
+    <Alert color="info">
+      Ad not found. The merchant either disabled it or exhausted their balance.
+      Try again later.
+    </Alert>
+  );
 };

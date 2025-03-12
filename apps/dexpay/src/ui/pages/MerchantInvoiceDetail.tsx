@@ -7,10 +7,7 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import {
-  shortenAddress,
-  getCoinIconByUid,
-} from 'dex-helpers';
+import { shortenAddress, getCoinIconByUid, SECOND } from 'dex-helpers';
 import {
   Icon,
   useGlobalModalContext,
@@ -39,10 +36,16 @@ export default function InvoiceDetailPage() {
   const [, navigate] = useLocation();
   const currencies = useCurrencies();
   const { user } = useAuth();
-  const { isLoading, data: invoice } = useQuery(Invoice.paymentGet, {
-    id,
-    projectId: user?.project?.id,
-  });
+  const { isLoading, data: invoice } = useQuery(
+    Invoice.paymentGet,
+    {
+      id,
+      projectId: user?.project?.id,
+    },
+    {
+      refetchInterval: 6 * SECOND,
+    },
+  );
 
   const deleteInvoice = useMutation(Invoice.delete, {
     onSuccess: () => {
@@ -129,7 +132,7 @@ export default function InvoiceDetailPage() {
         mb={4}
       >
         <Typography
-          variant="h5"
+          variant="h6"
           fontWeight="bold"
           data-testid="invoice-detail-title"
         >
