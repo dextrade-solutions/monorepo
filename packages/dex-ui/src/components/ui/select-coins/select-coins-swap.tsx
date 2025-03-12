@@ -42,12 +42,12 @@ export const SelectCoinsSwap = memo<SelectCoinsSwapProps>(
             'select-coins__swap-loading': loading, // Add loading class
           })}
           sx={{
+            zIndex: 0,
             boxShadow: 'none',
           }}
           size="small"
           color="tertiary"
           disableTouchRipple
-          tabIndex={1}
           onClick={loading ? undefined : handleClick} // Disable onClick when loading
           disabled={disabled || loading} // Disable Fab when loading
           {...rest}

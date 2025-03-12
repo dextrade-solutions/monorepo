@@ -1,12 +1,19 @@
-import { Box, Typography } from '@mui/material';
-import { Button, ModalProps } from 'dex-ui';
-import React from 'react';
+import { Box, Chip, Typography } from '@mui/material';
+import { getCoinIconByUid } from 'dex-helpers';
+import { Button, ModalProps, NumericTextField, UrlIcon, useForm } from 'dex-ui';
+import { map } from 'lodash';
+import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'wouter';
 
 import {
   CURRENCIES_ISO_BY_GROUP_TYPE,
   CurrencyGroupType,
 } from '../constants/coins';
+import { ROUTE_INVOICE_DETAIL, ROUTE_MERCHANT } from '../constants/pages';
+import { useAuth } from '../hooks/use-auth';
 import { useCurrencies } from '../hooks/use-currencies';
+import { useMutation } from '../hooks/use-query';
+import { Invoice } from '../services';
 
 interface ShortcutNewInvoiceProps {
   isOpenInvoice: boolean;
@@ -18,22 +25,107 @@ const ShortcutNewInvoice: React.FC<ShortcutNewInvoiceProps & ModalProps> = ({
   isOpenInvoice,
   currencyGroupType,
   hideModal,
-  onChange,
 }) => {
+  const [, navigate] = useLocation();
+  const { user } = useAuth();
+  const [amount, setAmount] = useState<number | undefined>(undefined);
   const currencies = useCurrencies();
   const renderListCurrencies = currencies.items.filter(({ currency }) =>
-    CURRENCIES_ISO_BY_GROUP_TYPE[currencyGroupType].includes(currency.iso),
+    CURRENCIES_ISO_BY_GROUP_TYPE[currencyGroupType].includes(currency.name),
   );
-  const primaryCurrency = 'USD';
-  const handleCreate = () => {
-    hideModal();
+  const primaryCurrency = {
+    iso: 'USD',
+    id: 101,
+    currency: {
+      symbol: '$',
+      symbolOnLeft: true,
+    },
   };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const invoiceCreate = useMutation(Invoice.create, {
+    onSuccess: (invoice) => {
+      navigate(`${ROUTE_INVOICE_DETAIL.replace(':id', invoice.public_id)}`)
+      hideModal();
+    },
+  });
+
+  useEffect(() => {
+    if (!isOpenInvoice && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpenInvoice]);
+
+  const form = useForm({
+    method: async () => {
+      const body = {
+        converted_amount_requested: amount,
+        converted_coin_id: primaryCurrency.id,
+        supported_currencies: map(renderListCurrencies, 'currency.id'),
+      };
+      await invoiceCreate.mutateAsync([{ projectId: user!.project!.id }, body]);
+    },
+  });
   return (
     <Box padding={3}>
-      <Typography>{isOpenInvoice ? 'Open invoice' : 'Invoice'}</Typography>
-      <Box>
-        <Button>Cancel</Button>
-        <Button variant="contained" onClick={handleCreate}>
+      <Typography variant="h5" mb={3}>
+        {isOpenInvoice ? 'New open invoice' : 'New invoice'}
+      </Typography>
+      {!isOpenInvoice && (
+        <Box my={2}>
+          <NumericTextField
+            value={amount}
+            onChange={setAmount}
+            allowNegative={false}
+            placeholder="0"
+            textFieldProps={{
+              inputRef,
+              variant: 'standard',
+              fullWidth: true,
+            }}
+            InputProps={{
+              sx: {
+                fontSize: 25,
+              },
+              disableUnderline: true,
+              startAdornment: <Typography mr={1} fontSize={25}>$</Typography>,
+            }}
+          />
+        </Box>
+      )}
+
+      <Typography color="text.secondary" mt={4} ml={1} mb={2}>
+        Clients can pay with:{' '}
+      </Typography>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1}>
+        {renderListCurrencies.map(({ asset }) => (
+          <Chip
+            margin="normal"
+            key={asset.iso}
+            label={
+              <Box display="flex">
+                <Typography>{asset.symbol}</Typography>
+                {asset.standard && (
+                  <Typography ml={1} color="text.secondary">
+                    {asset.standard.toLowerCase()}
+                  </Typography>
+                )}
+              </Box>
+            }
+            variant="outlined"
+            icon={<UrlIcon url={getCoinIconByUid(asset.uid)} />}
+          />
+        ))}
+      </Box>
+      <Box mt={4} display="flex" justifyContent="space-between" gap={2}>
+        <Button onClick={hideModal}>Cancel</Button>
+        <Button
+          sx={{ px: 8 }}
+          gradient
+          variant="contained"
+          onClick={form.submit}
+        >
           Create
         </Button>
       </Box>

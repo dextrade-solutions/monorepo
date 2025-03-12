@@ -15,7 +15,7 @@ import { useAuth } from '../hooks/use-auth';
 export default function Profile() {
   const { logout, me } = useAuth();
   return (
-    <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+    <Box sx={{ maxWidth: 'md' }}>
       <Card
         elevation={0}
         sx={{
@@ -28,27 +28,15 @@ export default function Profile() {
           <Typography color="text.secondary" variant="h5" mb={2}>
             Profile
           </Typography>
-          <TextField
+          <Typography fontWeight="bold">Email</Typography>
+          <Typography>{me?.email}</Typography>
+          {/* <TextField
             label="Email"
             margin="normal"
             disabled
             fullWidth
             value={me?.email}
-          />
-          <TextField
-            label="First name"
-            margin="normal"
-            disabled
-            fullWidth
-            value={me?.first_name}
-          />
-          <TextField
-            label="Last name"
-            margin="normal"
-            disabled
-            fullWidth
-            value={me?.last_name}
-          />
+          /> */}
           {/* <Box
             sx={{
               display: 'flex',

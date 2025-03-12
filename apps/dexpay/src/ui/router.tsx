@@ -5,6 +5,7 @@ import {
   ROUTE_HISTORY,
   ROUTE_HOME,
   ROUTE_INVOICE_CREATE,
+  ROUTE_INVOICE_DETAIL,
   ROUTE_INVOICE_EDIT,
   ROUTE_LOGIN,
   ROUTE_MERCHANT,
@@ -30,6 +31,7 @@ import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
 import WalletMemo from './pages/WalletMemo';
 import WalletWithdrawPage from './pages/WalletWithdraw';
+import InvoiceDetailPage from './pages/MerchantInvoiceDetail';
 
 export default function Router() {
   const auth = useAuth();
@@ -68,6 +70,9 @@ export default function Router() {
       <Route path={ROUTE_WALLET_DEPOSIT} component={WalletDepositPage} />
       <Route path={ROUTE_WALLET_WITHDRAW} component={WalletWithdrawPage} />
       <Route path={ROUTE_MERCHANT} component={Merchant} />
+      <Route path={ROUTE_INVOICE_DETAIL}>
+        <InvoiceDetailPage />
+      </Route>
       <Route path={ROUTE_INVOICE_CREATE} component={CreateInvoice} />
       <Route path={ROUTE_INVOICE_EDIT} component={CreateInvoice} />
       <Route path={ROUTE_P2P} component={P2P} />

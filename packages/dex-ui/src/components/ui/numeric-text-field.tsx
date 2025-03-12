@@ -31,8 +31,9 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
   return (
     <NumericFormat
       value={value}
-      thousandSeparator=","
       decimalSeparator="."
+      valueIsNumericString
+      inputProps={{ inputMode: 'decimal' }}
       allowedDecimalSeparators={[',', '.']}
       customInput={TextField}
       disabled={loading}

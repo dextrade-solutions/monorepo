@@ -16,6 +16,7 @@ import SelectProject from './modals/select-project';
 import TransactionsModal from './modals/transactions';
 import Router from './router';
 import './css/index.scss';
+import ShortcutNewInvoice from './modals/shortcut-new-invoice';
 
 log.setLevel(log.levels.DEBUG);
 
@@ -71,6 +72,7 @@ export function UI() {
               SELECT_PROJECT: SelectProject,
               SALESPERSONS: SalespersonsModal,
               DEXPAY_TRANSACTIONS_LIST: TransactionsModal,
+              SHORTCUT_NEW_INVOICE: ShortcutNewInvoice,
             }}
           >
             <SnackbarProvider>

@@ -207,7 +207,7 @@ export default function InvoiceView({
     [InvoiceStatus.unknwn]: {
       icon: mainIcon,
       color: 'primary.main',
-      status: 'Choose a coin',
+      status: 'Choosing coin',
     },
     [InvoiceStatus.expired]: {
       icon: mainIcon,

@@ -6,6 +6,7 @@ export const ROUTE_REGISTER_COMPLETE = '/register/complete';
 export const ROUTE_WALLET_DEPOSIT = '/wallet/deposit';
 export const ROUTE_WALLET_WITHDRAW = '/wallet/withdraw';
 export const ROUTE_MERCHANT = '/merchant';
+export const ROUTE_INVOICE_DETAIL = '/merchant/invoice/detail/:id';
 export const ROUTE_INVOICE_CREATE = '/merchant/invoice/create';
 export const ROUTE_INVOICE_EDIT = '/merchant/invoice/:id/edit';
 export const ROUTE_P2P = '/p2p';

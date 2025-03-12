@@ -87,5 +87,20 @@
         "symbol": null
       }
     ]
+  },
+  {
+    "uid": "soar",
+    "name": "Soar Token",
+    "code": "SOAR",
+    "market_cap_rank": null,
+    "coingecko_id": "soar",
+    "platforms": [
+      {
+        "type": "solana",
+        "decimals": 6,
+        "address": "9359LVZJs8bf2FXcTdHvwcMnvg2ZCf6DUZ5ABDcJKx52",
+        "symbol": null
+      }
+    ]
   }
 ]

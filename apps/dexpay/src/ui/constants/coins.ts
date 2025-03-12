@@ -14,7 +14,7 @@ export const USDT_CURRENCIES = [
   'USDT_BSC',
   'USDT_TRX',
   'USDT_ETH',
-  'USDT_SOLANA',
+  'USDT_SOL',
 ];
 
 export const MOST_POPULAR_CURRENCIES = [
@@ -22,11 +22,11 @@ export const MOST_POPULAR_CURRENCIES = [
   'BSC',
   'TRX',
   'ETH',
-  'SOLANA',
+  'SOL',
   'USDT_BSC',
   'USDT_TRX',
   'USDT_ETH',
-  'USDT_SOLANA',
+  'USDT_SOL',
 ];
 
 export enum CurrencyGroupType {
