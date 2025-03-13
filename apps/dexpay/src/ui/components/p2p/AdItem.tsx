@@ -3,8 +3,6 @@ import {
   Divider,
   Stack,
   Typography,
-  Link as MuiLink,
-  AccordionSummary as MuiAccordionSummary,
   Paper,
   Collapse,
   IconButton,
@@ -77,11 +75,12 @@ const AdItem: React.FC<AdItemProps> = ({
   const toggleExpand = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
-
-  const link = `${DEXTRADE_P2P_LINK}/swap-widget?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
+  const queryString = `?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`
+  const adLink = `${DEXTRADE_P2P_LINK}/swap-view${queryString}`;
+  const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
 
   const widgetCode = `<iframe
-      src="${link}"
+      src="${widgetLink}"
       width="100%"
       height="600px"
       title="DexPay Swap"
@@ -216,7 +215,7 @@ const AdItem: React.FC<AdItemProps> = ({
                   size="small"
                   color="tertiary"
                   onClick={() => {
-                    window.open(link, '_blank');
+                    window.open(adLink, '_blank');
                   }}
                   endIcon={<LucideArrowUpRight size={20} />}
                 >
@@ -227,7 +226,7 @@ const AdItem: React.FC<AdItemProps> = ({
                   className="flex-shrink"
                   color="tertiary"
                   shorten
-                  data={link}
+                  data={adLink}
                 />
               </Box>
               <Box
@@ -237,9 +236,10 @@ const AdItem: React.FC<AdItemProps> = ({
               >
                 <Button
                   size="small"
+                  className="nowrap"
                   color="tertiary"
                   onClick={() => {
-                    window.open(widgetUrl, '_blank');
+                    window.open(widgetLink, '_blank');
                   }}
                   endIcon={<LucideArrowUpRight size={20} />}
                 >
@@ -248,8 +248,8 @@ const AdItem: React.FC<AdItemProps> = ({
                 <div className="flex-grow" />
                 <CopyData
                   className="flex-shrink"
-                  color="tertiary"
                   shorten
+                  color="tertiary"
                   data={widgetCode}
                 />
               </Box>

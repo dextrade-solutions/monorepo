@@ -128,7 +128,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   }
 
   async function saveAd(values: CreateAdvertFormValues) {
-    const addresses = await Address.list(
+    const addressesResp = await Address.list(
       {
         vaultId: hotWallet?.id!,
         projectId: user.project!.id,
@@ -139,7 +139,13 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         'currency_id[1]': values.coin2.currency.id,
       },
     );
-    const [address1, address2] = addresses.currentPageResult || [];
+    const currency1Id = values.coin1.currency.id;
+    const currency2Id = values.coin2.currency.id;
+
+    const addresses = addressesResp.currentPageResult || [];
+    const address1 = addresses.find((i) => i.currency_id === currency1Id);
+    const address2 = addresses.find((i) => i.currency_id === currency2Id);
+
     if (!address1) {
       throw new Error('Address for coin from not found');
     }
