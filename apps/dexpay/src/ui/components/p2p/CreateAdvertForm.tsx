@@ -8,13 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import {
-  CircleNumber,
-  Button,
-  Icon,
-  SelectCoinsSwap,
-  useForm,
-} from 'dex-ui';
+import { CircleNumber, Button, Icon, SelectCoinsSwap, useForm } from 'dex-ui';
 import React from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
@@ -66,7 +60,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const {
     vaults: { hotWallet },
   } = useAuth();
-  // debugger;
   const { user } = useAuth();
   const projectId = user?.project?.id!;
 
