@@ -11,15 +11,15 @@ import { AssetModel } from 'dex-helpers/types';
 import { CircleNumber, Button, Icon, SelectCoinsSwap, useForm } from 'dex-ui';
 import React from 'react';
 
+import useAddresses from '../../hooks/use-addresses';
 import { useAuth } from '../../hooks/use-auth';
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { Pairs, DexTrade } from '../../services'; // Adjust path as needed
+import { Pairs, DexTrade, Address } from '../../services'; // Adjust path as needed
 import { Validation } from '../../validation';
 import {
   SelectCurrencyWithValidation,
   TextFieldWithValidation,
 } from '../fields';
-import useAddresses from '../../hooks/use-addresses';
 
 // Define the shape of the price source provider
 interface PriceSourceProvider {
@@ -128,13 +128,31 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   }
 
   async function saveAd(values: CreateAdvertFormValues) {
+    const addresses = await Address.list(
+      {
+        vaultId: hotWallet?.id!,
+        projectId: user.project!.id,
+      },
+      {
+        page: 0,
+        'currency_id[0]': values.coin1.currency.id,
+        'currency_id[1]': values.coin2.currency.id,
+      },
+    );
+    const [address1, address2] = addresses.currentPageResult || [];
+    if (!address1) {
+      throw new Error('Address for coin from not found');
+    }
+    if (!address2) {
+      throw new Error('Address for coin to not found');
+    }
     const result = await pairsCreate.mutateAsync([
       { projectId },
       {
         currency_main_id: values.coin1.currency.id,
         currency_second_id: values.coin2.currency.id,
-        liquidity_address_main_id: hotWallet.id,
-        liquidity_address_second_id: hotWallet.id,
+        liquidity_address_main_id: address1.id,
+        liquidity_address_second_id: address2.id,
         [values.priceSourceProvider.query]: {
           main_iso: getIsoPriceSourceCoin({ raiseError: true })
             .service_currency_iso,

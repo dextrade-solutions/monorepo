@@ -33,10 +33,7 @@ export function useCurrencies({
 }: {
   disableLoadBalances?: boolean;
 } = {}) {
-  const {
-    user,
-    vaults: { hotWallet },
-  } = useAuth();
+  const { user } = useAuth();
   const projectId = user?.project!.id;
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
     Currency.index,
@@ -46,24 +43,11 @@ export function useCurrencies({
     { projectId },
     { enabled: !disableLoadBalances },
   );
-  const addressList = useQuery(
-    Address.list,
-    [
-      {
-        vaultId: hotWallet?.id!,
-        projectId,
-      },
-      { page: 0 },
-    ],
-    {
-      enabled: Boolean(hotWallet?.id),
-    },
-  );
   const items = [
     ...(currencies?.list.currentPageResult || []),
     // BTC_LIGHTNING_CURRENCY,
   ];
-  if (isLoadingBalances || isLoadingCurrencies || addressList.isLoading) {
+  if (isLoadingBalances || isLoadingCurrencies) {
     return { items: [], isLoading: true };
   }
   return {

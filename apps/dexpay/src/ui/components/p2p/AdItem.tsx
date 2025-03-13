@@ -78,11 +78,10 @@ const AdItem: React.FC<AdItemProps> = ({
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
 
-  const link = `${DEXTRADE_P2P_LINK}/swap-view?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
-  const widgetUrl = `${link}&widget=1`;
+  const link = `${DEXTRADE_P2P_LINK}/swap-widget?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
 
   const widgetCode = `<iframe
-      src="${widgetUrl}"
+      src="${link}"
       width="100%"
       height="600px"
       title="DexPay Swap"
