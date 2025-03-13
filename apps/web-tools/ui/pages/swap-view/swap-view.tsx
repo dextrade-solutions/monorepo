@@ -3,31 +3,30 @@ import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Icon, Button, Atom } from 'dex-ui';
-import { groupBy, map, orderBy, uniqBy } from 'lodash';
-import React, { useMemo, useEffect, useState } from 'react';
+import { orderBy } from 'lodash';
+import React, { useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { SwapViewContent } from './swap-view-content';
-import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
-import {
-  EXCHANGE_VIEW_ROUTE,
-  HOME_ROUTE,
-} from '../../helpers/constants/routes';
+import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { parseCoin } from '../../../app/helpers/p2p';
+import { useDispatch } from 'react-redux';
+import { setFromTokenInputValue } from '../../ducks/swaps/swaps';
 
 export default function AdView() {
   const t = useI18nContext();
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const isWidget = Boolean(searchParams.get('widget'));
   const merchant = searchParams.get('name');
-  const [currentAd, setCurrentAd] = React.useState<AdItem>();
+  const initialAmount = searchParams.get('amount');
+
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
-  const [selectionMode, setSelectionMode] = useState(isWidget);
-
+  const [isLoading, setIsLoading] = React.useState(true);
+  const dispatch = useDispatch();
   const firstAdFilter = useMemo(
     () => ({
       fromNetworkName: searchParams.get('fromNetworkName'),
@@ -41,24 +40,14 @@ export default function AdView() {
   );
 
   const currentFilter = {
-    ...(selectionMode ? { name: merchant, size: 100 } : firstAdFilter),
+    ...firstAdFilter,
     page: 1,
     notSupportedCoins: [],
   };
 
-  const { isLoading, data } = useQuery<AdItem[]>({
+  const { data } = useQuery<AdItem[]>({
     queryKey: ['p2pAds', currentFilter],
-    queryFn: () =>
-      P2PService.filterAds(currentFilter).then((response) =>
-        response.data.map((ad) => ({
-          ...ad,
-          fromAsset: parseCoin(ad.fromCoin, ad.coinPair.priceCoin1InUsdt),
-          toAsset: {
-            ...parseCoin(ad.toCoin, ad.coinPair.priceCoin2InUsdt),
-            balanceUsdt: ad.reserveSum * ad.coinPair.priceCoin2InUsdt,
-          },
-        })),
-      ),
+    queryFn: () => P2PService.filterAds(currentFilter),
     refetchInterval: 20 * SECOND,
   });
 
@@ -69,86 +58,24 @@ export default function AdView() {
     }
   };
 
-  const allAds = orderBy(data || [], 'toAsset.balanceUsdt', 'desc');
+  const allAds = (data?.data || []) as AdItem[];
 
-  const fromAssets = {
-    grouped: groupBy(allAds, (i) => i.fromAsset.iso),
-    list: map(
-      uniqBy(allAds, (i) => i.fromAsset.iso),
-      'fromAsset',
-    ),
-  };
-  const toAssets = {
-    grouped: groupBy(allAds, (i) => i.toAsset.iso),
-    list: map(
-      uniqBy(allAds, (i) => i.toAsset.iso),
-      'toAsset',
-    ),
-  };
+  const [currentAd] = allAds;
 
-  const setAsset = (asset: AssetModel, reversed?: boolean) => {
-    // const params = new URLSearchParams(searchParams);
-    if (reversed) {
-      setAssetTo(asset);
-    } else {
-      setAssetFrom(asset);
-    }
-  };
-
-  const handleGoTradeClick = () => {
+  useEffect(() => {
     if (currentAd) {
-      const tradequery = new URLSearchParams(searchParams);
-      tradequery.delete('widget');
-
-      const url = `${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`;
-      window.open(url, '_blank');
+      setAssetFrom(
+        parseCoin(currentAd.fromCoin, currentAd.coinPair.priceCoin1InUsdt),
+      );
+      setAssetTo(
+        parseCoin(currentAd.toCoin, currentAd.coinPair.priceCoin2InUsdt),
+      );
+      if (initialAmount) {
+        dispatch(setFromTokenInputValue(initialAmount));
+      }
+      setIsLoading(false);
     }
-  };
-
-  const [ad] = allAds;
-
-  useEffect(() => {
-    if (ad) {
-      if (!isWidget) {
-        setAsset(ad.fromAsset);
-      }
-      setAsset(ad.toAsset, true);
-      if (!selectionMode) {
-        setCurrentAd(ad);
-      }
-    }
-  }, [ad, selectionMode]);
-
-  useEffect(() => {
-    if (selectionMode) {
-      if (assetFrom) {
-        searchParams.set('fromNetworkName', assetFrom.network);
-        searchParams.set('fromTicker', assetFrom.symbol);
-      } else {
-        searchParams.delete('fromNetworkName');
-        searchParams.delete('fromTicker');
-      }
-      if (assetTo) {
-        searchParams.set('toNetworkName', assetTo?.network);
-        searchParams.set('toTicker', assetTo?.symbol);
-      } else {
-        searchParams.delete('toNetworkName');
-        searchParams.delete('toTicker');
-      }
-      if (assetFrom && assetTo) {
-        setCurrentAd(
-          allAds.find(
-            (i) =>
-              i.fromAsset.iso === assetFrom.iso &&
-              i.toAsset.iso === assetTo.iso,
-          ),
-        );
-      } else {
-        setCurrentAd(undefined);
-      }
-      navigate(`?${searchParams.toString()}`);
-    }
-  }, [assetFrom, assetTo, selectionMode]);
+  }, [currentAd]);
 
   return (
     <Box>
@@ -164,40 +91,18 @@ export default function AdView() {
           </>
         )}
         <div className="flex-grow" />
-        {isWidget ? (
-          <Typography>{merchant}</Typography>
-        ) : (
-          <Box>
-            <Button
-              startIcon={<Icon name="arrow-left-dex" />}
-              sx={{ color: 'text.primary' }}
-              onClick={handleNavigateBack}
-            >
-              {t('back')}
-            </Button>
-          </Box>
-        )}
+        <Box>
+          <Button
+            startIcon={<Icon name="arrow-left-dex" />}
+            sx={{ color: 'text.primary' }}
+            onClick={handleNavigateBack}
+          >
+            {t('back')}
+          </Button>
+        </Box>
       </Box>
       <SwapViewContent
         ad={currentAd}
-        handleGoTradeClick={handleGoTradeClick}
-        onChangeAssetFrom={setAsset}
-        onChangeAssetTo={(v) => setAsset(v, true)}
-        selectionMode={selectionMode}
-        toAssetsList={
-          assetFrom
-            ? (fromAssets.grouped[assetFrom.iso] || []).map((i) => i.toAsset)
-            : toAssets.list
-        }
-        fromAssetsList={
-          assetTo
-            ? (toAssets.grouped[assetTo.iso] || []).map((i) => i.fromAsset)
-            : fromAssets.list
-        }
-        disableReverse={
-          (assetFrom && !toAssets.grouped[assetFrom.iso]) ||
-          (assetTo && !fromAssets.grouped[assetTo.iso])
-        }
         assetFrom={assetFrom}
         assetTo={assetTo}
         isLoading={isLoading}

@@ -3,35 +3,20 @@ import {
   Box,
   Card,
   CardContent,
-  Grow,
   Skeleton,
   Typography,
 } from '@mui/material';
 import { AdItem, AssetModel } from 'dex-helpers/types';
-import { Swap, Button } from 'dex-ui';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import P2PSwapView from '../../components/app/p2p-swap-view';
-import {
-  getFromTokenInputValue,
-  setFromTokenInputValue,
-} from '../../ducks/swaps/swaps';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 // Define the type for the props of SwapViewContent
 export interface SwapViewContentProps {
   ad: AdItem | null; // 'ad' can be an AdItem or null if no ad is found
-  fromAssetsList: AssetModel[];
-  toAssetsList: AssetModel[];
   assetFrom: AssetModel | null; // 'assetFrom' can be an AssetModel or null
   assetTo: AssetModel | null; // 'assetTo' can be an AssetModel or null
   isLoading: boolean;
-  selectionMode: boolean;
-  disableReverse: boolean;
-  onChangeAssetFrom: (asset: AssetModel | null) => void; // 'onChangeAssetFrom' is a function that takes an AssetModel or null and returns void
-  onChangeAssetTo: (asset: AssetModel | null) => void; // 'onChangeAssetTo' is a function that takes an AssetModel or null and returns void
-  handleGoTradeClick: () => void; // 'handleGoTradeClick' is a function that takes no arguments and returns void
 }
 
 export const SwapViewContent = ({
@@ -42,7 +27,7 @@ export const SwapViewContent = ({
 }: SwapViewContentProps) => {
   const t = useI18nContext();
 
-  if (!ad && isLoading) {
+  if (!ad || isLoading) {
     return (
       <>
         <Box marginBottom={2}>

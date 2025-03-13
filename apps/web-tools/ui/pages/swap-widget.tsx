@@ -74,6 +74,9 @@ export default function SwapWidget() {
   const handleGoTradeClick = () => {
     if (currentAd) {
       const tradequery = new URLSearchParams(searchParams);
+      if (fromValue) {
+        tradequery.set('amount', fromValue);
+      }
       const url = `https://p2p.dextrade.com${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`;
       window.open(url, '_blank');
     }
@@ -81,6 +84,15 @@ export default function SwapWidget() {
 
   const [ad] = allAds;
 
+  const updateValues = (newValue: number | undefined, reversed: boolean) => {
+    if (reversed) {
+      setToValue(newValue);
+      setFromValue(newValue / currentAd.coinPair.price);
+    } else {
+      setFromValue(newValue);
+      setToValue(newValue * currentAd.coinPair.price);
+    }
+  };
   useEffect(() => {
     const toNetworkName = searchParams.get('toNetworkName');
     const toTicker = searchParams.get('toTicker');
@@ -133,14 +145,6 @@ export default function SwapWidget() {
   const disableReverse =
     (assetFrom && !toAssets.grouped[assetFrom.iso]) ||
     (assetTo && !fromAssets.grouped[assetTo.iso]);
-
-  const updateValue = (v: string, reversed?: boolean) => {
-    if (reversed) {
-      setFromValue(v / ad?.coinPair.price);
-    } else {
-      setToValue(v * ad?.coinPair.price);
-    }
-  };
   return (
     <Box
       display="flex"
@@ -150,12 +154,20 @@ export default function SwapWidget() {
       height="calc(100vh - 100px)"
     >
       <Swap
-        assetsListSell={fromAssets.list}
-        assetsListBuy={toAssets.list}
+        assetsListBuy={
+          assetFrom
+            ? (fromAssets.grouped[assetFrom.iso] || []).map((i) => i.toAsset)
+            : toAssets.list
+        }
+        assetsListSell={
+          assetTo
+            ? (toAssets.grouped[assetTo.iso] || []).map((i) => i.fromAsset)
+            : fromAssets.list
+        }
         buyAsset={assetTo}
         sellAsset={assetFrom}
-        sellAmount={fromValue}
         loading={isLoading}
+        sellAmount={fromValue}
         buyAmount={toValue}
         onReverse={() => {
           setAsset(assetTo);
@@ -164,8 +176,8 @@ export default function SwapWidget() {
         disableReverse={disableReverse}
         onBuyAssetChange={setAssetTo}
         onSellAssetChange={setAssetFrom}
-        onBuyAmountChange={(v) => updateValue(v, true)}
-        onSellAmountChange={updateValue}
+        onSellAmountChange={updateValues}
+        onBuyAmountChange={(v) => updateValues(v, true)}
       />
       <Grow in={Boolean(assetFrom && assetTo)}>
         <Box width="100%">
@@ -175,7 +187,7 @@ export default function SwapWidget() {
             fullWidth
             onClick={handleGoTradeClick}
           >
-            Go trade
+            Swap
           </Button>
         </Box>
       </Grow>
