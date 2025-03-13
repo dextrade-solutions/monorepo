@@ -71,7 +71,10 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
                 invoice.converted_amount_requested,
                 invoice.converted_coin?.iso,
               )
-            : formatCurrency(invoice.amount_requested, invoice.currency.iso)}
+            : formatCurrency(
+                invoice.amount_requested,
+                invoice.currency?.iso || '',
+              )}
         </Typography>
         <Box textAlign="right">
           <Typography

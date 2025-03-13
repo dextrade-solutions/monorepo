@@ -1,6 +1,6 @@
 import assetDict from 'dex-helpers/assets-dict';
 
-import { Currency, Wallet } from '../services';
+import { Address, Currency, Wallet } from '../services';
 import { useAuth } from './use-auth';
 import { useQuery } from './use-query';
 
@@ -33,20 +33,37 @@ export function useCurrencies({
 }: {
   disableLoadBalances?: boolean;
 } = {}) {
-  const { user } = useAuth();
+  const {
+    user,
+    vaults: { hotWallet },
+  } = useAuth();
+  const projectId = user?.project!.id;
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
     Currency.index,
   );
   const { data: balancesData, isLoading: isLoadingBalances } = useQuery(
     Wallet.list,
-    { projectId: user?.project.id },
+    { projectId },
     { enabled: !disableLoadBalances },
+  );
+  const addressList = useQuery(
+    Address.list,
+    [
+      {
+        vaultId: hotWallet?.id!,
+        projectId,
+      },
+      { page: 0 },
+    ],
+    {
+      enabled: Boolean(hotWallet?.id),
+    },
   );
   const items = [
     ...(currencies?.list.currentPageResult || []),
     // BTC_LIGHTNING_CURRENCY,
   ];
-  if (isLoadingBalances || isLoadingCurrencies) {
+  if (isLoadingBalances || isLoadingCurrencies || addressList.isLoading) {
     return { items: [], isLoading: true };
   }
   return {

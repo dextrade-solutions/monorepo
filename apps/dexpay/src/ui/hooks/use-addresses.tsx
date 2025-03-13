@@ -9,7 +9,6 @@ export default function useAddresses({
     user: { project },
     vaults: { hotWallet },
   } = useAuth();
-
   const addressList = useQuery(
     Address.list,
     [
@@ -17,10 +16,12 @@ export default function useAddresses({
         vaultId: hotWallet?.id!,
         projectId: project.id,
       },
-      {
-        page: 0,
-        currency_id: currencyId,
-      },
+      currencyId
+        ? {
+            page: 0,
+            currency_id: currencyId,
+          }
+        : { page: 0 },
     ],
     {
       enabled: Boolean(hotWallet?.id),

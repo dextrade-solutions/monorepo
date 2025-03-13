@@ -32,13 +32,16 @@ export default function TradingPair() {
   } = useInfiniteQuery({
     queryKey: ['ads-list'],
     queryFn: ({ pageParam = 0 }) =>
-      DexTrade.advertsList({ projectId }, { page: pageParam }),
+      DexTrade.advertsList(
+        { projectId },
+        { no_pagination: 0, page: pageParam },
+      ),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage.length || lastPage.length < 10) {
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page >= lastPage.totalPages - 1) {
         return undefined;
       }
-      return allPages.length + 1;
+      return lastPage.page + 1;
     },
   });
 
@@ -100,7 +103,7 @@ export default function TradingPair() {
   };
 
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
-  const renderList = data?.pages.flat() || [];
+  const renderList = data?.pages.flatMap((i) => i.currentPageResult) || [];
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

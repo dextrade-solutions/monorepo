@@ -12,6 +12,7 @@ import AppSettingsGeneral from './settings/general';
 import { Plans } from './settings/plans';
 import SwapProcessing from './swap-processing';
 import SwapView from './swap-view';
+import SwapWidget from './swap-widget';
 import SwapHistory from './trade-history';
 import engine from '../../app/engine';
 import SigningModal from '../components/app/modals/signing-modal';
@@ -28,6 +29,7 @@ import {
   PLANS_ROUTE,
   INVOICE_ROUTE,
   DAPP_ROUTE,
+  SWAP_WIDGET_ROUTE,
 } from '../helpers/constants/routes';
 import { useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -56,6 +58,7 @@ export default function RoutesRoot() {
         <Route path={HOME_ROUTE} element={<Home />} />
         <Route path={DAPP_ROUTE} element={<DappOpen />} />
         <Route path={EXCHANGE_VIEW_ROUTE} element={<SwapView />} />
+        <Route path={SWAP_WIDGET_ROUTE} element={<SwapWidget />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}

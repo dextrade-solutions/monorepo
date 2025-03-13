@@ -13,7 +13,7 @@ import {
 // import { ArrowForward } from 'lucide-react'; // Import the icon
 import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
 import { CoinModel } from 'dex-helpers/types';
-import { AssetItem, Button, CopyData } from 'dex-ui';
+import { AdRun, AssetItem, Button, CopyData } from 'dex-ui';
 import {
   ChevronDown,
   ChevronRight,
@@ -113,10 +113,7 @@ const AdItem: React.FC<AdItemProps> = ({
             color={active ? 'error' : 'success'}
             onClick={toggleActive}
           >
-            {active ? <Pause size={16} /> : <Play size={16} />}
-          </IconButton>
-          <IconButton color="tertiary" /* Add appropriate onClick handlers */>
-            <Pencil size={16} />
+            {active ? <AdRun size={16} /> : <AdRun size={16} />}
           </IconButton>
           <IconButton color="tertiary" onClick={onDelete}>
             <Trash size={16} />

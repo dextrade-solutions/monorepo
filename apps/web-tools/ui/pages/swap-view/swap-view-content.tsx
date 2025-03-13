@@ -36,81 +36,11 @@ export interface SwapViewContentProps {
 
 export const SwapViewContent = ({
   ad,
-  fromAssetsList = [],
-  toAssetsList = [],
   assetFrom,
   assetTo,
   isLoading,
-  selectionMode,
-  disableReverse,
-  onChangeAssetFrom,
-  onChangeAssetTo,
-  handleGoTradeClick,
 }: SwapViewContentProps) => {
-  const value = useSelector(getFromTokenInputValue);
-  const [toValue, setToValue] = useState();
-  const dispatch = useDispatch();
-
-  const updateValue = (v: string, reversed?: boolean) => {
-    if (reversed) {
-      dispatch(setFromTokenInputValue(v / ad?.coinPair.price));
-    } else {
-      setToValue(v * ad?.coinPair.price);
-    }
-  };
   const t = useI18nContext();
-  // <Box marginTop={3}>
-  //   <Alert severity="info">Ad not found...</Alert>
-  // </Box>
-
-  useEffect(() => {
-    if (!ad) {
-      updateValue('');
-    }
-  }, [ad]);
-
-  if (selectionMode) {
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="calc(100vh - 100px)"
-      >
-        <Swap
-          assetsListSell={fromAssetsList}
-          assetsListBuy={toAssetsList}
-          buyAsset={assetTo}
-          sellAsset={assetFrom}
-          sellAmount={value}
-          loading={isLoading}
-          buyAmount={toValue}
-          onReverse={() => {
-            onChangeAssetFrom(assetTo);
-            onChangeAssetTo(assetFrom);
-          }}
-          disableReverse={disableReverse}
-          onBuyAssetChange={onChangeAssetTo}
-          onBuyAmountChange={(v) => updateValue(v, true)}
-          onSellAmountChange={updateValue}
-          onSellAssetChange={onChangeAssetFrom}
-        />
-        <Grow in={Boolean(assetFrom && assetTo)}>
-          <Box width="100%">
-            <Button
-              sx={{ mt: 3, minHeight: 60, fontWeight: 'bold', fontSize: 20 }}
-              gradient
-              fullWidth
-              onClick={handleGoTradeClick}
-            >
-              Go trade
-            </Button>
-          </Box>
-        </Grow>
-      </Box>
-    );
-  }
 
   if (!ad && isLoading) {
     return (

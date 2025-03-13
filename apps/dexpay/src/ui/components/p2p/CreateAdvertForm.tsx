@@ -19,6 +19,7 @@ import {
   SelectCurrencyWithValidation,
   TextFieldWithValidation,
 } from '../fields';
+import useAddresses from '../../hooks/use-addresses';
 
 // Define the shape of the price source provider
 interface PriceSourceProvider {
