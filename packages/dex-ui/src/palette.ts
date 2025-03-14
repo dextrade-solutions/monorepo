@@ -54,7 +54,7 @@ const Palette = {
       dark: '#2e7d32',
     },
     text: {
-      primary: '#3C76FF',
+      primary: '#FFFFFF',
       secondary: '#7C7C7C',
     },
     gradient:
