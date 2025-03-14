@@ -115,7 +115,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin2 = await calcIncomingFee(sumInCoin2);
     sumInCoin2 -= feeInCoin2;
     assetInputTo.setInputAmount(
-      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(10)) : 0,
     );
     assetInputTo.setLoading(false);
   }, RECALCULATE_DELAY);
@@ -127,7 +127,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin1 = feeInCoin2 / exchangeRate;
     sumInCoin1 += feeInCoin1;
     assetInputFrom.setInputAmount(
-      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(10)) : 0,
     );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
