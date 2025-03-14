@@ -11,7 +11,7 @@ import {
 // import { ArrowForward } from 'lucide-react'; // Import the icon
 import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
 import { CoinModel } from 'dex-helpers/types';
-import { AdRun, AssetItem, Button, CopyData } from 'dex-ui';
+import { AdRun, AssetItem, AssetPriceOutput, Button, CopyData } from 'dex-ui';
 import {
   ChevronDown,
   ChevronRight,
@@ -41,6 +41,8 @@ interface AdItemProps {
   exchangerName: string;
   onDelete: (adId: number) => void;
   toggleActive: (adId: number) => void;
+  minimumExchangeAmountCoin1: number | null;
+  maximumExchangeAmountCoin1: string;
 }
 
 const AdItem: React.FC<AdItemProps> = ({
@@ -61,6 +63,8 @@ const AdItem: React.FC<AdItemProps> = ({
   exchangerName,
   toggleActive,
   onDelete,
+  minimumExchangeAmountCoin1,
+  maximumExchangeAmountCoin1,
 }) => {
   const [expanded, setExpanded] = useState({
     options: false,
@@ -75,7 +79,7 @@ const AdItem: React.FC<AdItemProps> = ({
   const toggleExpand = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
-  const queryString = `?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`
+  const queryString = `?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
   const adLink = `${DEXTRADE_P2P_LINK}/swap-view${queryString}`;
   const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
 
@@ -109,11 +113,13 @@ const AdItem: React.FC<AdItemProps> = ({
         <Box ml="auto">
           <IconButton
             color={active ? 'error' : 'success'}
-            onClick={toggleActive}
+            onClick={() => toggleActive(0)} // fix this
           >
             {active ? <AdRun size={16} /> : <AdRun size={16} />}
           </IconButton>
-          <IconButton color="tertiary" onClick={onDelete}>
+          <IconButton color="tertiary" onClick={() => onDelete(0)}>
+            {' '}
+            {/* fix this*/}
             <Trash size={16} />
           </IconButton>
         </Box>
@@ -275,6 +281,32 @@ const AdItem: React.FC<AdItemProps> = ({
             <ItemRow
               label="Market Price"
               value={`${marketPrice} ${fromCoin.ticker}`}
+            />
+          </Box>
+          <Box>
+            <ItemRow
+              label={`Minimum Trade Amount`}
+              value={
+                <AssetPriceOutput
+                  amount={minimumExchangeAmountCoin1 * price}
+                  price={price}
+                  tickerFrom={fromCoin.ticker}
+                  tickerTo={toCoin.ticker}
+                  secondary
+                />
+              }
+            />
+            <ItemRow
+              label={`Maximum Trade Amount`}
+              value={
+                <AssetPriceOutput
+                  amount={maximumExchangeAmountCoin1 * price}
+                  price={price}
+                  tickerFrom={fromCoin.ticker}
+                  tickerTo={toCoin.ticker}
+                  secondary
+                />
+              }
             />
           </Box>
           <ItemRow label="Price Source" value={priceSource} />

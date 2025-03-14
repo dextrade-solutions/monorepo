@@ -38,6 +38,7 @@ export const $invoiceApi = ky.create({
 
 export const $api = ky.create({
   ...BASE_API_CONFIG,
+  timeout: false,
   retry: 0,
   hooks: {
     beforeRequest: [

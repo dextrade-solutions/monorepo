@@ -60,7 +60,7 @@ export default function TradingPair() {
           updateAd.mutateAsync([
             { projectId },
             {
-              dextrade_id: ad.dextrade_id,
+              dextrade_id: ad.details.id,
               settingsMain: {
                 active: !ad.details.active,
               },
@@ -123,12 +123,14 @@ export default function TradingPair() {
         return (
           <Box
             ref={lastElement ? intersectionRef : undefined}
-            key={ad.details.id}
+            key={index}
           >
             <AdItem
               fromCoin={ad.details.from}
               toCoin={ad.details.to}
               price={ad.details.coinPair.price}
+              minimumExchangeAmountCoin1={ad.details.minimumExchangeAmountCoin1}
+              maximumExchangeAmountCoin1={ad.details.maximumExchangeAmountCoin1}
               profitCommission={ad.details.priceAdjustment}
               priceSource={ad.pair?.rate_source_options.serviceName}
               // statusMessage={ad.comment} TODO: Add message if balance is not correct
