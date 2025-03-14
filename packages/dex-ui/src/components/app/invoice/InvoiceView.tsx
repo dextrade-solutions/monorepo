@@ -10,6 +10,8 @@ import {
   Skeleton,
   Typography,
   Avatar,
+  ListItem,
+  Paper,
 } from '@mui/material';
 import { Connection, determineConnectionType } from 'dex-connect';
 import { formatCurrency, getQRuriPayment, shortenAddress } from 'dex-helpers';
@@ -27,7 +29,7 @@ import {
   AssetItem,
 } from '../../ui';
 import WalletList from '../wallet-list';
-import { InvoiceStatus } from './constants';
+import { InvoiceStatus, PAYMENT_QR_SUPPORTED } from './constants';
 import { useGlobalModalContext } from '../modals';
 import { InvoiceCopyAmount } from './InvoiceCopyAmount';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
@@ -263,6 +265,10 @@ export default function InvoiceView({
     </Button>
   ) : null;
 
+  const paymentQrWallets = paymentAsset
+    ? PAYMENT_QR_SUPPORTED[paymentAsset.iso] || []
+    : [];
+
   return (
     <Box width="100%">
       {!hideHeader && (
@@ -418,41 +424,88 @@ export default function InvoiceView({
                   </>
                 ) : (
                   <>
-                    <ListItemButton
-                      className="bordered"
-                      data-testid="qrcode-payment-uri"
-                      disabled={changeAddress.isPending}
-                      onClick={() =>
-                        showModal({
-                          name: 'QR_MODAL',
-                          description: (
-                            <Box>
-                              <Alert severity="warning">
-                                Autocomplete qr works only with{' '}
-                                <strong>MetaMask</strong> and{' '}
-                                <strong>TrustWallet</strong> apps. Do not scan
-                                it in the address input, or you may lose your
-                                funds permanently.
-                              </Alert>
-                            </Box>
-                          ),
-                          value: getQRuriPayment(
-                            invoice.address,
-                            invoice.amount_requested_f,
-                            invoice.currency.network_name,
-                            paymentAsset.contract,
-                          ),
-                        })
-                      }
-                    >
-                      <ListItemAvatar>
-                        <Icon ml={1} name="qr-code" size="xl" />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary="Payment QR"
-                        secondary="Autocomplete address and amount"
-                      />
-                    </ListItemButton>
+                    {paymentQrWallets.length > 0 && (
+                      <ListItemButton
+                        className="bordered"
+                        data-testid="qrcode-payment-uri"
+                        disabled={changeAddress.isPending}
+                        onClick={() =>
+                          showModal({
+                            name: 'QR_MODAL',
+                            hideDownloadQr: true,
+                            title: 'Payment QR',
+                            gradientProps: {
+                              type: 'linear',
+                              rotation: 45,
+                              colorStops: [
+                                { offset: 0, color: '#00C283' },
+                                { offset: 0.4, color: '#3b82f6' },
+                              ],
+                            },
+                            description: (
+                              <Box>
+                                <Typography textAlign="center">
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    Recipient
+                                  </Typography>
+                                  {shortenAddress(invoice.address)}
+                                </Typography>
+                                <Paper
+                                  elevation={0}
+                                  sx={{ bgcolor: 'secondary.dark', my: 2 }}
+                                >
+                                  <MenuList>
+                                    <Typography
+                                      p={1}
+                                      variant="body2"
+                                      fontWeight="bold"
+                                    >
+                                      Supported apps
+                                    </Typography>
+                                    {paymentQrWallets.map((wallet) => (
+                                      <ListItem key={wallet.name}>
+                                        <ListItemAvatar>
+                                          <UrlIcon
+                                            size={40}
+                                            url={wallet.icon}
+                                          />
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                          primary={wallet.displayName}
+                                        />
+                                      </ListItem>
+                                    ))}
+                                  </MenuList>
+                                </Paper>
+
+                                <Alert severity="warning">
+                                  Do not scan it in other apps, or you may lose
+                                  your funds permanently.
+                                </Alert>
+                              </Box>
+                            ),
+                            value: getQRuriPayment(
+                              invoice.address,
+                              invoice.amount_requested_f,
+                              invoice.currency.network_name,
+                              paymentAsset.contract,
+                              paymentAsset?.decimals,
+                            ),
+                          })
+                        }
+                      >
+                        <ListItemAvatar>
+                          <Icon ml={1} name="qr-code" size="xl" />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary="Payment QR"
+                          secondary="Autocomplete address and amount"
+                        />
+                      </ListItemButton>
+                    )}
                     <ListItemButton
                       className="bordered"
                       data-testid="qrcode-address"
@@ -460,18 +513,21 @@ export default function InvoiceView({
                       onClick={() =>
                         showModal({
                           name: 'QR_MODAL',
+                          title: 'Address QR',
+                          hideDownloadQr: true,
                           showQrValue: true,
                           description: (
                             <Box textAlign="center">
                               <Typography color="text.secondary">
-                                Use QR-code scanner in your wallet, to send to
-                                the address below.
+                                Amount
                               </Typography>
-                              <Typography mt={3} variant="h6">
-                                To send:{' '}
+                              <Typography variant="h4">
                                 <strong>
                                   {secondaryDelta} {paymentAsset.symbol}
                                 </strong>
+                              </Typography>
+                              <Typography color="text.secondary">
+                                Recipient
                               </Typography>
                             </Box>
                           ),
@@ -483,7 +539,7 @@ export default function InvoiceView({
                         <Icon ml={1} name="qr-code" size="xl" />
                       </ListItemAvatar>
                       <ListItemText
-                        primary="Address and Amount QR"
+                        primary="Address QR"
                         secondary="Scan address"
                       />
                     </ListItemButton>

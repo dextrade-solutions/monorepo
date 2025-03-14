@@ -1,24 +1,30 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography, BoxProps } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
 import React, { useEffect, useRef } from 'react';
 
 import CopyData from '../copy-data/copy-data';
 import Icon from '../icon';
 
-interface QRCodeProps {
+interface QRCodeProps extends BoxProps {
   value: string;
+  title?: string;
   showQrValue?: boolean;
   description?: string;
   size?: number;
   hideDownloadQr?: boolean;
+  gradientProps?: any
 }
 
 export function QRCode({
   value,
+  title,
   showQrValue,
   description,
   hideDownloadQr,
+  gradientProps = {},
+  sx = {},
   size = 300,
+  ...rest
 }: QRCodeProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
@@ -39,6 +45,7 @@ export function QRCode({
               { offset: 0, color: '#3b82f6' },
               { offset: 1, color: '#8b5cf6' },
             ],
+            ...gradientProps,
           },
           type: 'rounded',
         },
@@ -79,18 +86,19 @@ export function QRCode({
     <Box
       data-testid="qrcode"
       sx={{
-        p: 2,
-        m: 2,
-        gap: 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        ...sx,
       }}
+      {...rest}
     >
+      {title && <Typography fontWeight="bold">{title}</Typography>}
       <Box
         ref={qrRef}
         data-testid="qrcode-svg"
         sx={{
+          my: 1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',

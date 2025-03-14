@@ -1,42 +1,56 @@
+function shiftRightPoint(amount: string, decimals: number): string {
+  const [integerPart, fractionalPart = ''] = amount.split('.');
+  return integerPart + fractionalPart.padEnd(decimals, '0');
+}
+
+const CHAIN_IDS = {
+  erc20: 1,
+  bep20: 56,
+  polygon: 137,
+  avalanche: 43114,
+};
+
 export function getQRuriPayment(
-  address: string,
+  recipient: string,
   amount: number | string,
   network: string,
   tokenContract: string | null = null,
+  decimals: number | null = null,
 ): string | undefined {
-  if (!address || !amount) {
+  if (!recipient || !amount) {
     return undefined;
   }
+  const lowerCaseNetwork = network.toLowerCase();
+  try {
+    switch (lowerCaseNetwork) {
+      case 'btc':
+        return `bitcoin:${recipient}?amount=${amount}`;
 
-  network = network.toLowerCase();
-
-  if (network === 'btc') {
-    return `bitcoin:${address}?amount=${amount}`;
-  } else if (network === 'erc20' || network === 'bep20') {
-    if (tokenContract) {
-      const decimals = network === 'erc20' ? 6 : 18;
-
-      try {
-        const amountUint256 = BigInt(
-          Math.floor(Number(amount) * 10 ** decimals),
-        ).toString();
-        return `ethereum:${tokenContract}${network === 'bep20' ? '@56' : '@1'}/transfer?address=${address}&uint256=${amountUint256}`;
-      } catch (error) {
-        return undefined;
+      case 'polygon':
+      case 'avalanche':
+      case 'erc20':
+      case 'bep20': {
+        const chainId = CHAIN_IDS[lowerCaseNetwork] || 1;
+        if (tokenContract) {
+          if (decimals === null) {
+            return undefined;
+          }
+          return `ethereum:${tokenContract}@${chainId}/transfer?address=${recipient}&uint256=${shiftRightPoint(amount.toString(), decimals)}`;
+        }
+        return `ethereum:${recipient}@${chainId}?value=${shiftRightPoint(amount.toString(), 18)}`;
       }
-    }
 
-    try {
-      const weiAmount = BigInt(Math.floor(Number(amount) * 1e18)).toString();
-      return `ethereum:${address}${network === 'bep20' ? '@56' : ''}?value=${weiAmount}`;
-    } catch (error) {
-      return undefined;
+      case 'trc20':
+        return tokenContract ? undefined : `tron:${recipient}?amount=${amount}`;
+
+      case 'sol':
+        return `solana:${recipient}?amount=${amount}${tokenContract ? `&spl-token=${tokenContract}` : ''}`;
+
+      default:
+        return recipient;
     }
-  } else if (network === 'trc20') {
-    if (tokenContract) {
-      return `tron:${address}?amount=${amount}`;
-    }
-    return `tron:${address}?amount=${amount}`;
+  } catch (error) {
+    console.error('Error generating QR URI:', error);
+    return undefined;
   }
-  return address;
 }
