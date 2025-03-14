@@ -9,9 +9,9 @@ import {
 } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
 import { CircleNumber, Button, Icon, SelectCoinsSwap, useForm } from 'dex-ui';
+import { orderBy } from 'lodash';
 import React from 'react';
 
-import useAddresses from '../../hooks/use-addresses';
 import { useAuth } from '../../hooks/use-auth';
 import { useMutation, useQuery } from '../../hooks/use-query';
 import { Pairs, DexTrade, Address } from '../../services'; // Adjust path as needed
@@ -58,9 +58,6 @@ const priceSourceProviders = [
 ];
 
 const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const {
-    vaults: { hotWallet },
-  } = useAuth();
   const { user } = useAuth();
   const projectId = user?.project?.id!;
 
@@ -128,9 +125,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   }
 
   async function saveAd(values: CreateAdvertFormValues) {
-    const addressesResp = await Address.list(
+    const addressesResp = await Address.listByCurrency(
       {
-        vaultId: hotWallet?.id!,
         projectId: user.project!.id,
       },
       {
@@ -143,8 +139,16 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     const currency2Id = values.coin2.currency.id;
 
     const addresses = addressesResp.currentPageResult || [];
-    const address1 = addresses.find((i) => i.currency_id === currency1Id);
-    const address2 = addresses.find((i) => i.currency_id === currency2Id);
+    const [address1] = orderBy(
+      addresses.filter((i) => i.currency_id === currency1Id),
+      'balance',
+      'desc',
+    );
+    const [address2] = orderBy(
+      addresses.filter((i) => i.currency_id === currency2Id),
+      'balance',
+      'desc',
+    );
 
     if (!address1) {
       throw new Error('Address for coin from not found');

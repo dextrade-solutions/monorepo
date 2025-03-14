@@ -112,15 +112,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     enabled: isAuthorized,
   });
 
-  const vaults = useQuery(
-    Vault.my,
-    [{ projectId: user?.project?.id }, { page: 0 }],
-    {
-      enabled: Boolean(user?.project),
-    },
-  );
-  const allVaults = vaults.data?.list.currentPageResult || [];
-  const hotWallet = allVaults.find((v) => v.name === 'Hot Wallet');
+  // const vaults = useQuery(
+  //   Vault.my,
+  //   [{ projectId: user?.project?.id }, { page: 0 }],
+  //   {
+  //     enabled: Boolean(user?.project),
+  //   },
+  // );
+  // const allVaults = vaults.data?.list.currentPageResult || [];
+  // const hotWallet = allVaults.find((v) => v.name === 'Hot Wallet');
 
   const isLoading = projects.isLoading || me.isLoading;
 
@@ -213,10 +213,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
     isAuthorized,
-    vaults: {
-      all: allVaults,
-      hotWallet,
-    },
+    // vaults: {
+    //   all: allVaults,
+    //   hotWallet,
+    // },
     setProject: (project: IProject) => {
       setUser((prev) => ({
         ...prev,

@@ -4,32 +4,22 @@ import { Address } from '../services';
 
 export default function useAddresses({
   currencyId,
-}: { currencyId?: number } = {}) {
+}: { currencyId: number } = {}) {
   const {
     user: { project },
-    vaults: { hotWallet },
   } = useAuth();
-  const addressList = useQuery(
-    Address.list,
-    [
-      {
-        vaultId: hotWallet?.id!,
-        projectId: project.id,
-      },
-      currencyId
-        ? {
-            page: 0,
-            currency_id: currencyId,
-          }
-        : { page: 0 },
-    ],
+  const addressList = useQuery(Address.listByCurrency, [
     {
-      enabled: Boolean(hotWallet?.id),
+      projectId: project.id,
     },
-  );
+    {
+      page: 0,
+      currency_id: currencyId,
+    },
+  ]);
 
   return {
     items: addressList.data?.currentPageResult || [],
-    isLoading: !hotWallet || addressList.isLoading,
+    isLoading: addressList.isLoading,
   };
 }

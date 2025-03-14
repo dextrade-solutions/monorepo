@@ -1,11 +1,9 @@
 import { Box, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { CopyData } from 'dex-ui';
 import React from 'react';
+import { orderBy } from 'lodash';
 
 import useAddresses from '../../hooks/use-addresses';
-import { useAuth } from '../../hooks/use-auth';
-import { useQuery } from '../../hooks/use-query';
-import { Address, Vault } from '../../services';
 import { ICurrency } from '../../types';
 import ItemRow from '../ui/ItemRow';
 
@@ -16,7 +14,7 @@ export default function WalletDepositAddress({
 }) {
   const { items: addressList } = useAddresses({ currencyId: currency.id });
 
-  const [addressData] = addressList;
+  const [addressData] = orderBy(addressList, 'balance', 'desc');
 
   if (!addressData) {
     return (
