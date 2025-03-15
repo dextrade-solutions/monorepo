@@ -43,6 +43,7 @@ interface AdItemProps {
   toggleActive: (adId: number) => void;
   minimumExchangeAmountCoin1: number | null;
   maximumExchangeAmountCoin1: string;
+  reversed?: boolean;
 }
 
 const AdItem: React.FC<AdItemProps> = ({
@@ -65,7 +66,17 @@ const AdItem: React.FC<AdItemProps> = ({
   onDelete,
   minimumExchangeAmountCoin1,
   maximumExchangeAmountCoin1,
+  reversed,
 }) => {
+  const minAmount = reversed
+    ? minimumExchangeAmountCoin1
+    : minimumExchangeAmountCoin1 / price;
+  const maxAmount = reversed
+    ? maximumExchangeAmountCoin1
+    : maximumExchangeAmountCoin1 / price;
+  const from = reversed ? toCoin : fromCoin;
+  const to = reversed ? fromCoin : toCoin;
+
   const [expanded, setExpanded] = useState({
     options: false,
     statusMessage: false,
@@ -90,7 +101,6 @@ const AdItem: React.FC<AdItemProps> = ({
       title="DexPay Swap"
       className="border-none rounded-lg"
     />`;
-
   return (
     <Paper
       elevation={0}
@@ -153,7 +163,7 @@ const AdItem: React.FC<AdItemProps> = ({
         justifyContent="space-between"
         my={2}
       >
-        <AssetItem iconSize={26} coin={fromCoin} />
+        <AssetItem iconSize={26} coin={from} />
         <Box
           sx={{
             position: 'absolute',
@@ -205,7 +215,7 @@ const AdItem: React.FC<AdItemProps> = ({
           </svg>
         </Box>
 
-        <AssetItem alignReverse iconSize={26} coin={toCoin} />
+        <AssetItem alignReverse iconSize={26} coin={to} />
       </Box>
       <Divider />
       <Collapse in={expanded.options}>
@@ -264,23 +274,20 @@ const AdItem: React.FC<AdItemProps> = ({
           <ItemRow label="Transaction Count" value={transactionCount} />
           <ItemRow
             label="Earnings"
-            value={`${earnings.amount} ${fromCoin.ticker} | $${earnings.usdEquivalent.toFixed(2)}`}
+            value={`${earnings.amount} ${from.ticker} | $${earnings.usdEquivalent.toFixed(2)}`}
           />
           <Box>
             <ItemRow
               label="Exchange Commission"
-              value={`${exchangeCommission} ${fromCoin.ticker}`}
+              value={`${exchangeCommission} ${from.ticker}`}
             />
             <ItemRow label="Profit Commission" value={`${profitCommission}%`} />
           </Box>
           <Box>
-            <ItemRow
-              label="Price"
-              value={formatCurrency(price, toCoin.ticker)}
-            />
+            <ItemRow label="Price" value={formatCurrency(price, to.ticker)} />
             <ItemRow
               label="Market Price"
-              value={`${marketPrice} ${fromCoin.ticker}`}
+              value={`${marketPrice} ${from.ticker}`}
             />
           </Box>
           <Box>
@@ -288,10 +295,10 @@ const AdItem: React.FC<AdItemProps> = ({
               label={`Minimum Trade Amount`}
               value={
                 <AssetPriceOutput
-                  amount={minimumExchangeAmountCoin1 * price}
+                  amount={minAmount}
                   price={price}
-                  tickerFrom={fromCoin.ticker}
-                  tickerTo={toCoin.ticker}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
                   secondary
                 />
               }
@@ -300,10 +307,10 @@ const AdItem: React.FC<AdItemProps> = ({
               label={`Maximum Trade Amount`}
               value={
                 <AssetPriceOutput
-                  amount={maximumExchangeAmountCoin1 * price}
+                  amount={maxAmount}
                   price={price}
-                  tickerFrom={fromCoin.ticker}
-                  tickerTo={toCoin.ticker}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
                   secondary
                 />
               }

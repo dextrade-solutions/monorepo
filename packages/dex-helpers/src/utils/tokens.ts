@@ -34,7 +34,7 @@ const LOCAL_COINS_URLS = {
   matic: '/images/coins/matic.svg',
   ton: '/images/coins/ton.svg',
   base: '/images/coins/base.png',
-  soar: '/images/coins/soar.webp',
+  soarchain: '/images/coins/soar.png',
   'elrond-erd-2': '/images/coins/egld.svg',
   default: '/images/coins/default.svg',
 };

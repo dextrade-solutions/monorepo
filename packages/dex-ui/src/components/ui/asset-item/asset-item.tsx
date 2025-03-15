@@ -24,7 +24,6 @@ const AssetItem = ({
     textAlign: 'right',
     flexDirection: 'row-reverse',
   };
-
   const url = getCoinIconByUid(asset?.uid || coin?.uuid);
 
   const ticker = asset?.symbol || coin?.ticker;

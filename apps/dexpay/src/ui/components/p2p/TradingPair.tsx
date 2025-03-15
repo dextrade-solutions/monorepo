@@ -52,10 +52,7 @@ export default function TradingPair() {
     method: async (_, ad: IAdvert, action: 'delete' | 'toggleActive') => {
       const ACTIONS = {
         delete: () =>
-          deleteAd.mutateAsync([
-            { projectId },
-            { ad_id: ad.id, dextrade_id: ad.dextrade_id },
-          ]),
+          deleteAd.mutateAsync([{ projectId }, { dextrade_id: ad.details.id }]),
         toggleActive: () =>
           updateAd.mutateAsync([
             { projectId },
@@ -121,10 +118,7 @@ export default function TradingPair() {
       {renderList.map((ad, index) => {
         const lastElement = renderList.length - 1 === index;
         return (
-          <Box
-            ref={lastElement ? intersectionRef : undefined}
-            key={index}
-          >
+          <Box ref={lastElement ? intersectionRef : undefined} key={index}>
             <AdItem
               fromCoin={ad.details.from}
               toCoin={ad.details.to}
@@ -138,6 +132,7 @@ export default function TradingPair() {
               onDelete={() => handleDelete(ad)}
               toggleActive={() => toggleActive(ad)}
               active={ad.details.active}
+              reversed
             />
           </Box>
         );
