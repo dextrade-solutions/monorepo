@@ -268,7 +268,7 @@ export namespace Validation {
         maximumExchangeAmountCoin1: string().required(
           'Maximum Exchange Amount is required',
         ),
-        priceAdjustment: string().required('Price adjustment is required'),
+        priceAdjustment: string(),
         transactionFee: string(),
         exchangersPolicy: string(),
         username: string(),

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm, useGlobalModalContext } from 'dex-ui';
 import { Pause, Play, TrashIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -15,6 +15,7 @@ import { IAdvert } from '../../types';
 export default function TradingPair() {
   const { user } = useAuth();
   const projectId = user?.project?.id!;
+  const queryClient = useQueryClient();
 
   const { showModal } = useGlobalModalContext();
 
@@ -45,14 +46,82 @@ export default function TradingPair() {
     },
   });
 
-  const deleteAd = useMutation(DexTrade.advertDelete);
-  const updateAd = useMutation(DexTrade.advertUpdate);
+  const deleteAd = useMutation(DexTrade.advertDelete, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ['ads-list'] });
+      const previousAds = queryClient.getQueryData(['ads-list']);
+      queryClient.setQueryData(['ads-list'], (oldData: any) => {
+        const adToDelete = variables[1];
+        if (adToDelete && adToDelete.ad_id) {
+          const newData = oldData?.pages.map((page: any) => ({
+            ...page,
+            currentPageResult: page.currentPageResult.filter(
+              (ad: IAdvert) => ad.id !== adToDelete.ad_id,
+            ),
+          }));
+          return {
+            ...oldData,
+            pages: newData,
+          };
+        }
+        return oldData;
+      });
+      return { previousAds };
+    },
+    onError: (_err, _newTodo, context: any) => {
+      queryClient.setQueryData(['ads-list'], context.previousAds);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['ads-list'] });
+    },
+  });
+  const updateAd = useMutation(DexTrade.advertUpdate, {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ['ads-list'] });
+      const previousAds = queryClient.getQueryData(['ads-list']);
+      queryClient.setQueryData(['ads-list'], (oldData: any) => {
+        const adToUpdate = variables[1];
+        if (adToUpdate && adToUpdate.dextrade_id) {
+          const newData = oldData?.pages.map((page: any) => ({
+            ...page,
+            currentPageResult: page.currentPageResult.map((ad: IAdvert) => {
+              if (ad.details.id === adToUpdate.dextrade_id) {
+                return {
+                  ...ad,
+                  details: {
+                    ...ad.details,
+                    active: adToUpdate.settingsMain.active,
+                  },
+                };
+              }
+              return ad;
+            }),
+          }));
+          return {
+            ...oldData,
+            pages: newData,
+          };
+        }
+        return oldData;
+      });
+      return { previousAds };
+    },
+    onError: (_err, _newTodo, context: any) => {
+      queryClient.setQueryData(['ads-list'], context.previousAds);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['ads-list'] });
+    },
+  });
 
   const form = useForm({
     method: async (_, ad: IAdvert, action: 'delete' | 'toggleActive') => {
       const ACTIONS = {
         delete: () =>
-          deleteAd.mutateAsync([{ projectId }, { dextrade_id: ad.details.id }]),
+          deleteAd.mutateAsync([
+            { projectId },
+            { ad_id: ad.id, dextrade_id: ad.details.id },
+          ]),
         toggleActive: () =>
           updateAd.mutateAsync([
             { projectId },
@@ -65,7 +134,6 @@ export default function TradingPair() {
           ]),
       };
       await ACTIONS[action]();
-      refetch(); // we no need refetch because data updated automaticly
     },
   });
 
@@ -100,7 +168,9 @@ export default function TradingPair() {
   };
 
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
-  const renderList = data?.pages.flatMap((i) => i.currentPageResult) || [];
+  const renderList = (
+    data?.pages.flatMap((i) => i.currentPageResult) || []
+  ).filter((ad) => ad.details.direction === 2);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {

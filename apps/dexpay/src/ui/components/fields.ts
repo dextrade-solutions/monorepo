@@ -1,6 +1,7 @@
 import { Autocomplete, TextField } from '@mui/material';
 import {
   MultiselectAssets,
+  NumericTextField,
   PasswordField,
   withValidationProvider,
 } from 'dex-ui';
@@ -27,3 +28,4 @@ export const MultiselectAssetsWithValidation =
 
 export const VPasswordField = withValidationProvider(PasswordField);
 export const VPickCoin = withValidationProvider(PickCoin);
+export const VNumericTextField = withValidationProvider(NumericTextField);

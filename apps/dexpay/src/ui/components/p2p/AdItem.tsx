@@ -68,12 +68,13 @@ const AdItem: React.FC<AdItemProps> = ({
   maximumExchangeAmountCoin1,
   reversed,
 }) => {
-  const minAmount = reversed
-    ? minimumExchangeAmountCoin1
-    : minimumExchangeAmountCoin1 / price;
-  const maxAmount = reversed
-    ? maximumExchangeAmountCoin1
-    : maximumExchangeAmountCoin1 / price;
+  const fromMinAmount = reversed
+    ? minimumExchangeAmountCoin1 * price
+    : minimumExchangeAmountCoin1;
+  const fromMaxAmount = reversed
+    ? maximumExchangeAmountCoin1 / price
+    : maximumExchangeAmountCoin1;
+
   const from = reversed ? toCoin : fromCoin;
   const to = reversed ? fromCoin : toCoin;
 
@@ -114,7 +115,7 @@ const AdItem: React.FC<AdItemProps> = ({
     >
       <Box display="flex" alignItems="center" mb={1}>
         <Typography variant="body2">
-          <StyledLink href="/p2p/trades" noUnderline>
+          <StyledLink href="/p2p/#history" noUnderline>
             Trades
           </StyledLink>
         </Typography>
@@ -295,7 +296,7 @@ const AdItem: React.FC<AdItemProps> = ({
               label={`Minimum Trade Amount`}
               value={
                 <AssetPriceOutput
-                  amount={minAmount}
+                  amount={fromMinAmount}
                   price={price}
                   tickerFrom={from.ticker}
                   tickerTo={to.ticker}
@@ -307,7 +308,7 @@ const AdItem: React.FC<AdItemProps> = ({
               label={`Maximum Trade Amount`}
               value={
                 <AssetPriceOutput
-                  amount={maxAmount}
+                  amount={fromMaxAmount}
                   price={price}
                   tickerFrom={from.ticker}
                   tickerTo={to.ticker}

@@ -11,6 +11,7 @@ interface IProps {
   alignReverse?: boolean;
   loading?: boolean;
   iconSize?: number;
+  subtitle?: React.ReactNode;
 }
 
 const AssetItem = ({
@@ -18,6 +19,7 @@ const AssetItem = ({
   asset,
   alignReverse,
   loading,
+  subtitle,
   iconSize,
 }: IProps) => {
   const reverseProps = alignReverse && {
@@ -57,6 +59,7 @@ const AssetItem = ({
                 {networkType?.toUpperCase()}
               </Typography>
             )}
+            {subtitle}
           </Box>
         </>
       )}

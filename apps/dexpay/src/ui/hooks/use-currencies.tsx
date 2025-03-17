@@ -1,6 +1,6 @@
 import assetDict from 'dex-helpers/assets-dict';
 
-import { Address, Currency, Wallet } from '../services';
+import { Currency, Wallet } from '../services';
 import { useAuth } from './use-auth';
 import { useQuery } from './use-query';
 

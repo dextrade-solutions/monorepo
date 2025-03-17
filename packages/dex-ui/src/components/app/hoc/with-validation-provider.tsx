@@ -3,16 +3,35 @@ import { ValidationError } from 'yup';
 
 import { UseFormReturnType } from '../../../hooks/useForm';
 
-type FieldProps<T> = {
-  form: UseFormReturnType<T>;
-  name: string;
-  onChange: (name: string, v: unknown) => void;
-} & React.ComponentProps<any>;
+type FieldComponent<T> = React.ComponentType<T>;
 
 const withValidationProvider =
-  (Field: any) =>
-  <T,>({ form, name, onChange, ...fieldProps }: FieldProps<T>) => {
+  <
+    T extends {
+      value?: any;
+      error?: boolean;
+      helperText?: string;
+      onChange?: (value: any) => void;
+    },
+  >(
+    Field: FieldComponent<T>,
+  ) =>
+  ({
+    form,
+    name,
+    onChange,
+    ...fieldProps
+  }: Omit<
+    React.ComponentPropsWithoutRef<typeof Field>,
+    'value' | 'error' | 'helperText' | 'form' | 'name'
+  > & {
+    form: UseFormReturnType<any>;
+    name: string;
+  }) => {
     const value = form.values[name];
+    const error =
+      Boolean(form.interacted[name]) && Boolean(form.errors[name]?.length);
+    const helperText = form.interacted[name] && form.errors[name]?.[0];
 
     useEffect(() => {
       const findErrors = async () => {
@@ -44,10 +63,8 @@ const withValidationProvider =
       <Field
         {...fieldProps}
         value={value}
-        error={
-          Boolean(form.interacted[name]) && Boolean(form.errors[name]?.length)
-        }
-        helperText={form.interacted[name] && form.errors[name]?.[0]}
+        error={error}
+        helperText={helperText}
         onChange={handleChange}
       />
     );

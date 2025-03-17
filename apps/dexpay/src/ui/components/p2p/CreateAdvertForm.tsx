@@ -3,22 +3,32 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Divider,
   InputAdornment,
   Paper,
   Typography,
 } from '@mui/material';
 import { AssetModel } from 'dex-helpers/types';
-import { CircleNumber, Button, Icon, SelectCoinsSwap, useForm } from 'dex-ui';
+import {
+  CircleNumber,
+  Button,
+  Icon,
+  SelectCoinsSwap,
+  useForm,
+  AssetPriceOutput,
+} from 'dex-ui';
 import { orderBy } from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '../../hooks/use-auth';
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { Pairs, DexTrade, Address } from '../../services'; // Adjust path as needed
+import { Pairs, DexTrade, Address, Invoice } from '../../services'; // Adjust path as needed
 import { Validation } from '../../validation';
 import {
   SelectCurrencyWithValidation,
   TextFieldWithValidation,
+  VNumericTextField,
 } from '../fields';
 
 // Define the shape of the price source provider
@@ -60,8 +70,20 @@ const priceSourceProviders = [
 const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = useAuth();
   const projectId = user?.project?.id!;
-
-  const advCreate = useMutation(DexTrade.advertCreateFromPair, { onSuccess });
+  const queryClient = useQueryClient();
+  const [rate, setRate] = useState<number>();
+  const advCreate = useMutation(DexTrade.advertCreateFromPair, {
+    onSuccess,
+    onMutate: () => {
+      return queryClient.removeQueries({ queryKey: ['ads-list'] });
+    },
+    onError: (_err, _newTodo, context: any) => {
+      queryClient.setQueryData(['ads-list'], context.previousAds);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['ads-list'] });
+    },
+  });
   const pairsCreate = useMutation(Pairs.create);
 
   const form = useForm<CreateAdvertFormValues>({
@@ -178,7 +200,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       {
         pair_id: result.id,
         exchangersPolicy: values.exchangersPolicy,
-        priceAdjustment: values.priceAdjustment,
+        priceAdjustment: values.priceAdjustment || '0',
         minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1,
         maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1,
         transactionFee: values.transactionFee || undefined,
@@ -191,7 +213,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       <Box display="flex" my={1} alignItems="center">
         <CircleNumber number={1} color="tertiary.main" />
         <Typography ml={2} fontWeight="bold" color="text.tertiary">
-          Pair selection
+          Pair
         </Typography>
       </Box>
       <Paper
@@ -208,7 +230,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <Typography fontWeight="bold">
             <SelectCurrencyWithValidation
               placeholder="I send"
+              title="I send"
               name="coin1"
+              noZeroBalances
               form={form}
             />
           </Typography>
@@ -228,6 +252,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <Typography fontWeight="bold">
             <SelectCurrencyWithValidation
               placeholder="I get"
+              title="I get"
               name="coin2"
               reversed
               form={form}
@@ -236,85 +261,109 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         </Box>
       </Paper>
       {form.values.coin1 && form.values.coin2 && (
-        <Accordion
-          disableGutters
-          elevation={0}
-          sx={{
-            my: 2,
-            color: 'text.tertiary',
-            borderColor: 'tertiary.light',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderRadius: 1,
-            '&:before': {
-              display: 'none',
-            },
-          }}
-          data-testid="invoice-create-options-accordion"
-        >
-          <AccordionSummary expandIcon={<Icon size="sm" name="chevron-down" />}>
-            <Typography mr={1}>
-              {form.values.priceSourceProvider.label}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              {form.values.coin1?.symbol} ID:{' '}
-              {priceSourcesCoin1.isLoading
-                ? 'Loading...'
-                : getIsoPriceSourceCoin()?.service_currency_iso || 'Not found'}
-            </Typography>
-            <Typography>
-              {form.values.coin2?.symbol} ID:{' '}
-              {priceSourcesCoin2.isLoading
-                ? 'Loading...'
-                : getIsoPriceSourceCoin({ reversed: true })
-                    ?.service_currency_iso || 'Not found'}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
+        <>
+          <Box
+            display="flex"
+            mt={4}
+            mb={2}
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box display="flex" alignItems="center">
+              <CircleNumber number={2} color="tertiary.main" />
+              <Typography ml={2} fontWeight="bold" color="text.tertiary">
+                Rate
+              </Typography>
+            </Box>
+            {rate && (
+              <Typography mr={2}>
+                <AssetPriceOutput
+                  price={
+                    rate + Number(rate * form.values.priceAdjustment) / 100
+                  }
+                  tickerFrom={form.values.coin1.symbol}
+                  tickerTo={form.values.coin2.symbol}
+                />
+              </Typography>
+            )}
+          </Box>
+
+          <VNumericTextField
+            margin="normal"
+            fullWidth
+            form={form}
+            label="Price adjustment"
+            name="priceAdjustment"
+            InputProps={{
+              // Add InputProps for the adornment
+              startAdornment: (
+                <InputAdornment position="start">%</InputAdornment>
+              ),
+            }}
+          />
+          <Accordion
+            disableGutters
+            elevation={0}
+            sx={{
+              my: 2,
+              color: 'text.tertiary',
+              borderColor: 'tertiary.light',
+              borderStyle: 'solid',
+              borderWidth: 1,
+              borderRadius: 1,
+              '&:before': {
+                display: 'none',
+              },
+            }}
+            data-testid="invoice-create-options-accordion"
+          >
+            <AccordionSummary
+              expandIcon={<Icon size="sm" name="chevron-down" />}
+            >
+              <Typography mr={1}>
+                {form.values.priceSourceProvider.label}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                {form.values.coin1?.symbol} ID:{' '}
+                {priceSourcesCoin1.isLoading
+                  ? 'Loading...'
+                  : getIsoPriceSourceCoin()?.service_currency_iso ||
+                    'Not found'}
+              </Typography>
+              <Typography>
+                {form.values.coin2?.symbol} ID:{' '}
+                {priceSourcesCoin2.isLoading
+                  ? 'Loading...'
+                  : getIsoPriceSourceCoin({ reversed: true })
+                      ?.service_currency_iso || 'Not found'}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        </>
       )}
       {form.values.coin1 && form.values.coin2 && (
         <>
-          <Box display="flex" mt={2} alignItems="center">
-            <CircleNumber number={2} color="tertiary.main" />
+          <Box display="flex" mt={4} alignItems="center">
+            <CircleNumber number={3} color="tertiary.main" />
             <Typography ml={2} fontWeight="bold" color="text.tertiary">
               Trade configuration
             </Typography>
           </Box>
-
-          <TextFieldWithValidation
-            margin="normal"
-            fullWidth
-            label="Price Adjustment"
-            type="number"
-            form={form}
-            name="priceAdjustment"
-            InputProps={{
-              // Add InputProps for the adornment
-              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-            }}
-            onChange={(e) => e.target.value}
-          />
-
-          <TextFieldWithValidation
+          <VNumericTextField
             margin="normal"
             fullWidth
             label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
-            type="number"
             name="minimumExchangeAmountCoin1"
             form={form}
-            onChange={(e) => e.target.value}
           />
-
-          <TextFieldWithValidation
+          <VNumericTextField
             margin="normal"
             fullWidth
             label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
-            type="number"
             form={form}
             name="maximumExchangeAmountCoin1"
-            onChange={(e) => e.target.value}
           />
 
           <Accordion
