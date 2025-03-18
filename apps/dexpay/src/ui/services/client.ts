@@ -4,9 +4,6 @@ import AuthService from './service.auth';
 
 const BASE_API_CONFIG = {
   prefixUrl: 'https://api-int.dextrade.com/v1', // Consider using environment variables for this
-  headers: {
-    'Content-Type': 'application/json',
-  },
 };
 const getAuthDataFrom = () => {
   const data = localStorage.getItem('user-data');

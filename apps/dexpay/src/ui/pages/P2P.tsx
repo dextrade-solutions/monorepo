@@ -138,8 +138,8 @@ export default function P2P() {
                 component: () => (
                   <Box m={3} sx={{ p: 2, mb: 5 }}>
                     <Typography color="text.secondary">
-                      Copy and place this widget to your website as iframe,
-                      using this code:
+                      You will be see all enabled pairs, place this code to your
+                      site:
                     </Typography>
                     <CopyData data={widgetCode} sx={{ my: 2 }} />
                   </Box>
