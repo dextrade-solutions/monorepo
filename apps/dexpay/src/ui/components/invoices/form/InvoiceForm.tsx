@@ -17,7 +17,7 @@ import {
 } from 'dex-ui';
 import { map } from 'lodash';
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_MERCHANT } from '../../../constants/pages';
 import { useAuth } from '../../../hooks/use-auth';
@@ -43,7 +43,7 @@ interface InvoiceData {
 }
 
 const CreateInvoiceForm = () => {
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { user } = useAuth();
 
   const currencies = useCurrencies();

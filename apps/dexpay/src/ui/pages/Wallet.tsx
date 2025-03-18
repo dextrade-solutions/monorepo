@@ -12,7 +12,7 @@ import { bgPrimaryGradient } from 'dex-ui';
 import { range, sumBy } from 'lodash';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import AssetList from '../components/crypto/AssetList';
 import {
@@ -22,7 +22,7 @@ import {
 import { useCurrencies } from '../hooks/use-currencies';
 
 export default function Wallet() {
-  const [_, navigate] = useLocation();
+  const [_, navigate] = useHashLocation();
   const { items, isLoading } = useCurrencies();
 
   const totalBalance = sumBy(items, (item) =>

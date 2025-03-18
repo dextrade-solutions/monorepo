@@ -3,7 +3,7 @@ import { getCoinIconByUid } from 'dex-helpers';
 import { Button, ModalProps, NumericTextField, UrlIcon, useForm } from 'dex-ui';
 import { map } from 'lodash';
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import {
   CURRENCIES_ISO_BY_GROUP_TYPE,
@@ -26,7 +26,7 @@ const ShortcutNewInvoice: React.FC<ShortcutNewInvoiceProps & ModalProps> = ({
   currencyGroupType,
   hideModal,
 }) => {
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { user } = useAuth();
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const currencies = useCurrencies();

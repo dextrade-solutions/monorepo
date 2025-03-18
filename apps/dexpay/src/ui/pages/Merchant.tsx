@@ -7,7 +7,7 @@ import {
   useGlobalModalContext,
 } from 'dex-ui';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import InvoiceList from '../components/invoices/InvoiceList';
 import { ROUTE_INVOICE_CREATE } from '../constants/pages';
@@ -17,7 +17,7 @@ import { Projects } from '../services';
 import StatsService from '../services/service.stats';
 
 export default function Merchant() {
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { showModal } = useGlobalModalContext();
 
   const { user } = useAuth();

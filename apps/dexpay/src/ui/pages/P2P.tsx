@@ -9,7 +9,7 @@ import {
 } from 'dex-ui';
 import { Code, Plus, User2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
 import Loader from '../components/p2p/Loader';
@@ -23,7 +23,7 @@ import { useQuery } from '../hooks/use-query';
 import { DexTrade } from '../services';
 
 export default function P2P() {
-  const [_, navigate] = useLocation();
+  const [_, navigate] = useHashLocation();
   const { user } = useAuth();
   const { showModal, hideModal } = useGlobalModalContext();
   const projectId = user?.project?.id!;

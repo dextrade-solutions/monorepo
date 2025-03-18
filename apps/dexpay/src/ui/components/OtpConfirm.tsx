@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
 import { useGlobalModalContext, OtpInput, useLoader } from 'dex-ui';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_HOME } from '../constants/pages';
 
@@ -19,7 +19,7 @@ const OtpConfirm = ({
   const [values, setForm] = useState({ otp: initialValue });
   const { showModal } = useGlobalModalContext();
   const loader = useLoader();
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isResending, setIsResending] = useState(false);
 

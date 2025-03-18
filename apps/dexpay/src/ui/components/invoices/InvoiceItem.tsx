@@ -19,7 +19,7 @@ import {
 import { map } from 'lodash';
 import { LucideArrowUpRight } from 'lucide-react';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_INVOICE_DETAIL } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
@@ -37,7 +37,7 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
 }) => {
   const { me } = useAuth();
   const { showModal } = useGlobalModalContext();
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
 
   const expirationTime = invoice.due_to
     ? new Date(invoice.due_to).getTime() - new Date().getTime()

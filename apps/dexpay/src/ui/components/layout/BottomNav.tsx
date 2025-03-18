@@ -16,22 +16,22 @@ import {
   Smartphone,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_HOME } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
 
 const MERCHANT = {
   icon: <Store strokeWidth={1.5} />,
-  label: 'Merchant',
+  label: 'Invoices',
   href: '/merchant',
   testId: 'bottom-nav-merchant',
 };
 
 const P2P = {
   icon: <Users strokeWidth={1.5} />,
-  label: 'P2P',
-  href: '/p2p',
+  label: 'Swaps',
+  href: '/swaps',
   testId: 'bottom-nav-p2p',
 };
 
@@ -55,7 +55,7 @@ const USER = {
 };
 
 export default function BottomNav() {
-  const [location, setLocation] = useLocation();
+  const [location, setLocation] = useHashLocation();
   const [value, setValue] = useState(location);
   const { user } = useAuth();
 
@@ -63,12 +63,17 @@ export default function BottomNav() {
     setValue(location);
   }, [location]);
 
-  let items = [MERCHANT, P2P, HOME, HISTORY, USER];
+  const items = [MERCHANT, P2P, HOME, HISTORY, USER];
 
   if (user!.isCashier) {
     return null;
     // items = [HISTORY, HOME, USER];
   }
+
+  const handleNavigation = (newValue: string) => {
+    setValue(newValue);
+    setLocation(newValue);
+  };
 
   return (
     <Paper
@@ -90,9 +95,8 @@ export default function BottomNav() {
           justifyContent: 'center', // Center the BottomNavigation
         }}
         value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-          setLocation(newValue);
+        onChange={(_, newValue) => {
+          handleNavigation(newValue);
         }}
       >
         {items.map(({ icon, label, href, testId }) => (

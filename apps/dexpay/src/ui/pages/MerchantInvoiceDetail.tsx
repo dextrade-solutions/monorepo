@@ -17,7 +17,8 @@ import {
 } from 'dex-ui';
 import { DeleteIcon, Trash } from 'lucide-react';
 import React, { useEffect } from 'react';
-import { useParams, useLocation } from 'wouter';
+import { useParams } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_MERCHANT } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
@@ -33,7 +34,7 @@ export default function InvoiceDetailPage() {
   const { id } = useParams<InvoiceDetailPageParams>();
   const loader = useLoader();
   const { showModal } = useGlobalModalContext();
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const currencies = useCurrencies();
   const { user } = useAuth();
   const { isLoading, data: invoice } = useQuery(

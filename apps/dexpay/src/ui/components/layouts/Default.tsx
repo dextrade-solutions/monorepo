@@ -1,7 +1,7 @@
 // /Users/rkomarov/projects/dextrade/monorepo/apps/dexpay/src/ui/layouts/LayoutDefault.tsx
 import { Box, Container } from '@mui/material';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import Appbar from '../../app-bar';
 import { ROUTE_HOME } from '../../constants/pages';
@@ -13,7 +13,7 @@ export const LayoutDefault: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { user } = useAuth();
 
-  const [location] = useLocation();
+  const [location] = useHashLocation();
 
   const tertiaryBg = user?.isCashier && location === ROUTE_HOME;
 

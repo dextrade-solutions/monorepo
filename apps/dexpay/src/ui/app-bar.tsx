@@ -1,5 +1,5 @@
 import { AppBar, Box, Typography } from '@mui/material';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import {
   ROUTE_HISTORY,
@@ -29,7 +29,7 @@ const titles = {
 
 const Appbar = () => {
   const auth = useAuth();
-  const [location] = useLocation();
+  const [location] = useHashLocation();
   const title = titles[location] || ''; // Get title based on route or default to empty string
 
   if (auth.user!.isCashier) {
