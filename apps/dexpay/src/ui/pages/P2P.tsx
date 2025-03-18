@@ -156,13 +156,13 @@ export default function P2P() {
             </Typography>
           </Box>
         </Box>
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="body2" color="textSecondary">
+        <Box sx={{ my: 3 }} />
+        {/* <Typography variant="body2" color="textSecondary">
           Total income
         </Typography>
         <Typography m={3} variant="h4" fontWeight="bold" color="text.tertiary">
-          {formatCurrency('0', 'usd')} USD
-        </Typography>
+          {formatCurrency('0', 'usd')}
+        </Typography> */}
 
         <Box display="flex" gap={2}>
           <Button

@@ -44,7 +44,7 @@ export default function Wallet() {
             fontWeight="bold"
             color="text.tertiary"
           >
-            {formatCurrency(totalBalance, 'usd')} USD
+            {formatCurrency(totalBalance, 'usd')}
           </Typography>
 
           <Box display="flex" gap={2}>

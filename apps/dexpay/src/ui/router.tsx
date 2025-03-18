@@ -23,7 +23,7 @@ import SignUp from './pages/auth/SignUp';
 import CreateInvoice from './pages/CreateInvoice';
 import Merchant from './pages/Merchant';
 import InvoiceDetailPage from './pages/MerchantInvoiceDetail';
-import NotFound from './pages/not-found';
+// import NotFound from './pages/not-found';
 import P2P from './pages/P2P';
 import P2PCreate from './pages/P2PCreate';
 import Profile from './pages/Profile';
@@ -69,6 +69,10 @@ export default function Router() {
         component={auth.user?.isCashier ? Terminal : Wallet}
       />
       <Route path={ROUTE_WALLET_DEPOSIT} component={WalletDepositPage} />
+      <Route
+        path={`${ROUTE_WALLET_DEPOSIT}/:iso`}
+        component={WalletDepositPage}
+      />
       <Route path={ROUTE_WALLET_WITHDRAW} component={WalletWithdrawPage} />
       <Route path={ROUTE_MERCHANT} component={Merchant} />
       <Route path={ROUTE_INVOICE_DETAIL}>

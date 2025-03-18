@@ -5,10 +5,7 @@ import {
   ListItemText,
   Divider,
   ListItemButton,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Button,
-  Skeleton,
 } from '@mui/material';
 import { ButtonIcon, ModalProps } from 'dex-ui';
 import { PlusIcon } from 'lucide-react';

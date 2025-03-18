@@ -57,7 +57,7 @@ export default function Merchant() {
                 color="text.tertiary"
                 data-testid="merchant-income-amount"
               >
-                {formatCurrency(statistic.data.received.total_usdt, 'usd')} USD
+                {formatCurrency(statistic.data.received.total_usdt, 'usd')}
               </Typography>
             ) : (
               <Skeleton width={100} height={60} />
