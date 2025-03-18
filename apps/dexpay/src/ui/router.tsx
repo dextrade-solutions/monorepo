@@ -79,7 +79,7 @@ export default function Router() {
       <Route path={ROUTE_P2P_CREATE} component={P2PCreate} />
       <Route path={ROUTE_HISTORY} component={TransactionHistory} />
       <Route path={ROUTE_PROFILE} component={Profile} />
-      {/* <Route component={NotFound} /> */}
+      <Route component={NotFound} />
     </Switch>
   );
 }
