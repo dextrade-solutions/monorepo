@@ -3,6 +3,7 @@ import { Router as Wouter, Route } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import {
+  ROUTE_FORGOT_PASSWORD,
   ROUTE_HISTORY,
   ROUTE_HOME,
   ROUTE_INVOICE_CREATE,
@@ -33,6 +34,7 @@ import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
 import WalletMemo from './pages/WalletMemo';
 import WalletWithdrawPage from './pages/WalletWithdraw';
+import ForgotPassword from './pages/ForgotPassword';
 
 export default function Router() {
   const auth = useAuth();
@@ -56,6 +58,7 @@ export default function Router() {
       <Wouter hook={useHashLocation}>
         <Route path={ROUTE_LOGIN} component={LoginForm} />
         <Route path={ROUTE_REGISTER} component={SignUp} />
+        <Route path={ROUTE_FORGOT_PASSWORD} component={ForgotPassword} />
       </Wouter>
     );
   } else if (auth.user && !auth.user.isRegistrationCompleted) {

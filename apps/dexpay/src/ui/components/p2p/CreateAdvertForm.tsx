@@ -6,8 +6,10 @@ import {
   Divider,
   InputAdornment,
   Paper,
+  Skeleton,
   Typography,
 } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 import { AssetModel } from 'dex-helpers/types';
 import {
   CircleNumber,
@@ -19,11 +21,10 @@ import {
 } from 'dex-ui';
 import { orderBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '../../hooks/use-auth';
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { Pairs, DexTrade, Address, Invoice } from '../../services'; // Adjust path as needed
+import { Pairs, DexTrade, Address, Invoice, Rates } from '../../services'; // Adjust path as needed
 import { Validation } from '../../validation';
 import {
   SelectCurrencyWithValidation,
@@ -71,7 +72,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = useAuth();
   const projectId = user?.project?.id!;
   const queryClient = useQueryClient();
-  const [rate, setRate] = useState<number>();
+  // const [rate, setRate] = useState<number>();
   const advCreate = useMutation(DexTrade.advertCreateFromPair, {
     onSuccess,
     onMutate: () => {
@@ -101,6 +102,21 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     validationSchema: Validation.DexTrade.Advert.create,
     method: saveAd,
   });
+  const isBothCoinsSelected = Boolean(form.values.coin1 && form.values.coin2);
+  const pairIso = `${form.values.coin1?.currency.iso}:${form.values.coin2?.currency.iso}`;
+
+  const rateQuery = useQuery(
+    Rates.getRate,
+    [
+      {
+        pair: pairIso,
+      },
+    ],
+    {
+      enabled: isBothCoinsSelected,
+    },
+  );
+
   const priceSourcesCoin1 = useQuery(
     Pairs.priceSources,
     [
@@ -208,6 +224,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     ]);
   }
 
+  const rate = rateQuery.data && rateQuery.data[pairIso]?.rateFloat;
+
   return (
     <Box component="form" onSubmit={form.submit} noValidate sx={{ mt: 1 }}>
       <Box display="flex" my={1} alignItems="center">
@@ -275,7 +293,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 Rate
               </Typography>
             </Box>
-            {rate && (
+            {rate && !rateQuery.isLoading ? (
               <Typography mr={2}>
                 <AssetPriceOutput
                   price={
@@ -285,6 +303,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   tickerTo={form.values.coin2.symbol}
                 />
               </Typography>
+            ) : (
+              <Skeleton width={180} height={40} />
             )}
           </Box>
 

@@ -8,7 +8,12 @@ import { useAuth } from '../../hooks/use-auth';
 import { Validation } from '../../validation';
 
 const SignUp = () => {
-  const user = useAuth();
+  const {
+    twoFAdata: { codeToken },
+    twoFA,
+    signUp,
+  } = useAuth();
+
   const form = useForm({
     values: {
       email: '',
@@ -16,12 +21,8 @@ const SignUp = () => {
       confirmPassword: '',
     },
     validationSchema: Validation.Auth.signUp,
-    method: user.signUp,
+    method: signUp,
   });
-  const {
-    twoFAdata: { codeToken },
-    twoFA,
-  } = useAuth();
   return (
     <Container maxWidth="xs">
       <Box

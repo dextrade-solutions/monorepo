@@ -13,14 +13,16 @@ interface CreateUserFormValues {
 }
 
 const CreateDexTradeUser = ({ onSuccess }: { onSuccess: () => void }) => {
-  const { user } = useAuth();
+  const { user, me } = useAuth();
   const projectId = user?.project?.id!; // Get projectId from auth context
 
   const createUser = useMutation(DexTrade.userCreate, { onSuccess });
 
+  const [emailFirstPart] = (me?.email || '').split('@');
+
   const form = useForm<CreateUserFormValues>({
     values: {
-      username: '',
+      username: emailFirstPart,
     },
     validationSchema: Validation.DexTrade.User.create, // Create this validation schema
     method: async (data: CreateUserFormValues) =>

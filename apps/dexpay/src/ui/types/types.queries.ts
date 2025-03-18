@@ -1171,3 +1171,18 @@ export namespace Balance {
     export interface Query extends Record<string, any> {}
   }
 }
+
+export namespace Rate {
+  export interface Params {
+    pair: string;
+  }
+
+  export interface Response {
+    [key: string]: {
+      symbol: string;
+      rateFloat: number;
+      updateTime: number;
+      serviceName: string;
+    };
+  }
+}

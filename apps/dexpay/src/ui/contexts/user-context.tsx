@@ -46,6 +46,7 @@ interface UserContextType {
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
   setCompleteReginstration: () => void;
   setPrimaryCurrency: (v: string) => void;
+  authenticate: (accessToken: string, refreshToken: string) => Promise<void>;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -73,6 +74,7 @@ export const UserContext = createContext<UserContextType>({
   },
   logout: () => {},
   signUp: () => {},
+  authencticate: () => {},
 });
 
 const getRole = (projectPermissions = [], currentProjectId: number) => {
@@ -116,7 +118,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     Vault.my,
     [{ projectId: user?.project?.id }, { page: 0 }],
     {
-      enabled: Boolean(user?.project),
+      enabled: Boolean(user?.isRegistrationCompleted),
     },
   );
   const allVaults = vaults.data?.list.currentPageResult || [];
@@ -130,38 +132,42 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user]);
 
+  const authenticate = async (accessToken: string, refreshToken: string) => {
+    saveAuthData(accessToken, refreshToken);
+
+    const [resultProjects, resultMemos, resultMe] = await Promise.all([
+      projects.refetch(),
+      memos.refetch(),
+      me.refetch(),
+    ]);
+
+    const projectsList = resultProjects.data?.list.currentPageResult || [];
+    const memosList = resultMemos.data?.list.currentPageResult || [];
+
+    const [project] = projectsList.reverse();
+    const [memo] = memosList;
+
+    const { isCashier } = getRole(
+      resultMe.data.project_permissions,
+      project.id,
+    );
+
+    setUser((prev) => ({
+      ...prev,
+      auth: {
+        accessToken,
+        refreshToken,
+      },
+      project,
+      isRegistrationCompleted: Boolean(memo) || isCashier,
+      isCashier,
+    }));
+  };
+
   const twoFACode = useMutation(Auth.twoFaCode, {
     onSuccess: async (data) => {
       const { access_token: accessToken, refresh_token: refreshToken } = data;
-      saveAuthData(accessToken, refreshToken);
-
-      const [resultProjects, resultMemos, resultMe] = await Promise.all([
-        projects.refetch(),
-        memos.refetch(),
-        me.refetch(),
-      ]);
-
-      const projectsList = resultProjects.data?.list.currentPageResult || [];
-      const memosList = resultMemos.data?.list.currentPageResult || [];
-
-      const [project] = projectsList.reverse();
-      const [memo] = memosList;
-
-      const { isCashier } = getRole(
-        resultMe.data.project_permissions,
-        project.id,
-      );
-
-      setUser((prev) => ({
-        ...prev,
-        auth: {
-          accessToken,
-          refreshToken,
-        },
-        project,
-        isRegistrationCompleted: Boolean(memo) || isCashier,
-        isCashier,
-      }));
+      await authenticate(accessToken, refreshToken);
       setTwoFa((v) => ({
         ...v,
         codeToken: '',
@@ -227,6 +233,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     login: (email: string, password: string) => {
       return loginMutation.mutateAsync([{ email, password, old_2fa: false }]);
     },
+    authenticate,
     signUp: (params: AuthTypes.SignUp.Body) =>
       signUpMutation.mutateAsync([params]),
     twoFA: ({
