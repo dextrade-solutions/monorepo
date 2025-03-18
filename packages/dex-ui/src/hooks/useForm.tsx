@@ -15,7 +15,7 @@ export type UseFormReturnType<T> = {
   values: T;
   setInteracted: (name: string) => void;
   setErrors: (name: string, errors: string[]) => void;
-  setValues: React.Dispatch<React.SetStateAction<any>>; // And this to update values
+  setValue: <K extends keyof T>(name: K, value: T[K]) => void;
   submit: (...args: any[]) => Promise<void>;
   reset: () => void;
 };
@@ -47,7 +47,7 @@ export const useForm = <T,>({
     setErrorsData((prev) => ({ ...prev, [name]: errors }));
   };
 
-  const setValue = (name: string, value: any) => {
+  const setValue = <K extends keyof T>(name: K, value: T[K]) => {
     setValuesData((prev) => ({ ...prev, [name]: value }));
   };
 

@@ -16,9 +16,6 @@ import {
   ChevronDown,
   ChevronRight,
   LucideArrowUpRight,
-  Pause,
-  Pencil,
-  Play,
   Trash,
 } from 'lucide-react';
 import React, { useState } from 'react';

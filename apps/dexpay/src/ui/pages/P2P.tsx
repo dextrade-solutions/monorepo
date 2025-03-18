@@ -1,34 +1,39 @@
-import {
-  Button,
-  Box,
-  Typography,
-  Paper,
-  Tab,
-  Divider,
-} from '@mui/material';
-import { formatCurrency } from 'dex-helpers';
-import { bgPrimaryGradient } from 'dex-ui';
-import { Plus, User, User2 } from 'lucide-react';
+import { Button, Box, Typography, Paper, Tab, Divider } from '@mui/material';
+import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
+import { bgPrimaryGradient, CopyData, useGlobalModalContext } from 'dex-ui';
+import { Code, Plus, User2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
 import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
 import Loader from '../components/p2p/Loader';
 import TradingPair from '../components/p2p/TradingPair';
+import Tabs from '../components/ui/Tabs';
+import DextradeUserEditForm from '../components/user/DextradeUserEditForm';
 import { ROUTE_P2P_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useQuery } from '../hooks/use-query';
 import { DexTrade } from '../services';
-import Tabs from '../components/ui/Tabs';
 
 export default function P2P() {
   const [_, navigate] = useLocation();
   const { user } = useAuth();
+  const { showModal, hideModal } = useGlobalModalContext();
   const projectId = user?.project?.id!;
 
   const [tabValue, setTabValue] = useState('pairs');
 
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
+
+  const queryString = `?name=${dextradeUser.data?.user.username}`;
+  const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
+  const widgetCode = `<iframe
+      src="${widgetLink}"
+      width="100%"
+      height="600px"
+      title="DexPay Swap"
+      className="border-none rounded-lg"
+    />`;
 
   if (dextradeUser.isLoading) {
     return <Loader />;
@@ -65,12 +70,22 @@ export default function P2P() {
           alignItems="center"
           width="100%"
         >
-          <Typography display="flex" fontWeight="bold" color="text.tertiary">
-            <Box mr={1}>
-              <User2 />
-            </Box>
-            {dextradeUser.data.user.username}
-          </Typography>
+          <Button
+            onClick={() =>
+              showModal({
+                component: () => {
+                  return <DextradeUserEditForm onSuccess={hideModal} />;
+                },
+              })
+            }
+          >
+            <Typography display="flex" fontWeight="bold" color="text.tertiary">
+              <Box mr={1}>
+                <User2 />
+              </Box>
+              {dextradeUser.data.user.username}
+            </Typography>
+          </Button>
           <Box textAlign="right">
             <Typography
               component="div"
@@ -109,6 +124,30 @@ export default function P2P() {
             onClick={() => navigate(ROUTE_P2P_CREATE)}
           >
             Create ad
+          </Button>
+        </Box>
+        <Box display="flex" mt={2}>
+          <Button
+            fullWidth
+            color="tertiary"
+            size="large"
+            variant="outlined"
+            startIcon={<Code />}
+            onClick={() =>
+              showModal({
+                component: () => (
+                  <Box m={3} sx={{ p: 2, mb: 5 }}>
+                    <Typography color="text.secondary">
+                      Copy and place this widget to your website as iframe,
+                      using this code:
+                    </Typography>
+                    <CopyData data={widgetCode} sx={{ my: 2 }} />
+                  </Box>
+                ),
+              })
+            }
+          >
+            Get widget code
           </Button>
         </Box>
       </Paper>
