@@ -34,19 +34,19 @@ export default function P2P() {
 
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
 
-  let queryString = `?name=${dextradeUser.data?.user.username}`;
-  if (embedWidgetDefaultCurrency) {
-    queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
-  }
-  const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
-  const widgetCode = `<iframe
-      src="${widgetLink}"
-      width="100%"
-      height="600px"
-      title="DexPay Swap"
-    />`;
+  const showConfigureEmbedWidget = () => {
+    let queryString = `?name=${dextradeUser.data?.user?.username}`;
+    if (embedWidgetDefaultCurrency) {
+      queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
+    }
+    const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
+    const widgetCode = `<iframe
+        src="${widgetLink}"
+        width="100%"
+        height="600px"
+        title="DexPay Swap"
+      />`;
 
-  const showConfigureEmbedWidget = () =>
     showModal({
       component: () => (
         <Box m={3} sx={{ mb: 5 }}>
@@ -78,6 +78,8 @@ export default function P2P() {
         </Box>
       ),
     });
+  };
+
   useEffect(() => {
     if (embedWidgetDefaultCurrency) {
       showConfigureEmbedWidget();
