@@ -1,13 +1,20 @@
 import { Button, Box, Typography, Paper, Tab, Divider } from '@mui/material';
 import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
-import { bgPrimaryGradient, CopyData, useGlobalModalContext } from 'dex-ui';
+import { AssetModel } from 'dex-helpers/types';
+import {
+  bgPrimaryGradient,
+  CircleNumber,
+  CopyData,
+  useGlobalModalContext,
+} from 'dex-ui';
 import { Code, Plus, User2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 
 import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
 import Loader from '../components/p2p/Loader';
 import TradingPair from '../components/p2p/TradingPair';
+import SelectCurrency from '../components/ui/SelectCurrency';
 import Tabs from '../components/ui/Tabs';
 import DextradeUserEditForm from '../components/user/DextradeUserEditForm';
 import { ROUTE_P2P_CREATE } from '../constants/pages';
@@ -22,18 +29,60 @@ export default function P2P() {
   const projectId = user?.project?.id!;
 
   const [tabValue, setTabValue] = useState('pairs');
+  const [embedWidgetDefaultCurrency, setEmbedWidgetDefaultCurrency] =
+    useState<AssetModel>();
 
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
 
-  const queryString = `?name=${dextradeUser.data?.user.username}`;
+  let queryString = `?name=${dextradeUser.data?.user.username}`;
+  if (embedWidgetDefaultCurrency) {
+    queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
+  }
   const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
   const widgetCode = `<iframe
       src="${widgetLink}"
       width="100%"
       height="600px"
       title="DexPay Swap"
-      className="border-none rounded-lg"
     />`;
+
+  const showConfigureEmbedWidget = () =>
+    showModal({
+      component: () => (
+        <Box m={3} sx={{ mb: 5 }}>
+          <Box display="flex" alignItems="center">
+            <CircleNumber number={1} size={30} />
+            <Typography color="text.secondary" ml={1}>
+              Configure your widget
+            </Typography>
+          </Box>
+          <Box mt={2}>
+            <SelectCurrency
+              fullWidth
+              value={embedWidgetDefaultCurrency}
+              placeholder="Select default currency"
+              variant="contained"
+              noZeroBalances
+              onChange={(currency) => {
+                setEmbedWidgetDefaultCurrency(currency);
+              }}
+            />
+          </Box>
+          <Box display="flex" alignItems="center" mt={2}>
+            <CircleNumber number={2} size={30} />
+            <Typography color="text.secondary" ml={1}>
+              Embed this code on your website
+            </Typography>
+          </Box>
+          <CopyData variant="outlined" full data={widgetCode} sx={{ my: 2 }} />
+        </Box>
+      ),
+    });
+  useEffect(() => {
+    if (embedWidgetDefaultCurrency) {
+      showConfigureEmbedWidget();
+    }
+  }, [embedWidgetDefaultCurrency]);
 
   if (dextradeUser.isLoading) {
     return <Loader />;
@@ -133,21 +182,9 @@ export default function P2P() {
             size="large"
             variant="outlined"
             startIcon={<Code />}
-            onClick={() =>
-              showModal({
-                component: () => (
-                  <Box m={3} sx={{ p: 2, mb: 5 }}>
-                    <Typography color="text.secondary">
-                      You will be see all enabled pairs, place this code to your
-                      site:
-                    </Typography>
-                    <CopyData data={widgetCode} sx={{ my: 2 }} />
-                  </Box>
-                ),
-              })
-            }
+            onClick={showConfigureEmbedWidget}
           >
-            Get widget code
+            Embed widget
           </Button>
         </Box>
       </Paper>

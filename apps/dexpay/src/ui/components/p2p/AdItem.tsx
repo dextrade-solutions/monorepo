@@ -97,7 +97,6 @@ const AdItem: React.FC<AdItemProps> = ({
       width="100%"
       height="600px"
       title="DexPay Swap"
-      className="border-none rounded-lg"
     />`;
   return (
     <Paper
@@ -243,7 +242,7 @@ const AdItem: React.FC<AdItemProps> = ({
                   data={adLink}
                 />
               </Box>
-              <Box
+              {/* <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
@@ -266,7 +265,7 @@ const AdItem: React.FC<AdItemProps> = ({
                   color="tertiary"
                   data={widgetCode}
                 />
-              </Box>
+              </Box> */}
             </Box>
           )}
           <ItemRow label="Transaction Count" value={transactionCount} />
@@ -290,7 +289,7 @@ const AdItem: React.FC<AdItemProps> = ({
           </Box>
           <Box>
             <ItemRow
-              label={`Minimum Trade Amount`}
+              label={`Min Trade Amount`}
               value={
                 <AssetPriceOutput
                   amount={fromMinAmount}
@@ -302,7 +301,7 @@ const AdItem: React.FC<AdItemProps> = ({
               }
             />
             <ItemRow
-              label={`Maximum Trade Amount`}
+              label={`Max Trade Amount`}
               value={
                 <AssetPriceOutput
                   amount={fromMaxAmount}
