@@ -55,7 +55,7 @@ const AssetItem = ({
           <Box marginX={2}>
             <Typography fontWeight="bold">{ticker}</Typography>
             {!isBtc && (
-              <Typography fontWeight={200} variant="body2">
+              <Typography fontWeight={200} variant="caption">
                 {networkType?.toUpperCase()}
               </Typography>
             )}
