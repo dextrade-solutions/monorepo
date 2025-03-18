@@ -46,7 +46,7 @@ const AdPreview = ({
       sx={{ bgcolor: 'primary.light' }}
       onClick={onClick}
     >
-      <CardActionArea>
+      <CardActionArea sx={{ fontSize: 'inherit' }}>
         <CardContent>
           <Box display="flex" justifyContent="space-between" marginBottom={1}>
             <ExchangerUserPreview
