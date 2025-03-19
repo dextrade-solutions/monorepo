@@ -65,7 +65,7 @@ export default function AssetPriceOutput({
       <Link
         sx={{
           cursor: 'pointer',
-          textDecoration: disableToggle || (isPerOne && 'none'),
+          textDecoration: (disableToggle || isPerOne) && 'none',
         }}
         variant="body1"
         fontWeight={isPerOne ? 'bold' : 'normal'}

@@ -55,10 +55,10 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           <span className="flex-grow">{t('reserve')}</span> {/* Changed here */}
           <span className="row-summary__value">
             <AssetPriceOutput
-              amount={ad.reserveSum}
+              amount={ad.reserveSum} // in coin 2
               price={ad.coinPair.price}
-              tickerFrom={ad.fromCoin.ticker}
-              tickerTo={ad.toCoin.ticker}
+              tickerFrom={ad.toCoin.ticker}
+              tickerTo={ad.fromCoin.ticker}
             />
           </span>
         </Typography>
@@ -68,7 +68,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             <span className="row-summary__value">
               <AssetPriceOutput
                 amount={ad.minimumExchangeAmountCoin1}
-                price={ad.coinPair.price}
+                price={1 / ad.coinPair.price}
                 tickerFrom={ad.fromCoin.ticker}
                 tickerTo={ad.toCoin.ticker}
               />
@@ -81,7 +81,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             <span className="row-summary__value">
               <AssetPriceOutput
                 amount={ad.maximumExchangeAmountCoin1}
-                price={ad.coinPair.price}
+                price={1 / ad.coinPair.price}
                 tickerFrom={ad.fromCoin.ticker}
                 tickerTo={ad.toCoin.ticker}
               />
