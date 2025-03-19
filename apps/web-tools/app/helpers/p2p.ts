@@ -6,6 +6,7 @@ import { AssetModel, CoinModel } from 'dex-helpers/types';
 const assetDict: { [key: string]: AssetModel } = allAssets;
 
 export function getAssetByIso(iso: string): AssetModel | undefined {
+  debugger;
   return assetDict[iso];
 }
 
