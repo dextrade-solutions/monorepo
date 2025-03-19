@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
-import { EXCHANGE_VIEW_ROUTE } from '../helpers/constants/routes';
+import { EXCHANGE_VIEW_ROUTE, SWAP_WIDGET_ROUTE } from '../helpers/constants/routes';
 
 export default function SwapWidget() {
   const [fromValue, setFromValue] = useState();
@@ -77,10 +77,10 @@ export default function SwapWidget() {
         tradequery.set('amount', fromValue);
       }
       if (searchParams.get('miniapp')) {
-        navigate(`${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`);
+        navigate(`${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`);
         return;
       }
-      const url = `https://p2p.dextrade.com${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`;
+      const url = `https://p2p.dextrade.com${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`;
       window.open(url, '_blank');
     }
   };
@@ -141,7 +141,7 @@ export default function SwapWidget() {
       } else {
         setCurrentAd(undefined);
       }
-      navigate(`?${searchParams.toString()}`);
+      navigate(`${SWAP_WIDGET_ROUTE}/?${searchParams.toString()}`);
     }
   }, [assetFrom, assetTo, isLoading]);
 
