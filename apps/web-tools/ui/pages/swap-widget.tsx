@@ -76,6 +76,10 @@ export default function SwapWidget() {
       if (fromValue) {
         tradequery.set('amount', fromValue);
       }
+      if (searchParams.get('miniapp')) {
+        navigate(`${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`);
+        return;
+      }
       const url = `https://p2p.dextrade.com${EXCHANGE_VIEW_ROUTE}?${tradequery.toString()}`;
       window.open(url, '_blank');
     }
