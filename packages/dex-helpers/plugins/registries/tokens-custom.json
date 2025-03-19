@@ -14,6 +14,20 @@
     ]
   },
   {
+    "uid": "usd-coin",
+    "name": "Tether",
+    "code": "USDC",
+    "market_cap_rank": null,
+    "platforms": [
+      {
+        "type": "TRC20",
+        "decimals": 6,
+        "address": "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8",
+        "symbol": "USDC"
+      }
+    ]
+  },
+  {
     "uid": "tether",
     "name": "Tether",
     "code": "USDT",
