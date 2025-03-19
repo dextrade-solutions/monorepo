@@ -28,7 +28,7 @@ export default function SwapWidget() {
     page: 1,
     notSupportedCoins: [],
   };
-
+  debugger;
   const { data } = useQuery<AdItem[]>({
     queryKey: ['p2pAds', currentFilter],
     queryFn: () =>
@@ -44,6 +44,7 @@ export default function SwapWidget() {
       ),
     refetchInterval: 20 * SECOND,
   });
+  debugger;
 
   const allAds = orderBy(data || [], 'toAsset.balanceUsdt', 'desc');
 
