@@ -52,7 +52,7 @@ export const BUILT_IN_NETWORKS = {
   // EVM
   [NetworkNames.ethereum]: {
     ...mainnetConfig,
-    iso: 'ETH',
+    iso: 'ETH', // network iso
     key: NetworkNames.ethereum,
     uid: 'ethereum',
   },

@@ -7,3 +7,4 @@ export * from './evm';
 export * from './tron';
 export * from './solana';
 export * from './get-qr-uri-payment';
+export * from './coins';

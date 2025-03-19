@@ -1,9 +1,11 @@
-import qs from 'qs';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
-import { parseCoinByTickerAndNetwork } from '../../app/helpers/p2p';
+import {
+  getAssetByIso,
+  parseCoinByTickerAndNetwork,
+} from '../../app/helpers/p2p';
 import {
   getFromToken,
   getToToken,
@@ -24,8 +26,7 @@ export const useQueryAds = () => {
     const fromString = searchParams.get('fromToken');
     const toString = searchParams.get('toToken');
     if (fromString) {
-      const [ticker, network] = fromString.split('__');
-      const assetFrom = parseCoinByTickerAndNetwork(ticker, network);
+      const assetFrom = getAssetByIso(fromString);
       if (assetFrom) {
         dispatch(setFromToken(assetFrom));
       } else {
@@ -33,8 +34,7 @@ export const useQueryAds = () => {
       }
     }
     if (toString) {
-      const [ticker, network] = toString.split('__');
-      const assetTo = parseCoinByTickerAndNetwork(ticker, network);
+      const assetTo = getAssetByIso(toString);
       dispatch(setToToken(assetTo));
     } else {
       dispatch(setToToken(null));
@@ -43,16 +43,13 @@ export const useQueryAds = () => {
 
   useEffect(() => {
     if (fromToken) {
-      searchParams.set(
-        'fromToken',
-        `${fromToken?.symbol}__${fromToken.network}`,
-      );
+      searchParams.set('fromToken', fromToken.iso);
     } else {
       searchParams.delete('fromToken');
     }
 
     if (toToken) {
-      searchParams.set('toToken', `${toToken?.symbol}__${toToken.network}`);
+      searchParams.set('toToken', toToken.iso);
     } else {
       searchParams.delete('toToken');
     }
