@@ -69,7 +69,7 @@ const AdItem: React.FC<AdItemProps> = ({
     ? minimumExchangeAmountCoin1 * price
     : minimumExchangeAmountCoin1;
   const fromMaxAmount = reversed
-    ? maximumExchangeAmountCoin1 / price
+    ? maximumExchangeAmountCoin1 * price
     : maximumExchangeAmountCoin1;
 
   const from = reversed ? toCoin : fromCoin;
@@ -90,14 +90,6 @@ const AdItem: React.FC<AdItemProps> = ({
   };
   const queryString = `?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
   const adLink = `${DEXTRADE_P2P_LINK}/swap-view${queryString}`;
-  const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
-
-  const widgetCode = `<iframe
-      src="${widgetLink}"
-      width="100%"
-      height="600px"
-      title="DexPay Swap"
-    />`;
   return (
     <Paper
       elevation={0}
@@ -308,7 +300,6 @@ const AdItem: React.FC<AdItemProps> = ({
                   price={price}
                   tickerFrom={from.ticker}
                   tickerTo={to.ticker}
-                  secondary
                 />
               }
             />
