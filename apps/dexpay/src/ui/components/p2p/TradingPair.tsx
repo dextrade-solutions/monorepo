@@ -129,6 +129,10 @@ export default function TradingPair() {
               dextrade_id: ad.details.id,
               settingsMain: {
                 active: !ad.details.active,
+                maximumExchangeAmountCoin1: ad.details
+                  .maximumExchangeAmountCoin1
+                  ? String(ad.details.maximumExchangeAmountCoin1)
+                  : null,
               },
             },
           ]),
