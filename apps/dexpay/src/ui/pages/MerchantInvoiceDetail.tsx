@@ -32,7 +32,8 @@ interface InvoiceDetailPageParams {
 }
 
 export default function InvoiceDetailPage() {
-  const { id } = useParams<InvoiceDetailPageParams>();
+  const { id: ids } = useParams<InvoiceDetailPageParams>();
+  const [id, internalId] = ids.split(':');
   const loader = useLoader();
   const { showModal } = useGlobalModalContext();
   const [, navigate] = useHashLocation();
@@ -105,7 +106,7 @@ export default function InvoiceDetailPage() {
         }
         loader.runLoader(
           deleteInvoice.mutateAsync([
-            { projectId: user.project.id, id: invoice.id },
+            { projectId: user.project.id, id: internalId },
           ]),
         );
       },
