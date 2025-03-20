@@ -265,7 +265,7 @@ export namespace Validation {
         minimumExchangeAmountCoin1: string().required(
           'Minimum Exchange Amount is required',
         ),
-        maximumExchangeAmountCoin1: string().optional(),
+        maximumExchangeAmountCoin1: string().optional().nullable(),
         priceAdjustment: string(),
         transactionFee: string(),
         exchangersPolicy: string(),
