@@ -111,14 +111,17 @@ const AdItem: React.FC<AdItemProps> = ({
 
         <Box ml="auto">
           <IconButton
+            data-testid="ad-toggle-active"
             color={active ? 'error' : 'success'}
             onClick={() => toggleActive(0)} // fix this
           >
             {active ? <AdRun size={16} /> : <AdRun size={16} />}
           </IconButton>
-          <IconButton color="tertiary" onClick={() => onDelete(0)}>
-            {' '}
-            {/* fix this*/}
+          <IconButton
+            data-testid="ad-delete"
+            color="tertiary"
+            onClick={() => onDelete(0)}
+          >
             <Trash size={16} />
           </IconButton>
         </Box>
@@ -219,6 +222,7 @@ const AdItem: React.FC<AdItemProps> = ({
                 <Button
                   size="small"
                   color="tertiary"
+                  data-testid="ad-open"
                   onClick={() => {
                     window.open(adLink, '_blank');
                   }}
@@ -260,27 +264,39 @@ const AdItem: React.FC<AdItemProps> = ({
               </Box> */}
             </Box>
           )}
-          <ItemRow label="Transaction Count" value={transactionCount} />
           <ItemRow
+            data-testid="tx-count"
+            label="Transaction Count"
+            value={transactionCount}
+          />
+          <ItemRow
+            data-testid="ad-earnings"
             label="Earnings"
             value={`${earnings.amount} ${from.ticker} | $${earnings.usdEquivalent.toFixed(2)}`}
           />
           <Box>
             <ItemRow
+              data-testid="ad-exchange-comission"
               label="Exchange Commission"
               value={`${exchangeCommission} ${from.ticker}`}
             />
             <ItemRow label="Profit Commission" value={`${profitCommission}%`} />
           </Box>
           <Box>
-            <ItemRow label="Price" value={formatCurrency(price, to.ticker)} />
             <ItemRow
+              data-testid="ad-price"
+              label="Price"
+              value={formatCurrency(price, to.ticker)}
+            />
+            <ItemRow
+              data-testid="ad-market-price"
               label="Market Price"
               value={`${marketPrice} ${from.ticker}`}
             />
           </Box>
           <Box>
             <ItemRow
+              data-testid="min-trade-amount"
               label={`Min Trade Amount`}
               value={
                 <AssetPriceOutput
@@ -293,6 +309,7 @@ const AdItem: React.FC<AdItemProps> = ({
               }
             />
             <ItemRow
+              data-testid="max-trade-amount"
               label={`Max Trade Amount`}
               value={
                 <AssetPriceOutput
@@ -304,7 +321,11 @@ const AdItem: React.FC<AdItemProps> = ({
               }
             />
           </Box>
-          <ItemRow label="Price Source" value={priceSource} />
+          <ItemRow
+            data-testid="price-source"
+            label="Price Source"
+            value={priceSource}
+          />
         </Stack>
       </Collapse>
 
@@ -313,6 +334,7 @@ const AdItem: React.FC<AdItemProps> = ({
         justifyContent="center"
         mt={1}
         width="100%"
+        data-testid="toggle-expand"
         onClick={() => toggleExpand('options')}
       >
         <ChevronDown

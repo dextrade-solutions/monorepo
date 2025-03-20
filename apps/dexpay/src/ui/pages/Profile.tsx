@@ -69,6 +69,7 @@ export default function Profile() {
       </Card>
 
       <Button
+        data-testid="logout"
         endIcon={<LogOut />}
         sx={{ mt: 3 }}
         fullWidth
