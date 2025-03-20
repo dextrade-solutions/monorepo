@@ -76,7 +76,7 @@ const Login = () => {
       <Box color="text.tertiary">
         <Typography variant="h4" component="h1" gutterBottom fontWeight="550">
           {inviteParams ? (
-            <>Accepting invation</>
+            <>Accept Invitation</>
           ) : (
             <>
               Welcome back, to Dex<strong>Pay</strong>!
