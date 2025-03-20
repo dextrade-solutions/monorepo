@@ -20,7 +20,6 @@ const TransactionsModal: React.FC<TransactionsModalProps & ModalProps> = ({
     <Box padding={3}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
         <Typography variant="h6">Transactions</Typography>{' '}
-        {/* More appropriate title */}
         <ButtonIcon
           iconName="close"
           color="secondary"

@@ -41,7 +41,6 @@ const CopyData = ({
   };
 
   return (
-    // <Box >
     <Tooltip
       placement={tooltipPosition}
       title={copied ? t('copiedExclamation') : data}
@@ -53,7 +52,7 @@ const CopyData = ({
         }}
         color={color}
         fullWidth
-        sx={{ lineHeight: 'normal', minWidth: 120 }}
+        sx={{ lineHeight: 'normal', minWidth: 130 }}
         className={classnames('copy-data', className)}
         {...args}
       >
@@ -61,7 +60,6 @@ const CopyData = ({
         <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
       </Button>
     </Tooltip>
-    // </Box>
   );
 };
 

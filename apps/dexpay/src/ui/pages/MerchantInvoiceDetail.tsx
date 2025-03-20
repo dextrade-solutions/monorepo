@@ -14,8 +14,9 @@ import {
   useLoader,
   UrlIcon,
   InvoiceView,
+  CopyData,
 } from 'dex-ui';
-import { DeleteIcon, Trash } from 'lucide-react';
+import { DeleteIcon, LucideArrowUpRight, Trash } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { useParams } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
@@ -148,13 +149,38 @@ export default function InvoiceDetailPage() {
         </Button>
       </Box>
 
-      <Paper elevation={1} sx={{ p: 3, mb: 4 }}>
-        <InvoiceView invoice={invoice} hideHeader />
+      <Paper elevation={0} sx={{ bgcolor: 'primary.light', p: 2, mb: 4 }}>
+        <InvoiceView preview invoice={invoice} hideHeader />
+        <Divider sx={{ my: 3 }} />
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Button
+            size="small"
+            color="tertiary"
+            onClick={() => {
+              window.open(invoice.payment_page_url, '_blank');
+            }}
+            endIcon={<LucideArrowUpRight size={20} />}
+          >
+            Open link
+          </Button>
+          <div className="flex-grow" />
+          <CopyData
+            className="flex-shrink"
+            color="tertiary"
+            shorten
+            data={invoice.payment_page_url}
+          />
+        </Box>
         {supportedCurrencies.length > 0 && (
           <>
-            <Divider sx={{ my: 3 }} />
             <Box>
-              <Typography variant="subtitle1" color="text.secondary" mb={2}>
+              <Typography
+                ml={0.5}
+                mt={3}
+                variant="body2"
+                color="text.secondary"
+                mb={2}
+              >
                 Supported Currencies
               </Typography>
               <Box display="flex" flexWrap="wrap" alignItems="center" gap={1}>
@@ -171,7 +197,6 @@ export default function InvoiceDetailPage() {
                         )}
                       </Box>
                     }
-                    variant="outlined"
                     icon={<UrlIcon url={getCoinIconByUid(item.uid)} />}
                   />
                 ))}

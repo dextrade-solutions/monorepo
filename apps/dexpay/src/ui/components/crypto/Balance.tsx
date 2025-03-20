@@ -24,7 +24,7 @@ export const Balance = memo(
     const isPnlPositive = pnl !== undefined && Number(pnl) > 0;
     const isPnlNegative = pnl !== undefined && Number(pnl) < 0;
 
-    let pnlColor = 'primary';
+    let pnlColor;
     if (isPnlPositive) {
       pnlColor = 'success';
     }
@@ -55,8 +55,8 @@ export const Balance = memo(
                 sx={{
                   borderRadius: 0.5,
                   mr: 1,
-                  bgcolor: `${pnlColor}.light`,
-                  color: `${pnlColor}.contrastText`,
+                  bgcolor: pnlColor && `${pnlColor}.light`,
+                  color: pnlColor && `${pnlColor}.contrastText`,
                   fontWeight: 'bold',
                 }}
               />

@@ -31,10 +31,7 @@ interface InvoiceItemProps {
   onDelete?: (id: number) => void;
 }
 
-export const InvoiceItem: React.FC<InvoiceItemProps> = ({
-  invoice,
-  onDelete,
-}) => {
+export const InvoiceItem: React.FC<InvoiceItemProps> = ({ invoice }) => {
   const { me } = useAuth();
   const { showModal } = useGlobalModalContext();
   const [, navigate] = useHashLocation();
@@ -45,7 +42,7 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
 
   const STATUS_COLOR = {
     2: 'error.dark', // error
-    3: 'success.dark', // success'
+    3: 'success.main', // success'
   };
 
   return (
@@ -88,7 +85,8 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
               sx={{ ml: 1 }}
               startIcon={
                 <CircleNumber
-                  color="success.main"
+                  color="success.light"
+                  textColor="success.main"
                   size={25}
                   number={invoice.transactions.length}
                 />
@@ -115,10 +113,10 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({
         <Button
           size="small"
           color="tertiary"
+          endIcon={<LucideArrowUpRight size={20} />}
           onClick={() => {
             window.open(invoice.payment_page_url, '_blank');
           }}
-          endIcon={<LucideArrowUpRight size={20} />}
         >
           Open link
         </Button>

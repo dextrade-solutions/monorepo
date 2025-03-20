@@ -21,7 +21,7 @@ import {
 import { useCurrencies } from '../hooks/use-currencies';
 
 export default function Wallet() {
-  const [_, navigate] = useHashLocation();
+  const [, navigate] = useHashLocation();
   const { items, isLoading } = useCurrencies();
   return (
     <Box>
