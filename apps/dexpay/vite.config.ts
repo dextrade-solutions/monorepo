@@ -1,10 +1,10 @@
 import react from '@vitejs/plugin-react';
-import path from 'path';
 import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { VitePWA } from 'vite-plugin-pwa';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import manifest from './manifest';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -24,11 +24,18 @@ export default defineConfig({
         process: true,
       },
     }),
+    VitePWA({
+      includeAssets: ['images/*'],
+      manifest,
+      registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
+      },
+    }),
   ],
-  // optimizeDeps: {
-  //   include: ['eventemitter3'],
-  // },
-  // resolve: {
-  //   preserveSymlinks: true // this is the fix!
-  // },
 });

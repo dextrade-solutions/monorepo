@@ -1,7 +1,8 @@
 import { Alert, Box, Button, Grow, Typography } from '@mui/material';
-import { WalletConnection, WalletItem } from 'dex-connect';
+import { Connection, WalletConnection } from 'dex-connect';
 import { isMobileWeb } from 'dex-helpers';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import WalletListItem from './wallet-list-item';
 import { PulseLoader, UrlIcon } from '../../ui';
@@ -13,15 +14,17 @@ export default function WalletList({
   hideConnectionType,
   connectingWalletLabel = 'Connecting',
   onSelectWallet,
+  connectingWallet,
 }: {
   value?: WalletConnection; // selected item
-  wallets?: any[];
-  hideConnectionType: boolean;
+  wallets?: Connection[];
+  hideConnectionType?: boolean;
   connectingWalletLabel?: string;
-  onSelectWallet?: (item: WalletItem) => void;
+  onSelectWallet?: (item: Connection) => void;
+  connectingWallet?: Connection;
 }) {
-  const [connectingWallet, setConnectingWallet] = useState<WalletItem>();
-  const [toInstallWallet, setToInstallWallet] = useState<WalletItem>();
+  const { t } = useTranslation();
+  const [toInstallWallet, setToInstallWallet] = useState<Connection>();
   const { showModal } = useGlobalModalContext();
   const onDisconnect = async (item: (typeof wallets)[number]) => {
     showModal({
@@ -30,7 +33,7 @@ export default function WalletList({
         <Box display="flex" alignItems="center">
           <UrlIcon size={40} url={item.icon} />
           <Typography variant="h5" ml={2}>
-            Disconnect {item.name}
+            {t('disconnectWallet', { name: item.name })}
           </Typography>
         </Box>
       ),
@@ -42,7 +45,7 @@ export default function WalletList({
 
   const showWalletsList = !toInstallWallet && !connectingWallet;
 
-  const pickOrInstallWallet = async (item: WalletItem) => {
+  const pickOrInstallWallet = async (item: Connection) => {
     // eslint-disable-next-line no-restricted-syntax
     const hasInstalledProp = 'installed' in (item.meta || {});
     if (!isMobileWeb && hasInstalledProp && !item.meta.installed) {
@@ -50,15 +53,15 @@ export default function WalletList({
     }
 
     if (onSelectWallet) {
-      setConnectingWallet(item);
+      
       await onSelectWallet(item);
-      setConnectingWallet(null);
+      
     }
   };
 
   const onSelect = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    wallet: WalletItem,
+    wallet: Connection,
   ) => {
     if (
       !isMobileWeb ||
@@ -93,7 +96,7 @@ export default function WalletList({
           {connectingWallet?.name === 'MetaMask' && (
             <Box mb={2}>
               <Alert severity="info">
-                Make sure you have the latest version of Metamask app
+                {t('metamaskLatestVersion')}
               </Alert>
             </Box>
           )}
@@ -120,7 +123,7 @@ export default function WalletList({
                 url={toInstallWallet.icon}
               />
               <Typography my={1}>
-                {toInstallWallet.name} is not detected
+                {t('walletNotDetected', { name: toInstallWallet.name })}
               </Typography>
               {toInstallWallet.meta.downloadLink && (
                 <Button
@@ -129,7 +132,7 @@ export default function WalletList({
                   href={toInstallWallet.meta.downloadLink}
                   target="_blank"
                 >
-                  Install
+                  {t('install')}
                 </Button>
               )}
             </>
@@ -140,19 +143,17 @@ export default function WalletList({
             variant="outlined"
             onClick={() => {
               setToInstallWallet(null);
-              setConnectingWallet(null);
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
         </Box>
       )}
       {showWalletsList &&
         renderList.map((item, idx) => (
-          <Grow in={true} timeout={600 * (idx / 2)}>
-            <Box data-testid={item.id} key={item.id}>
+          <Grow in={true} key={item.id} timeout={600 * (idx / 2)}>
+            <Box data-testid={item.id}>
               <WalletListItem
-                key={item.id}
                 item={item}
                 value={value}
                 hideConnectionType={hideConnectionType}
@@ -163,7 +164,9 @@ export default function WalletList({
           </Grow>
         ))}
       {!renderList.length && (
-        <Typography color="text.secondary">No wallets detected...</Typography>
+        <Typography color="text.secondary">
+          {t('noWalletsDetected')}
+        </Typography>
       )}
     </>
   );

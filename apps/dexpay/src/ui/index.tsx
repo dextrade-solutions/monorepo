@@ -1,4 +1,4 @@
-import { ThemeProvider, CssBaseline, Container, Box } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from 'dex-helpers/shared';
 import { DexUiProvider, useDexUI } from 'dex-ui';
@@ -6,21 +6,22 @@ import log from 'loglevel';
 import { SnackbarProvider } from 'notistack';
 import React from 'react';
 
-import Appbar from './app-bar';
 import { GradientFluid } from './components/GradientFluid';
-import BottomNav from './components/layout/BottomNav';
+import { LayoutDefault } from './components/layouts';
 import { UserProvider } from './contexts/user-context';
 import { useAuth } from './hooks/use-auth';
+import PickCoinModal from './modals/pick-coin';
 import SalespersonsModal from './modals/salespersons';
 import SelectProject from './modals/select-project';
 import TransactionsModal from './modals/transactions';
 import Router from './router';
 import './css/index.scss';
+import ShortcutNewInvoice from './modals/shortcut-new-invoice';
 
 log.setLevel(log.levels.DEBUG);
 
 function App() {
-  const { isAuthorized, isCashier } = useAuth();
+  const { isAuthorized } = useAuth();
   if (!isAuthorized) {
     return (
       <>
@@ -50,13 +51,9 @@ function App() {
     );
   }
   return (
-    <Container maxWidth="sm">
-      {!isCashier && <Appbar />}
-      <Box mb={10}>
-        <Router />
-      </Box>
-      <BottomNav />
-    </Container>
+    <LayoutDefault>
+      <Router />
+    </LayoutDefault>
   );
 }
 
@@ -71,9 +68,11 @@ export function UI() {
           <DexUiProvider
             theme={muiTheme}
             modals={{
+              PICK_COIN: PickCoinModal,
               SELECT_PROJECT: SelectProject,
               SALESPERSONS: SalespersonsModal,
               DEXPAY_TRANSACTIONS_LIST: TransactionsModal,
+              SHORTCUT_NEW_INVOICE: ShortcutNewInvoice,
             }}
           >
             <SnackbarProvider>

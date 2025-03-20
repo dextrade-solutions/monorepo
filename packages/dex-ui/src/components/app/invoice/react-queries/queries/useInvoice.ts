@@ -4,9 +4,9 @@ import { SECOND } from 'dex-helpers';
 import { Api } from '../../services/api';
 import { Invoice } from '../../types/invoices';
 
-export default function usePayment(query: Invoice.View.Query) {
+export default function useInvoice(query: Invoice.View.Query) {
   const result = useQuery<Invoice.View.Response>({
-    queryKey: ['dexpay-payment', { id: query.id }],
+    queryKey: ['dexpay-invoice', { id: query.id }],
     queryFn: () => {
       return Api.Invoice.paymentGet(query);
     },

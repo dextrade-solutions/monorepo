@@ -69,7 +69,11 @@ export const SelectCoinsItemList = ({
                     {`${coin.symbol}`}
                   </Typography>
                   {coin.standard && (
-                    <Typography marginLeft={1} fontWeight="light">
+                    <Typography
+                      variant="caption"
+                      marginLeft={1}
+                      fontWeight="light"
+                    >
                       {coin.standard.toUpperCase()}
                     </Typography>
                   )}
@@ -142,7 +146,7 @@ export const SelectCoinsItemList = ({
                         </Typography>
                       )}
                       {standard && (
-                        <Typography fontWeight="light">
+                        <Typography variant="caption" fontWeight="light">
                           {standard.toUpperCase()}
                         </Typography>
                       )}

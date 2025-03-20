@@ -22,6 +22,27 @@ export namespace Validation {
       );
   }
   export namespace Auth {
+    export const invation = object({
+      newPassword: string()
+        .required('Password is a required field')
+        .min(8, (ctx) => `Password must be at least ${ctx.min} characters`)
+        .max(20, (ctx) => `Password must be at most ${ctx.max} characters`)
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~])/,
+          'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
+        ),
+      confirmNewPassword: string()
+        .required('Confirm password is a required field')
+        .min(
+          8,
+          (ctx) => `Confirm password must be at least ${ctx.min} characters`,
+        )
+        .max(
+          20,
+          (ctx) => `Confirm password must be at most ${ctx.max} characters`,
+        )
+        .oneOf([ref('newPassword')], 'Password mismatch'),
+    });
     export const signUp = object({
       email: string()
         .required('Email is a required field')
@@ -43,7 +64,8 @@ export namespace Validation {
         .max(
           20,
           (ctx) => `Confirm password must be at most ${ctx.max} characters`,
-        ),
+        )
+        .oneOf([ref('password')], 'Password mismatch'),
       first_name: string().required('First name is a required field'),
       last_name: string().required('Last name is a required field'),
     });
@@ -246,7 +268,7 @@ export namespace Validation {
         maximumExchangeAmountCoin1: string().required(
           'Maximum Exchange Amount is required',
         ),
-        priceAdjustment: string().required('Price adjustment is required'),
+        priceAdjustment: string(),
         transactionFee: string(),
         exchangersPolicy: string(),
         username: string(),

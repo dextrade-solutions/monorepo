@@ -63,29 +63,10 @@ export default abstract class AuthService {
   }
 
   static resetPasswordComplete(json: Auth.ResetPasswordComplete.Body) {
-    return $api.post(`${AuthService.PREFIX}/reset-password-complete`, {
-      json,
-      hooks: {
-        afterResponse: [
-          async (request, options, response) => {
-            const store = useStore();
-            if (response.ok) {
-              await response.json().then((json) => {
-                const responseData =
-                  json as Auth.ResetPasswordComplete.Response;
-                store.tokens.access = responseData.access_token;
-                store.tokens.refresh = responseData.refresh_token;
-              });
-            }
-          },
-        ],
-      },
-    });
-  }
-
-  static logout() {
-    const store = useStore();
-    store.tokens.access = null;
-    store.tokens.refresh = null;
+    return $api
+      .post(`${AuthService.PREFIX}/reset-password-complete`, {
+        json,
+      })
+      .json<Auth.ResetPasswordComplete.Response>();
   }
 }

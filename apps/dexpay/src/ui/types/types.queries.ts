@@ -21,6 +21,7 @@ import type {
   IDextradeUser,
   IStatistic,
   ITransactionWithdrawal,
+  IInvoiceFull,
 } from './types.entities';
 
 export namespace Auth {
@@ -438,6 +439,7 @@ export namespace Currency {
       sort?: string;
       iso?: string;
       public_name?: string;
+      type?: string;
       token_type?: string;
       contract_address?: string;
     }
@@ -710,56 +712,7 @@ export namespace Invoice {
       id: string;
     }
 
-    export interface Response {
-      id: string;
-      address: string;
-      amount_requested: string;
-      amount_requested_f: string;
-      amount_received_total: string;
-      amount_received_total_f: string;
-      converted_amount_received_total_f: string;
-      converted_amount_requested: string;
-      converted_amount_requested_f: string;
-      discounts_f: string | null;
-      converted_discounts_f: string | null;
-      tax_f: string | null;
-      converted_tax_f: string | null;
-      status: number;
-      coin: { iso: string } | null;
-      coin_id: number | null;
-      converted_coin: { iso: string } | null;
-      converted_coin_id: number | null;
-      currency_id: number;
-      currency: {
-        coin_id: number;
-        iso_with_network: string;
-        type: number;
-        iso: string;
-        native_currency_iso: string;
-        token_type: string | null;
-        network_name: string;
-        symbol: string;
-      };
-      description: string;
-      invoice_number: string;
-      due_to: string | null;
-      discounts: string | null;
-      tax: string | null;
-      payment_page_url: string;
-      logo_url: string | null;
-
-      // Поле supported_currencies: массив объектов или undefined
-      supported_currencies?: Array<{
-        id: number;
-        coin_id: number;
-        iso_with_network: string;
-        type: number;
-        iso: string;
-        native_currency_iso: string;
-        token_type: string | null;
-        network_name: string;
-      }>;
-    }
+    export type Response = IInvoiceFull;
   }
 
   export namespace Update {
@@ -1216,5 +1169,20 @@ export namespace Balance {
     }
 
     export interface Query extends Record<string, any> {}
+  }
+}
+
+export namespace Rate {
+  export interface Params {
+    pair: string;
+  }
+
+  export interface Response {
+    [key: string]: {
+      symbol: string;
+      rateFloat: number;
+      updateTime: number;
+      serviceName: string;
+    };
   }
 }

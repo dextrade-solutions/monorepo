@@ -1,4 +1,4 @@
-import allTokens from 'dex-helpers/assets-list';
+import assetDict from 'dex-helpers/assets-dict';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
@@ -15,6 +15,8 @@ import {
   setToToken,
 } from '../../../ducks/swaps/swaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
+const allTokens = Object.values(assetDict);
 
 const SelectCoinsComponents = ({
   selectedCoinFrom = null,

@@ -1,13 +1,13 @@
 import { Box, Link } from '@mui/material';
-import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { formatCurrency } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Output = {
   price: number;
   tickerFrom: string;
   tickerTo: string;
   amount?: number;
-  secondary?: boolean;
   disableToggle?: boolean;
 };
 
@@ -16,9 +16,9 @@ export default function AssetPriceOutput({
   price, // rate price
   tickerFrom,
   tickerTo,
-  secondary,
   disableToggle,
 }: Output) {
+  const { t } = useTranslation();
   const [reversed, setReversed] = useState(false);
   const togglePrice = () => {
     setReversed((v) => !v);
@@ -37,33 +37,46 @@ export default function AssetPriceOutput({
     e.stopPropagation();
     togglePrice();
   };
+  const isPerOne = typeof amount !== 'number';
+  const reversedPrice = 1 / price;
+  const reversedAmount = isPerOne ? reversedPrice : amount * reversedPrice;
+  const nonReversedAmount = isPerOne ? price : amount;
 
   const output = {
-    price: reversed ? (amount || 1) * (1 / price) : amount || price,
+    value: reversed ? reversedAmount : nonReversedAmount,
     tickerFrom: reversed ? tickerTo : tickerFrom,
     tickerTo: reversed ? tickerFrom : tickerTo,
   };
 
   return (
     <Box display="flex" justifyContent="space-between" alignContent="center">
-      {!secondary && (
+      {isPerOne && (
         <Link
           sx={{ cursor: 'pointer', textDecoration: disableToggle && 'none' }}
           variant="body1"
+          mr={1}
           onClick={onClick}
           color="inherit"
+          fontSize="inherit"
         >
-          Per 1 {output.tickerFrom}
+          {t('perOne', { ticker: output.tickerFrom })}
         </Link>
       )}
       <Link
-        sx={{ cursor: 'pointer', textDecoration: disableToggle && 'none' }}
+        sx={{
+          cursor: 'pointer',
+          textDecoration: (disableToggle || isPerOne) && 'none',
+        }}
         variant="body1"
-        fontWeight={secondary ? 'normal' : 'bold'}
+        fontWeight={isPerOne ? 'bold' : 'normal'}
         color="inherit"
+        fontSize="inherit"
         onClick={onClick}
       >
-        {formatCurrency(output.price, output.tickerTo)}
+        {formatCurrency(
+          output.value,
+          isPerOne ? output.tickerTo : output.tickerFrom,
+        )}
       </Link>
     </Box>
   );

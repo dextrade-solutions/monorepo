@@ -5,6 +5,7 @@ import {
   Box,
   Typography,
   TextField,
+  CardHeader,
 } from '@mui/material';
 import { DownloadCloud, LogOut } from 'lucide-react';
 import React from 'react';
@@ -14,7 +15,7 @@ import { useAuth } from '../hooks/use-auth';
 export default function Profile() {
   const { logout, me } = useAuth();
   return (
-    <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+    <Box sx={{ maxWidth: 'md' }}>
       <Card
         elevation={0}
         sx={{
@@ -23,29 +24,20 @@ export default function Profile() {
           borderRadius: 1,
         }}
       >
-        <CardContent sx={{ p: 4 }}>
-          <TextField
+        <CardContent>
+          <Typography color="text.secondary" variant="h5" mb={2}>
+            Profile
+          </Typography>
+          <Typography fontWeight="bold">Email</Typography>
+          <Typography>{me?.email}</Typography>
+          {/* <TextField
             label="Email"
             margin="normal"
             disabled
             fullWidth
             value={me?.email}
-          />
-          <TextField
-            label="First name"
-            margin="normal"
-            disabled
-            fullWidth
-            value={me?.first_name}
-          />
-          <TextField
-            label="Last name"
-            margin="normal"
-            disabled
-            fullWidth
-            value={me?.last_name}
-          />
-          <Box
+          /> */}
+          {/* <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -72,11 +64,12 @@ export default function Profile() {
           </Box>
           <Button fullWidth variant="contained">
             Save Changes
-          </Button>
+          </Button> */}
         </CardContent>
       </Card>
 
       <Button
+        data-testid="logout"
         endIcon={<LogOut />}
         sx={{ mt: 3 }}
         fullWidth

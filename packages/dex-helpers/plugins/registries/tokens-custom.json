@@ -14,6 +14,20 @@
     ]
   },
   {
+    "uid": "usd-coin",
+    "name": "Tether",
+    "code": "USDC",
+    "market_cap_rank": null,
+    "platforms": [
+      {
+        "type": "TRC20",
+        "decimals": 6,
+        "address": "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8",
+        "symbol": "USDC"
+      }
+    ]
+  },
+  {
     "uid": "tether",
     "name": "Tether",
     "code": "USDT",
@@ -84,6 +98,21 @@
         "type": "xrc20",
         "decimals": 6,
         "address": "0xd4b5f10d61916bd6e0860144a91ac658de8a1437",
+        "symbol": null
+      }
+    ]
+  },
+  {
+    "uid": "soarchain",
+    "name": "Soar Token",
+    "code": "SOAR",
+    "market_cap_rank": null,
+    "coingecko_id": "soar",
+    "platforms": [
+      {
+        "type": "solana",
+        "decimals": 6,
+        "address": "9359LVZJs8bf2FXcTdHvwcMnvg2ZCf6DUZ5ABDcJKx52",
         "symbol": null
       }
     ]

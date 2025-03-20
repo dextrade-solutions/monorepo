@@ -3,22 +3,10 @@ import { useForm, Button } from 'dex-ui';
 import React from 'react';
 
 import { ROUTE_REGISTER, ROUTE_FORGOT_PASSWORD } from '../../constants/pages';
-import { useAuth } from '../../hooks/use-auth';
-import { Validation } from '../../validation';
 import { TextFieldWithValidation, VPasswordField } from '../fields';
 import Link from '../ui/Link';
 
-const LoginForm = () => {
-  const auth = useAuth();
-  const form = useForm({
-    values: {
-      email: '',
-      password: '',
-    },
-    validationSchema: Validation.Auth.signIn,
-    method: (values) => auth.login(values.email, values.password),
-  });
-
+const LoginForm = ({ form }: { form: ReturnType<typeof useForm> }) => {
   return (
     <Box
       data-testid="login-form"

@@ -104,6 +104,7 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
               </Typography>
               {value.standard && (
                 <Typography
+                  variant="caption"
                   fontWeight="light"
                   className="select-coins__item__label__title__type"
                 >

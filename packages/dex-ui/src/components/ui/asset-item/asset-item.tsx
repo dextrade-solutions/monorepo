@@ -11,6 +11,7 @@ interface IProps {
   alignReverse?: boolean;
   loading?: boolean;
   iconSize?: number;
+  subtitle?: React.ReactNode;
 }
 
 const AssetItem = ({
@@ -18,13 +19,13 @@ const AssetItem = ({
   asset,
   alignReverse,
   loading,
+  subtitle,
   iconSize,
 }: IProps) => {
   const reverseProps = alignReverse && {
     textAlign: 'right',
     flexDirection: 'row-reverse',
   };
-
   const url = getCoinIconByUid(asset?.uid || coin?.uuid);
 
   const ticker = asset?.symbol || coin?.ticker;
@@ -54,10 +55,11 @@ const AssetItem = ({
           <Box marginX={2}>
             <Typography fontWeight="bold">{ticker}</Typography>
             {!isBtc && (
-              <Typography fontWeight={200} variant="body2">
+              <Typography fontWeight={200} variant="caption">
                 {networkType?.toUpperCase()}
               </Typography>
             )}
+            {subtitle}
           </Box>
         </>
       )}

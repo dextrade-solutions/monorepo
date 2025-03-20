@@ -2,10 +2,9 @@ import { Box, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { CopyData } from 'dex-ui';
 import React from 'react';
 
-import useAddresses from '../../hooks/use-addresses';
 import { useAuth } from '../../hooks/use-auth';
 import { useQuery } from '../../hooks/use-query';
-import { Address, Vault } from '../../services';
+import { Address } from '../../services';
 import { ICurrency } from '../../types';
 import ItemRow from '../ui/ItemRow';
 
@@ -14,16 +13,20 @@ export default function WalletDepositAddress({
 }: {
   currency: ICurrency;
 }) {
-  const { items: addressList } = useAddresses({ currencyId: currency.id });
+  const auth = useAuth();
+  const generateAddress = useQuery(Address.generate, [
+    { projectId: auth.user?.project.id, vaultId: auth.vaults.hotWallet.id },
+    { currency_id: currency.id },
+  ]);
 
-  const [addressData] = addressList;
+  const addressData = generateAddress.data;
 
   if (!addressData) {
     return (
       <Box>
         <Stack spacing={1}>
-          <Skeleton variant="text" width={100} /> {/* Network Label Skeleton */}
-          <Skeleton variant="text" width={200} /> {/* Network Value Skeleton */}
+          <Skeleton variant="text" width={100} />
+          <Skeleton variant="text" width={200} />
           <Paper
             elevation={0}
             sx={{ bgcolor: 'secondary.dark', p: 1, width: '100%' }}

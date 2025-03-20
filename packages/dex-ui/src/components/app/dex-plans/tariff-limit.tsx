@@ -16,29 +16,29 @@ export function TariffLimit() {
   const buyedList: React.ReactNode[] = [];
 
   if (isLoading) {
-    return <Box>Loading...</Box>;
+    return <Box>{t('Loading...')}</Box>;
   }
 
   if (data?.refillGasRequests > 0) {
     buyedList.push(
-      <Alert>
+      <Alert key="refillGasRequests">
         {t('Left')}: {data.refillGasRequests} {t('Super fees')}
       </Alert>,
     );
   }
   if (data?.amlRequests > 0) {
     buyedList.push(
-      <Alert>
+      <Alert key="amlRequests">
         {t('Left')}: {data.amlRequests} {t('AML Requests')}
       </Alert>,
     );
   }
   if (data?.includeKyc) {
-    buyedList.push(<Alert>KYC: {t('Included')}</Alert>);
+    buyedList.push(<Alert key="includeKyc">{t('KYC: Included')}</Alert>);
   } else {
     buyedList.push(
-      <Alert severity="warning">
-        <Typography>KYC: {t('Disabled')}</Typography>
+      <Alert key="kycDisabled" severity="warning">
+        <Typography>{t('KYC: Disabled')}</Typography>
         <Typography color="text.secondary">
           {t(
             'KYC verification was disabled after 1 failed attempt, you can activate it, buying plan',
@@ -47,5 +47,9 @@ export function TariffLimit() {
       </Alert>,
     );
   }
-  return buyedList.map((alertNode) => <Box marginY={2}>{alertNode}</Box>);
+  return buyedList.map((alertNode, index) => (
+    <Box key={index} marginY={2}>
+      {alertNode}
+    </Box>
+  ));
 }

@@ -18,4 +18,7 @@ export { default as Button } from './button';
 export { default as OtpInput } from './otp-input';
 export { default as NumericTextField } from './numeric-text-field';
 export { default as Swap } from './swap';
+export { default as DexLoader } from './dex-loader';
+export { default as InputFileUpload } from './file-input';
 export * from './select-coins';
+export * from './custom-icons';

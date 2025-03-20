@@ -16,22 +16,22 @@ import {
   Smartphone,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_HOME } from '../../constants/pages';
 import { useAuth } from '../../hooks/use-auth';
 
 const MERCHANT = {
   icon: <Store strokeWidth={1.5} />,
-  label: 'Merchant',
+  label: 'Invoices',
   href: '/merchant',
   testId: 'bottom-nav-merchant',
 };
 
 const P2P = {
   icon: <Users strokeWidth={1.5} />,
-  label: 'P2P',
-  href: '/p2p',
+  label: 'Swaps',
+  href: '/swaps',
   testId: 'bottom-nav-p2p',
 };
 
@@ -55,19 +55,25 @@ const USER = {
 };
 
 export default function BottomNav() {
-  const [location, setLocation] = useLocation();
+  const [location, setLocation] = useHashLocation();
   const [value, setValue] = useState(location);
-  const { user, isCashier } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     setValue(location);
   }, [location]);
 
-  let items = [MERCHANT, P2P, HOME, HISTORY, USER];
+  const items = [MERCHANT, P2P, HOME, HISTORY, USER];
 
-  if (isCashier) {
-    items = [HISTORY, HOME, USER];
+  if (user!.isCashier) {
+    return null;
+    // items = [HISTORY, HOME, USER];
   }
+
+  const handleNavigation = (newValue: string) => {
+    setValue(newValue);
+    setLocation(newValue);
+  };
 
   return (
     <Paper
@@ -84,13 +90,13 @@ export default function BottomNav() {
       <BottomNavigation
         showLabels
         sx={{
+          mb: 2,
           display: 'flex',
           justifyContent: 'center', // Center the BottomNavigation
         }}
         value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-          setLocation(newValue);
+        onChange={(_, newValue) => {
+          handleNavigation(newValue);
         }}
       >
         {items.map(({ icon, label, href, testId }) => (
@@ -113,6 +119,7 @@ export default function BottomNav() {
       <Box
         size="large"
         sx={{
+          mb: 2,
           position: 'absolute',
           zIndex: -1,
           bottom: 8,
@@ -151,6 +158,7 @@ export default function BottomNav() {
       <Fab
         aria-label="add"
         sx={{
+          mb: 2,
           bgcolor: 'tertiary.main', // Use tertiary.main for background
           color: 'tertiary.contrastText',
           '&:hover': {
@@ -167,7 +175,7 @@ export default function BottomNav() {
         onClick={() => setLocation('/')}
         data-testid="bottom-nav-fab"
       >
-        {isCashier ? <Smartphone /> : <Wallet strokeWidth={1.5} />}
+        {user!.isCashier ? <Smartphone /> : <Wallet strokeWidth={1.5} />}
       </Fab>
     </Paper>
   );

@@ -1,6 +1,7 @@
 import './index.scss';
 
 import { Box, BoxProps, Button, Tooltip } from '@mui/material';
+import { MiddleTruncate } from '@re-dev/react-truncate';
 import classnames from 'classnames';
 import { shortenAddress } from 'dex-helpers';
 import React from 'react';
@@ -14,11 +15,13 @@ const CopyData = ({
   tooltipPosition = 'bottom',
   className,
   shorten,
+  full,
   color = 'primary',
   ...args
 }: {
   data: string;
   shorten?: boolean;
+  full?: boolean;
   color?: string;
   tooltipPosition?: 'top' | 'left' | 'bottom' | 'right';
   className?: string;
@@ -26,28 +29,37 @@ const CopyData = ({
   const { t } = useTranslation();
   const [copied, handleCopy] = useCopyToClipboard();
 
+  const renderLabelContent = () => {
+    if (shorten) {
+      return shortenAddress(data);
+    }
+
+    if (full) {
+      return data;
+    }
+    return <MiddleTruncate end={15}>{data}</MiddleTruncate>;
+  };
+
   return (
-    <Box className={classnames('copy-data', className)} {...args}>
-      <Tooltip
-        placement={tooltipPosition}
-        title={copied ? t('copiedExclamation') : data}
+    <Tooltip
+      placement={tooltipPosition}
+      title={copied ? t('copiedExclamation') : data}
+    >
+      <Button
+        type="link"
+        onClick={() => {
+          handleCopy(data);
+        }}
+        color={color}
+        fullWidth
+        sx={{ lineHeight: 'normal', minWidth: 130 }}
+        className={classnames('copy-data', className)}
+        {...args}
       >
-        <Button
-          type="link"
-          onClick={() => {
-            handleCopy(data);
-          }}
-          color={color}
-          sx={{ lineHeight: 'normal' }}
-          className="copy-data__button"
-        >
-          <div className="copy-data__label">
-            {shorten ? shortenAddress(data) : data}
-          </div>
-          <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
-        </Button>
-      </Tooltip>
-    </Box>
+        <div className="copy-data__label">{renderLabelContent()}</div>
+        <Icon name={copied ? 'copy-dex-copied' : 'copy-dex'} size="lg" />
+      </Button>
+    </Tooltip>
   );
 };
 

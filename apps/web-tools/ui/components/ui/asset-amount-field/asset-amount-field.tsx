@@ -5,13 +5,11 @@ import {
   CardHeader,
   Typography,
   Box,
-  InputAdornment,
   Skeleton,
   CardActionArea,
   Button,
   Divider,
 } from '@mui/material';
-import classNames from 'classnames';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -19,11 +17,11 @@ import {
   getStrPaymentMethodInstance,
   shortenAddress,
 } from 'dex-helpers';
-import { ButtonIcon, UrlIcon } from 'dex-ui';
+import { NumericTextField, UrlIcon } from 'dex-ui';
 import React from 'react';
-import { NumericFormat } from 'react-number-format';
 
 import type { useAssetInput } from '../../../hooks/asset/useAssetInput';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
@@ -32,14 +30,10 @@ interface IProps {
   reserve?: number;
 }
 
-export const AssetAmountField = ({
-  assetInput,
-  onChange,
-  reserve,
-  hasValidationErrors,
-}: IProps) => {
+export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
+  const t = useI18nContext();
   return (
     <Card
       className="asset-amount-field"
@@ -64,7 +58,7 @@ export const AssetAmountField = ({
             {displayBalance && (
               <Box textAlign="right">
                 <Typography variant="body2" fontWeight="bold">
-                  Balance
+                  {t('Balance')}
                 </Typography>
                 {assetInput.balance ? (
                   <Card
@@ -97,41 +91,25 @@ export const AssetAmountField = ({
       <Divider />
 
       <Box paddingX={2} marginY={1}>
-        <NumericFormat
+        <NumericTextField
           value={assetInput.amount}
           customInput={TextField}
           disabled={assetInput.loading}
-          decimalSeparator=","
           placeholder="0"
           allowNegative={false}
           fullWidth
           variant="standard"
           valueIsNumericString
+          inputProps={{ inputMode: 'decimal' }}
           data-testid={reserve ? 'input-to' : 'input-from'}
           InputProps={{
-            className: classNames({
-              'asset-amount-field__error': hasValidationErrors,
-            }),
             disableUnderline: true,
             style: {
               fontSize: 25,
             },
-            autoComplete: 'off',
-            endAdornment: (
-              <InputAdornment position="end">
-                {Number(assetInput.amount) > 0 && !assetInput.loading && (
-                  <ButtonIcon
-                    iconName="close"
-                    size="sm"
-                    onClick={() => onChange('')}
-                  />
-                )}
-              </InputAdornment>
-            ),
           }}
-          onChange={(e) => {
-            let { value } = e.target;
-            value = value.replace(',', '.');
+          onChange={(v) => {
+            let value = v;
             if (value.startsWith('.')) {
               value = value.replace('.', '0.');
             }
@@ -163,7 +141,7 @@ export const AssetAmountField = ({
             >
               <CardActionArea>
                 <Typography variant="body2">
-                  Limit: {formatFundsAmount(reserve, asset.symbol)}
+                  {t('Limit')}: {formatFundsAmount(reserve, asset.symbol)}
                 </Typography>
               </CardActionArea>
             </Card>
@@ -193,7 +171,7 @@ export const AssetAmountField = ({
                   </Box>
                 </Box>
               )}
-              {!assetInput.paymentMethod && 'Payment method'}
+              {!assetInput.paymentMethod && t('Payment method')}
             </Button>
           )}
           {(assetInput.permissions.canPasteWallet ||
@@ -219,7 +197,7 @@ export const AssetAmountField = ({
                   </Box>
                 </Box>
               )}
-              {!assetInput.account && 'Set Wallet'}
+              {!assetInput.account && t('Set Wallet')}
             </Button>
           )}
         </Box>

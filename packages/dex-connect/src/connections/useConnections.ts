@@ -1,9 +1,9 @@
-import { AssetModel } from 'dex-helpers/types';
 import EventEmitter from 'events';
 import { useQuery } from 'wagmi/query';
 
 import { WalletConnectionType } from '../constants';
 import { DextradeProvider } from '../providers/dextrade-provider';
+import { ConnectionProvider } from '../providers/interface';
 import { MultiverseExtension } from '../providers/multiversx-provider';
 import { SatsConnectProvider } from '../providers/sats-connect-provider';
 import { useEVMProviders } from '../providers/useEVMProviders';
@@ -11,19 +11,29 @@ import { useTronProviders } from '../providers/useTronProviders';
 import { getWalletIcon, WALLETS_META } from '../utils';
 import { useConnectionState } from './useConnectionState';
 import { useSolanaProviders } from '../providers/useSolanaProviders';
+import {
+  Connection,
+  ConnectionHub,
+  TxSendParams,
+  UseConnectionsResult,
+  WalletConnection,
+} from '../types.d';
 
 export function useConnections({
   wagmiConfig,
   connectionType,
-}: { wagmiConfig: any; connectionType?: WalletConnectionType[] } = {}) {
+}: {
+  wagmiConfig: any;
+  connectionType?: WalletConnectionType[];
+}): UseConnectionsResult {
   const connectState = useConnectionState();
   const evmProviders = useEVMProviders({ config: wagmiConfig });
   const solanaProviders = useSolanaProviders();
   const tronProviders = useTronProviders();
 
-  const hub = new EventEmitter();
+  const hub = new EventEmitter() as ConnectionHub;
 
-  let providers = [
+  let providers: ConnectionProvider[] = [
     new DextradeProvider(),
     ...evmProviders,
     ...tronProviders,
@@ -36,7 +46,7 @@ export function useConnections({
       connectionType.includes(provider.type),
     );
   }
-  const connections = providers.map((instance) => {
+  const connections = providers.map((instance): Connection => {
     const icon = instance.icon || getWalletIcon(instance.name);
     const { name, type } = instance;
     const id = `${name}:${type}`;
@@ -52,7 +62,7 @@ export function useConnections({
       async connect() {
         hub.emit('connection:start', id);
         const address = await instance.connect();
-        const walletConnection = {
+        const walletConnection: WalletConnection = {
           connectionType: type,
           walletName: name,
           address,
@@ -67,24 +77,11 @@ export function useConnections({
         await instance.disconnect();
       },
       signMessage: instance.signMessage.bind(instance),
-      async txSend({
-        asset,
-        amount,
-        recipient,
-        txSentHandlers,
-      }: {
-        asset: AssetModel;
-        recipient: string;
-        amount: number;
-        txSentHandlers?: {
-          onSuccess: (txHash: string) => void;
-          onError: (e: unknown) => void;
-        };
-      }) {
+      async txSend({ asset, amount, recipient, txSentHandlers }: TxSendParams) {
         if (!asset.decimals) {
           throw new Error('no decimals provided');
         }
-        if (!instance.isConnected) {
+        if (!(await instance.isAuthorized())) {
           await instance.connect();
         }
         return instance

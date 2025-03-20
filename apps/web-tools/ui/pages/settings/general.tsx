@@ -22,11 +22,11 @@ export default function GeneralSettings() {
   const dispatch = useDispatch<AppDispatch>();
   const currentLocale = useSelector(getCurrentLocale);
   const currentTheme = useSelector(getCurrentTheme);
-  const supportedLocales = ['en', 'ru'];
+  const supportedLocales = ['en', 'ru', 'zh-CN'];
   const themes = [
-    { value: 'system', text: 'System' },
-    { value: 'dark', text: 'Dark' },
-    { value: 'light', text: 'Light' },
+    { value: 'system', text: t('system') },
+    { value: 'dark', text: t('dark') },
+    { value: 'light', text: t('light') },
   ];
 
   const setCurrentLocale = async (key: string) => {
@@ -46,7 +46,7 @@ export default function GeneralSettings() {
       />
 
       <Typography marginTop={2} fontWeight="bold">
-        Theme
+        {t('theme')}
       </Typography>
       <FormControl>
         <RadioGroup

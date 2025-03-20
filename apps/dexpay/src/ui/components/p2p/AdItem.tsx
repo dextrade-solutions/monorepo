@@ -3,8 +3,6 @@ import {
   Divider,
   Stack,
   Typography,
-  Link as MuiLink,
-  AccordionSummary as MuiAccordionSummary,
   Paper,
   Collapse,
   IconButton,
@@ -13,14 +11,11 @@ import {
 // import { ArrowForward } from 'lucide-react'; // Import the icon
 import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
 import { CoinModel } from 'dex-helpers/types';
-import { AssetItem, Button, CopyData } from 'dex-ui';
+import { AdRun, AssetItem, AssetPriceOutput, Button, CopyData } from 'dex-ui';
 import {
   ChevronDown,
   ChevronRight,
   LucideArrowUpRight,
-  Pause,
-  Pencil,
-  Play,
   Trash,
 } from 'lucide-react';
 import React, { useState } from 'react';
@@ -43,6 +38,9 @@ interface AdItemProps {
   exchangerName: string;
   onDelete: (adId: number) => void;
   toggleActive: (adId: number) => void;
+  minimumExchangeAmountCoin1: number | null;
+  maximumExchangeAmountCoin1: string;
+  reversed?: boolean;
 }
 
 const AdItem: React.FC<AdItemProps> = ({
@@ -63,7 +61,20 @@ const AdItem: React.FC<AdItemProps> = ({
   exchangerName,
   toggleActive,
   onDelete,
+  minimumExchangeAmountCoin1,
+  maximumExchangeAmountCoin1,
+  reversed,
 }) => {
+  const fromMinAmount = reversed
+    ? minimumExchangeAmountCoin1 * price
+    : minimumExchangeAmountCoin1;
+  const fromMaxAmount = reversed
+    ? maximumExchangeAmountCoin1 * price
+    : maximumExchangeAmountCoin1;
+
+  const from = reversed ? toCoin : fromCoin;
+  const to = reversed ? fromCoin : toCoin;
+
   const [expanded, setExpanded] = useState({
     options: false,
     statusMessage: false,
@@ -77,9 +88,8 @@ const AdItem: React.FC<AdItemProps> = ({
   const toggleExpand = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
-
-  const link = `${DEXTRADE_P2P_LINK}/swap-view?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
-
+  const queryString = `?fromNetworkName=${fromCoin.networkName}&fromTicker=${fromCoin.ticker}&toNetworkName=${toCoin.networkName}&toTicker=${toCoin.ticker}&name=${exchangerName}`;
+  const adLink = `${DEXTRADE_P2P_LINK}/swap-view${queryString}`;
   return (
     <Paper
       elevation={0}
@@ -93,7 +103,7 @@ const AdItem: React.FC<AdItemProps> = ({
     >
       <Box display="flex" alignItems="center" mb={1}>
         <Typography variant="body2">
-          <StyledLink href="/p2p/trades" noUnderline>
+          <StyledLink href="/p2p/#history" noUnderline>
             Trades
           </StyledLink>
         </Typography>
@@ -101,15 +111,17 @@ const AdItem: React.FC<AdItemProps> = ({
 
         <Box ml="auto">
           <IconButton
+            data-testid="ad-toggle-active"
             color={active ? 'error' : 'success'}
-            onClick={toggleActive}
+            onClick={() => toggleActive(0)} // fix this
           >
-            {active ? <Pause size={16} /> : <Play size={16} />}
+            {active ? <AdRun size={16} /> : <AdRun size={16} />}
           </IconButton>
-          <IconButton color="tertiary" /* Add appropriate onClick handlers */>
-            <Pencil size={16} />
-          </IconButton>
-          <IconButton color="tertiary" onClick={onDelete}>
+          <IconButton
+            data-testid="ad-delete"
+            color="tertiary"
+            onClick={() => onDelete(0)}
+          >
             <Trash size={16} />
           </IconButton>
         </Box>
@@ -143,7 +155,7 @@ const AdItem: React.FC<AdItemProps> = ({
         justifyContent="space-between"
         my={2}
       >
-        <AssetItem iconSize={26} coin={fromCoin} />
+        <AssetItem iconSize={26} coin={from} />
         <Box
           sx={{
             position: 'absolute',
@@ -195,59 +207,125 @@ const AdItem: React.FC<AdItemProps> = ({
           </svg>
         </Box>
 
-        <AssetItem alignReverse iconSize={26} coin={toCoin} />
+        <AssetItem alignReverse iconSize={26} coin={to} />
       </Box>
       <Divider />
       <Collapse in={expanded.options}>
         <Stack spacing={2} sx={{ mt: 2 }} divider={<Divider />}>
           {active && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Button
-                size="small"
-                color="tertiary"
-                onClick={() => {
-                  window.open(link, '_blank');
-                }}
-                endIcon={<LucideArrowUpRight size={20} />}
+            <Box>
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
               >
-                Open ad
-              </Button>
-              <div className="flex-grow" />
-              <CopyData
-                className="flex-shrink"
-                color="tertiary"
-                shorten
-                data={link}
-              />
+                <Button
+                  size="small"
+                  color="tertiary"
+                  data-testid="ad-open"
+                  onClick={() => {
+                    window.open(adLink, '_blank');
+                  }}
+                  endIcon={<LucideArrowUpRight size={20} />}
+                >
+                  Open ad
+                </Button>
+                <div className="flex-grow" />
+                <CopyData
+                  className="flex-shrink"
+                  color="tertiary"
+                  shorten
+                  data={adLink}
+                />
+              </Box>
+              {/* <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Button
+                  size="small"
+                  className="nowrap"
+                  color="tertiary"
+                  onClick={() => {
+                    window.open(widgetLink, '_blank');
+                  }}
+                  endIcon={<LucideArrowUpRight size={20} />}
+                >
+                  Widget code
+                </Button>
+                <div className="flex-grow" />
+                <CopyData
+                  className="flex-shrink"
+                  shorten
+                  color="tertiary"
+                  data={widgetCode}
+                />
+              </Box> */}
             </Box>
           )}
-          <ItemRow label="Transaction Count" value={transactionCount} />
           <ItemRow
+            data-testid="tx-count"
+            label="Transaction Count"
+            value={transactionCount}
+          />
+          <ItemRow
+            data-testid="ad-earnings"
             label="Earnings"
-            value={`${earnings.amount} ${fromCoin.ticker} | $${earnings.usdEquivalent.toFixed(2)}`}
+            value={`${earnings.amount} ${from.ticker} | $${earnings.usdEquivalent.toFixed(2)}`}
           />
           <Box>
             <ItemRow
+              data-testid="ad-exchange-comission"
               label="Exchange Commission"
-              value={`${exchangeCommission} ${fromCoin.ticker}`}
+              value={`${exchangeCommission} ${from.ticker}`}
             />
             <ItemRow label="Profit Commission" value={`${profitCommission}%`} />
           </Box>
           <Box>
             <ItemRow
+              data-testid="ad-price"
               label="Price"
-              value={formatCurrency(price, toCoin.ticker)}
+              value={formatCurrency(price, to.ticker)}
             />
             <ItemRow
+              data-testid="ad-market-price"
               label="Market Price"
-              value={`${marketPrice} ${fromCoin.ticker}`}
+              value={`${marketPrice} ${from.ticker}`}
             />
           </Box>
-          <ItemRow label="Price Source" value={priceSource} />
+          <Box>
+            <ItemRow
+              data-testid="min-trade-amount"
+              label={`Min Trade Amount`}
+              value={
+                <AssetPriceOutput
+                  amount={fromMinAmount}
+                  price={price}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
+                  secondary
+                />
+              }
+            />
+            <ItemRow
+              data-testid="max-trade-amount"
+              label={`Max Trade Amount`}
+              value={
+                <AssetPriceOutput
+                  amount={fromMaxAmount}
+                  price={price}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
+                />
+              }
+            />
+          </Box>
+          <ItemRow
+            data-testid="price-source"
+            label="Price Source"
+            value={priceSource}
+          />
         </Stack>
       </Collapse>
 
@@ -256,6 +334,7 @@ const AdItem: React.FC<AdItemProps> = ({
         justifyContent="center"
         mt={1}
         width="100%"
+        data-testid="toggle-expand"
         onClick={() => toggleExpand('options')}
       >
         <ChevronDown

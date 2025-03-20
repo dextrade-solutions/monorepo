@@ -18,17 +18,21 @@ export default function useSolanaBalance(address: string, contract?: string) {
       const publicKey = new PublicKey(address);
 
       if (contract) {
-        const associatedAccount = await getAssociatedTokenAccount(
-          connection,
-          new PublicKey(contract),
-          publicKey,
-        );
-        return associatedAccount.amount;
+        try {
+          const associatedAccount = await getAssociatedTokenAccount(
+            connection,
+            new PublicKey(contract),
+            publicKey,
+          );
+          return associatedAccount.amount;
+        } catch {
+          return 0n;
+        }
       }
       const accountInfo = await connection.getAccountInfo(publicKey);
       return BigInt(accountInfo?.lamports || 0);
     },
-    refetchInterval: 5 * SECOND,
+    refetchInterval: 8 * SECOND,
   });
   return data;
 }

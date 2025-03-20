@@ -9,7 +9,11 @@ export function updateCurrentLocale(key: string) {
   };
 }
 
-export function setCurrentLocale(locale, messages) {
+export function setCurrentLocale(
+  locale: string,
+  messages: Record<string, string>,
+) {
+  window.localStorage.setItem('lang', locale);
   return {
     type: actionConstants.SET_CURRENT_LOCALE,
     payload: {

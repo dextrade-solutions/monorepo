@@ -7,7 +7,9 @@ import {
 import { AssetModel } from 'dex-helpers/types';
 import { UrlIcon } from 'dex-ui';
 import React from 'react';
+import { useHashLocation } from 'wouter/use-hash-location';
 
+import { ROUTE_WALLET_DEPOSIT } from '../../constants/pages';
 import { IBalance, ICurrency } from '../../types';
 
 export function AssetListItem({
@@ -18,6 +20,11 @@ export function AssetListItem({
   currency: ICurrency;
   balance?: IBalance;
 }) {
+  const [, navigate] = useHashLocation();
+
+  const openDeposit = () => {
+    navigate(`${ROUTE_WALLET_DEPOSIT}/${asset.iso}`);
+  };
   return (
     <Paper
       elevation={0}
@@ -26,6 +33,7 @@ export function AssetListItem({
         borderRadius: 0.5,
         bgcolor: 'secondary.dark',
       }}
+      onClick={openDeposit}
     >
       <Box
         sx={{

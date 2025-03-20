@@ -32,10 +32,10 @@ export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
       case PaymentContentTypes.ban:
         return (
           <Box key={fieldKey} display="flex" alignItems="center">
-            <Typography className="flex-grow" textAlign="left">
+            <Typography className="flex-grow nowrap" textAlign="left">
               {fieldName}
             </Typography>
-            <CopyData data={value} className="flex-shrink" />
+            <CopyData data={value} />
           </Box>
         );
       case PaymentContentTypes.image:

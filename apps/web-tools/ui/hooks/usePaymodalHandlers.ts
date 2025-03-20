@@ -1,14 +1,11 @@
 import { getBalance as wagmiGetBalance, multicall } from '@wagmi/core';
 import { getAssetKey, NetworkNames } from 'dex-helpers';
-import assetList from 'dex-helpers/assets-list';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { exchangerService } from 'dex-services';
 import { flatMap, groupBy } from 'lodash';
-import { useMemo } from 'react';
 import { erc20Abi, formatUnits } from 'viem';
 
 import { useAuthWallet } from './useAuthWallet';
-import { parseCoinByTickerAndNetwork } from '../../app/helpers/p2p';
 import getBalance from '../../app/helpers/tron/get-balance';
 import { config } from '../../app/helpers/web3-client-configuration';
 import {
@@ -130,12 +127,12 @@ export default function usePaymodalHandlers() {
       }));
       return exchangerService.createReserve1({ reserves: data });
     },
-    async onChooseAsset(params) {
-      return wallet.txSend({
-        asset: parseCoinByTickerAndNetwork(params.currency, params.networkName),
-        amount: params.amount,
-        recipient: params.to,
-      });
-    },
+    // async onChooseAsset(params) {
+    //   return wallet.txSend({
+    //     asset: parseCoinByTickerAndNetwork(params.currency, params.networkName),
+    //     amount: params.amount,
+    //     recipient: params.to,
+    //   });
+    // },
   };
 }

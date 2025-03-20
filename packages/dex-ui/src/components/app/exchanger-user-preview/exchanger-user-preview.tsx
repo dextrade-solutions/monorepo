@@ -1,5 +1,6 @@
 import { BoxProps, Box, Tooltip, Typography } from '@mui/material';
 import { relativeFromCurrentDate } from 'dex-helpers';
+import { useTranslation } from 'react-i18next';
 
 import UserAvatar from '../../ui/user-avatar';
 import { RatingOutput } from '../rating-output';
@@ -30,6 +31,7 @@ export default function ExchangerUserPreview({
     totalRating: number;
   };
 } & BoxProps) {
+  const { t } = useTranslation();
   return (
     <Box {...boxProps}>
       <Box paddingRight={2} display="flex" alignItems="center">
@@ -45,17 +47,17 @@ export default function ExchangerUserPreview({
               {name}
             </Typography>
             {!isOfficial && isKycVerified && (
-              <Tooltip placement="top" title="KYC Verified">
+              <Tooltip placement="top" title={t('kycVerified')}>
                 <Box display="flex">
                   <VerifiedIcon />
                 </Box>
               </Tooltip>
             )}
             {isOfficial && (
-              <Tooltip placement="top" title="Is official merchant">
+              <Tooltip placement="top" title={t('officialMerchant')}>
                 <Box display="flex" alignItems="center">
                   <OfficialIcon />
-                  <Typography marginLeft={1}>Official</Typography>
+                  <Typography marginLeft={1}>{t('official')}</Typography>
                 </Box>
               </Tooltip>
             )}
@@ -63,12 +65,12 @@ export default function ExchangerUserPreview({
           <Box display="flex" alignItems="center">
             {isSelfAd && (
               <Typography color="primary.main" variant="caption">
-                My ad
+                {t('myAd')}
               </Typography>
             )}
             {!isActive && lastActive && (
               <Typography variant="body2" color="text.secondary">
-                Active {relativeFromCurrentDate(lastActive)}
+                {t('active')} {relativeFromCurrentDate(lastActive)}
               </Typography>
             )}
           </Box>

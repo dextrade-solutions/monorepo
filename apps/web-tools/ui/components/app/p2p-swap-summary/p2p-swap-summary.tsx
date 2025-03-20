@@ -48,17 +48,17 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             price={ad.coinPair.price}
             tickerFrom={ad.fromCoin.ticker}
             tickerTo={ad.toCoin.ticker}
+            isPerOne
           />
         </Box>
         <Typography display="flex" alignItems="center">
-          <span className="flex-grow">Available quantity</span>
+          <span className="flex-grow">{t('reserve')}</span> {/* Changed here */}
           <span className="row-summary__value">
             <AssetPriceOutput
-              amount={ad.reserveSum}
+              amount={ad.reserveSum} // in coin 2
               price={ad.coinPair.price}
-              tickerFrom={ad.fromCoin.ticker}
-              tickerTo={ad.toCoin.ticker}
-              secondary
+              tickerFrom={ad.toCoin.ticker}
+              tickerTo={ad.fromCoin.ticker}
             />
           </span>
         </Typography>
@@ -67,11 +67,10 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             <span className="flex-grow">{t('min')}</span>
             <span className="row-summary__value">
               <AssetPriceOutput
-                amount={ad.minimumExchangeAmountCoin2}
-                price={ad.coinPair.price}
+                amount={ad.minimumExchangeAmountCoin1}
+                price={1 / ad.coinPair.price}
                 tickerFrom={ad.fromCoin.ticker}
                 tickerTo={ad.toCoin.ticker}
-                secondary
               />
             </span>
           </Typography>
@@ -81,10 +80,10 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             <span className="flex-grow">{t('max')}</span>
             <span className="row-summary__value">
               <AssetPriceOutput
-                price={ad.maximumExchangeAmountCoin2}
+                amount={ad.maximumExchangeAmountCoin1}
+                price={1 / ad.coinPair.price}
                 tickerFrom={ad.fromCoin.ticker}
                 tickerTo={ad.toCoin.ticker}
-                secondary
               />
             </span>
           </Typography>
@@ -101,7 +100,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
       </div>
       {showPaymentMethods && (
         <Box display="flex" marginTop={2}>
-          <Typography>Payment methods</Typography>
+          <Typography>{t('payment-methods')}</Typography> {/* Changed here */}
           <Box className="flex-grow" />
           <Box textAlign="right">
             {ad.paymentMethods.map((paymentMethod, idx) => (
@@ -120,9 +119,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
           <Card variant="outlined" sx={{ bgcolor: 'transparent' }}>
             <CardContent>
               <Alert severity="info">
-                Please read the exchanger's terms and conditions before placing
-                an order. Failure to do so may result in a failed transaction
-                and financial losses.
+                {t('read_policy_alert')} {/* Changed here */}
               </Alert>
               <Typography marginTop={2} whiteSpace="pre-wrap">
                 {ad.exchangersPolicy}

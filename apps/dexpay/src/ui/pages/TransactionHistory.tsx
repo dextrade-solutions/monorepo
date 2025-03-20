@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { Tab, Box } from '@mui/material';
+import { useState } from 'react';
+
 import TransactionList from '../components/transaction/TransactionList';
 import WidthdrawalList from '../components/transaction/WidthdrawalList';
 import Tabs from '../components/ui/Tabs';
@@ -12,7 +13,7 @@ export default function TransactionHistory() {
   };
 
   return (
-    <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+    <Box>
       <Box sx={{ borderColor: 'divider' }}>
         <Tabs
           value={activeTab}

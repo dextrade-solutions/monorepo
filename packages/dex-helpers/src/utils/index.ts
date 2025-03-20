@@ -6,4 +6,5 @@ export * from './platform';
 export * from './evm';
 export * from './tron';
 export * from './solana';
-export * from './get-qr-code-uri';
+export * from './get-qr-uri-payment';
+export * from './coins';

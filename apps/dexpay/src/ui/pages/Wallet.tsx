@@ -1,20 +1,19 @@
 import {
   Button,
-  Paper,
   Typography,
   Box,
   Skeleton,
   CardContent,
   Card,
 } from '@mui/material';
-import { formatCurrency } from 'dex-helpers';
 import { bgPrimaryGradient } from 'dex-ui';
-import { range, sumBy } from 'lodash';
+import { range } from 'lodash';
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import AssetList from '../components/crypto/AssetList';
+import { Balance } from '../components/crypto/Balance';
 import {
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
@@ -22,31 +21,12 @@ import {
 import { useCurrencies } from '../hooks/use-currencies';
 
 export default function Wallet() {
-  const [_, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { items, isLoading } = useCurrencies();
-
-  const totalBalance = sumBy(items, (item) =>
-    Number(item.balance?.total_balance_usdt || 0),
-  );
   return (
     <Box>
       <Box mb={4}>
-        <Paper
-          elevation={0}
-          sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 1 }}
-        >
-          <Typography variant="body2" color="textSecondary">
-            Current balance
-          </Typography>
-          <Typography
-            m={3}
-            variant="h4"
-            fontWeight="bold"
-            color="text.tertiary"
-          >
-            {formatCurrency(totalBalance, 'usd')} USD
-          </Typography>
-
+        <Balance>
           <Box display="flex" gap={2}>
             <Button
               fullWidth
@@ -70,7 +50,7 @@ export default function Wallet() {
               Withdraw
             </Button>
           </Box>
-        </Paper>
+        </Balance>
       </Box>
       <Box>
         <Typography

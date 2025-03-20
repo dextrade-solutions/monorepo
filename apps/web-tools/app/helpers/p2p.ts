@@ -1,43 +1,36 @@
-import { NetworkNames } from 'dex-helpers';
-import assetList from 'dex-helpers/assets-list';
-import { AssetModel } from 'dex-helpers/types';
+import { BUILT_IN_NETWORKS, getIsoCoin, NetworkNames } from 'dex-helpers';
+import * as allAssets from 'dex-helpers/assets-dict';
+import { AssetModel, CoinModel } from 'dex-helpers/types';
+
+// Create a type-safe asset dictionary
+const assetDict: { [key: string]: AssetModel } = allAssets;
+
+export function getAssetByIso(iso: string): AssetModel | undefined {
+  return assetDict[iso];
+}
 
 export function parseCoin(
-  coin: {
-    networkName: NetworkNames;
-    ticker: string;
-  },
+  coin: CoinModel,
   priceInUsdt?: number,
 ): AssetModel | null {
-  const asset = assetList.find(
-    (item) =>
-      item.network.toLowerCase() === coin.networkName.toLowerCase() &&
-      item.symbol === coin.ticker,
-  );
+  const iso = getIsoCoin(coin);
+  const asset = getAssetByIso(iso);
   if (asset) {
     return {
       ...asset,
       priceInUsdt,
-    };
+    } as AssetModel; // Type assertion here
   }
   return null;
 }
 
-export function parseCoinByTickerAndNetwork(
-  ticker: string,
-  networkName: NetworkNames,
-) {
-  return assetList.find(
-    (item) =>
-      item.network.toLowerCase() === networkName.toLowerCase() &&
-      item.symbol === ticker,
-  );
-}
+export function getNative(network: NetworkNames): AssetModel {
+  let { iso } = BUILT_IN_NETWORKS[network];
 
-export function getNative(network: NetworkNames) {
-  const item = assetList.find(
-    (item) => item.isNative && item.network === network,
-  );
+  if (network === NetworkNames.binance) {
+    iso = 'BNB_BSC'; // Exception rule for bnb
+  }
+  const item = getAssetByIso(iso);
   if (!item) {
     throw new Error(`getNative - not found token with network ${network}`);
   }

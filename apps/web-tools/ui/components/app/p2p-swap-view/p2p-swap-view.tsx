@@ -115,7 +115,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin2 = await calcIncomingFee(sumInCoin2);
     sumInCoin2 -= feeInCoin2;
     assetInputTo.setInputAmount(
-      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(8)) : 0,
+      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(10)) : 0,
     );
     assetInputTo.setLoading(false);
   }, RECALCULATE_DELAY);
@@ -127,7 +127,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin1 = feeInCoin2 / exchangeRate;
     sumInCoin1 += feeInCoin1;
     assetInputFrom.setInputAmount(
-      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(8)) : 0,
+      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(10)) : 0,
     );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);
@@ -162,11 +162,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   };
 
   useEffect(() => {
-    if (assetInputTo.native) {
-      onInputAmountFrom(fromTokenInputValue);
-    }
+    onInputAmountFrom(fromTokenInputValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTokenInputValue, assetInputTo.native]);
+  }, []);
 
   const startExchange = async ({
     exchangerPaymentMethodId,
@@ -204,7 +202,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     showModal({
       name: 'ITEM_PICKER',
       options: availablePaymentMethods,
-      title: 'Choose payment method',
+      title: t('choosePaymentMethod'), // i18n added here
       getOptionLabel: (paymentMethod: UserPaymentMethod) =>
         paymentMethod.paymentMethod.name,
       getOptionKey: (paymentMethod: UserPaymentMethod) =>
@@ -256,7 +254,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         <P2PSwapSummary exchange={ad} />
         <Box display="flex" justifyContent="space-between" marginTop={1}>
           <Box display="flex" alignItems="center">
-            <Typography marginRight={1}>Slippage Tolerance</Typography>
+            <Typography marginRight={1}>{t('slippageTolerance')}</Typography>
           </Box>
           <Typography fontWeight="bold">
             {slippage}%{' '}
@@ -308,7 +306,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
                 P2PService.requestEnergy(assetInputFrom.account.address);
               }}
             >
-              Request energy
+              {t('requestEnergy')} {/* i18n added here */}
             </Button>
           )}
         <Button

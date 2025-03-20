@@ -4,7 +4,7 @@ import {
   arbitrum,
   avalanche,
   base,
-  bsc,
+  bsc as defaultBsc,
   mainnet as defaultMainnet,
   sepolia,
   xdc as defaultXdc,
@@ -30,6 +30,14 @@ const mainnet = {
   rpcUrls: {
     default: {
       http: ['https://eth.llamarpc.com'],
+    },
+  },
+};
+const bsc = {
+  ...defaultBsc,
+  rpcUrls: {
+    default: {
+      http: ['https://bsc-dataseed1.binance.org'],
     },
   },
 };

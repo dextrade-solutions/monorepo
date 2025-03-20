@@ -4,6 +4,7 @@ import { AdItem } from 'dex-helpers/types';
 import React from 'react';
 
 import type { useAssetInput } from './asset/useAssetInput';
+import { useI18nContext } from './useI18nContext';
 
 type AdParams = {
   ad: AdItem;
@@ -23,8 +24,10 @@ export function useAdValidation({
   assetInputTo,
   ad,
 }: AdParams) {
+  const t = useI18nContext();
+
   const params: ValidationParams = {
-    submitBtnText: 'Start Swap',
+    submitBtnText: t('Start Swap'), // Changed here
     hasValidationErrors: false,
     disabledBtn: false,
   };
@@ -32,7 +35,7 @@ export function useAdValidation({
     assetInputFrom.amount &&
     Number(assetInputFrom.amount) < Number(ad.minimumExchangeAmountCoin1)
   ) {
-    params.submitBtnText = `Min amount is ${ad.minimumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`;
+    params.submitBtnText = t('Min amount is') + ` ${ad.minimumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -41,7 +44,7 @@ export function useAdValidation({
     assetInputTo.amount &&
     Number(assetInputTo.amount) < Number(ad.minimumExchangeAmountCoin2)
   ) {
-    params.submitBtnText = `Min amount is ${ad.minimumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`;
+    params.submitBtnText = t('Min amount is') + ` ${ad.minimumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -50,14 +53,14 @@ export function useAdValidation({
   if (!assetInputFrom.amount || !assetInputTo.amount) {
     params.disabledBtn = true;
     params.hasValidationErrors = true;
-    params.submitBtnText = 'Enter the amount to swap';
+    params.submitBtnText = t('Enter the amount to swap'); // Changed here
     return params;
   }
   if (
     assetInputFrom.amount &&
     Number(assetInputFrom.balance?.value) < Number(assetInputFrom.amount)
   ) {
-    params.submitBtnText = `Insufficient ${assetInputFrom.asset.symbol} balance`;
+    params.submitBtnText = t('Insufficient') + ` ${assetInputFrom.asset.symbol} ` + t('balance'); // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -66,7 +69,7 @@ export function useAdValidation({
     assetInputTo.amount &&
     getAdLimitPerExchange(ad) < Number(assetInputTo.amount)
   ) {
-    params.submitBtnText = `Max limit in ${formatFundsAmount(getAdLimitPerExchange(ad))} ${assetInputTo.asset.symbol} exceeded`;
+    params.submitBtnText = t('Max limit in') + ` ${formatFundsAmount(getAdLimitPerExchange(ad))} ${assetInputTo.asset.symbol} ` + t('exceeded'); // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -74,13 +77,13 @@ export function useAdValidation({
   if (!assetInputTo.asset.isFiat && !assetInputTo.account?.address) {
     params.submitBtnText = (
       <Typography>
-        Set your <strong>{assetInputTo.asset.symbol}</strong> wallet
+        {t('Set your')} <strong>{assetInputTo.asset.symbol}</strong> {t('wallet')} {/* Changed here */}
       </Typography>
     );
     return params;
   }
   if (assetInputTo.asset.isFiat && !assetInputTo.paymentMethod) {
-    params.submitBtnText = 'Set payment method';
+    params.submitBtnText = t('Set payment method'); // Changed here
     return params;
   }
   return params;

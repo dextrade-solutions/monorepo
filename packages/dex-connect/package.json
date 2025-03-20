@@ -19,7 +19,8 @@
   "exports": {
     ".": {
       "import": "./lib/main.ts",
-      "require": "./lib/main.ts"
+      "require": "./lib/main.ts",
+      "types": "./src/types.d.ts"
     }
   },
   "devDependencies": {

@@ -16,15 +16,17 @@ export default abstract class ProfileService {
 
   /**
    * Upload profile logo
-   *
    * @param params
    * @param formData
    */
   static uploadAvatar(params: Profile.UploadAvatar.Params, formData: FormData) {
     return $api
-      .post(`projects/${params.projectId}/${ProfileService.PREFIX}/upload-profile-pic`, {
-        body: formData,  // заменяем `json` на `body` для отправки FormData
-      })
+      .post(
+        `projects/${params.projectId}/${ProfileService.PREFIX}/upload-profile-pic`,
+        {
+          body: formData, // заменяем `json` на `body` для отправки FormData
+        },
+      )
       .json<Profile.UploadAvatar.Response>();
   }
 }

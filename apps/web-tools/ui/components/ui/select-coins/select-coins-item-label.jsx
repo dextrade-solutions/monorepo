@@ -59,6 +59,7 @@ export const SelectCoinsItemLabel = ({
             {name}
           </Typography>
           <Typography
+            variant="caption"
             fontWeight="light"
             className="select-coins__item__label__title__type"
           >

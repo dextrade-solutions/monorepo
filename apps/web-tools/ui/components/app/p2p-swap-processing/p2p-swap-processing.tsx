@@ -152,7 +152,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   if (!exchange) {
     return (
       <Typography textAlign="center" marginY={2} variant="h6">
-        Swap not found...
+        {t('Swap not found...')}
       </Typography>
     );
   }
@@ -161,7 +161,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   if (exchange.status === TradeStatus.canceled) {
     statusImage = <SwapFailtureIcon />;
     headerText = t('Trade Canceled');
-    content = <Alert severity="error">The swap was canceled</Alert>;
+    content = <Alert severity="error">{t('The swap was canceled')}</Alert>;
   } else if (
     [
       TradeStatus.exchangerTransactionFailed,
@@ -170,7 +170,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   ) {
     statusImage = <SwapFailtureIcon />;
     headerText = t('Trade Failed');
-    content = <Alert severity="error">The swap failed</Alert>;
+    content = <Alert severity="error">{t('The swap failed')}</Alert>;
   } else if (exchange.status === TradeStatus.new) {
     statusImage = <PulseLoader />;
     headerText = t('Trade Processing');
@@ -186,19 +186,19 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       content = (
         <Box>
           {outgoingPaymentApproved ? (
-            <Alert>You are confirmed {from.symbol} transfer</Alert>
+            <Alert>{t('You are confirmed')} {from.symbol} {t('transfer')}</Alert>
           ) : (
             <>
               <Alert severity="info">
-                Please, send{' '}
-                <strong>{`${exchange.amount1} ${from.symbol}`}</strong> using
-                your bank account and press the confirm button
+                {t('Please, send')}{' '}
+                <strong>{`${exchange.amount1} ${from.symbol}`}</strong>{' '}
+                {t('using your bank account and press the confirm button')}
               </Alert>
               <Box marginTop={3}>
                 <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
                   <CardContent>
                     <PaymentMethodDisplay
-                      title="Exchanger Payment Method"
+                      title={t('Exchanger Payment Method')}
                       paymentMethod={exchange.exchangerPaymentMethod}
                       expanded
                     />
@@ -230,7 +230,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                   }}
                   variant="contained"
                 >
-                  Confirm payment
+                  {t('Confirm payment')}
                 </Button>
               </Box>
             </>
@@ -243,7 +243,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     headerText = t('Reservation');
     content = (
       <Alert severity="info">
-        If exchanger is not responding, you can cancel the exchange
+        {t('If exchanger is not responding, you can cancel the exchange')}
       </Alert>
     );
     submitText = t('cancel');
@@ -257,17 +257,18 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       content = (
         <Box>
           {incomingPaymentApproved ? (
-            <Alert>You are confirmed the payment</Alert>
+            <Alert>{t('You are confirmed the payment')}</Alert>
           ) : (
             <>
               <Box marginBottom={2}>
                 <Alert severity="info">
-                  The exchanger has confirmed the payment. Please approve that
-                  the{' '}
+                  {t(
+                    'The exchanger has confirmed the payment. Please approve that the',
+                  )}{' '}
                   <strong>
                     {exchange.amount2} {exchange.exchangerSettings.to.ticker}
                   </strong>{' '}
-                  has been transferred.
+                  {t('has been transferred.')}
                 </Alert>
               </Box>
               <Box display="flex" justifyContent="space-between" margin={3}>
@@ -278,7 +279,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                     setIncomingPaymentApproved(true);
                   }}
                 >
-                  Dispute
+                  {t('Dispute')}
                 </Button>
                 <Button
                   data-testid="p2p-swap-processing__confirm-payment"
@@ -288,7 +289,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                     setIncomingPaymentApproved(true);
                   }}
                 >
-                  Confirm payment
+                  {t('Confirm payment')}
                 </Button>
               </Box>
             </>
@@ -326,13 +327,16 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
+      sx={{
+        minHeight: 'calc(100vh - 32px)',
+      }}
     >
       <div className="flex-grow" />
       <Typography marginBottom={1} variant="h4">
         {headerText}
       </Typography>
       <Typography variant="body2" marginBottom={4} alignItems="center">
-        Trade {shortenAddress(exchange.id)} with{' '}
+        {t('Trade')} {shortenAddress(exchange.id)} {t('with')}{' '}
         <strong>{exchange.exchangerName}</strong>
       </Typography>
 

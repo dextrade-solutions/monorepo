@@ -7,13 +7,14 @@ import { SeedPhraseForm } from '../components/crypto/SaveSeedPhrase';
 import OtpConfirm from '../components/OtpConfirm';
 import { useAuth } from '../hooks/use-auth';
 import { useMutation } from '../hooks/use-query';
-import { Memo } from '../services';
+import { Memo, Projects } from '../services';
 import { Memo as MemoTypes } from '../types';
 import { Validation } from '../validation';
 
 export default function WalletMemo() {
   const { showModal } = useGlobalModalContext();
   const [seedPhrase, setSeedPhrase] = useState<string[]>();
+  const auth = useAuth();
   const { setCompleteReginstration } = useAuth();
   const { runLoader } = useLoader();
   const [beginImportResponse, setBeginImportResponse] =
@@ -24,9 +25,18 @@ export default function WalletMemo() {
       setBeginImportResponse(data);
     },
   });
-  const confirmOtp = useMutation(Memo.completeImport, {
+
+  const projectInit = useMutation(Projects.init, {
     onSuccess: () => {
       setCompleteReginstration();
+    },
+  });
+  const confirmOtp = useMutation(Memo.completeImport, {
+    onSuccess: (resp) => {
+      return projectInit.mutateAsync([
+        { id: auth.user?.project!.id },
+        { mnemonic_encrypted_id: resp.id },
+      ]);
     },
   });
 
@@ -76,7 +86,7 @@ export default function WalletMemo() {
       }}
     >
       {beginImportResponse ? (
-        <OtpConfirm method={handleOtp} />
+        <OtpConfirm email={auth.me?.email} method={handleOtp} />
       ) : (
         <>
           <Typography variant="h5" gutterBottom>

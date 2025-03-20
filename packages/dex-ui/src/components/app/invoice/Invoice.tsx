@@ -1,26 +1,35 @@
-import { DexConnectProvider } from 'dex-connect';
+import { Alert } from '@mui/material';
+import type { Connection } from 'dex-connect';
 
+import InvoicePreloader from './InvoicePreloader';
 import InvoiceView from './InvoiceView';
-
-type SolanaConfig = {
-  SOLANA_CONNECT_API: string;
-  SOLANA_CONNECT_WALLETS: any[];
-};
+import useInvoice from './react-queries/queries/useInvoice';
 
 export default function Invoice({
-  wagmiConfig,
-  solana,
+  connections,
   id,
   onBack,
 }: {
-  wagmiConfig: any;
-  solana: SolanaConfig;
   id: string;
+  connections: Connection[]; // TODO: add type of connections
   onBack?: () => void;
 }) {
+  const invoice = useInvoice({ id });
+  if (invoice.isLoading) {
+    return <InvoicePreloader />;
+  }
+  if (invoice.isError) {
+    return (
+      <Alert severity="info">
+        Invoice with id <strong>{id}</strong> cannot be loaded
+      </Alert>
+    );
+  }
   return (
-    <DexConnectProvider wagmiConfig={wagmiConfig} solanaConfig={solana}>
-      <InvoiceView id={id} onBack={onBack} />
-    </DexConnectProvider>
+    <InvoiceView
+      invoice={invoice.data}
+      connections={connections}
+      onBack={onBack}
+    />
   );
 }

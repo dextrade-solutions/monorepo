@@ -5,10 +5,7 @@ import {
   ListItemText,
   Divider,
   ListItemButton,
-  ListItemAvatar,
-  ListItemSecondaryAction,
   Button,
-  Skeleton,
 } from '@mui/material';
 import { ButtonIcon, ModalProps } from 'dex-ui';
 import { PlusIcon } from 'lucide-react';
@@ -18,12 +15,14 @@ import { useAuth } from '../hooks/use-auth';
 import { IProject } from '../types';
 
 const SelectProject = ({ hideModal }: ModalProps) => {
-  const { setProject, projects: renderList } = useAuth();
+  const { user, setProject, projects } = useAuth();
 
   const handleSelectProject = (project: IProject) => {
     setProject(project);
     hideModal();
   };
+
+  const renderList = projects.filter((p) => p.id !== user?.project.id);
 
   return (
     <Box padding={5}>

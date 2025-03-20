@@ -7,8 +7,9 @@ import {
   useGlobalModalContext,
 } from 'dex-ui';
 import React from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
+import { Balance } from '../components/crypto/Balance';
 import InvoiceList from '../components/invoices/InvoiceList';
 import { ROUTE_INVOICE_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
@@ -17,7 +18,7 @@ import { Projects } from '../services';
 import StatsService from '../services/service.stats';
 
 export default function Merchant() {
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { showModal } = useGlobalModalContext();
 
   const { user } = useAuth();
@@ -40,29 +41,12 @@ export default function Merchant() {
   const salespersonsCount = usersWithAccess.data?.currentPageResult.length || 0;
 
   return (
-    <Box sx={{ mx: 'auto' }} data-testid="merchant-page">
+    <Box data-testid="merchant-page">
       <Box mb={4}>
-        <Paper
-          elevation={0}
-          sx={{ textAlign: 'center', bgcolor: 'secondary.dark', p: 2, mb: 1 }}
+        <Balance
+          pnlLabel="Invoices income"
+          pnl={statistic.data?.received.total_usdt}
         >
-          <Typography variant="body2" color="textSecondary">
-            Total income
-          </Typography>
-          <Box display="flex" justifyContent="center" m={3}>
-            {statistic.data ? (
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                color="text.tertiary"
-                data-testid="merchant-income-amount"
-              >
-                {formatCurrency(statistic.data.received.total_usdt, 'usd')} USD
-              </Typography>
-            ) : (
-              <Skeleton width={100} height={60} />
-            )}
-          </Box>
           <Box display="flex" gap={2}>
             <Button
               fullWidth
@@ -98,7 +82,26 @@ export default function Merchant() {
               Salespeople
             </Button>
           </Box>
-        </Paper>
+        </Balance>
+        {/* <Paper elevation={0} sx={{ bgcolor: 'secondary.dark', p: 2, mb: 1 }}>
+          <Typography variant="body2" color="textSecondary">
+            Balance
+          </Typography>
+          <Box display="flex" my={3}>
+            {statistic.data ? (
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                color="text.tertiary"
+                data-testid="merchant-income-amount"
+              >
+                {formatCurrency(statistic.data.received.total_usdt, 'usd')}
+              </Typography>
+            ) : (
+              <Skeleton width={100} height={60} />
+            )}
+          </Box>
+        </Paper> */}
       </Box>
       <Box data-testid="merchant-invoices-section">
         <Typography

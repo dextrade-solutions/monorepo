@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Skeleton, Typography } from '@mui/material';
 import { Icon } from 'dex-ui';
 import { flatMap, groupBy } from 'lodash';
+import React from 'react';
 import { InView } from 'react-intersection-observer';
 
 import { TradePreview } from './trade-preview';
@@ -29,8 +30,12 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   const tradesTerminal = allTrades.filter((t) => !activeTradesById[t.id]);
 
   const backbutton = (
-    <Button startIcon={<Icon name="arrow-left-dex" />} onClick={onBack}>
-      {t('back')}
+    <Button
+      sx={{ color: 'text.primary' }}
+      startIcon={<Icon name="arrow-left-dex" />}
+      onClick={onBack}
+    >
+      {t('back')} {/* Translated here */}
     </Button>
   );
 
@@ -46,7 +51,7 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
               padding={1}
             >
               <Typography fontWeight="bold" variant="h6">
-                Pending ({tradesActive.length})
+                {t('Pending')} ({tradesActive.length}) {/* Translated here */}
               </Typography>
               {backbutton}
             </Box>
@@ -68,7 +73,7 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
               justifyContent="space-between"
               padding={1}
             >
-              <Typography variant="h6">History</Typography>
+              <Typography variant="h6">{t('History')}</Typography> {/* Translated here */}
               {tradesActive.length === 0 && backbutton}
             </Box>
             <Box marginY={1}>
@@ -94,7 +99,7 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   }
   return (
     <Box display="flex" alignContent="center">
-      <Typography color="text.secondary">Trades not found...</Typography>
+      <Typography color="text.secondary">{t('Trades not found...')}</Typography> {/* Translated here */}
       <div className="flex-grow" />
       {backbutton}
     </Box>

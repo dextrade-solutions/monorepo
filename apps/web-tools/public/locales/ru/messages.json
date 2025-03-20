@@ -1,77 +1,322 @@
 {
-  "viewAllTrades": { "message": "Все трейды" },
+  "The swap was canceled": {
+    "message": "Обмен был отменен"
+  },
+  "The swap failed": {
+    "message": "Обмен не удался"
+  },
+  "Confirm payment": {
+    "message": "Подтвердить оплату"
+  },
+  "Dispute": {
+      "message": "Спор"
+  },
+  "My current address:": {
+    "message": "Мой текущий адрес:"
+  },
+  "This address using for": {
+    "message": "Этот адрес используется для"
+  },
+  "receiving": {
+    "message": "получения"
+  },
+  "sending": {
+    "message": "отправки"
+  },
+  "Change": {
+    "message": "Изменить"
+  },
+  "Disconnect Wallet": {
+    "message": "Отключить кошелек"
+  },
+  "OR": {
+    "message": "ИЛИ"
+  },
+  "Paste recipient wallet address": {
+    "message": "Вставьте адрес кошелька получателя"
+  },
+    "Recipient address": {
+      "message": "Адрес получателя"
+  },
+  "Attach address":{
+      "message": "Прикрепить адрес"
+  },
+  "Connected wallets": {
+    "message": "Подключенные кошельки"
+  },
+  "Swap ID": {
+    "message": "ID обмена"
+  },
+   "Hash": {
+    "message": "Хэш"
+  },
+   "You refunded": {
+    "message": "Вы вернули"
+  },
+     "Refund": {
+    "message": "Вернуть"
+  },
+    "Approve refund": {
+    "message": "Подтвердить возврат"
+  },
+    "Plan": {
+    "message": "План"
+  },
+    "Fact": {
+    "message": "Факт"
+  },
+     "Claim": {
+    "message": "Забрать"
+  },
+    "Approve claim in your wallet": {
+    "message": "Подтвердите получение в своем кошельке"
+  },
+      "Exchanger refunded": {
+    "message": "Обменник вернул"
+  },
+       "Try again": {
+    "message": "Попробовать снова"
+  },
+     "View swap": {
+    "message": "Посмотреть сделку"
+  },
+  "Pending": {
+    "message": "В ожидании"
+  },
+  "History": {
+    "message": "История"
+  },
+  "Trades not found...": {
+    "message": "Сделки не найдены..."
+  },
+  "Trade": {
+    "message": "Сделка"
+  },
+  "with": {
+    "message": "с"
+  },
+  "Swap not found...": {
+    "message": "Сделка не найдена..."
+  },
+  "You are confirmed": {
+    "message": "Вы подтвердили"
+  },
+  "transfer": {
+    "message": "перевод"
+  },
+  "Please, send": {
+    "message": "Пожалуйста, отправьте"
+  },
+  "using your bank account and press the confirm button": {
+    "message": "используя свой банковский счет и нажмите кнопку подтверждения"
+  },
+  "Exchanger Payment Method": {
+    "message": "Платежный метод обменника"
+  },
+  "If exchanger is not responding, you can cancel the exchange": {
+    "message": "Если обменник не отвечает, вы можете отменить обмен"
+  },
+  "You are confirmed the payment": {
+    "message": "Вы подтвердили оплату"
+  },
+  "The exchanger has confirmed the payment. Please approve that the": {
+    "message": "Обменник подтвердил оплату. Пожалуйста, подтвердите, что"
+  },
+  "has been transferred.": {
+    "message": "были переведены."
+  },
+  "By": {
+    "message": "По"
+  },
+    "Allowance": {
+    "message": "Подтверждение"
+  },
+    "Safe init": {
+    "message": "Инициация сейфа"
+  },
+    "Safe claim": {
+    "message": "Получение средств"
+  },
+    "Direct transfer": {
+    "message": "Прямой перевод"
+  },  
+  "loading": {
+    "message": "Загрузка..."
+  },
+   "Sort by": {
+  "message": "Сортировать по"
+},
+ "Search": {
+  "message": "Поиск"
+},
+"There are no ads with the selected coin(s).": {
+   "message": "Нет объявлений с выбранной(ыми) монетой(ами)."
+  },
+  "Start Swap": {
+  "message": "Начать обмен"
+},
+"Min amount is": {
+  "message": "Минимальная сумма"
+},
+"Enter the amount to swap": {
+  "message": "Введите сумму для обмена"
+},
+"Insufficient": {
+  "message": "Недостаточно"
+},
+"balance": {
+  "message": "баланс"
+},
+"Max limit in": {
+  "message": "Превышен максимальный лимит"
+},
+ "exceeded": {
+  "message": "превышен"
+},
+"Set your": {
+  "message": "Установите свой"
+},
+"wallet": {
+  "message": "кошелек"
+},
+"Set payment method": {
+  "message": "Установите способ оплаты"
+},
+  "Total fee": {
+  "message": "Общая комиссия"
+},
+"Super fee": {
+  "message": "Супер комиссия"
+},
+"Applied": {
+  "message": "Применена"
+},
+"Activate": {
+  "message": "Активировать"
+},
+"Exchanger fee": {
+  "message": "Комиссия обменника"
+},
+"Network outbound": {
+  "message": "Комиссия исходящей сети"
+},
+"Network inbound": {
+  "message": "Комиссия входящей сети"
+},
+  "Balance": {
+  "message": "Баланс"
+},
+"Limit": {
+  "message": "Лимит"
+},
+ "Payment method": {
+  "message": "Способ оплаты"
+},
+"Set Wallet": {
+  "message": "Установить кошелек"
+},
+
+  "read_policy_alert": {
+    "message": "Пожалуйста, ознакомьтесь с условиями обменника перед размещением ордера. Несоблюдение этого правила может привести к неудачной транзакции и финансовым потерям."
+  },
+  "choosePaymentMethod": { "message": "Выберите способ оплаты" },
+  "slippageTolerance": { "message": "Допуск проскальзывания" },
+  "requestEnergy": { "message": "Запросить энергию" },
+  "atomic-swap": { "message": "Атомарный обмен" },
+  "swap": {"message": "Обмен"},
+  "theme": { "message": "Тема" },
+  "system": { "message": "Системная" },
+  "dark": { "message": "Темная" },
+  "light": { "message": "Светлая" },
+  "metamask-alert": { "message": "Убедитесь, что у вас установлена последняя версия приложения Metamask" },
+  "disconnect": { "message": "Отключить" },
+  "wallet-not-detected": { "message": "{{walletName}} не обнаружен" },
+  "setup-guide": { "message": "Руководство по настройке" },
+  "install": { "message": "Установить" },
+  "no-wallets-detected": { "message": "Кошельки не обнаружены..." },
+  "user-info": { "message": "Информация о пользователе" },
+  "personal-data-alert": { "message": "Ваши личные данные хранятся локально в веб-браузере. Вы можете привязать их к своему кошельку." },
+  "logout": { "message": "Выйти" },
+  "login-via-wallet": { "message": "Войти через кошелек" },
+  "login-via": { "message": "Авторизация через" },
+  "auth-wallet": { "message": "Подключить кошелек" },
+  "upgrade": { "message": "Улучшить" },
+  "light-mode": { "message": "Светлая тема" },
+  "dark-mode": { "message": "Темная тема" },
+  "plans": { "message": "Планы" },
+  "viewAllTrades": { "message": "Посмотреть все сделки" },
   "ADDITIONAL_INFO": {
-    "message": "Additional info"
+    "message": "Дополнительная информация"
   },
   "CARD_NUMBER": {
-    "message": "Card number"
+    "message": "Номер карты"
   },
   "IBAN": {
     "message": "IBAN"
   },
   "IBAN_OR_CARD_NUMBER": {
-    "message": "IBAN or card number"
+    "message": "IBAN или номер карты"
   },
   "IMAGE_QR": {
-    "message": "Image QR"
+    "message": "Изображение QR-кода"
   },
   "IMAGE": {
-    "message": "Image"
+    "message": "Изображение"
   },
   "EMAIL": {
-    "message": "Email"
+    "message": "Электронная почта"
   },
   "NUMBER_ONLY": {
-    "message": "Number only"
+    "message": "Только цифры"
   },
   "LAST_4_DIGITS": {
-    "message": "Last 4 digits"
+    "message": "Последние 4 цифры"
   },
   "PHONE": {
-    "message": "Phone"
+    "message": "Телефон"
   },
   "USER_NAME": {
-    "message": "User name"
+    "message": "Имя пользователя"
   },
   "FULL_NAME": {
-    "message": "Full name"
+    "message": "Полное имя"
   },
   "BANK_NAME": {
-    "message": "Bank name"
+    "message": "Название банка"
   },
   "ACCOUNT_OPENING_DEPARTMENT": {
-    "message": "Bank account opening department"
+    "message": "Отделение открытия счета"
   },
   "BAN": {
-    "message": "Bank account"
+    "message": "Банковский счет"
   },
   "BANK_TRANSFER": {
-    "message": "Bank transfer"
+    "message": "Банковский перевод"
   },
   "WIRE_TRANSFER": {
-    "message": "Wire transfer"
+    "message": "SWIFT-перевод"
   },
   "approvalTimerP2PLabel": {
     "message": "Время подтверждения $1"
   },
   "approvalTimerP2PInfo": {
-    "message": "If you do not confirm the exchange in the time, it will be automatically cancelled"
+    "message": "Если вы не подтвердите обмен вовремя, он будет отменен автоматически"
   },
   "Search name or contract address": {
-    "message": "Search name or contract address"
+    "message": "Поиск по имени или адресу контракта"
   },
   "swapBuildQuotePlaceHolderText": {
-    "message": "No tokens available matching $1",
-    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+    "message": "Нет доступных токенов, соответствующих $1",
+    "description": "Сообщает пользователю, что заданная строка поиска не соответствует ни одному токену в наших списках токенов. $1 может быть любой текстовой строкой"
   },
   "swapSwapSwitch": {
-    "message": "Switch from and to tokens"
+    "message": "Поменять местами токены"
   },
   "close": {
     "message": "Закрыть"
   },
   "Select Coin": {
-    "message": "Выбор монеты"
+    "message": "Выбрать монету"
   },
   "provider": {
     "message": "Обменник"
@@ -89,7 +334,7 @@
     "message": "Онлайн"
   },
   "reserve": {
-    "message": "Баланс"
+    "message": "Доступно всего"
   },
   "min": {
     "message": "Мин"
@@ -98,13 +343,13 @@
     "message": "Макс"
   },
   "myPaymentMethods": {
-    "message": "Мои платженые методы"
+    "message": "Мои платежные методы"
   },
   "selectPaymentMehtodPlaceholder": {
-    "message": "Выборать платежный метод"
+    "message": "Выберите платежный метод P2P"
   },
   "selectBankAccount": {
-    "message": "Выбор платежного метода"
+    "message": "Выберите банковский счет"
   },
   "add": {
     "message": "Добавить"
@@ -119,10 +364,10 @@
     "message": "Отменить"
   },
   "cancelTrade": {
-    "message": "Отмена трейда"
+    "message": "Отменить сделку"
   },
   "viewOnBlockExplorer": {
-    "message": "Смотреть в обозревателе"
+    "message": "Посмотреть в блокчейн-обозревателе"
   },
   "transactionFee": {
     "message": "Комиссия за транзакцию"
@@ -140,88 +385,90 @@
     "message": "Лимиты"
   },
   "reset": {
-    "message": "Сброс"
+    "message": "Сбросить"
   },
   "bankAccountPickerTitle": {
     "message": "Мои платежные методы"
   },
   "Trade Processing": {
-    "message": "В процессе"
+    "message": "Обмен в обработке"
   },
   "Trade Canceled": {
     "message": "Обмен отменен"
   },
   "Trade Failed": {
-    "message": "Ошибка обмена"
+    "message": "Обмен не удался"
+  },
+  "Reservation": {
+    "message": "Начало обмена"
   },
   "Completed": {
     "message": "Завершено"
   },
   "Expired": {
-    "message": "Время вышло"
+    "message": "Истек срок"
   },
   "Client transaction sending": {
-    "message": "Отправка транзацкии клиента"
+    "message": "Отправка транзакции клиентом"
   },
   "sortBy": {
-    "message": "Сортировка"
+    "message": "Сортировать по"
   },
   "BY_RESERVE": {
-    "message": "Баланс"
+    "message": "Резерву"
   },
   "BY_ONLINE": {
     "message": "Онлайн"
   },
   "BY_PRICE": {
-    "message": "Цена"
+    "message": "Цене"
   },
   "BY_RATING": {
-    "message": "Рейтинг"
+    "message": "Рейтингу"
   },
   "WAIT_EXCHANGER_VERIFY": {
-		"message": "Ожидание обменника"
-	},
+    "message": "Ожидание подтверждения обменника"
+  },
   "NEW": {
-		"message": "Новый"
-	},
+    "message": "Новый"
+  },
   "CANCELED": {
-		"message": "Отменено"
-	},
+    "message": "Отменено"
+  },
   "CLIENT_TRANSACTION_VERIFY": {
-		"message": "Проверка транзакции"
-	},
+    "message": "Проверка транзакции клиента"
+  },
   "CLIENT_TRANSACTION_FAILED": {
-		"message": "Ошибка транзакции"
-	},
+    "message": "Ошибка транзакции клиента"
+  },
   "WAIT_EXCHANGER_TRANSFER": {
-		"message": "Обмен"
-	},
+    "message": "Обмен"
+  },
   "EXCHANGER_TRANSACTION_VERIFY": {
-		"message": "Проверка транзакции"
-	},
+    "message": "Проверка транзакции обменника"
+  },
   "EXCHANGER_TRANSACTION_FAILED": {
-		"message": "Ошибка транзакции"
-	},
+    "message": "Ошибка транзакции обменника"
+  },
   "VERIFIED": {
-		"message": "Верифицировано"
-	},
+    "message": "Проверено"
+  },
   "COMPLETED": {
-		"message": "Завершено"
-	},
+    "message": "Завершено"
+  },
   "EXPIRED": {
-		"message": "Время вышло"
-	},
+    "message": "Срок истек"
+  },
   "DISPUTE": {
-		"message": "Спор"
-	},
+    "message": "Спор"
+  },
   "kyc": { "message": "KYC" },
   "settings": { "message": "Настройки" },
   "payment-methods": { "message": "Платежные методы" },
   "general": { "message": "Основные" },
   "language": { "message": "Язык" },
-  "activity": { "message": "История" },
+  "activity": { "message": "Активность" },
   "back": { "message": "Назад" },
-  "youGive": { "message": "Потратите" },
-  "youGet": { "message": "Получите" },
-  "approveRefundAfterTimeLock": { "message": "Approve refund in after time lock" }
+  "youGive": { "message": "Вы отдаете" },
+  "youGet": { "message": "Вы получаете" }
 }

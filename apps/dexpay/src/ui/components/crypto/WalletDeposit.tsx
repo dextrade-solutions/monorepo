@@ -7,15 +7,21 @@ import {
   Typography,
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
+import assetDict from 'dex-helpers/assets-dict';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'wouter';
+import { useParams, Link } from 'wouter';
 
 import WalletDepositAddress from './WalletDepositAddress';
 import SelectCurrency from '../ui/SelectCurrency';
 
+interface WalletDepositParams {
+  iso?: string;
+}
+
 export default function WalletDeposit() {
   const [activeStep, setActiveStep] = useState(0);
   const [currency, setCurrency] = useState();
+  const { iso } = useParams<WalletDepositParams>();
 
   useEffect(() => {
     if (currency) {
@@ -33,6 +39,7 @@ export default function WalletDeposit() {
           <SelectCurrency
             variant="contained"
             value={currency}
+            initialValueIso={iso}
             onChange={(v) => setCurrency(v)}
           />
           {currency && currency.currency.contract_address && (

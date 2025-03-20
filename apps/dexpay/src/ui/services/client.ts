@@ -4,9 +4,6 @@ import AuthService from './service.auth';
 
 const BASE_API_CONFIG = {
   prefixUrl: 'https://api-int.dextrade.com/v1', // Consider using environment variables for this
-  headers: {
-    'Content-Type': 'application/json',
-  },
 };
 const getAuthDataFrom = () => {
   const data = localStorage.getItem('user-data');
@@ -32,8 +29,13 @@ export const saveAuthData = (accessToken: string, refreshToken: string) => {
   );
 };
 
+export const $invoiceApi = ky.create({
+  prefixUrl: 'https://dexpay-api.dextrade.com',
+});
+
 export const $api = ky.create({
   ...BASE_API_CONFIG,
+  timeout: false,
   retry: 0,
   hooks: {
     beforeRequest: [

@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Typography } from '@mui/material';
-// import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { KycStatuses, SUPPORT_REQUEST_LINK } from 'dex-helpers';
 import { ServiceBridge, kycService, DextradeTypes } from 'dex-services';
 import React from 'react';
@@ -8,11 +8,8 @@ import { useRequest } from '../../hooks/useRequest';
 import Icon from '../ui/icon';
 
 export function Disabled() {
-  return (
-    <Alert severity="info">
-      KYC verification temporarily is disabled. Please, try again later
-    </Alert>
-  );
+  const { t } = useTranslation();
+  return <Alert severity="info">{t('kycDisabled')}</Alert>;
 }
 
 export default function KycIndentification({
@@ -31,6 +28,7 @@ export default function KycIndentification({
   getKycInfo: () => Promise<DextradeTypes.KycModel>;
   startVerification: () => Promise<void>;
 }) {
+  const { t } = useTranslation();
   // TODO: I changed useQuery to own useRequest because of errors after bundling, need resolve it
   const { isError, data: kycInfo } = useRequest({
     queryKey: ['kycInfo'],
@@ -48,9 +46,9 @@ export default function KycIndentification({
     case KycStatuses.unused:
       alert = (
         <Alert severity="info">
-          Status:
-          <Typography fontWeight="bold">In progress</Typography>
-          Please, complete all KYC stages
+          {t('kycStatus')}
+          <Typography fontWeight="bold">{t('inProgress')}</Typography>
+          {t('kycCompleteAllStages')}
         </Alert>
       );
       kycBtn = (
@@ -59,31 +57,31 @@ export default function KycIndentification({
           onClick={() => startKyc()}
           variant="contained"
         >
-          Continue
+          {t('continue')}
         </Button>
       );
       break;
     case KycStatuses.pending:
       alert = (
         <Alert severity="info">
-          Status:
-          <Typography fontWeight="bold">Under review</Typography>
+          {t('kycStatus')}
+          <Typography fontWeight="bold">{t('underReview')}</Typography>
         </Alert>
       );
       break;
     case KycStatuses.verified:
       alert = (
         <Alert severity="success">
-          Status:
-          <Typography fontWeight="bold">Verified</Typography>
+          {t('kycStatus')}
+          <Typography fontWeight="bold">{t('verified')}</Typography>
         </Alert>
       );
       break;
     case KycStatuses.declined:
       alert = (
         <Alert severity="error">
-          Status:
-          <Typography fontWeight="bold">Declined</Typography>
+          {t('kycStatus')}
+          <Typography fontWeight="bold">{t('declined')}</Typography>
         </Alert>
       );
 
@@ -93,19 +91,14 @@ export default function KycIndentification({
           onClick={() => startKyc()}
           variant="contained"
         >
-          Try again
+          {t('tryAgain')}
         </Button>
       );
       break;
     default:
       alert = (
         <Alert severity="info">
-          KYC (Know Your Client) is a global verification system used in
-          financial services and banks to reduce financial scams and fraud.{' '}
-          <br />
-          <br />
-          By law, ID documents are required for all transactions involving fiat
-          currency.
+          {t('kycInfo')}
         </Alert>
       );
       kycBtn = (
@@ -114,7 +107,7 @@ export default function KycIndentification({
           onClick={() => startKyc()}
           variant="contained"
         >
-          Start KYC
+          {t('startKyc')}
         </Button>
       );
   }
@@ -125,7 +118,7 @@ export default function KycIndentification({
         {kycBtn}
         <div className="flex-grow" />
         <Button onClick={() => window.open(SUPPORT_REQUEST_LINK)}>
-          <Typography marginRight={1}>Telegram support</Typography>{' '}
+          <Typography marginRight={1}>{t('telegramSupport')}</Typography>{' '}
           <Icon name="send-1" />
         </Button>
       </Box>

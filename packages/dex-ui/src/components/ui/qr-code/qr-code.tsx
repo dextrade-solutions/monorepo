@@ -1,15 +1,31 @@
-import { Paper, Typography, Box, Button } from '@mui/material';
+import { Box, Button, Typography, BoxProps } from '@mui/material';
 import QRCodeStyling from 'qr-code-styling';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+
+import CopyData from '../copy-data/copy-data';
 import Icon from '../icon';
 
-interface QRCodeProps {
+interface QRCodeProps extends BoxProps {
   value: string;
+  title?: string;
+  showQrValue?: boolean;
   description?: string;
   size?: number;
+  hideDownloadQr?: boolean;
+  gradientProps?: any
 }
 
-export function QRCode({ value, description, size = 300 }: QRCodeProps) {
+export function QRCode({
+  value,
+  title,
+  showQrValue,
+  description,
+  hideDownloadQr,
+  gradientProps = {},
+  sx = {},
+  size = 300,
+  ...rest
+}: QRCodeProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCode = useRef<QRCodeStyling | null>(null);
 
@@ -29,6 +45,7 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
               { offset: 0, color: '#3b82f6' },
               { offset: 1, color: '#8b5cf6' },
             ],
+            ...gradientProps,
           },
           type: 'rounded',
         },
@@ -69,18 +86,19 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
     <Box
       data-testid="qrcode"
       sx={{
-        p: 2,
-        m: 2,
-        gap: 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        ...sx,
       }}
+      {...rest}
     >
+      {title && <Typography fontWeight="bold">{title}</Typography>}
       <Box
         ref={qrRef}
         data-testid="qrcode-svg"
         sx={{
+          my: 1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -88,25 +106,28 @@ export function QRCode({ value, description, size = 300 }: QRCodeProps) {
           height: size,
         }}
       />
-      {description && (
-        <Typography 
-          variant="body2" 
-          color="text.secondary"
-          align="center"
-          sx={{ maxWidth: size }}
+      {description}
+      {showQrValue && (
+        <Box
+          textAlign="center"
+          width="100%"
+          whiteSpace="nowrap"
+          fontWeight="bold"
         >
-          {description}
-        </Typography>
+          <CopyData data={value} />
+        </Box>
       )}
-      <Button
-        data-testid="qrcode-downloadbtn"
-        variant="contained"
-        startIcon={<Icon name="save" />}
-        onClick={handleDownload}
-        sx={{ mt: 1 }}
-      >
-        Download QR Code
-      </Button>
+      {!hideDownloadQr && (
+        <Button
+          data-testid="qrcode-downloadbtn"
+          variant="contained"
+          startIcon={<Icon name="save" />}
+          onClick={handleDownload}
+          sx={{ mt: 1 }}
+        >
+          Download QR Code
+        </Button>
+      )}
     </Box>
   );
 }

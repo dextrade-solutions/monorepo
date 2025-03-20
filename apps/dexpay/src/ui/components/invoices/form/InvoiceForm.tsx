@@ -17,7 +17,7 @@ import {
 } from 'dex-ui';
 import { map } from 'lodash';
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
+import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_MERCHANT } from '../../../constants/pages';
 import { useAuth } from '../../../hooks/use-auth';
@@ -43,7 +43,7 @@ interface InvoiceData {
 }
 
 const CreateInvoiceForm = () => {
-  const [, navigate] = useLocation();
+  const [, navigate] = useHashLocation();
   const { user } = useAuth();
 
   const currencies = useCurrencies();
@@ -53,7 +53,7 @@ const CreateInvoiceForm = () => {
       navigate(ROUTE_MERCHANT);
     },
   });
-  const coins = useQuery(Currency.coins);
+  const coins = useQuery(Currency.coins, [{ type: 'fiat' }]);
 
   const allCoins = (coins.data?.list.currentPageResult || []).reduce(
     (acc, coin) => ({ ...acc, [coin.iso]: coin }),
@@ -64,7 +64,7 @@ const CreateInvoiceForm = () => {
     values: {
       primaryCoin: {
         amount: null,
-        coin: 'USDT',
+        coin: 'THB',
       },
       convertedCurrencies: [],
       description: '',
@@ -112,8 +112,10 @@ const CreateInvoiceForm = () => {
       data-testid="invoice-create-form"
     >
       <Box my={1} display="flex" alignItems="center">
-        <CircleNumber color="secondary.light" number={1} />
-        <Typography ml={1}>Primary coin</Typography>
+        <CircleNumber color="tertiary.main" number={1} />
+        <Typography ml={1} color="text.secondary">
+          Primary coin
+        </Typography>
       </Box>
       <SelectCoinAmount
         form={form}
@@ -123,8 +125,10 @@ const CreateInvoiceForm = () => {
         data-testid="invoice-create-primary-coin-select"
       />
       <Box mt={3} display="flex" alignItems="center">
-        <CircleNumber color="secondary.light" number={2} />
-        <Typography ml={1}>Crypto currency</Typography>
+        <CircleNumber color="tertiary.main" number={2} />
+        <Typography ml={1} color="text.secondary">
+          Crypto currency
+        </Typography>
       </Box>
       <MultiselectAssetsWithValidation
         name="convertedCurrencies"
@@ -176,7 +180,6 @@ const CreateInvoiceForm = () => {
           />
         </AccordionDetails>
       </Accordion>
-
       <Button
         type="submit"
         disabled={

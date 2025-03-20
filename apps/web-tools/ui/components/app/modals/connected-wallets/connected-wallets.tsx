@@ -12,7 +12,7 @@ const WalletsList = ({ hideModal }: ModalProps) => {
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
-        <Typography>Connected wallets</Typography>
+        <Typography>{t('Connected wallets')}</Typography> 
         <ButtonIcon
           iconName="close"
           ariaLabel={t('close')}

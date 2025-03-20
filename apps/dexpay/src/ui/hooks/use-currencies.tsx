@@ -28,18 +28,24 @@ const BTC_LIGHTNING_CURRENCY = {
   is_active: true,
 };
 
-export function useCurrencies() {
+export function useCurrencies({
+  disableLoadBalances,
+}: {
+  disableLoadBalances?: boolean;
+} = {}) {
   const { user } = useAuth();
+  const projectId = user?.project!.id;
   const { data: currencies, isLoading: isLoadingCurrencies } = useQuery(
     Currency.index,
   );
   const { data: balancesData, isLoading: isLoadingBalances } = useQuery(
     Wallet.list,
-    { projectId: user?.project.id },
+    { projectId },
+    { enabled: !disableLoadBalances },
   );
   const items = [
     ...(currencies?.list.currentPageResult || []),
-    BTC_LIGHTNING_CURRENCY,
+    // BTC_LIGHTNING_CURRENCY,
   ];
   if (isLoadingBalances || isLoadingCurrencies) {
     return { items: [], isLoading: true };
