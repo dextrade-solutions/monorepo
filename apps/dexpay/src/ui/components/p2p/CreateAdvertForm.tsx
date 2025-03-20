@@ -47,7 +47,7 @@ export interface CreateAdvertFormValues {
   priceSourceProvider: PriceSourceProvider;
   exchangersPolicy: string;
   minimumExchangeAmountCoin1: number | null;
-  maximumExchangeAmountCoin1: string;
+  maximumExchangeAmountCoin1: string | null;
   priceAdjustment: string;
   transactionFee: string;
 }
@@ -79,7 +79,14 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       return queryClient.removeQueries({ queryKey: ['ads-list'] });
     },
     onError: (_err, _newTodo, context: any) => {
-      queryClient.setQueryData(['ads-list'], context.previousAds);
+      if (
+        _err?.message?.includes(
+          'Exchanger setting and reversed exchanger setting already exist for this user.',
+        )
+      ) {
+        _err.message = 'The ad with this pair already exists';
+      }
+      queryClient.setQueryData(['ads-list'], context);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['ads-list'] });
@@ -95,7 +102,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       priceSourceProvider: priceSourceProviders[0],
       exchangersPolicy: '',
       minimumExchangeAmountCoin1: null,
-      maximumExchangeAmountCoin1: '',
+      maximumExchangeAmountCoin1: null,
       priceAdjustment: '',
       transactionFee: '',
     },
@@ -218,7 +225,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         exchangersPolicy: values.exchangersPolicy,
         priceAdjustment: values.priceAdjustment || '0',
         minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1,
-        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1,
+        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1 || undefined,
         transactionFee: values.transactionFee || undefined,
       },
     ]);
