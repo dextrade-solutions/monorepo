@@ -118,11 +118,11 @@ export default function SwapWidget() {
         hashQuery.get('tgWebAppStartParam')!.split('__');
       setSearchParams({
         name,
-        toNetworkName,
-        toTicker,
-        fromNetworkName,
-        fromTicker,
-        amount,
+        toNetworkName: toNetworkName || '',
+        toTicker: toTicker || '',
+        fromNetworkName: fromNetworkName || '',
+        fromTicker: fromTicker || '',
+        amount: amount || '',
         miniapp: '1',
       });
     } else {
