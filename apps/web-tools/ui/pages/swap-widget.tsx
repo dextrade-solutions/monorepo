@@ -123,6 +123,7 @@ export default function SwapWidget() {
         fromNetworkName,
         fromTicker,
         amount,
+        miniapp: '1',
       });
     } else {
       setSearchParams(decodedUrl);

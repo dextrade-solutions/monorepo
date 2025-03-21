@@ -17,7 +17,7 @@ import {
   useGlobalModalContext,
 } from 'dex-ui';
 import { map } from 'lodash';
-import { Eye, LucideArrowUpRight } from 'lucide-react';
+import { LucideArrowUpRight } from 'lucide-react';
 import React from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
