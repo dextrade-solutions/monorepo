@@ -288,7 +288,13 @@ const AdItem: React.FC<AdItemProps> = ({
             <ItemRow
               data-testid="ad-price"
               label="Price"
-              value={formatCurrency(price, to.ticker)}
+              value={
+                <AssetPriceOutput
+                  price={reversed ? 1 / price : price}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
+                />
+              }
             />
             <ItemRow
               data-testid="ad-market-price"
@@ -306,7 +312,6 @@ const AdItem: React.FC<AdItemProps> = ({
                   price={price}
                   tickerFrom={from.ticker}
                   tickerTo={to.ticker}
-                  secondary
                 />
               }
             />
