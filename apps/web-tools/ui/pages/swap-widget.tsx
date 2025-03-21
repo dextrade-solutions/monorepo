@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Button, Swap } from 'dex-ui';
-import { groupBy, map, orderBy, uniqBy } from 'lodash';
+import { groupBy, map, orderBy, split, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -15,18 +15,15 @@ export default function SwapWidget() {
   const [fromValue, setFromValue] = useState<number | undefined>();
   const [toValue, setToValue] = useState<number | undefined>();
   const navigate = useNavigate();
-  const hash = window.location.hash.slice(1);
-  console.info(hash);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const merchant = searchParams.get('name');
   const [currentAd, setCurrentAd] = React.useState<AdItem>();
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
   const currentFilter = {
-    ...{ name: merchant, size: 100 },
+    ...{ name: searchParams.get('name'), size: 100 },
     page: 1,
     notSupportedCoins: [],
   };
@@ -106,13 +103,30 @@ export default function SwapWidget() {
       searchParams.toString().replace(/&amp%3B|&amp;/g, '&'),
     );
 
-    setSearchParams(decodedUrl);
+    const hash = window.location.hash.slice(1);
 
-    const toNetworkName = searchParams.get('toNetworkName');
-    const toTicker = searchParams.get('toTicker');
-    const fromNetworkName = searchParams.get('fromNetworkName');
-    const fromTicker = searchParams.get('fromTicker');
-    const amount = searchParams.get('amount');
+    let name = searchParams.get('name');
+    let toNetworkName = searchParams.get('toNetworkName');
+    let toTicker = searchParams.get('toTicker');
+    let fromNetworkName = searchParams.get('fromNetworkName');
+    let fromTicker = searchParams.get('fromTicker');
+    let amount = searchParams.get('amount');
+
+    if (hash) {
+      const hashQuery = new URLSearchParams(hash);
+      [name, toNetworkName, toTicker, fromNetworkName, fromTicker, amount] =
+        hashQuery.get('tgWebAppStartParam')!.split('__');
+      setSearchParams({
+        name,
+        toNetworkName,
+        toTicker,
+        fromNetworkName,
+        fromTicker,
+        amount,
+      });
+    } else {
+      setSearchParams(decodedUrl);
+    }
 
     if (ad) {
       if (toNetworkName && toTicker) {
