@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
-import { EXCHANGE_VIEW_ROUTE, SWAP_WIDGET_ROUTE } from '../helpers/constants/routes';
+import { EXCHANGE_VIEW_ROUTE } from '../helpers/constants/routes';
 
 export default function SwapWidget() {
   const [fromValue, setFromValue] = useState<number | undefined>();
@@ -17,6 +17,8 @@ export default function SwapWidget() {
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
+  console.info(searchParams.toString());
+  console.info(searchParams);
   const merchant = searchParams.get('name');
   const [currentAd, setCurrentAd] = React.useState<AdItem>();
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
@@ -163,7 +165,6 @@ export default function SwapWidget() {
         setCurrentAd(undefined);
       }
       setSearchParams(newSearchParams);
-      navigate(`${SWAP_WIDGET_ROUTE}/?${newSearchParams.toString()}`);
     }
   }, [assetFrom, assetTo, isLoading]);
 
