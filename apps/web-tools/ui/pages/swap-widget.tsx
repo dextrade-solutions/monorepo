@@ -101,7 +101,7 @@ export default function SwapWidget() {
   };
   useEffect(() => {
     const decodedUrl = decodeURIComponent(
-      searchParams.toString().replace(/&amp%3B/g, '&'),
+      searchParams.toString().replace(/&amp%3B|&amp;/g, '&'),
     );
 
     setSearchParams(decodedUrl);
@@ -196,8 +196,11 @@ export default function SwapWidget() {
         sellAmount={fromValue}
         buyAmount={toValue}
         onReverse={() => {
-          setAsset(assetTo);
-          setAsset(assetFrom, true);
+          const to = fromAssets.list.find(({ iso }) => assetTo?.iso === iso);
+          const from = toAssets.list.find(({ iso }) => assetFrom?.iso === iso);
+          setAsset(to);
+          setAsset(from, true);
+          updateValues('');
         }}
         disableReverse={disableReverse}
         onBuyAssetChange={setAssetTo}
