@@ -17,8 +17,6 @@ export default function SwapWidget() {
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  console.info(searchParams.toString());
-  console.info(searchParams);
   const merchant = searchParams.get('name');
   const [currentAd, setCurrentAd] = React.useState<AdItem>();
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
@@ -102,6 +100,12 @@ export default function SwapWidget() {
     }
   };
   useEffect(() => {
+    const decodedUrl = decodeURIComponent(
+      searchParams.toString().replace(/&amp%3B/g, '&'),
+    );
+
+    setSearchParams(decodedUrl);
+
     const toNetworkName = searchParams.get('toNetworkName');
     const toTicker = searchParams.get('toTicker');
     const fromNetworkName = searchParams.get('fromNetworkName');
@@ -113,28 +117,24 @@ export default function SwapWidget() {
         setAsset(
           toAssets.list.find(
             (i) => i.network === toNetworkName && i.symbol === toTicker,
-          ) || ad.toAsset,
+          ),
           true,
         );
-      } else {
-        setAsset(ad.toAsset, true);
       }
       if (fromNetworkName && fromTicker) {
         setAsset(
           fromAssets.list.find(
             (i) => i.network === fromNetworkName && i.symbol === fromTicker,
-          ) || ad.fromAsset,
+          ),
           false,
         );
-      } else {
-        setAsset(ad.fromAsset, false);
       }
       if (amount) {
         setFromValue(Number(amount));
       }
       setIsLoading(false);
     }
-  }, [ad, searchParams]);
+  }, [ad]);
 
   useEffect(() => {
     if (!isLoading) {
