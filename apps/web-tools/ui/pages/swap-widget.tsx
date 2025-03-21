@@ -9,14 +9,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
-import { EXCHANGE_VIEW_ROUTE, SWAP_WIDGET_ROUTE } from '../helpers/constants/routes';
+import { EXCHANGE_VIEW_ROUTE } from '../helpers/constants/routes';
 
 export default function SwapWidget() {
-  const [fromValue, setFromValue] = useState();
-  const [toValue, setToValue] = useState();
+  const [fromValue, setFromValue] = useState<number | undefined>();
+  const [toValue, setToValue] = useState<number | undefined>();
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const merchant = searchParams.get('name');
   const [currentAd, setCurrentAd] = React.useState<AdItem>();
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
@@ -62,7 +62,6 @@ export default function SwapWidget() {
   };
 
   const setAsset = (asset: AssetModel, reversed?: boolean) => {
-    // const params = new URLSearchParams(searchParams);
     if (reversed) {
       setAssetTo(asset);
     } else {
@@ -74,7 +73,7 @@ export default function SwapWidget() {
     if (currentAd) {
       const tradequery = new URLSearchParams(searchParams);
       if (fromValue) {
-        tradequery.set('amount', fromValue);
+        tradequery.set('amount', fromValue.toString());
       }
       if (searchParams.get('miniapp')) {
         navigate(`${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`);
@@ -90,15 +89,29 @@ export default function SwapWidget() {
   const updateValues = (newValue: number | undefined, reversed: boolean) => {
     if (reversed) {
       setToValue(newValue);
-      setFromValue(newValue / currentAd.coinPair.price);
+      if (currentAd) {
+        setFromValue(newValue / currentAd.coinPair.price);
+      }
     } else {
       setFromValue(newValue);
-      setToValue(newValue * currentAd.coinPair.price);
+      if (currentAd) {
+        setToValue(newValue * currentAd.coinPair.price);
+      }
     }
   };
   useEffect(() => {
+    const decodedUrl = decodeURIComponent(
+      searchParams.toString().replace(/&amp%3B|&amp;/g, '&'),
+    );
+
+    setSearchParams(decodedUrl);
+
     const toNetworkName = searchParams.get('toNetworkName');
     const toTicker = searchParams.get('toTicker');
+    const fromNetworkName = searchParams.get('fromNetworkName');
+    const fromTicker = searchParams.get('fromTicker');
+    const amount = searchParams.get('amount');
+
     if (ad) {
       if (toNetworkName && toTicker) {
         setAsset(
@@ -107,8 +120,17 @@ export default function SwapWidget() {
           ),
           true,
         );
-      } else {
-        setAsset(ad.toAsset, true);
+      }
+      if (fromNetworkName && fromTicker) {
+        setAsset(
+          fromAssets.list.find(
+            (i) => i.network === fromNetworkName && i.symbol === fromTicker,
+          ),
+          false,
+        );
+      }
+      if (amount) {
+        setFromValue(Number(amount));
       }
       setIsLoading(false);
     }
@@ -116,19 +138,20 @@ export default function SwapWidget() {
 
   useEffect(() => {
     if (!isLoading) {
+      const newSearchParams = new URLSearchParams(searchParams);
       if (assetFrom) {
-        searchParams.set('fromNetworkName', assetFrom.network);
-        searchParams.set('fromTicker', assetFrom.symbol);
+        newSearchParams.set('fromNetworkName', assetFrom.network);
+        newSearchParams.set('fromTicker', assetFrom.symbol);
       } else {
-        searchParams.delete('fromNetworkName');
-        searchParams.delete('fromTicker');
+        newSearchParams.delete('fromNetworkName');
+        newSearchParams.delete('fromTicker');
       }
       if (assetTo) {
-        searchParams.set('toNetworkName', assetTo?.network);
-        searchParams.set('toTicker', assetTo?.symbol);
+        newSearchParams.set('toNetworkName', assetTo?.network);
+        newSearchParams.set('toTicker', assetTo?.symbol);
       } else {
-        searchParams.delete('toNetworkName');
-        searchParams.delete('toTicker');
+        newSearchParams.delete('toNetworkName');
+        newSearchParams.delete('toTicker');
       }
       if (assetFrom && assetTo) {
         setCurrentAd(
@@ -141,7 +164,7 @@ export default function SwapWidget() {
       } else {
         setCurrentAd(undefined);
       }
-      navigate(`${SWAP_WIDGET_ROUTE}/?${searchParams.toString()}`);
+      setSearchParams(newSearchParams);
     }
   }, [assetFrom, assetTo, isLoading]);
 
@@ -173,8 +196,11 @@ export default function SwapWidget() {
         sellAmount={fromValue}
         buyAmount={toValue}
         onReverse={() => {
-          setAsset(assetTo);
-          setAsset(assetFrom, true);
+          const to = fromAssets.list.find(({ iso }) => assetTo?.iso === iso);
+          const from = toAssets.list.find(({ iso }) => assetFrom?.iso === iso);
+          setAsset(to);
+          setAsset(from, true);
+          updateValues('');
         }}
         disableReverse={disableReverse}
         onBuyAssetChange={setAssetTo}
