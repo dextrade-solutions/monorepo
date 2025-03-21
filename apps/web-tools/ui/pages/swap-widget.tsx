@@ -15,6 +15,8 @@ export default function SwapWidget() {
   const [fromValue, setFromValue] = useState<number | undefined>();
   const [toValue, setToValue] = useState<number | undefined>();
   const navigate = useNavigate();
+  const hash = window.location.hash.slice(1);
+  console.info(hash);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const merchant = searchParams.get('name');
