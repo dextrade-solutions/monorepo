@@ -114,6 +114,8 @@ export default function SwapWidget() {
 
     if (hash) {
       const hashQuery = new URLSearchParams(hash);
+      console.log(hash);
+      console.log(hashQuery);
       [name, toNetworkName, toTicker, fromNetworkName, fromTicker, amount] =
         hashQuery.get('tgWebAppStartParam')!.split('__');
       setSearchParams({
