@@ -71,20 +71,17 @@
       </video>
       </div>
       <script>
+        function isSafari() {
+          return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        }
+
         function isIOSWeb() {
           return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
-        // function supportsHEVCAlpha() {
-        //     const navigator = window.navigator;
-        //     const ua = navigator.userAgent.toLowerCase()
-        //     const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
-            
-        //     return isSafari && hasMediaCapabilities;
-        // }
 
         function getSupportedFormat() {
             const video = document.createElement("video");
-            if (isIOSWeb()) {
+            if (isIOSWeb() || isSafari()) {
                 return { src: "/images/logo/logo-animated.mov" };
             }
             return { src: "/images/logo/logo-animated.webm", type: "video/webm" };
@@ -97,7 +94,9 @@
 
             if (format) {
                 source.src = format.src;
-                source.type = format.type;
+                if (format.type) {
+                  source.type = format.type;
+                }
                 video.load(); // Reload the video element to apply changes
                 video.style.display = "block";
             }
