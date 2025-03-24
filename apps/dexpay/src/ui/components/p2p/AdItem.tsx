@@ -17,6 +17,8 @@ import {
   ChevronRight,
   LucideArrowUpRight,
   Trash,
+  Play,
+  Pause,
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -115,7 +117,7 @@ const AdItem: React.FC<AdItemProps> = ({
             color={active ? 'error' : 'success'}
             onClick={() => toggleActive(0)} // fix this
           >
-            {active ? <AdRun size={16} /> : <AdRun size={16} />}
+            {active ? <Pause size={16} /> : <Play size={16} />}
           </IconButton>
           <IconButton
             data-testid="ad-delete"
@@ -286,7 +288,13 @@ const AdItem: React.FC<AdItemProps> = ({
             <ItemRow
               data-testid="ad-price"
               label="Price"
-              value={formatCurrency(price, to.ticker)}
+              value={
+                <AssetPriceOutput
+                  price={reversed ? 1 / price : price}
+                  tickerFrom={from.ticker}
+                  tickerTo={to.ticker}
+                />
+              }
             />
             <ItemRow
               data-testid="ad-market-price"
@@ -304,7 +312,6 @@ const AdItem: React.FC<AdItemProps> = ({
                   price={price}
                   tickerFrom={from.ticker}
                   tickerTo={to.ticker}
-                  secondary
                 />
               }
             />

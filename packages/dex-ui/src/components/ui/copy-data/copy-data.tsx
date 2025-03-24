@@ -47,8 +47,9 @@ const CopyData = ({
     >
       <Button
         type="link"
-        onClick={() => {
+        onClick={(e) => {
           handleCopy(data);
+          e.stopPropagation();
         }}
         color={color}
         fullWidth

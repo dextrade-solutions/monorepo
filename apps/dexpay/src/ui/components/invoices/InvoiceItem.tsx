@@ -17,7 +17,7 @@ import {
   useGlobalModalContext,
 } from 'dex-ui';
 import { map } from 'lodash';
-import { Eye, LucideArrowUpRight } from 'lucide-react';
+import { LucideArrowUpRight } from 'lucide-react';
 import React from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
@@ -54,32 +54,24 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({ invoice }) => {
         borderRadius: 1,
         p: 2,
       }}
+      onClick={() =>
+        navigate(
+          `${ROUTE_INVOICE_DETAIL.replace(':id', `${invoice.public_id}:${invoice.id}`)}`,
+        )
+      }
     >
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        onClick={() =>
-          navigate(
-            `${ROUTE_INVOICE_DETAIL.replace(':id', `${invoice.public_id}:${invoice.id}`)}`,
-          )
-        }
-      >
-        <Box display="flex" alignItems="center">
-          <Typography lineHeight={0} color="text.secondary">
-            <Eye size={18} />
-          </Typography>
-          <Typography ml={1} variant="h6" fontWeight="bold">
-            {invoice.converted_coin
-              ? formatCurrency(
-                  invoice.converted_amount_requested,
-                  invoice.converted_coin?.iso,
-                )
-              : formatCurrency(
-                  invoice.amount_requested,
-                  invoice.currency?.iso || '',
-                )}
-          </Typography>
-        </Box>
+      <Box display="flex" justifyContent="space-between">
+        <Typography ml={1} variant="h6" fontWeight="bold">
+          {invoice.converted_coin
+            ? formatCurrency(
+                invoice.converted_amount_requested,
+                invoice.converted_coin?.iso,
+              )
+            : formatCurrency(
+                invoice.amount_requested,
+                invoice.currency?.iso || '',
+              )}
+        </Typography>
         <Box textAlign="right">
           <Typography
             color={STATUS_COLOR[invoice.status] || 'textSecondary'}
@@ -102,12 +94,13 @@ export const InvoiceItem: React.FC<InvoiceItemProps> = ({ invoice }) => {
               rounded
               fullWidth
               color="success"
-              onClick={() =>
+              onClick={(e) => {
+                e.stopPropagation();
                 showModal({
                   name: 'DEXPAY_TRANSACTIONS_LIST',
                   transactions: map(invoice.transactions, 'transaction'),
-                })
-              }
+                });
+              }}
             >
               Transactions
             </Button>

@@ -1038,7 +1038,7 @@ export namespace DexTrade {
         settingsMain: {
           active?: boolean;
           minimumExchangeAmountCoin1?: string;
-          maximumExchangeAmountCoin1?: string;
+          maximumExchangeAmountCoin1?: string | null;
           priceAdjustment?: string;
           transactionFee?: string;
         };
