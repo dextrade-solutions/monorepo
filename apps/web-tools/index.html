@@ -12,7 +12,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
   </head>
   <body>
-    <div id="root">
+    <div id="roots">
       <style>
         /* Light mode */
         @media (prefers-color-scheme: light) {
@@ -71,24 +71,21 @@
       </video>
       </div>
       <script>
-        function supportsHEVCAlpha() {
-            const navigator = window.navigator;
-            const ua = navigator.userAgent.toLowerCase()
-            const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
-            const isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userAgent || '');
-            return isSafari && hasMediaCapabilities;
-        }
+        const isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userAgent || '');
+        // function supportsHEVCAlpha() {
+        //     const navigator = window.navigator;
+        //     const ua = navigator.userAgent.toLowerCase()
+        //     const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
+            
+        //     return isSafari && hasMediaCapabilities;
+        // }
 
         function getSupportedFormat() {
             const video = document.createElement("video");
-            if (supportsHEVCAlpha()) {
+            if (isSafari) {
                 return { src: "/images/logo/logo-animated.mov" };
             }
-
-            if (video.canPlayType("video/webm")) {
-                return { src: "/images/logo/logo-animated.webm", type: "video/webm" };
-            }
-            return null; // No supported format
+            return { src: "/images/logo/logo-animated.webm", type: "video/webm" };
         }
 
         function initPreloader() {
