@@ -35,12 +35,6 @@ export const InvoiceCopyAmount = ({
         </Typography>
         <CopyData data={invoice.address} />
       </Box>
-      <Box display="flex" textAlign="right" alignItems="center">
-        <Typography textAlign="left" className="flex-grow nowrap">
-          Link
-        </Typography>
-        <CopyData data={paymentLink} title="Payment link" />
-      </Box>
       <Box>
         <QRCode value={paymentLink} hideDownloadQr />
       </Box>
