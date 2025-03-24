@@ -61,13 +61,17 @@
 
       <!-- Loading Screen -->
       <div id="loading-container">
-        <video id="preloaderVideo" width="150px" autoplay loop muted playsinline style="display: none;">
+        <!-- <video id="preloaderVideo" width="150px" autoplay loop muted playsinline style="display: none;">
           <source id="safariPreloaderSource" src="/images/logo/logo-animated.mov">
           <source src="/images/logo/logo-animated.webm" type="video/webm">
-        </video>
+        </video> -->
+        <video id="preloaderVideo" width="150px" autoplay loop muted playsinline style="display: none;">
+          <source id="videoSource">
+          Your browser does not support the video tag.
+      </video>
       </div>
       <script>
-      function supportsHEVCAlpha() {
+        function supportsHEVCAlpha() {
             const navigator = window.navigator;
             const ua = navigator.userAgent.toLowerCase()
             const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
@@ -75,11 +79,32 @@
             return isSafari && hasMediaCapabilities;
         }
 
-        if (!supportsHEVCAlpha()) {
-          document.getElementById('safariPreloaderSource').remove();
+        function getSupportedFormat() {
+            const video = document.createElement("video");
+            if (supportsHEVCAlpha()) {
+                return { src: "/images/logo/logo-animated.mov" };
+            }
+
+            if (video.canPlayType("video/webm")) {
+                return { src: "/images/logo/logo-animated.webm", type: "video/webm" };
+            }
+            return null; // No supported format
         }
-        const preloaderVideo = document.getElementById('preloaderVideo');
-        preloaderVideo.style.display = 'block';
+
+        function initPreloader() {
+            const video = document.getElementById("preloaderVideo");
+            const source = document.getElementById("videoSource");
+            const format = getSupportedFormat();
+
+            if (format) {
+                source.src = format.src;
+                source.type = format.type;
+                video.load(); // Reload the video element to apply changes
+                video.style.display = "block";
+            }
+        }
+
+        initPreloader();
       </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
