@@ -444,6 +444,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             color="primary"
             disabled={Boolean(form.primaryError)}
             sx={{ mt: 3, mb: 2 }}
+            data-testid="btn-create-advert"
           >
             {form.primaryError || 'Create Advert'}
           </Button>

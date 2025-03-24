@@ -110,7 +110,7 @@ const AdPreview = ({
           >
             <Typography>{t('quantity')}</Typography>
             <Typography fontWeight="bold">
-              {formatCurrency(reserveInCoin2, ad.toCoin.ticker)}
+              {formatCurrency(ad.reserveSum, ad.toCoin.ticker)}
             </Typography>
           </Box>
           <Box
