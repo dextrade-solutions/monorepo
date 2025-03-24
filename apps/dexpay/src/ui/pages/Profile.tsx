@@ -1,19 +1,13 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  Box,
-  Typography,
-  TextField,
-  CardHeader,
-} from '@mui/material';
-import { DownloadCloud, LogOut } from 'lucide-react';
+import { Button, Card, CardContent, Box, Typography } from '@mui/material';
+import { LogOut } from 'lucide-react';
 import React from 'react';
 
+import PredefinedCurrenciesForm from '../components/invoices/form/PredefinedCurrenciesForm';
 import { useAuth } from '../hooks/use-auth';
 
 export default function Profile() {
   const { logout, me } = useAuth();
+
   return (
     <Box sx={{ maxWidth: 'md' }}>
       <Card
@@ -30,41 +24,23 @@ export default function Profile() {
           </Typography>
           <Typography fontWeight="bold">Email</Typography>
           <Typography>{me?.email}</Typography>
-          {/* <TextField
-            label="Email"
-            margin="normal"
-            disabled
-            fullWidth
-            value={me?.email}
-          /> */}
-          {/* <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              mb: 4,
-            }}
-          >
-            <Box
-              sx={{
-                borderRadius: '50%',
-                bgcolor: 'action.disabledBackground',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                my: 2,
-              }}
-            >
-              <DownloadCloud size={40} />
-            </Box>
-            <Typography variant="body2" color="text.secondary">
-              Drag and drop a file here to update
-            </Typography>
-          </Box>
-          <Button fullWidth variant="contained">
-            Save Changes
-          </Button> */}
+        </CardContent>
+      </Card>
+
+      <Card
+        elevation={0}
+        sx={{
+          my: 2,
+          bgcolor: 'secondary.dark',
+          borderRadius: 1,
+        }}
+      >
+        <CardContent>
+          <Typography color="text.secondary" variant="h5" mb={2}>
+            Invoices
+          </Typography>
+          <Typography>Predefined currencies</Typography>
+          <PredefinedCurrenciesForm />
         </CardContent>
       </Card>
 

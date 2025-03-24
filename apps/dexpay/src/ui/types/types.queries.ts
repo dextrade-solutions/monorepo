@@ -1186,3 +1186,36 @@ export namespace Rate {
     };
   }
 }
+
+export namespace Preferences {
+  export namespace GetMy {
+    export type Response = {
+      id: number;
+      user_id: number;
+      project_id: number;
+      converted_coin_id: number;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+      currencies: {
+        name: string;
+        iso: string;
+        public_name: string;
+        icon: string;
+        is_payment_supported: boolean;
+      }[];
+    };
+  }
+
+  export namespace Save {
+    export type Body = {
+      converted_coin_id: number;
+      currencies: {
+        currency_id: number;
+      }[];
+    };
+    export type Response = {
+      message: string;
+    };
+  }
+}

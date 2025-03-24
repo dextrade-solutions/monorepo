@@ -22,7 +22,7 @@ export function MultiselectAssets({
   onChange,
 }: {
   value: AssetModel[];
-  currencies: any[];
+  currencies: AssetModel[];
   isLoading: boolean;
   onChange: (newVal: AssetModel[]) => void;
 }) {
@@ -30,13 +30,8 @@ export function MultiselectAssets({
 
   const filteredAssetList = useMemo(() => {
     const valueIso = value.map((i) => i.iso);
-    const assetList = currencies.map((i) => ({
-      ...i.asset,
-      extra: {
-        currency: i.currency,
-      },
-    }));
-    return assetList.filter((i) => !valueIso.includes(i.iso));
+
+    return currencies.filter((i) => !valueIso.includes(i.iso));
   }, [value, currencies]);
 
   const [searchItems, handleSearch] = useAssetsSearch({

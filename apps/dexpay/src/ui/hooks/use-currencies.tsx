@@ -52,15 +52,21 @@ export function useCurrencies({
   }
   return {
     items: items
-      .map((i) => ({
-        currency: i,
-        asset: assetDict[i.name],
-        balance: balancesData?.balances?.find((b) => b.currency_id === i.id),
-      }))
-      .filter((i) => i.asset)
+      .map((i) => {
+        const balance = balancesData?.balances?.find(
+          (b) => b.currency_id === i.id,
+        );
+        return {
+          ...(assetDict[i.name] || {}),
+          currency: i,
+          balance: balance?.total_balance_currency,
+          balanceUsdt: balance?.total_balance_usdt,
+        };
+      })
+      .filter((i) => i.iso)
       .sort((a, b) => {
-        const balanceA = Number(a.balance?.total_balance_usdt) || 0; // Default to 0 if undefined
-        const balanceB = Number(b.balance?.total_balance_usdt) || 0; // Default to 0 if undefined
+        const balanceA = Number(a.total_balance_usdt) || 0; // Default to 0 if undefined
+        const balanceB = Number(b.total_balance_usdt) || 0; // Default to 0 if undefined
         return balanceB - balanceA; // Sort in descending order of balance
       }),
     isLoading: false,
