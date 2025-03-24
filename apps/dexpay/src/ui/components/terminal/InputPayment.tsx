@@ -61,12 +61,8 @@ export default function InputPayment({
 }: InputPaymentProps) {
   const { showModal } = useGlobalModalContext();
   const currencies = useCurrencies({ disableLoadBalances: true });
-  const allCurrencies = currencies.items.map((c) => ({
-    ...c.asset,
-    currencyId: c.currency.id,
-  }));
 
-  const mostUsedCurrencies = allCurrencies.filter((c) =>
+  const mostUsedCurrencies = currencies.items.filter((c) =>
     DEFAULT_ASSETS.includes(c.iso),
   );
 
@@ -142,7 +138,7 @@ export default function InputPayment({
                     onClick={() => {
                       showModal({
                         name: 'ASSET_SELECT',
-                        items: allCurrencies.filter(
+                        items: currencies.items.filter(
                           (c) => !DEFAULT_ASSETS.includes(c.iso),
                         ),
                         value: selectedAsset,

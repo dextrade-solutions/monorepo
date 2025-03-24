@@ -1,4 +1,4 @@
-import { Card, CardContent, Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -10,16 +10,20 @@ import React from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_WALLET_DEPOSIT } from '../../constants/pages';
-import { IBalance, ICurrency } from '../../types';
+import { ICurrency } from '../../types';
+
+// Define the correct interface for the props
+interface AssetListItemProps extends AssetModel {
+  currency: ICurrency;
+  balance?: string;
+  balanceUsdt?: string;
+}
 
 export function AssetListItem({
-  asset,
   balance,
-}: {
-  asset: AssetModel;
-  currency: ICurrency;
-  balance?: IBalance;
-}) {
+  balanceUsdt,
+  ...asset
+}: AssetListItemProps) {
   const [, navigate] = useHashLocation();
 
   const openDeposit = () => {
@@ -58,13 +62,9 @@ export function AssetListItem({
           </Box>
         </Box>
         <Box sx={{ textAlign: 'right' }}>
-          <Typography>
-            {balance?.total_balance_currency
-              ? formatFundsAmount(balance.total_balance_currency)
-              : '0'}
-          </Typography>
+          <Typography>{balance ? formatFundsAmount(balance) : '0'}</Typography>
           <Typography variant="body2" color="textSecondary">
-            {formatCurrency(balance?.total_balance_usdt || '0', 'USD')}
+            {formatCurrency(balanceUsdt || '0', 'USD')}
           </Typography>
         </Box>
       </Box>

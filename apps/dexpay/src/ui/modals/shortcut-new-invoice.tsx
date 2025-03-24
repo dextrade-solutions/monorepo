@@ -99,7 +99,7 @@ const ShortcutNewInvoice: React.FC<ShortcutNewInvoiceProps & ModalProps> = ({
         Clients can pay with:{' '}
       </Typography>
       <Box display="flex" flexWrap="wrap" alignItems="center" gap={1}>
-        {renderListCurrencies.map(({ asset }) => (
+        {renderListCurrencies.map((asset) => (
           <Chip
             margin="normal"
             key={asset.iso}

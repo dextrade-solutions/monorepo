@@ -16,9 +16,7 @@ export const Balance = memo(
     children?: React.ReactNode;
   }) => {
     const { items } = useCurrencies();
-    const totalBalance = sumBy(items, (item) =>
-      Number(item.balance?.total_balance_usdt || 0),
-    );
+    const totalBalance = sumBy(items, (item) => Number(item.balanceUsdt || 0));
 
     const numericPnl = pnl ? Number(pnl) : 0;
     const isPnlPositive = pnl !== undefined && Number(pnl) > 0;

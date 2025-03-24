@@ -63,10 +63,10 @@ export function useCurrencies({
           balanceUsdt: balance?.total_balance_usdt,
         };
       })
-      .filter((i) => i.iso)
+      .filter((i) => Boolean(i.iso))
       .sort((a, b) => {
-        const balanceA = Number(a.total_balance_usdt) || 0; // Default to 0 if undefined
-        const balanceB = Number(b.total_balance_usdt) || 0; // Default to 0 if undefined
+        const balanceA = Number(a.balanceUsdt) || 0; // Default to 0 if undefined
+        const balanceB = Number(b.balanceUsdt) || 0; // Default to 0 if undefined
         return balanceB - balanceA; // Sort in descending order of balance
       }),
     isLoading: false,

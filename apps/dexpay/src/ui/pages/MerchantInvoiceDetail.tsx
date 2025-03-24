@@ -185,7 +185,7 @@ export default function InvoiceDetailPage() {
                 Supported Currencies
               </Typography>
               <Box display="flex" flexWrap="wrap" alignItems="center" gap={1}>
-                {supportedCurrencies.map(({ asset: item }) => (
+                {supportedCurrencies.map((item) => (
                   <Chip
                     key={item.id}
                     label={

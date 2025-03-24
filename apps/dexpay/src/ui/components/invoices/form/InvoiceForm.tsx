@@ -94,7 +94,7 @@ const CreateInvoiceForm = () => {
           ? {
               supported_currencies: map(
                 values.convertedCurrencies,
-                'extra.currency.id',
+                'currency.id',
               ),
             }
           : {}),

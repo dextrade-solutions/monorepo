@@ -35,11 +35,9 @@ const TransactionsModal: React.FC<TransactionsModalProps & ModalProps> = ({
         transactions.map((transaction) => (
           <TransactionItem
             key={transaction.id}
-            asset={
-              currencies.items.find(
-                ({ currency }) => currency.id === transaction.currency_id,
-              )?.asset
-            }
+            asset={currencies.items.find(
+              ({ currency }) => currency.id === transaction.currency_id,
+            )}
             transaction={transaction}
           />
         ))}
