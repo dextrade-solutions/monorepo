@@ -61,7 +61,7 @@
 
       <!-- Loading Screen -->
       <div id="loading-container">
-        <video width="150px" autoplay loop muted playsinline>
+        <video id="preloaderVideo" width="150px" autoplay loop muted playsinline style="display: none;">
           <source id="safariPreloaderSource" src="/images/logo/logo-animated.mov">
           <source src="/images/logo/logo-animated.webm" type="video/webm">
         </video>
@@ -71,13 +71,15 @@
             const navigator = window.navigator;
             const ua = navigator.userAgent.toLowerCase()
             const hasMediaCapabilities = !!(navigator.mediaCapabilities && navigator.mediaCapabilities.decodingInfo)
-            const isSafari = ((ua.indexOf('safari') != -1) && (!(ua.indexOf('chrome')!= -1) && (ua.indexOf('version/')!= -1)))
+            const isSafari = typeof navigator !== 'undefined' && /Safari/.test(navigator.userAgent || '');
             return isSafari && hasMediaCapabilities;
         }
 
         if (!supportsHEVCAlpha()) {
           document.getElementById('safariPreloaderSource').remove();
         }
+        const preloaderVideo = document.getElementById('preloaderVideo');
+        preloaderVideo.style.display = 'block';
       </script>
     </div>
     <script type="module" src="/src/main.tsx"></script>
