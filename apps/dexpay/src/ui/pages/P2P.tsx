@@ -1,5 +1,15 @@
-import { Button, Box, Typography, Paper, Tab, Divider } from '@mui/material';
-import { DEXTRADE_P2P_LINK, formatCurrency } from 'dex-helpers';
+import {
+  Button,
+  Box,
+  Typography,
+  Paper,
+  Tab,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from '@mui/material';
+import { DEXTRADE_P2P_LINK, DEXTRADE_P2P_TELEGRAM_MINIAPP } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import {
   bgPrimaryGradient,
@@ -7,7 +17,11 @@ import {
   CopyData,
   useGlobalModalContext,
 } from 'dex-ui';
-import { Code, Plus, User2 } from 'lucide-react';
+import {
+  Code,
+  Plus,
+  User2,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
@@ -35,11 +49,23 @@ export default function P2P() {
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
 
   const showConfigureEmbedWidget = () => {
-    let queryString = `?name=${dextradeUser.data?.user?.username}`;
+    const merchantName = dextradeUser.data?.user?.username;
+    let queryString = `?name=${merchantName}`;
+    const telegramParams = [merchantName];
+
     if (embedWidgetDefaultCurrency) {
       queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
+      telegramParams.push(
+        ...[
+          embedWidgetDefaultCurrency.network,
+          embedWidgetDefaultCurrency.symbol,
+        ],
+      );
     }
     const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
+    const telegramLink = `${DEXTRADE_P2P_TELEGRAM_MINIAPP}?startapp=${telegramParams.join(
+      '__',
+    )}`;
     const widgetCode = `<iframe
         src="${widgetLink}"
         width="100%"
@@ -48,35 +74,73 @@ export default function P2P() {
       />`;
 
     showModal({
-      component: () => (
-        <Box m={3} sx={{ mb: 5 }}>
-          <Box display="flex" alignItems="center">
-            <CircleNumber number={1} size={30} />
-            <Typography color="text.secondary" ml={1}>
-              Configure your widget
-            </Typography>
-          </Box>
-          <Box mt={2}>
-            <SelectCurrency
-              fullWidth
-              value={embedWidgetDefaultCurrency}
-              placeholder="Select default currency"
-              variant="contained"
-              noZeroBalances
-              onChange={(currency) => {
-                setEmbedWidgetDefaultCurrency(currency);
-              }}
+      component: () => {
+        const [widgetType, setWidgetType] = useState<'iframe' | 'telegram'>(
+          'iframe',
+        );
+        return (
+          <Box m={3} sx={{ mb: 5 }}>
+            <Box display="flex" alignItems="center">
+              <CircleNumber number={1} size={30} />
+              <Typography color="text.secondary" ml={1}>
+                Configure your widget
+              </Typography>
+            </Box>
+            <Box mt={2}>
+              <SelectCurrency
+                fullWidth
+                value={embedWidgetDefaultCurrency}
+                placeholder="Select default currency"
+                variant="contained"
+                noZeroBalances
+                onChange={(currency) => {
+                  setEmbedWidgetDefaultCurrency(currency);
+                }}
+              />
+            </Box>
+            <Box display="flex" alignItems="center" mt={2}>
+              <CircleNumber number={2} size={30} />
+              <Typography color="text.secondary" ml={1}>
+                Choose widget type
+              </Typography>
+            </Box>
+            <FormControl>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                value={widgetType}
+                onChange={(e) =>
+                  setWidgetType(e.target.value as 'iframe' | 'telegram')
+                }
+              >
+                <FormControlLabel
+                  value="iframe"
+                  control={<Radio />}
+                  label="Iframe"
+                />
+                <FormControlLabel
+                  value="telegram"
+                  control={<Radio />}
+                  label="Telegram"
+                />
+              </RadioGroup>
+            </FormControl>
+            <Box display="flex" alignItems="center" mt={2}>
+              <CircleNumber number={3} size={30} />
+              <Typography color="text.secondary" ml={1}>
+                Embed this code on your website
+              </Typography>
+            </Box>
+            <CopyData
+              variant="outlined"
+              full
+              data={widgetType === 'iframe' ? widgetCode : telegramLink}
+              sx={{ my: 2 }}
             />
           </Box>
-          <Box display="flex" alignItems="center" mt={2}>
-            <CircleNumber number={2} size={30} />
-            <Typography color="text.secondary" ml={1}>
-              Embed this code on your website
-            </Typography>
-          </Box>
-          <CopyData variant="outlined" full data={widgetCode} sx={{ my: 2 }} />
-        </Box>
-      ),
+        );
+      },
     });
   };
 
@@ -186,7 +250,7 @@ export default function P2P() {
             startIcon={<Code />}
             onClick={showConfigureEmbedWidget}
           >
-            Embed widget
+            Widgets
           </Button>
         </Box>
       </Paper>
