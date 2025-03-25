@@ -7,7 +7,7 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import { shortenAddress, getCoinIconByUid, SECOND } from 'dex-helpers';
+import { shortenAddress, getCoinIconByUid } from 'dex-helpers';
 import {
   Icon,
   useGlobalModalContext,
@@ -15,6 +15,7 @@ import {
   UrlIcon,
   InvoiceView,
   CopyData,
+  useInvoice,
 } from 'dex-ui';
 import { DeleteIcon, LucideArrowUpRight, Trash } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -24,7 +25,7 @@ import { useHashLocation } from 'wouter/use-hash-location';
 import { ROUTE_MERCHANT } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useCurrencies } from '../hooks/use-currencies';
-import { useMutation, useQuery } from '../hooks/use-query';
+import { useMutation } from '../hooks/use-query';
 import { Invoice } from '../services';
 
 interface InvoiceDetailPageParams {
@@ -39,16 +40,7 @@ export default function InvoiceDetailPage() {
   const [, navigate] = useHashLocation();
   const currencies = useCurrencies();
   const { user } = useAuth();
-  const { isLoading, data: invoice } = useQuery(
-    Invoice.paymentGet,
-    {
-      id,
-      projectId: user?.project?.id,
-    },
-    {
-      refetchInterval: 6 * SECOND,
-    },
-  );
+  const { isLoading, data: invoice } = useInvoice({ id });
 
   const deleteInvoice = useMutation(Invoice.delete, {
     onSuccess: () => {

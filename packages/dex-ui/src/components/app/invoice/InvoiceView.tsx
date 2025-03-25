@@ -149,7 +149,9 @@ export default function InvoiceView({
   const canCurrencyChange =
     Boolean((invoice.supported_currencies?.length || 0) > 1) && !isPreviewMode;
 
-  const primarySendAmount = Number(invoice.converted_amount_requested_f);
+  const primarySendAmount = Number(
+    invoice.converted_amount_requested_f || invoice.amount_requested_f,
+  );
   const primarySendCoin = invoice.converted_coin?.iso;
   const primaryRecievedAmount = Number(
     invoice.converted_amount_received_total_f,
@@ -190,7 +192,6 @@ export default function InvoiceView({
       color: 'success.main',
       severity: 'success',
       status: 'Payment successful',
-      text: `Payment received. Received ${secondarySendAmount}`,
     },
     [InvoiceStatus.pending]: {
       color: 'primary.main',
@@ -461,7 +462,7 @@ export default function InvoiceView({
         </Alert>
       )}
       {isPreviewMode && isOverpaid && (
-        <Alert sx={{ justifyContent: 'center' }} severity="info">
+        <Alert sx={{ justifyContent: 'center', my: 2 }} severity="info">
           The invoice is overpaid by {deltaStr}. Please contact support for a
           refund.
         </Alert>
@@ -500,7 +501,9 @@ export default function InvoiceView({
                     alignItems="flex-end"
                   >
                     <Typography variant="h6" fontWeight="bold">
-                      <strong>~ {secondaryDelta}</strong>
+                      <strong>
+                        ~ {isPreviewMode ? secondarySendAmount : secondaryDelta}
+                      </strong>
                     </Typography>
                   </Box>
                 </>

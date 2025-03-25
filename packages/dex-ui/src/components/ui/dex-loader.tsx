@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
+import { LoaderVideo } from '../../contexts/loader';
 
 interface DexLoaderProps {
   loading?: boolean;
@@ -15,11 +16,9 @@ interface DexLoaderProps {
 
 const DexLoader: React.FC<DexLoaderProps> = ({
   loading = true,
-  size = 150,
   text,
   textColor = 'text.secondary',
   sx = {},
-  videoProps = {},
 }) => {
   if (!loading) {
     return null;
@@ -35,17 +34,7 @@ const DexLoader: React.FC<DexLoaderProps> = ({
         ...sx,
       }}
     >
-      <video
-        width={`${size}px`}
-        autoPlay
-        loop
-        muted
-        playsInline
-        {...videoProps}
-      >
-        <source src="/images/logo/logo-animated.mov" type="video/mp4" />
-        <source src="/images/logo/logo-animated.webm" type="video/webm" />
-      </video>
+      <LoaderVideo />
       {text && (
         <Typography mt={1} color={textColor}>
           {text}

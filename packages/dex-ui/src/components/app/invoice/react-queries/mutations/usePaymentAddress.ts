@@ -9,8 +9,11 @@ export default function usePaymentAddress() {
     mutationFn: (params) => {
       return Api.Invoice.paymentAddress(params);
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(['dexpay-invoice', { id: variables.id }], data);
+    onSuccess: async (data, variables) => {
+      await queryClient.setQueryData(
+        ['dexpay-invoice', { id: variables.id }],
+        data,
+      );
     },
   });
 }
