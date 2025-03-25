@@ -403,50 +403,73 @@ export default function WalletMemo() {
             </Typography>
             {qrCode && (
               <Box sx={{ textAlign: 'center' }}>
-                {/* Connection ID Pill */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 1,
-                    mt: 1,
-                    mb: 1,
-                  }}
-                >
-                  <Typography variant="body2" color="text.secondary">
-                    Verify connection ID in mobile app matches:
-                  </Typography>
-                  <Box
-                    sx={{
-                      bgcolor: 'background.paper',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      borderRadius: '16px',
-                      px: 2,
-                      py: 1,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      fontFamily: 'monospace',
-                      fontSize: '0.75rem',
-                      letterSpacing: '0.09em',
-                    }}
-                  >
-                    {connectionStatus.data?.public_id
-                      ?.match(/.{1,4}/gu)
-                      ?.join('') || '...'}
-                  </Box>
-                </Box>
-
-                <a href={`${externalConnectionCompleteResponse?.deep_link}`}>
-                  <Box
-                    component="img"
-                    src={qrCode}
-                    alt="QR Code"
-                    sx={{ width: 256, height: 256, marginTop: '12px' }}
-                  />
-                </a>
+                {/* QR Code and Open App Button */}
+                {!(
+                  connectionStatus.data?.is_expired ||
+                  connectionStatus.data?.is_done
+                ) && (
+                  <>
+                    {/* Connection ID Pill */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 1,
+                        mt: 1,
+                        mb: 1,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Verify connection ID in mobile app matches:
+                      </Typography>
+                      <Box
+                        sx={{
+                          bgcolor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          borderRadius: '16px',
+                          px: 2,
+                          py: 1,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          fontFamily: 'monospace',
+                          fontSize: '0.75rem',
+                          letterSpacing: '0.09em',
+                        }}
+                      >
+                        {connectionStatus.data?.public_id
+                          ?.match(/.{1,4}/gu)
+                          ?.join('') || '...'}
+                      </Box>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 2,
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src={qrCode}
+                        alt="QR Code"
+                        sx={{ width: 256, height: 256, marginTop: '12px' }}
+                      />
+                      <Button
+                        variant="contained"
+                        gradient
+                        component="a"
+                        href={`${externalConnectionCompleteResponse?.deep_link}`}
+                        sx={{ minWidth: 256 }}
+                      >
+                        Open Dextrade App
+                      </Button>
+                    </Box>
+                  </>
+                )}
 
                 <Typography
                   variant="body2"
@@ -455,6 +478,16 @@ export default function WalletMemo() {
                 >
                   {connectionText}
                 </Typography>
+
+                {connectionStatus.data?.is_expired && (
+                  <Button
+                    variant="outlined"
+                    sx={{ mt: 2 }}
+                    onClick={tryAgainConnection}
+                  >
+                    Try Again
+                  </Button>
+                )}
 
                 {/* Countdown Timer */}
                 {!connectionStatus.data?.is_expired &&
@@ -490,16 +523,6 @@ export default function WalletMemo() {
                       </Box>
                     </Box>
                   )}
-
-                {connectionStatus.data?.is_expired && (
-                  <Button
-                    variant="outlined"
-                    sx={{ mt: 2 }}
-                    onClick={tryAgainConnection}
-                  >
-                    Try Again
-                  </Button>
-                )}
               </Box>
             )}
           </>
