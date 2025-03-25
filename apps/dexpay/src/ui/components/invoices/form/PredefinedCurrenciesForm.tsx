@@ -1,9 +1,11 @@
 import { Paper, Typography } from '@mui/material';
+import { queryClient } from 'dex-helpers/shared';
 import { Button, useForm } from 'dex-ui'; // Import useForm from dex-ui
 import React, { useEffect, useRef } from 'react';
 
 import { useAuth } from '../../../hooks/use-auth';
 import { useCurrencies } from '../../../hooks/use-currencies';
+import { useMutation } from '../../../hooks/use-query';
 import { Preferences } from '../../../services';
 import { CurrencyModel, ICurrency } from '../../../types';
 import {
@@ -24,8 +26,21 @@ const PredefinedCurrenciesForm = () => {
   const currencies = useCurrencies();
   const isMounted = useRef(false);
 
+  const prefQueryKey = [Preferences.getMy.toString()];
+
+  const savePreferencesMutation = useMutation(Preferences.save, {
+    onMutate: async () => {
+      queryClient.refetchQueries({ queryKey: prefQueryKey });
+    },
+    onError: (_err, _newTodo, context: any) => {
+      queryClient.setQueryData(prefQueryKey, context.previousAds);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: prefQueryKey });
+    },
+  });
+
   const form = useForm<FormData>({
-    // Initialize useForm from dex-ui
     values: {
       primaryCoin: null,
       selectedCurrencies: [],
@@ -34,20 +49,18 @@ const PredefinedCurrenciesForm = () => {
       if (!project?.id) {
         return;
       }
-      try {
-        await Preferences.save(
-          { projectId: project.id },
-          {
-            converted_coin_id: data.primaryCoin?.id,
-            currencies: data.selectedCurrencies.map((asset) => ({
-              currency_id: asset.currency.id,
-            })),
-          },
-        );
-        console.log('Preferences saved successfully!');
-      } catch (error) {
-        console.error('Error saving preferences:', error);
-      }
+      await savePreferencesMutation.mutateAsync([
+        { projectId: project.id },
+        {
+          converted_coin_id:
+            typeof data.primaryCoin === 'number'
+              ? data.primaryCoin
+              : data.primaryCoin?.id,
+          currencies: data.selectedCurrencies.map((asset) => ({
+            currency_id: asset.currency.id,
+          })),
+        },
+      ]);
     },
   });
 

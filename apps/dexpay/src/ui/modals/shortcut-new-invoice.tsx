@@ -15,6 +15,7 @@ import { useAuth } from '../hooks/use-auth';
 import { useCurrencies } from '../hooks/use-currencies';
 import { useMutation, useQuery } from '../hooks/use-query';
 import { Currency, Invoice } from '../services';
+import { ICoin } from '../types';
 
 interface ShortcutNewInvoiceProps {
   isOpenInvoice: boolean;
@@ -51,7 +52,7 @@ const ShortcutNewInvoice: React.FC<ShortcutNewInvoiceProps & ModalProps> = ({
     primaryCoin = {
       iso: 'USD',
       id: 101,
-    };
+    } as ICoin;
   }
 
   const isLoading = assets.isLoading || coins.isLoading;
