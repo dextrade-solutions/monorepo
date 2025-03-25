@@ -303,4 +303,23 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
       type: ContentType.Json,
       ...params,
     });
+
+    /**
+   * No description
+   *
+   * @tags payments-controller
+   * @name SubscribeAddress
+   * @request POST:/api/payment/fija/subscribe/address
+   */
+    subscribeAddress = (
+      data: { address: string; currency: string },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, Record<string, string>>({
+        path: `/api/payment/fija/subscribe/address`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      });
 }

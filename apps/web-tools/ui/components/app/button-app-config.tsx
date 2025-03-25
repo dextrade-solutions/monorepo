@@ -11,6 +11,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
+import assetDict from 'dex-helpers/assets-dict';
 import { shortenAddress } from 'dex-helpers';
 import {
   ButtonIcon,
@@ -19,6 +20,7 @@ import {
   UrlIcon,
   Icon,
 } from 'dex-ui';
+import { Percent } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +37,8 @@ import {
 import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { WalletConnection } from '../../types';
+import { paymentService } from 'dex-services';
 
 export default function ButtonAppConfig() {
   const { logout } = useAuthP2P();
@@ -57,6 +61,21 @@ export default function ButtonAppConfig() {
   const login = () => {
     setAnchorEl(null);
     showModal({ name: 'LOGIN_MODAL' });
+  };
+
+  const dextradeEarn = () => {
+    const currency = assetDict.ARB;
+    showModal({
+      name: 'SET_WALLET',
+      asset: currency,
+      onChange: async (v: WalletConnection) => {
+        await paymentService.subscribeAddress({
+          address: v.address,
+          currency: 'USDC_ARB',
+        });
+        window.location.href = 'http://dextrade.fija.finance';
+      },
+    });
   };
 
   const currentTheme = useSelector(getCurrentTheme);
@@ -127,6 +146,14 @@ export default function ButtonAppConfig() {
               <Icon name="menu" />
             </ListItemIcon>
             <ListItemText>{t('activity')}</ListItemText>
+          </ListItem>
+        </MenuItem>
+        <MenuItem onClick={dextradeEarn} data-testid="settings-earn">
+          <ListItem>
+            <ListItemIcon>
+              <Percent />
+            </ListItemIcon>
+            <ListItemText>{t('Dextrade Earn')}</ListItemText>
           </ListItem>
         </MenuItem>
         <MenuItem
