@@ -12,37 +12,45 @@ import React from 'react';
 
 import { useQuery } from '../../hooks/use-query';
 import { Currency } from '../../services';
-import { ICoin } from '../../types';
+import { ICoin, ICurrency } from '../../types';
 import { getCoinIconByIso } from '../../utils/common';
 
 interface SelectCoinProps {
-  value: string;
-  onChange: (coin: string) => void;
+  value?: ICurrency | number | null;
+  onChange: (coin: ICurrency | null) => void;
   error?: boolean;
   disabled?: boolean;
 }
 
 export default function AutocompleteCoin({
-  value,
+  value: inputValue,
   onChange,
   error = false,
   disabled = false,
 }: SelectCoinProps) {
+  const valueId = typeof inputValue === 'number' ? inputValue : inputValue?.id;
+
   const coinsQuery = useQuery(Currency.coins, [{ type: 'fiat' }]);
 
-  const handleSelectChange = (_: any, newValue: string | null) => {
+  const handleSelectChange = (_: any, newValue: ICoin | null) => {
     if (newValue) {
       onChange(newValue);
+    } else {
+      onChange(null);
     }
   };
-  const coins = map(coinsQuery.data?.list.currentPageResult || [], 'iso');
+  const coins = coinsQuery.data?.list.currentPageResult || [];
+
+  const value = coins.find((coin) => coin.id === valueId) || null;
   return (
     <Autocomplete
       fullWidth
       value={value}
       options={coins}
       disableClearable
+      isOptionEqualToValue={(option, v) => option.id === v.id}
       disabled={disabled}
+      getOptionLabel={(o) => o.iso}
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
         return (
@@ -53,12 +61,12 @@ export default function AutocompleteCoin({
             {...optionProps}
           >
             <UrlIcon
-              name={option}
+              name={option.iso}
               sx={{ mr: 1 }}
-              url={getCoinIconByIso(option)}
-              alt={`${option} icon`}
+              url={getCoinIconByIso(option.iso)}
+              alt={`${option.iso} icon`}
             />
-            {option}
+            {option.iso}
           </Box>
         );
       }}
@@ -66,15 +74,16 @@ export default function AutocompleteCoin({
       renderInput={(params) => (
         <TextField
           {...params}
+          placeholder="Type a coin name..."
           InputProps={{
             ...params.InputProps,
             disableUnderline: true,
             startAdornment: value && (
               <InputAdornment position="start">
                 <UrlIcon
-                  name={value}
-                  url={getCoinIconByIso(value)}
-                  alt={`${value} icon`}
+                  name={value.iso}
+                  url={getCoinIconByIso(value.iso)}
+                  alt={`${value.iso} icon`}
                 />
               </InputAdornment>
             ),

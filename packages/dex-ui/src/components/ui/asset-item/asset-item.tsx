@@ -1,11 +1,11 @@
-import { Box, Skeleton, Typography } from '@mui/material';
+import { BoxProps, Box, Skeleton, Typography } from '@mui/material';
 import { getCoinIconByUid } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import React from 'react';
 
 import UrlIcon from '../url-icon';
 
-interface IProps {
+interface IProps extends BoxProps {
   coin?: CoinModel;
   asset?: AssetModel;
   alignReverse?: boolean;
@@ -21,6 +21,7 @@ const AssetItem = ({
   loading,
   subtitle,
   iconSize,
+  ...boxProps
 }: IProps) => {
   const reverseProps = alignReverse && {
     textAlign: 'right',
@@ -40,6 +41,7 @@ const AssetItem = ({
       textAlign="left"
       alignItems="center"
       {...(reverseProps || {})}
+      {...boxProps}
     >
       {loading && (
         <>

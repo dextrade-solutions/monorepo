@@ -1,10 +1,10 @@
 import { Box, Button, Typography } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
-import { AssetModel } from 'dex-helpers/types';
 import { AssetItem, useGlobalModalContext } from 'dex-ui';
 import React, { useEffect, useState } from 'react';
 
 import { useCurrencies } from '../../hooks/use-currencies';
+import { CurrencyModel } from '../../types';
 
 export default function SelectCurrency({
   value,
@@ -19,16 +19,17 @@ export default function SelectCurrency({
   ...rest
 }: {
   currencies?: {
-    items: AssetModel[];
+    items: CurrencyModel[];
     isLoading: boolean;
   };
-  value: AssetModel;
+  value: CurrencyModel;
   title?: string;
   noZeroBalances?: boolean;
   reversed?: boolean;
   variant?: string;
   placeholder?: string;
-  onChange: (v: AssetModel) => void;
+  initialValueIso?: string;
+  onChange: (v: CurrencyModel) => void;
 }) {
   const [initialized, setInitialized] = useState(false);
   const { showModal } = useGlobalModalContext();
@@ -37,14 +38,7 @@ export default function SelectCurrency({
   };
   const { items: initialItems, isLoading } = useCurrenciesHookWrap()();
 
-  const items = initialItems
-    .map((i) => ({
-      ...i.asset,
-      balance: i.balance?.total_balance_currency,
-      balanceUsdt: i.balance?.total_balance_usdt,
-      currency: i.currency,
-    }))
-    .filter((i) => (noZeroBalances ? i.balance : true));
+  const items = initialItems.filter((i) => (noZeroBalances ? i.balance : true));
 
   useEffect(() => {
     if (initialValueIso && items.length && !initialized) {
@@ -80,7 +74,7 @@ export default function SelectCurrency({
             alignReverse={reversed}
             asset={value}
             subtitle={
-              value.balance && (
+              value.balanceUsdt && (
                 <Typography variant="body2" color="text.secondary">
                   {formatCurrency(value.balanceUsdt, 'usd')}
                 </Typography>

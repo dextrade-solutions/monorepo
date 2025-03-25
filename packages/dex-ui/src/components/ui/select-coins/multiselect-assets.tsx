@@ -18,11 +18,13 @@ import { useAssetsSearch } from './hooks/useAssetsSearch';
 export function MultiselectAssets({
   value = [],
   currencies,
+  variant = 'standard',
   isLoading,
   onChange,
 }: {
   value: AssetModel[];
   currencies: AssetModel[];
+  variant: 'outlined' | 'standard';
   isLoading: boolean;
   onChange: (newVal: AssetModel[]) => void;
 }) {
@@ -59,8 +61,12 @@ export function MultiselectAssets({
       elevation={0}
       sx={{
         p: 1,
-        border: 1,
-        borderColor: 'divider',
+        ...(variant === 'outlined'
+          ? {
+              border: 1,
+              borderColor: 'divider',
+            }
+          : {}),
         marginY: 1,
       }}
       data-testid="multiselect-assets"

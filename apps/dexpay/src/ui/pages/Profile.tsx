@@ -39,7 +39,6 @@ export default function Profile() {
           <Typography color="text.secondary" variant="h5" mb={2}>
             Invoices
           </Typography>
-          <Typography>Predefined currencies</Typography>
           <PredefinedCurrenciesForm />
         </CardContent>
       </Card>

@@ -1209,7 +1209,7 @@ export namespace Preferences {
 
   export namespace Save {
     export type Body = {
-      converted_coin_id: number;
+      converted_coin_id?: number;
       currencies: {
         currency_id: number;
       }[];

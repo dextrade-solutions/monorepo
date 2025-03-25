@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import { Button, CircleNumber, useForm } from 'dex-ui';
+import { Button, useForm } from 'dex-ui';
 import React from 'react';
 
 import { useCurrencies } from '../../../hooks/use-currencies';
-import { MultiselectAssetsWithValidation, VPickCoin } from '../../fields';
+import { MultiselectAssetsWithValidation } from '../../fields';
 
 export default function OpenInvoice() {
   const currencies = useCurrencies();

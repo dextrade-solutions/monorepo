@@ -32,6 +32,7 @@ export const MOST_POPULAR_CURRENCIES = [
 export enum CurrencyGroupType {
   mostPopular = 1,
   usdt = 2,
+  my = 3,
 }
 
 export const CURRENCIES_ISO_BY_GROUP_TYPE = {

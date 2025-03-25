@@ -1,18 +1,25 @@
+import { Paper, Typography } from '@mui/material';
 import { Button, useForm } from 'dex-ui'; // Import useForm from dex-ui
 import React, { useEffect, useRef } from 'react';
 
 import { useAuth } from '../../../hooks/use-auth';
 import { useCurrencies } from '../../../hooks/use-currencies';
 import { Preferences } from '../../../services';
-import { MultiselectAssetsWithValidation } from '../../fields';
+import { CurrencyModel, ICurrency } from '../../../types';
+import {
+  MultiselectAssetsWithValidation,
+  VAutocompleteCoin,
+} from '../../fields';
 
 interface FormData {
-  selectedCurrencies: ReturnType<typeof useCurrencies>['items'];
+  primaryCoin: ICurrency | null;
+  selectedCurrencies: CurrencyModel[];
 }
 
 const PredefinedCurrenciesForm = () => {
   const {
     user: { project },
+    invoicePreferences,
   } = useAuth();
   const currencies = useCurrencies();
   const isMounted = useRef(false);
@@ -20,6 +27,7 @@ const PredefinedCurrenciesForm = () => {
   const form = useForm<FormData>({
     // Initialize useForm from dex-ui
     values: {
+      primaryCoin: null,
       selectedCurrencies: [],
     },
     method: async (data: FormData) => {
@@ -30,8 +38,9 @@ const PredefinedCurrenciesForm = () => {
         await Preferences.save(
           { projectId: project.id },
           {
-            currencies: data.selectedCurrencies.map((currency) => ({
-              currency_id: currency.currency.id,
+            converted_coin_id: data.primaryCoin?.id,
+            currencies: data.selectedCurrencies.map((asset) => ({
+              currency_id: asset.currency.id,
             })),
           },
         );
@@ -43,27 +52,33 @@ const PredefinedCurrenciesForm = () => {
   });
 
   useEffect(() => {
-    if (project?.id && currencies.items.length > 0 && !isMounted.current) {
+    if (
+      project?.id &&
+      currencies.items.length > 0 &&
+      invoicePreferences &&
+      !isMounted.current
+    ) {
       isMounted.current = true;
-      Preferences.getMy({ projectId: project.id })
-        .then((data) => {
-          form.setValue(
-            'selectedCurrencies',
-            data.currencies
-              .map((currency) =>
-                currencies.items.find((c) => c.currency.name === currency.name),
-              )
-              .filter(Boolean), // Filter out undefined values
-          );
-        })
-        .catch((error) => {
-          console.error('Error fetching preferences:', error);
-        });
+      form.setValue('primaryCoin', invoicePreferences.converted_coin_id);
+      form.setValue(
+        'selectedCurrencies',
+        invoicePreferences.currencies
+          .map((currency) =>
+            currencies.items.find((c) => c.currency.name === currency.name),
+          )
+          .filter(Boolean), // Filter out undefined values
+      );
     }
-  }, [project?.id, currencies.items, form]);
+  }, [project?.id, currencies.items, invoicePreferences, form]);
 
   return (
     <form onSubmit={form.submit}>
+      <Paper elevation={0} sx={{ p: 2, mb: 2 }}>
+        <Typography mb={1} fontWeight="bold">
+          Primary coin
+        </Typography>
+        <VAutocompleteCoin name="primaryCoin" form={form} />
+      </Paper>
       <MultiselectAssetsWithValidation
         name="selectedCurrencies"
         currencies={currencies.items}

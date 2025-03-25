@@ -178,7 +178,7 @@ export namespace Validation {
     export const create = object({
       primaryCoin: object().shape({
         amount: string().required(),
-        coin: string().required('Coin is required'), // Assuming coin is required within primaryCoin
+        coin: object().required('Coin is required'), // Assuming coin is required within primaryCoin
       }),
       convertedCurrencies: array().min(
         1,

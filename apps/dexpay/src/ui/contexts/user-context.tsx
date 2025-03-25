@@ -2,9 +2,9 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
-import { Auth, Memo, Projects, User, Vault } from '../services'; // Import Auth service
+import { Auth, Memo, Preferences, Projects, User, Vault } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes, IUser, IVault } from '../types';
+import { IProject, Auth as AuthTypes, IUser, IVault, Preferences as IPrefrences } from '../types';
 
 interface IStoredUser {
   auth: {
@@ -25,6 +25,7 @@ interface UserContextType {
   isAuthorizeInProgress: boolean;
   projects: IProject[] | undefined;
   isLoading: boolean;
+  invoicePreferences?: IPrefrences.GetMy.Response;
   twoFAdata: {
     codeToken: string;
     method?: number;
@@ -117,6 +118,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const vaults = useQuery(
     Vault.my,
     [{ projectId: user?.project?.id }, { page: 0 }],
+    {
+      enabled: Boolean(user?.isRegistrationCompleted),
+    },
+  );
+  const invoicePreferences = useQuery(
+    Preferences.getMy,
+    [{ projectId: user?.project?.id }],
     {
       enabled: Boolean(user?.isRegistrationCompleted),
     },
@@ -215,6 +223,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     me: me.data,
     projects: projects.data?.list.currentPageResult || [],
     memos: memos.data?.list.currentPageResult || [],
+    invoicePreferences: invoicePreferences.data,
     twoFAdata: twoFA,
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,

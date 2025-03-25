@@ -1,29 +1,32 @@
 import {
   Box,
-  Button,
   Typography,
   FormLabel,
   AccordionDetails,
   AccordionSummary,
   Accordion,
+  Chip,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import {
+  AssetItem,
   CircleNumber,
   Icon,
   useForm,
+  Button,
   useGlobalModalContext,
   useLoader,
 } from 'dex-ui';
 import { map } from 'lodash';
-import React, { useState } from 'react';
+import { Info } from 'lucide-react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
-import { ROUTE_MERCHANT } from '../../../constants/pages';
+import { ROUTE_INVOICE_DETAIL, ROUTE_MERCHANT } from '../../../constants/pages';
 import { useAuth } from '../../../hooks/use-auth';
 import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../../hooks/use-query';
-import { Currency, Invoice } from '../../../services';
+import { Currency, Invoice, Preferences } from '../../../services';
+import { CurrencyModel, ICurrency } from '../../../types';
 import { Validation } from '../../../validation';
 import {
   DatePickerWithValidation,
@@ -35,36 +38,101 @@ import SelectCoinAmount from '../../ui/SelectCoinAmount';
 interface InvoiceData {
   primaryCoin: {
     amount: number | null;
-    coin: string;
-  } | null;
-  convertedCurrencies: string[];
+    coin: ICurrency | null;
+  };
+  convertedCurrencies: CurrencyModel[];
   description: string;
   dueDate: dayjs.Dayjs | null;
 }
 
+const ShortCutProposal = ({
+  createInvoiceCallback,
+  values,
+}: {
+  createInvoiceCallback: () => Promise<void>;
+  values: InvoiceData;
+}) => {
+  const loader = useLoader();
+  const { hideModal } = useGlobalModalContext();
+  const {
+    user: { project },
+  } = useAuth();
+  const form = useForm({
+    values,
+    method: async (data) => {
+      if (!project?.id) {
+        return;
+      }
+      await Preferences.save(
+        { projectId: project.id },
+        {
+          converted_coin_id: data.primaryCoin.coin.id,
+          currencies: data.convertedCurrencies.map((asset) => ({
+            currency_id: asset.currency.id,
+          })),
+        },
+      );
+      await createInvoiceCallback();
+    },
+  });
+
+  const hide = () => {
+    hideModal();
+    loader.runLoader(createInvoiceCallback());
+  };
+  return (
+    <Box p={3}>
+      <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+        <Info size={60} />
+      </Box>
+
+      <Typography variant="h6" fontWeight="bold">
+        Want quick creating? Create a shortcut with these coin parameters!
+      </Typography>
+
+      <Typography mt={2}>
+        Primary coin - {values.primaryCoin.coin.iso}
+      </Typography>
+      <Typography mt={1} mb={1}>
+        Supported currencies
+      </Typography>
+      {values.convertedCurrencies.map((i) => (
+        <Chip
+          key={i.iso}
+          sx={{ m: 0.5, height: 45 }}
+          label={<AssetItem asset={i} />}
+        />
+      ))}
+      <Box display="flex" mt={3} justifyContent="space-between">
+        <Button onClick={hide}>Cancel and continue</Button>
+        <Button gradient onClick={form.submit}>
+          Create shortcut
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+
 const CreateInvoiceForm = () => {
+  const { showModal } = useGlobalModalContext();
   const [, navigate] = useHashLocation();
-  const { user } = useAuth();
+  const { user, invoicePreferences } = useAuth();
 
   const currencies = useCurrencies();
 
   const invoiceCreate = useMutation(Invoice.create, {
-    onSuccess: () => {
-      navigate(ROUTE_MERCHANT);
+    onSuccess: (data) => {
+      navigate(
+        `${ROUTE_INVOICE_DETAIL.replace(':id', `${data.public_id}:${data.id}`)}`,
+      );
     },
   });
-  const coins = useQuery(Currency.coins, [{ type: 'fiat' }]);
-
-  const allCoins = (coins.data?.list.currentPageResult || []).reduce(
-    (acc, coin) => ({ ...acc, [coin.iso]: coin }),
-    {},
-  );
 
   const form = useForm<InvoiceData>({
     values: {
       primaryCoin: {
         amount: null,
-        coin: 'THB',
+        coin: null,
       },
       convertedCurrencies: [],
       description: '',
@@ -81,12 +149,12 @@ const CreateInvoiceForm = () => {
             new Date(values.dueDate.toDate()).setUTCHours(23, 59, 59, 999),
           ).toISOString()
         : undefined;
-
+      const primaryCoin = values.primaryCoin.coin;
       const body = {
         description: values.description || undefined,
         due_to: dueToEndOfDay,
         converted_amount_requested: values.primaryCoin?.amount,
-        converted_coin_id: allCoins[values.primaryCoin?.coin].id,
+        converted_coin_id: primaryCoin.id,
         amount_requested: undefined,
         currency_id: undefined,
         coin_id: undefined,
@@ -99,7 +167,18 @@ const CreateInvoiceForm = () => {
             }
           : {}),
       };
-      await invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]);
+      const create = () =>
+        invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]);
+      const isShortcutCreated = Boolean(invoicePreferences);
+      if (isShortcutCreated) {
+        await create();
+      } else {
+        showModal({
+          component: () => (
+            <ShortCutProposal createInvoiceCallback={create} values={values} />
+          ),
+        });
+      }
     },
   });
 
@@ -119,8 +198,6 @@ const CreateInvoiceForm = () => {
       </Box>
       <SelectCoinAmount
         form={form}
-        coins={allCoins}
-        isLoading={coins.isLoading}
         name="primaryCoin"
         data-testid="invoice-create-primary-coin-select"
       />
@@ -132,12 +209,12 @@ const CreateInvoiceForm = () => {
       </Box>
       <MultiselectAssetsWithValidation
         name="convertedCurrencies"
+        variant="outlined"
         currencies={currencies.items}
         isLoading={currencies.isLoading}
         form={form}
         data-testid="invoice-create-crypto-currency-select"
       />
-
       <Accordion
         disableGutters
         elevation={0}
@@ -193,7 +270,7 @@ const CreateInvoiceForm = () => {
         sx={{ mt: 3, mb: 2 }}
         data-testid="invoice-create-submit-button"
       >
-        {form.primaryError || 'Create Invoice'}
+        Create Invoice
       </Button>
     </Box>
   );

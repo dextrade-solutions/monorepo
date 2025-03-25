@@ -6,12 +6,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useGlobalModalContext } from 'dex-ui';
-import { PackageOpen, Tag, Zap } from 'lucide-react';
+import { Tag, Zap } from 'lucide-react';
 import React, { useState } from 'react';
 
 import InvoiceForm from '../components/invoices/form/InvoiceForm';
 import OpenInvoice from '../components/invoices/form/OpenInvoiceForm';
 import { CurrencyGroupType } from '../constants/coins';
+import { useAuth } from '../hooks/use-auth';
 
 const TYPES = {
   fixedInvoice: 1,
@@ -21,6 +22,7 @@ const TYPES = {
 type InvoiceType = (typeof TYPES)[keyof typeof TYPES];
 
 export default function CreateInvoice() {
+  const { invoicePreferences } = useAuth();
   const { showModal } = useGlobalModalContext();
   const [type, setType] = useState<InvoiceType>();
   // Select type: Fixed Amount Invoice, Open invoice
@@ -73,6 +75,24 @@ export default function CreateInvoice() {
       <Typography variant="h6" color="text.tertiary" fontWeight="bold">
         Shortcuts
       </Typography>
+
+      {invoicePreferences && (
+        <ListItemButton
+          sx={{ color: 'text.tertiary' }}
+          onClick={() =>
+            handleShortcut({ currencyGroupType: CurrencyGroupType.my })
+          }
+        >
+          <ListItemAvatar>
+            <Zap size={16} opacity={0.5} />
+            <Tag />
+          </ListItemAvatar>
+          <ListItemText
+            primary="My shortcut"
+            secondary="Your own prefrencies"
+          />
+        </ListItemButton>
+      )}
       <ListItemButton
         sx={{ color: 'text.tertiary' }}
         onClick={() =>
@@ -84,8 +104,8 @@ export default function CreateInvoice() {
           <Tag />
         </ListItemAvatar>
         <ListItemText
-          primary="Invoice with most popular crypto"
-          secondary="Creates USD invoice with USDT, USDC, BTC, ETH"
+          primary="Most popular crypto"
+          secondary="USDT, TRX, BTC, ETH, SOL, BNB"
         />
       </ListItemButton>
       <ListItemButton
@@ -98,10 +118,7 @@ export default function CreateInvoice() {
           <Zap size={16} opacity={0.5} />
           <Tag />
         </ListItemAvatar>
-        <ListItemText
-          primary="Invoice with USDT"
-          secondary="Creates USD invoice with USDT on all networks"
-        />
+        <ListItemText primary="USDT" secondary="On all networks" />
       </ListItemButton>
       {/* <ListItemButton
         sx={{ color: 'text.tertiary' }}
