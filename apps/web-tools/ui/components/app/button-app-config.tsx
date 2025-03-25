@@ -71,7 +71,7 @@ export default function ButtonAppConfig() {
       onChange: async (v: WalletConnection) => {
         await paymentService.subscribeAddress({
           address: v.address,
-          currency: 'USDC_ARB',
+          currency: 'ETH_ARB',
         });
         window.location.href = 'http://dextrade.fija.finance';
       },
