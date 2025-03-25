@@ -595,6 +595,47 @@ export namespace Memo {
       };
     }
   }
+
+  export namespace ExternalConnection {
+    export interface Body {
+      name: string;
+    }
+
+    export interface Response {
+      id: number;
+
+      code_token?: string;
+
+      qr_code?: string;
+      expiryAt?: string;
+      deep_link?: string;
+    }
+
+    export interface CompleteBody {
+      id: number;
+      code_token: string;
+      code: string;
+    }
+
+    export interface CompleteResponse {
+      qr_code: string;
+      expiryAt: string;
+      id: string;
+      deep_link: string;
+    }
+
+    export interface Status {
+      public_id: string;
+      eth_address: string | null;
+      is_expired: boolean;
+      can_be_confirmed: boolean;
+      is_done: boolean;
+      expiryAt: string;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string | null;
+    }
+  }
 }
 
 export namespace Callback {
