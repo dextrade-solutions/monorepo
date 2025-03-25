@@ -40,6 +40,7 @@ export const LayoutDefault: React.FC<{ children: React.ReactNode }> = ({
           flexDirection: 'column',
           flexGrow: 1,
           padding: (theme) => theme.spacing(0, 2, 4),
+          paddingBottom: 10,
           width: '100%',
         }}
       >

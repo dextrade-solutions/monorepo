@@ -1,10 +1,17 @@
 import { useLocalStorage } from '@uidotdev/usehooks';
+import { queryClient } from 'dex-helpers/shared';
 import React, { createContext, useEffect, useState } from 'react';
 
 import { useQuery, useMutation } from '../hooks/use-query';
 import { Auth, Memo, Preferences, Projects, User, Vault } from '../services'; // Import Auth service
 import { saveAuthData } from '../services/client';
-import { IProject, Auth as AuthTypes, IUser, IVault, Preferences as IPrefrences } from '../types';
+import {
+  IProject,
+  Auth as AuthTypes,
+  IUser,
+  IVault,
+  Preferences as IPrefrences,
+} from '../types';
 
 interface IStoredUser {
   auth: {
@@ -223,7 +230,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     me: me.data,
     projects: projects.data?.list.currentPageResult || [],
     memos: memos.data?.list.currentPageResult || [],
-    invoicePreferences: invoicePreferences.data,
+    invoicePreferences: invoicePreferences.data?.id
+      ? invoicePreferences.data
+      : undefined,
     twoFAdata: twoFA,
     isAuthorizeInProgress:
       loginMutation.isPending || twoFARequest.isPending || twoFACode.isPending,
@@ -268,6 +277,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     },
     logout: () => {
       setUser(null);
+      queryClient.clear();
     },
     setCompleteReginstration: () => {
       setUser((prev) => ({

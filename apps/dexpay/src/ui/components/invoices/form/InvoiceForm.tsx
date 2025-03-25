@@ -34,6 +34,7 @@ import {
   TextFieldWithValidation,
 } from '../../fields';
 import SelectCoinAmount from '../../ui/SelectCoinAmount';
+import { queryClient } from 'dex-helpers/shared';
 
 interface InvoiceData {
   primaryCoin: {
@@ -57,21 +58,33 @@ const ShortCutProposal = ({
   const {
     user: { project },
   } = useAuth();
+
+  const prefQueryKey = [Preferences.getMy.toString()];
+
+  const savePreferencesMutation = useMutation(Preferences.save, {
+    onMutate: async () => {
+      queryClient.refetchQueries({ queryKey: prefQueryKey });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: prefQueryKey });
+    },
+  });
+
   const form = useForm({
     values,
     method: async (data) => {
       if (!project?.id) {
         return;
       }
-      await Preferences.save(
+      await savePreferencesMutation.mutateAsync([
         { projectId: project.id },
         {
-          converted_coin_id: data.primaryCoin.coin.id,
+          converted_coin_id: data.primaryCoin.coin?.id,
           currencies: data.convertedCurrencies.map((asset) => ({
             currency_id: asset.currency.id,
           })),
         },
-      );
+      ]);
       await createInvoiceCallback();
     },
   });

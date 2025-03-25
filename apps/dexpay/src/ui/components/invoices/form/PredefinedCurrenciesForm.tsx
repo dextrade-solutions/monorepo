@@ -32,9 +32,6 @@ const PredefinedCurrenciesForm = () => {
     onMutate: async () => {
       queryClient.refetchQueries({ queryKey: prefQueryKey });
     },
-    onError: (_err, _newTodo, context: any) => {
-      queryClient.setQueryData(prefQueryKey, context.previousAds);
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: prefQueryKey });
     },
