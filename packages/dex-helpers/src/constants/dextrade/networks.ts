@@ -66,7 +66,7 @@ export const BUILT_IN_NETWORKS = {
   },
   [NetworkNames.arbitrum]: {
     ...arbitrumConfig,
-    iso: 'ARBITRUM',
+    iso: 'ARB',
     key: NetworkNames.arbitrum,
     uid: 'aeneas',
   },

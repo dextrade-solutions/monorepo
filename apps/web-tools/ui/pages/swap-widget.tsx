@@ -1,4 +1,4 @@
-import { Box, Grow } from '@mui/material';
+import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
@@ -105,7 +105,7 @@ export default function SwapWidget() {
 
     const hash = window.location.hash.slice(1);
 
-    let name = searchParams.get('name');
+    let merchantName = searchParams.get('name');
     let toNetworkName = searchParams.get('toNetworkName');
     let toTicker = searchParams.get('toTicker');
     let fromNetworkName = searchParams.get('fromNetworkName');
@@ -115,10 +115,16 @@ export default function SwapWidget() {
     if (hash) {
       const hashQuery = new URLSearchParams(hash);
       const tgWebAppData = new URLSearchParams(hashQuery.get('tgWebAppData'));
-      [name, toNetworkName, toTicker, fromNetworkName, fromTicker, amount] =
-        tgWebAppData.get('start_param')!.split('__');
+      [
+        merchantName,
+        toNetworkName,
+        toTicker,
+        fromNetworkName,
+        fromTicker,
+        amount,
+      ] = tgWebAppData.get('start_param')!.split('__');
       setSearchParams({
-        name,
+        name: merchantName,
         toNetworkName: toNetworkName || '',
         toTicker: toTicker || '',
         fromNetworkName: fromNetworkName || '',
@@ -197,6 +203,9 @@ export default function SwapWidget() {
       justifyContent="center"
       height="calc(100vh - 100px)"
     >
+      <Typography mb={2} variant="h6" fontWeight="bold">
+        {searchParams.get('name')}
+      </Typography>
       <Swap
         assetsListBuy={
           assetFrom
