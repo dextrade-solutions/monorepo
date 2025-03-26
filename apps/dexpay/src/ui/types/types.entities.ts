@@ -1,3 +1,5 @@
+import { TxStatus } from "../services/statuses";
+
 export interface INetwork {
   id: number;
   name: string;
@@ -88,7 +90,7 @@ export interface ITransaction {
   from_address: string;
   to_address: string;
   to_tag: string;
-  status: number;
+  status: TxStatus;
   confirmations: number;
   submittedAt: string;
   createdAt: string;
@@ -99,7 +101,7 @@ export interface ITransaction {
 export interface ITransactionWithdrawal {
   id: number;
   project_id: number;
-  status: number;
+  status: TxStatus;
   creator_id: number;
   transaction_id: string | null;
   address_from_id: number | null;

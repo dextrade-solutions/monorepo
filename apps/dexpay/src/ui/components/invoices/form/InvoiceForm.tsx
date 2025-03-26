@@ -5,38 +5,37 @@ import {
   AccordionDetails,
   AccordionSummary,
   Accordion,
-  Chip,
+  FormControlLabel,
 } from '@mui/material';
 import dayjs from 'dayjs';
+import { queryClient } from 'dex-helpers/shared';
 import {
-  AssetItem,
   CircleNumber,
   Icon,
   useForm,
   Button,
-  useGlobalModalContext,
-  useLoader,
 } from 'dex-ui';
 import { map } from 'lodash';
-import { Info } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import { ROUTE_INVOICE_DETAIL, ROUTE_MERCHANT } from '../../../constants/pages';
 import { useAuth } from '../../../hooks/use-auth';
 import { useCurrencies } from '../../../hooks/use-currencies';
-import { useMutation, useQuery } from '../../../hooks/use-query';
-import { Currency, Invoice, Preferences } from '../../../services';
+import { useMutation } from '../../../hooks/use-query';
+import { Invoice, Preferences } from '../../../services';
 import { CurrencyModel, ICurrency } from '../../../types';
 import { Validation } from '../../../validation';
 import {
   DatePickerWithValidation,
   MultiselectAssetsWithValidation,
   TextFieldWithValidation,
+  VCheckbox,
 } from '../../fields';
 import SelectCoinAmount from '../../ui/SelectCoinAmount';
-import { queryClient } from 'dex-helpers/shared';
 
 interface InvoiceData {
+  overrideShortcut: boolean;
   primaryCoin: {
     amount: number | null;
     coin: ICurrency | null;
@@ -46,92 +45,14 @@ interface InvoiceData {
   dueDate: dayjs.Dayjs | null;
 }
 
-const ShortCutProposal = ({
-  createInvoiceCallback,
-  values,
-}: {
-  createInvoiceCallback: () => Promise<void>;
-  values: InvoiceData;
-}) => {
-  const loader = useLoader();
-  const { hideModal } = useGlobalModalContext();
-  const {
-    user: { project },
-  } = useAuth();
-
-  const prefQueryKey = [Preferences.getMy.toString()];
-
-  const savePreferencesMutation = useMutation(Preferences.save, {
-    onMutate: async () => {
-      queryClient.refetchQueries({ queryKey: prefQueryKey });
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: prefQueryKey });
-    },
-  });
-
-  const form = useForm({
-    values,
-    method: async (data) => {
-      if (!project?.id) {
-        return;
-      }
-      await savePreferencesMutation.mutateAsync([
-        { projectId: project.id },
-        {
-          converted_coin_id: data.primaryCoin.coin?.id,
-          currencies: data.convertedCurrencies.map((asset) => ({
-            currency_id: asset.currency.id,
-          })),
-        },
-      ]);
-      await createInvoiceCallback();
-    },
-  });
-
-  const hide = () => {
-    hideModal();
-    loader.runLoader(createInvoiceCallback());
-  };
-  return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
-        <Info size={60} />
-      </Box>
-
-      <Typography variant="h6" fontWeight="bold">
-        Want quick creating? Create a shortcut with these coin parameters!
-      </Typography>
-
-      <Typography mt={2}>
-        Primary coin - {values.primaryCoin.coin.iso}
-      </Typography>
-      <Typography mt={1} mb={1}>
-        Supported currencies
-      </Typography>
-      {values.convertedCurrencies.map((i) => (
-        <Chip
-          key={i.iso}
-          sx={{ m: 0.5, height: 45 }}
-          label={<AssetItem asset={i} />}
-        />
-      ))}
-      <Box display="flex" mt={3} justifyContent="space-between">
-        <Button onClick={hide}>Cancel and continue</Button>
-        <Button gradient onClick={form.submit}>
-          Create shortcut
-        </Button>
-      </Box>
-    </Box>
-  );
-};
-
 const CreateInvoiceForm = () => {
-  const { showModal } = useGlobalModalContext();
   const [, navigate] = useHashLocation();
   const { user, invoicePreferences } = useAuth();
 
+  const projectId = user?.project.id!;
+
   const currencies = useCurrencies();
+  const isMounted = useRef(false);
 
   const invoiceCreate = useMutation(Invoice.create, {
     onSuccess: (data) => {
@@ -141,8 +62,19 @@ const CreateInvoiceForm = () => {
     },
   });
 
+  const prefQueryKey = [Preferences.getMy.toString()];
+  const savePreferencesMutation = useMutation(Preferences.save, {
+    onMutate: async () => {
+      queryClient.refetchQueries({ queryKey: prefQueryKey });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: prefQueryKey });
+    },
+  });
+
   const form = useForm<InvoiceData>({
     values: {
+      overrideShortcut: true,
       primaryCoin: {
         amount: null,
         coin: null,
@@ -162,38 +94,62 @@ const CreateInvoiceForm = () => {
             new Date(values.dueDate.toDate()).setUTCHours(23, 59, 59, 999),
           ).toISOString()
         : undefined;
-      const primaryCoin = values.primaryCoin.coin;
+      const primaryCoinId =
+        typeof values.primaryCoin.coin === 'number'
+          ? values.primaryCoin.coin
+          : values.primaryCoin.coin.id;
+
+      const currenciesIds = map(values.convertedCurrencies, 'currency.id');
+
       const body = {
         description: values.description || undefined,
         due_to: dueToEndOfDay,
         converted_amount_requested: values.primaryCoin?.amount,
-        converted_coin_id: primaryCoin.id,
+        converted_coin_id: primaryCoinId,
         amount_requested: undefined,
         currency_id: undefined,
         coin_id: undefined,
         ...(values.convertedCurrencies.length
           ? {
-              supported_currencies: map(
-                values.convertedCurrencies,
-                'currency.id',
-              ),
+              supported_currencies: currenciesIds,
             }
           : {}),
       };
-      const create = () =>
-        invoiceCreate.mutateAsync([{ projectId: user.project.id }, body]);
-      const isShortcutCreated = Boolean(invoicePreferences);
-      if (isShortcutCreated) {
-        await create();
-      } else {
-        showModal({
-          component: () => (
-            <ShortCutProposal createInvoiceCallback={create} values={values} />
-          ),
-        });
+      await invoiceCreate.mutateAsync([{ projectId }, body]);
+      if (values.overrideShortcut) {
+        await savePreferencesMutation.mutateAsync([
+          { projectId },
+          {
+            converted_coin_id: primaryCoinId,
+            currencies: currenciesIds.map((id) => ({ currency_id: id })),
+          },
+        ]);
       }
     },
   });
+
+  useEffect(() => {
+    if (
+      !isMounted.current &&
+      projectId &&
+      currencies.items.length > 0 &&
+      invoicePreferences
+    ) {
+      isMounted.current = true;
+      form.setValue('primaryCoin', {
+        amount: null,
+        coin: invoicePreferences.converted_coin_id,
+      });
+      form.setValue(
+        'convertedCurrencies',
+        invoicePreferences.currencies
+          .map((currency) =>
+            currencies.items.find((c) => c.currency.name === currency.name),
+          )
+          .filter(Boolean), // Filter out undefined values
+      );
+    }
+  }, [projectId, isMounted, currencies.items, invoicePreferences, form]);
 
   return (
     <Box
@@ -233,6 +189,10 @@ const CreateInvoiceForm = () => {
         elevation={0}
         sx={{
           my: 2,
+          color: 'text.tertiary',
+          borderColor: 'tertiary.light',
+          borderStyle: 'solid',
+          borderWidth: 1,
           borderRadius: 1,
           '&:before': {
             display: 'none',
@@ -270,6 +230,15 @@ const CreateInvoiceForm = () => {
           />
         </AccordionDetails>
       </Accordion>
+      <FormControlLabel
+        sx={{
+          color: 'text.secondary',
+        }}
+        control={
+          <VCheckbox color="tertiary" name="overrideShortcut" form={form} />
+        }
+        label="Apply these coins to future invoices"
+      />
       <Button
         type="submit"
         disabled={

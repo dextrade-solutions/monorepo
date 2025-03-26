@@ -175,10 +175,18 @@ export namespace Validation {
   }
 
   export namespace Invoice {
+    const coinSchema = mixed<number | object>().test(
+      'is-number-or-object',
+      'Coin must be a number or an object',
+      (value) => {
+        return typeof value === 'number' || typeof value === 'object';
+      },
+    );
     export const create = object({
+      overrideShortcut: boolean(),
       primaryCoin: object().shape({
         amount: string().required(),
-        coin: object().required('Coin is required'), // Assuming coin is required within primaryCoin
+        coin: coinSchema.required('Coin is required'), // Assuming coin is required within primaryCoin
       }),
       convertedCurrencies: array().min(
         1,

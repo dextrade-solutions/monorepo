@@ -1,12 +1,4 @@
-import {
-  Box,
-  TextField,
-  Autocomplete,
-  InputAdornment,
-  FormControl,
-  OutlinedInput,
-} from '@mui/material';
-import { getCoinIconByUid } from 'dex-helpers';
+import { Box, InputAdornment, FormControl, Input } from '@mui/material';
 import { withValidationProvider } from 'dex-ui';
 import React from 'react';
 
@@ -48,16 +40,21 @@ function SelectCoinAmount({
       <FormControl
         sx={{
           width: '100%',
+          p: 2,
+          border: 1,
+          borderRadius: 1,
+          borderColor: 'tertiary.light',
         }}
-        variant="outlined"
+        variant="standard"
         data-testid="select-coin-amount"
       >
-        <OutlinedInput
+        <Input
           value={value?.amount}
           id="input-with-icon-adornment"
           type="number"
           placeholder="0"
           error={error}
+          disableUnderline
           sx={{
             padding: 0,
             overflow: 'hidden',

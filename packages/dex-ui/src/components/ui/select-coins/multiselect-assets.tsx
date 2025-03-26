@@ -64,7 +64,7 @@ export function MultiselectAssets({
         ...(variant === 'outlined'
           ? {
               border: 1,
-              borderColor: 'divider',
+              borderColor: 'tertiary.light',
             }
           : {}),
         marginY: 1,

@@ -4,6 +4,7 @@ import { AssetModel } from 'dex-helpers/types';
 import { CopyData, UrlIcon } from 'dex-ui';
 import React from 'react';
 
+import { WITHDRAWAL_STATUS_LABEL } from '../../services/statuses';
 import { ITransaction } from '../../types';
 
 interface TransactionItemProps {
@@ -75,8 +76,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         </Box>
         <Divider sx={{ my: 1 }} />
         <Box>
-          <Typography variant="body1">
-            Status: {transaction.status === 3 ? 'Confirmed' : 'Pending'}
+          <Typography
+            variant="body1"
+            color={WITHDRAWAL_STATUS_LABEL[transaction.status].color}
+          >
+            Status: {WITHDRAWAL_STATUS_LABEL[transaction.status].label}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Confirmations: {transaction.confirmations || 0}

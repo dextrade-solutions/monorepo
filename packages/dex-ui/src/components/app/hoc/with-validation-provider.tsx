@@ -11,6 +11,7 @@ const withValidationProvider =
       value?: any;
       error?: boolean;
       helperText?: string;
+      handleChange?: (value: any) => void;
       onChange?: (value: any) => void;
     },
   >(
@@ -65,6 +66,7 @@ const withValidationProvider =
         value={value}
         error={error}
         helperText={helperText}
+        handleChange={handleChange}
         onChange={handleChange}
       />
     );

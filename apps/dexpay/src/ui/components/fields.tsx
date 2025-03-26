@@ -1,4 +1,4 @@
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, TextField } from '@mui/material';
 import {
   MultiselectAssets,
   NumericTextField,
@@ -6,10 +6,10 @@ import {
   withValidationProvider,
 } from 'dex-ui';
 
-import DatePickerComponent from './ui/DatePicker';
-import SelectCurrency from './ui/SelectCurrency';
-import PickCoin from './ui/PickCoin';
 import AutocompleteCoin from './ui/AutocompleteCoin';
+import DatePickerComponent from './ui/DatePicker';
+import PickCoin from './ui/PickCoin';
+import SelectCurrency from './ui/SelectCurrency';
 
 export const TextFieldWithValidation = withValidationProvider(TextField);
 export const DatePickerWithValidation = withValidationProvider(
@@ -31,3 +31,14 @@ export const VPasswordField = withValidationProvider(PasswordField);
 export const VPickCoin = withValidationProvider(PickCoin);
 export const VNumericTextField = withValidationProvider(NumericTextField);
 export const VAutocompleteCoin = withValidationProvider(AutocompleteCoin);
+export const VCheckbox = withValidationProvider(
+  ({ value, handleChange, ...props }) => {
+    return (
+      <Checkbox
+        {...props}
+        checked={value}
+        onChange={(e) => handleChange(e.target.checked)}
+      />
+    );
+  },
+);
