@@ -2,7 +2,7 @@ import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
-import { Button, Swap } from 'dex-ui';
+import { Button, CopyData, Swap } from 'dex-ui';
 import { groupBy, map, orderBy, split, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -23,6 +23,8 @@ export default function SwapWidget() {
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+
+  const [tgHash, setTgHash] = React.useState('');
 
   const currentFilter = {
     ...{ name: searchParams.get('name'), size: 100 },
@@ -115,6 +117,7 @@ export default function SwapWidget() {
 
     if (hash) {
       const hashQuery = new URLSearchParams(hash);
+      setTgHash(hashQuery);
       const tgWebAppData = new URLSearchParams(hashQuery.get('tgWebAppData'));
       decodedUrl = Buffer.from(
         fromBase64(tgWebAppData.get('start_param')),
@@ -195,6 +198,7 @@ export default function SwapWidget() {
       <Typography mb={2} variant="h6" fontWeight="bold">
         {searchParams.get('name')}
       </Typography>
+      {tgHash && <CopyData data={tgHash} />}
       <Swap
         assetsListBuy={
           assetFrom
