@@ -6,6 +6,8 @@ import { Button, Swap } from 'dex-ui';
 import { groupBy, map, orderBy, split, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { base64DecodeFromString } from 'tronweb/utils';
+import { fromBase64 } from 'uint8array-tools';
 
 import { parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
@@ -99,42 +101,29 @@ export default function SwapWidget() {
     }
   };
   useEffect(() => {
-    const decodedUrl = decodeURIComponent(
+    let decodedUrl = decodeURIComponent(
       searchParams.toString().replace(/&amp%3B|&amp;/g, '&'),
     );
 
     const hash = window.location.hash.slice(1);
 
-    let merchantName = searchParams.get('name');
-    let toNetworkName = searchParams.get('toNetworkName');
-    let toTicker = searchParams.get('toTicker');
-    let fromNetworkName = searchParams.get('fromNetworkName');
-    let fromTicker = searchParams.get('fromTicker');
-    let amount = searchParams.get('amount');
+    const toNetworkName = searchParams.get('toNetworkName');
+    const toTicker = searchParams.get('toTicker');
+    const fromNetworkName = searchParams.get('fromNetworkName');
+    const fromTicker = searchParams.get('fromTicker');
+    const amount = searchParams.get('amount');
 
     if (hash) {
       const hashQuery = new URLSearchParams(hash);
       const tgWebAppData = new URLSearchParams(hashQuery.get('tgWebAppData'));
-      [
-        merchantName,
-        toNetworkName,
-        toTicker,
-        fromNetworkName,
-        fromTicker,
-        amount,
-      ] = tgWebAppData.get('start_param')!.split('__');
-      setSearchParams({
-        name: merchantName,
-        toNetworkName: toNetworkName || '',
-        toTicker: toTicker || '',
-        fromNetworkName: fromNetworkName || '',
-        fromTicker: fromTicker || '',
-        amount: amount || '',
-        miniapp: '1',
-      });
-    } else {
-      setSearchParams(decodedUrl);
+      decodedUrl = Buffer.from(
+        fromBase64(tgWebAppData.get('start_param')),
+        'hex',
+      ).toString();
+      searchParams.set('miniapp', '1');
     }
+
+    setSearchParams(decodedUrl);
 
     if (ad) {
       if (toNetworkName && toTicker) {

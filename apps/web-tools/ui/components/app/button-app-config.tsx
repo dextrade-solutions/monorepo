@@ -11,8 +11,9 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import assetDict from 'dex-helpers/assets-dict';
 import { shortenAddress } from 'dex-helpers';
+import assetDict from 'dex-helpers/assets-dict';
+import { paymentService } from 'dex-services';
 import {
   ButtonIcon,
   PulseLoader,
@@ -38,7 +39,6 @@ import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { WalletConnection } from '../../types';
-import { paymentService } from 'dex-services';
 
 export default function ButtonAppConfig() {
   const { logout } = useAuthP2P();
