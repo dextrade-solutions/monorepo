@@ -2,11 +2,10 @@ import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
-import { Button, CopyData, Swap } from 'dex-ui';
-import { groupBy, map, orderBy, split, uniqBy } from 'lodash';
+import { Button, Swap } from 'dex-ui';
+import { groupBy, map, orderBy, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { base64DecodeFromString } from 'tronweb/utils';
 import { fromBase64 } from 'uint8array-tools';
 
 import { parseCoin } from '../../app/helpers/p2p';
@@ -23,8 +22,6 @@ export default function SwapWidget() {
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
-
-  const [tgHash, setTgHash] = React.useState('');
 
   const currentFilter = {
     ...{ name: searchParams.get('name'), size: 100 },
@@ -107,23 +104,20 @@ export default function SwapWidget() {
       searchParams.toString().replace(/&amp%3B|&amp;/g, '&'),
     );
 
-    const hash = window.location.hash.slice(1);
-
     const toNetworkName = searchParams.get('toNetworkName');
     const toTicker = searchParams.get('toTicker');
     const fromNetworkName = searchParams.get('fromNetworkName');
     const fromTicker = searchParams.get('fromTicker');
     const amount = searchParams.get('amount');
 
+    const hash = window.location.hash.slice(1);
     if (hash) {
       const hashQuery = new URLSearchParams(hash);
-      setTgHash(hashQuery);
       const tgWebAppData = new URLSearchParams(hashQuery.get('tgWebAppData'));
       decodedUrl = Buffer.from(
         fromBase64(tgWebAppData.get('start_param')),
         'hex',
       ).toString();
-      searchParams.set('miniapp', '1');
     }
 
     setSearchParams(decodedUrl);

@@ -85,7 +85,24 @@ export const login = (keyring: any, signature: string, walletId: string) => {
       signature,
       prefixSignMessageByConnectionType(walletConnectionType, publicKey),
     );
-    console.info(bufferToHex(masterPublicKey));
+
+    const hash = window.location.hash.slice(1);
+    let telegramUser;
+    if (hash) {
+      const hashQuery = new URLSearchParams(hash);
+      const tgWebAppData = new URLSearchParams(hashQuery.get('tgWebAppData'));
+      const userEncoded = tgWebAppData.get('user');
+
+      if (!userEncoded) {
+        return null;
+      }
+
+      // Decode the URI component
+      const userDecoded = decodeURIComponent(userEncoded);
+
+      // Parse the JSON string
+      telegramUser = JSON.parse(userDecoded);
+    }
 
     const mnemonicHash = await generateMnemonicHash(masterPublicKey);
 
@@ -94,8 +111,13 @@ export const login = (keyring: any, signature: string, walletId: string) => {
       masterPublicKey: bufferToHex(masterPublicKey),
       signature,
       publicKey,
-      deviceId: navigator.userAgent,
-    }).catch((e) => {});
+      deviceId: telegramUser
+        ? `Telegram Miniapp User:${telegramUser.username}`
+        : navigator.userAgent,
+      telegramUserId: telegramUser?.id,
+    }).catch(() => {
+      // pass
+    });
     // MOCK
     // const authData = {
     //   data: {
