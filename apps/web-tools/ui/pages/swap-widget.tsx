@@ -198,7 +198,6 @@ export default function SwapWidget() {
       <Typography mb={2} variant="h6" fontWeight="bold">
         {searchParams.get('name')}
       </Typography>
-      {tgHash && <CopyData data={tgHash} />}
       <Swap
         assetsListBuy={
           assetFrom
