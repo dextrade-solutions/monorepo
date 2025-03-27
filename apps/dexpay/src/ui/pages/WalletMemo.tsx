@@ -540,7 +540,7 @@ export default function WalletMemo() {
         flexDirection: 'column',
         alignItems: 'center', // Center horizontally
         justifyContent: 'center', // Center vertically
-        minHeight: '80vh', // Ensure full viewport height for vertical centering
+        minHeight: '70vh', // Ensure full viewport height for vertical centering
       }}
     >
       {renderStep()}
