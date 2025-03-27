@@ -1,13 +1,21 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 import { queryClient } from 'dex-helpers/shared';
 
 import { Api } from '../../services/api';
 import { Invoice } from '../../types/invoices';
 
-export default function usePaymentAddress() {
+type PaymentAddressMutationParams = UseMutationOptions<
+  Invoice.View.Response,
+  unknown,
+  Invoice.View.Query
+>;
+
+export default function usePaymentAddress(
+  params?: PaymentAddressMutationParams,
+) {
   return useMutation<Invoice.View.Response, unknown, Invoice.View.Query>({
-    mutationFn: (params) => {
-      return Api.Invoice.paymentAddress(params);
+    mutationFn: (data) => {
+      return Api.Invoice.paymentAddress(data);
     },
     onSuccess: async (data, variables) => {
       await queryClient.setQueryData(
@@ -15,5 +23,6 @@ export default function usePaymentAddress() {
         data,
       );
     },
+    ...params,
   });
 }

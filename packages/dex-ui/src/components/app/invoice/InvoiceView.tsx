@@ -51,10 +51,15 @@ export default function InvoiceView({
 }) {
   const [loadingWallet, setLoadingWallet] = useState<Connection>();
   const [connectedWallet, setConnectedWallet] = useState<Connection>();
+  const [error, setError] = useState<string>();
 
   const { showModal, hideModal } = useGlobalModalContext();
   const currencies = useCurrencies();
-  const changeAddress = usePaymentAddress();
+  const changeAddress = usePaymentAddress({
+    onError: () => {
+      setError('Sorry, this coin is not available now');
+    },
+  });
   const paymentAssetId = invoice.currency?.iso_with_network;
 
   const paymentAsset = useMemo<AssetModel | null>(() => {
@@ -461,12 +466,6 @@ export default function InvoiceView({
           <Typography>Due: {deltaStr}</Typography>
         </Alert>
       )}
-      {isPreviewMode && isOverpaid && (
-        <Alert sx={{ justifyContent: 'center', my: 2 }} severity="info">
-          The invoice is overpaid by {deltaStr}. Please contact support for a
-          refund.
-        </Alert>
-      )}
       <>
         <Box display="flex" justifyContent="center" alignItems="center">
           {changeAddress.isPending ? (
@@ -478,7 +477,10 @@ export default function InvoiceView({
           ) : (
             <>
               {canCurrencyChange && (
-                <Button variant={secondarySendAmount ? 'text' : 'contained'}>
+                <Button
+                  sx={{ my: 2 }}
+                  variant={secondarySendAmount ? 'text' : 'contained'}
+                >
                   <SelectCoinsItem
                     className="flex-shrink"
                     value={paymentAsset}
@@ -512,6 +514,17 @@ export default function InvoiceView({
           )}
         </Box>
 
+        {isPreviewMode && isOverpaid && (
+          <Alert sx={{ justifyContent: 'center', my: 2 }} severity="info">
+            The invoice is overpaid by {deltaStr}. Please contact support for a
+            refund.
+          </Alert>
+        )}
+        {error && (
+          <Alert sx={{ justifyContent: 'center', my: 2 }} severity="error">
+            {error}
+          </Alert>
+        )}
         {invoice.description && (
           <Alert
             sx={{ justifyContent: 'center' }}
