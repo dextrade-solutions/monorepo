@@ -2,7 +2,7 @@ import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
 import { BUILT_IN_NETWORKS, DEXTRADE_P2P_TELEGRAM_BOT } from 'dex-helpers';
 import { queryClient } from 'dex-helpers/shared';
-import { isTMA, openTelegramLink } from '@telegram-apps/sdk';
+import { isTMA, miniApp, openTelegramLink } from '@telegram-apps/sdk';
 
 import {
   Trade,
@@ -173,6 +173,7 @@ export const createSwapP2P = (props: {
     const exchangePairType = determineTradeTypeByAd(exchange);
 
     if (isTMA()) {
+      miniApp.close();
       return openTelegramLink(DEXTRADE_P2P_TELEGRAM_BOT);
     }
     const response = await handleRequest(
