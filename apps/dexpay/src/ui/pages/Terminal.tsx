@@ -84,13 +84,12 @@ export default function Terminal() {
       if (!primaryCoin) {
         throw new Error('createInvoiceForm - Primary currency id not found');
       }
-
       return createInvoice.mutateAsync([
         { projectId: user?.project.id },
         {
           converted_amount_requested: amount,
           converted_coin_id: primaryCoin.id,
-          currency_id: selectedAsset.currencyId,
+          currency_id: selectedAsset.currency.id,
         },
       ]);
     },
@@ -176,7 +175,7 @@ export default function Terminal() {
         alignItems: 'center', // Horizontally center content
       }}
     >
-      <Box mt={4} display="flex" sx={{ top: 40 }}>
+      <Box my={4} display="flex" sx={{ top: 40 }}>
         <Typography mb={3} color="tertiary.contrastText">
           Dex<strong>Pay Terminal</strong>
         </Typography>

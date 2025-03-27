@@ -8,10 +8,7 @@ import { useCurrencies } from '../../../hooks/use-currencies';
 import { useMutation } from '../../../hooks/use-query';
 import { Preferences } from '../../../services';
 import { CurrencyModel, ICurrency } from '../../../types';
-import {
-  MultiselectAssetsWithValidation,
-  VAutocompleteCoin,
-} from '../../fields';
+import { MultiselectAssetsWithValidation, VSelectCoin } from '../../fields';
 
 interface FormData {
   primaryCoin: ICurrency | null;
@@ -87,7 +84,7 @@ const PredefinedCurrenciesForm = () => {
         <Typography mb={1} fontWeight="bold">
           Primary coin
         </Typography>
-        <VAutocompleteCoin name="primaryCoin" form={form} />
+        <VSelectCoin name="primaryCoin" form={form} />
       </Paper>
       <MultiselectAssetsWithValidation
         name="selectedCurrencies"

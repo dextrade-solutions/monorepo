@@ -20,7 +20,7 @@ const titles = {
   [ROUTE_WALLET_DEPOSIT]: 'Deposit',
   [ROUTE_WALLET_WITHDRAW]: 'Withdraw',
   [ROUTE_MERCHANT]: 'Merchant',
-  [ROUTE_INVOICE_CREATE]: 'Create invoice',
+  [ROUTE_INVOICE_CREATE]: 'New invoice',
   [ROUTE_P2P]: 'P2P',
   [ROUTE_P2P_CREATE]: 'Add pair',
   [ROUTE_HISTORY]: 'History',

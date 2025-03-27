@@ -33,6 +33,7 @@ import {
   VCheckbox,
 } from '../../fields';
 import SelectCoinAmount from '../../ui/SelectCoinAmount';
+import { ChevronDown } from 'lucide-react';
 
 interface InvoiceData {
   overrideShortcut: boolean;
@@ -161,7 +162,7 @@ const CreateInvoiceForm = () => {
     >
       <Box my={1} display="flex" alignItems="center">
         <CircleNumber color="tertiary.main" number={1} />
-        <Typography ml={1} color="text.secondary">
+        <Typography ml={1} color="text.tertiary" fontWeight="bold">
           Primary coin
         </Typography>
       </Box>
@@ -172,7 +173,7 @@ const CreateInvoiceForm = () => {
       />
       <Box mt={3} display="flex" alignItems="center">
         <CircleNumber color="tertiary.main" number={2} />
-        <Typography ml={1} color="text.secondary">
+        <Typography ml={1} color="text.tertiary" fontWeight="bold">
           Crypto currency
         </Typography>
       </Box>
@@ -200,7 +201,7 @@ const CreateInvoiceForm = () => {
         }}
         data-testid="invoice-create-options-accordion"
       >
-        <AccordionSummary expandIcon={<Icon name="chevron-down" />}>
+        <AccordionSummary expandIcon={<ChevronDown />}>
           Options
         </AccordionSummary>
         <AccordionDetails>

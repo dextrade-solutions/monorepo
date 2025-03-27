@@ -6,16 +6,29 @@ import {
   Divider,
   ListItemButton,
   Button,
+  ListItemAvatar,
 } from '@mui/material';
-import { ButtonIcon, ModalProps } from 'dex-ui';
-import { PlusIcon } from 'lucide-react';
+import { ButtonIcon, ModalProps, useGlobalModalContext } from 'dex-ui';
+import { PlusIcon, Tag, Zap } from 'lucide-react';
 import React from 'react';
 
+import { CurrencyGroupType } from '../constants/coins';
 import { useAuth } from '../hooks/use-auth';
 import { IProject } from '../types';
 
 const SelectProject = ({ hideModal }: ModalProps) => {
-  const { user, setProject, projects } = useAuth();
+  const { user, setProject, projects, invoicePreferences } = useAuth();
+  const { showModal } = useGlobalModalContext();
+
+  const handleShortcut = (params: {
+    isOpenInvoice?: boolean;
+    currencyGroupType: CurrencyGroupType;
+  }) => {
+    showModal({
+      name: 'SHORTCUT_NEW_INVOICE',
+      ...params,
+    });
+  };
 
   const handleSelectProject = (project: IProject) => {
     setProject(project);
@@ -26,23 +39,64 @@ const SelectProject = ({ hideModal }: ModalProps) => {
 
   return (
     <Box padding={5}>
-      <Box display="flex" justifyContent="space-between" marginBottom={2}>
-        <Typography>Select project</Typography>
-        <ButtonIcon
-          iconName="close"
-          color="secondary"
-          size="sm"
-          onClick={hideModal}
-        />
-      </Box>
+      <Typography variant="h6" color="text.tertiary" fontWeight="bold">
+        Shortcuts
+      </Typography>
 
-      <Box marginY={1}>
-        <Divider />
-      </Box>
+      {invoicePreferences && (
+        <ListItemButton
+          sx={{ color: 'text.tertiary' }}
+          onClick={() =>
+            handleShortcut({ currencyGroupType: CurrencyGroupType.my })
+          }
+        >
+          <ListItemAvatar>
+            <Zap size={16} opacity={0.5} />
+            <Tag />
+          </ListItemAvatar>
+          <ListItemText
+            primary="New invoice"
+            secondary="With your saved prefrencies"
+          />
+        </ListItemButton>
+      )}
+      <ListItemButton
+        sx={{ color: 'text.tertiary' }}
+        onClick={() =>
+          handleShortcut({ currencyGroupType: CurrencyGroupType.mostPopular })
+        }
+      >
+        <ListItemAvatar>
+          <Zap size={16} opacity={0.5} />
+          <Tag />
+        </ListItemAvatar>
+        <ListItemText
+          primary="Invoice with most popular crypto"
+          secondary="USDT, TRX, BTC, ETH, SOL, BNB"
+        />
+      </ListItemButton>
+      <ListItemButton
+        sx={{ color: 'text.tertiary' }}
+        onClick={() =>
+          handleShortcut({ currencyGroupType: CurrencyGroupType.usdt })
+        }
+      >
+        <ListItemAvatar>
+          <Zap size={16} opacity={0.5} />
+          <Tag />
+        </ListItemAvatar>
+        <ListItemText primary="USDT Invoice" secondary="On all networks" />
+      </ListItemButton>
+
+      <Divider sx={{ my: 2 }} />
       <Box>
+        <Typography variant="h6" color="text.tertiary" fontWeight="bold">
+          Projects
+        </Typography>
         <MenuList>
           {renderList.map((project) => (
             <ListItemButton
+              sx={{ color: 'text.tertiary' }}
               key={project.id}
               onClick={() => handleSelectProject(project)}
             >

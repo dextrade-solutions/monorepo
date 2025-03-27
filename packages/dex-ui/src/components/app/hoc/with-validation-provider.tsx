@@ -50,8 +50,11 @@ const withValidationProvider =
           }
         }
       };
-
-      findErrors();
+      if (form.validationSchema) {
+        findErrors();
+      } else {
+        form.setErrors(name, []);
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [form.values]);
 

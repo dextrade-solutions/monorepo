@@ -5,14 +5,11 @@ import {
   MenuList,
   Typography,
 } from '@mui/material';
-import { useGlobalModalContext } from 'dex-ui';
-import { Tag, Zap } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import React, { useState } from 'react';
 
 import InvoiceForm from '../components/invoices/form/InvoiceForm';
 import OpenInvoice from '../components/invoices/form/OpenInvoiceForm';
-import { CurrencyGroupType } from '../constants/coins';
-import { useAuth } from '../hooks/use-auth';
 
 const TYPES = {
   fixedInvoice: 1,
@@ -22,9 +19,10 @@ const TYPES = {
 type InvoiceType = (typeof TYPES)[keyof typeof TYPES];
 
 export default function CreateInvoice() {
-  const { invoicePreferences } = useAuth();
-  const { showModal } = useGlobalModalContext();
   const [type, setType] = useState<InvoiceType>();
+
+  return <InvoiceForm />;
+
   // Select type: Fixed Amount Invoice, Open invoice
   if (type === TYPES.fixedInvoice) {
     return <InvoiceForm />;
@@ -32,16 +30,6 @@ export default function CreateInvoice() {
   if (type === TYPES.openInvoice) {
     return <OpenInvoice />;
   }
-
-  const handleShortcut = (params: {
-    isOpenInvoice?: boolean;
-    currencyGroupType: CurrencyGroupType;
-  }) => {
-    showModal({
-      name: 'SHORTCUT_NEW_INVOICE',
-      ...params,
-    });
-  };
 
   return (
     <MenuList>
@@ -70,72 +58,6 @@ export default function CreateInvoice() {
         <ListItemText
           primary="Open invoice"
           secondary="Allows users to enter and pay any amount multiple times using a reusable payment link, ideal for flexible payments and donations."
-        />
-      </ListItemButton> */}
-      <Typography variant="h6" color="text.tertiary" fontWeight="bold">
-        Shortcuts
-      </Typography>
-
-      {invoicePreferences && (
-        <ListItemButton
-          sx={{ color: 'text.tertiary' }}
-          onClick={() =>
-            handleShortcut({ currencyGroupType: CurrencyGroupType.my })
-          }
-        >
-          <ListItemAvatar>
-            <Zap size={16} opacity={0.5} />
-            <Tag />
-          </ListItemAvatar>
-          <ListItemText
-            primary="My shortcut"
-            secondary="Your own prefrencies"
-          />
-        </ListItemButton>
-      )}
-      <ListItemButton
-        sx={{ color: 'text.tertiary' }}
-        onClick={() =>
-          handleShortcut({ currencyGroupType: CurrencyGroupType.mostPopular })
-        }
-      >
-        <ListItemAvatar>
-          <Zap size={16} opacity={0.5} />
-          <Tag />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Most popular crypto"
-          secondary="USDT, TRX, BTC, ETH, SOL, BNB"
-        />
-      </ListItemButton>
-      <ListItemButton
-        sx={{ color: 'text.tertiary' }}
-        onClick={() =>
-          handleShortcut({ currencyGroupType: CurrencyGroupType.usdt })
-        }
-      >
-        <ListItemAvatar>
-          <Zap size={16} opacity={0.5} />
-          <Tag />
-        </ListItemAvatar>
-        <ListItemText primary="USDT" secondary="On all networks" />
-      </ListItemButton>
-      {/* <ListItemButton
-        sx={{ color: 'text.tertiary' }}
-        onClick={() =>
-          handleShortcut({
-            isOpenInvoice: true,
-            currencyGroupType: CurrencyGroupType.mostPopular,
-          })
-        }
-      >
-        <ListItemAvatar>
-          <Zap size={16} opacity={0.5} />
-          <PackageOpen />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Open invoice with most used crypto"
-          secondary="Creates with USDT, USDC, BTC, ETH"
         />
       </ListItemButton> */}
     </MenuList>

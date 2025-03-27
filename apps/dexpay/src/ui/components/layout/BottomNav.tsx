@@ -64,8 +64,7 @@ export default function BottomNav() {
   }, [location]);
 
   const items = [MERCHANT, P2P, HOME, HISTORY, USER];
-
-  if (user!.isCashier) {
+  if (user!.isCashier || !user?.isRegistrationCompleted) {
     return null;
     // items = [HISTORY, HOME, USER];
   }

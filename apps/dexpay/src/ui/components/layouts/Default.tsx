@@ -29,7 +29,6 @@ export const LayoutDefault: React.FC<{ children: React.ReactNode }> = ({
             ? `linear-gradient(180deg, ${theme.palette.tertiary.main} 40%, ${theme.palette.background.default} 40%)`
             : theme.palette.background.default,
         width: '100%',
-        pb: 6,
         mx: 'auto',
       }}
     >
@@ -39,8 +38,7 @@ export const LayoutDefault: React.FC<{ children: React.ReactNode }> = ({
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
-          padding: (theme) => theme.spacing(0, 2, 4),
-          paddingBottom: 10,
+          padding: (theme) => theme.spacing(0, 2, 14),
           width: '100%',
         }}
       >

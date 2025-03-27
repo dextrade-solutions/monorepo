@@ -10,7 +10,7 @@ import {
 import { getCoinIconByUid } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import UrlIcon from '../url-icon';
 import { useAssetsSearch } from './hooks/useAssetsSearch';
@@ -29,6 +29,9 @@ export function MultiselectAssets({
   onChange: (newVal: AssetModel[]) => void;
 }) {
   const [search, setSearch] = useState('');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
+  const inputRef = useRef<HTMLInputElement>(null); // Ref for input
 
   const filteredAssetList = useMemo(() => {
     const valueIso = value.map((i) => i.iso);
@@ -48,6 +51,12 @@ export function MultiselectAssets({
     onChange(value.filter((v) => v.iso !== i.iso));
     handleSearch(search);
   };
+  const onAdd = (i: AssetModel) => {
+    onChange([...value, i]);
+    if (inputRef.current) {
+      inputRef.current.focus(); // Re-focus input after add
+    }
+  };
 
   const preloader = () => (
     <Box display="flex" flexWrap="wrap">
@@ -56,8 +65,21 @@ export function MultiselectAssets({
       ))}
     </Box>
   );
+
+  // Handle clicks outside the component.
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      containerRef.current &&
+      containerRef.current.contains(event.target as Node) &&
+      inputRef.current
+    ) {
+      inputRef.current.focus();
+    }
+  };
+
   return (
     <Paper
+      ref={containerRef}
       elevation={0}
       sx={{
         p: 1,
@@ -71,7 +93,7 @@ export function MultiselectAssets({
       }}
       data-testid="multiselect-assets"
     >
-      <FormControl fullWidth>
+      <FormControl fullWidth onClick={handleClickOutside}>
         <Box display="flex" flexWrap="wrap">
           {value.map((i) => (
             <Chip
@@ -97,6 +119,9 @@ export function MultiselectAssets({
           ))}
         </Box>
         <Input
+          inputRef={inputRef}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
           sx={{
             p: 1,
           }}
@@ -106,7 +131,14 @@ export function MultiselectAssets({
         />
         {isLoading && preloader()}
         {!isLoading && (
-          <Box display="flex" flexWrap="wrap">
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            sx={{
+              transition: 'opacity 0.3s ease-in-out',
+              opacity: isInputFocused ? 1 : 0.5,
+            }}
+          >
             {searchItems.map((i) => (
               <Chip
                 sx={{
@@ -126,7 +158,7 @@ export function MultiselectAssets({
                 }
                 variant="outlined"
                 icon={<UrlIcon url={getCoinIconByUid(i.uid)} />}
-                onClick={() => onChange([...value, i])}
+                onClick={() => onAdd(i)}
               />
             ))}
           </Box>

@@ -126,7 +126,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     Vault.my,
     [{ projectId: user?.project?.id }, { page: 0 }],
     {
-      enabled: Boolean(user?.isRegistrationCompleted),
+      enabled: !user?.isCashier && Boolean(user?.isRegistrationCompleted),
     },
   );
   const invoicePreferences = useQuery(

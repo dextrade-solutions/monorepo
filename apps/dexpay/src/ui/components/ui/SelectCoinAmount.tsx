@@ -2,7 +2,7 @@ import { Box, InputAdornment, FormControl, Input } from '@mui/material';
 import { withValidationProvider } from 'dex-ui';
 import React from 'react';
 
-import AutocompleteCoin from './AutocompleteCoin';
+import SelectCoin from './SelectCoin';
 import { ICoin } from '../../types';
 
 type InputValue = {
@@ -62,10 +62,7 @@ function SelectCoinAmount({
           onChange={handleInputChange}
           endAdornment={
             <InputAdornment sx={{ width: 200, pr: 1 }} position="end">
-              <AutocompleteCoin
-                value={value.coin}
-                onChange={handleSelectChange}
-              />
+              <SelectCoin value={value.coin} onChange={handleSelectChange} />
             </InputAdornment>
           }
         />

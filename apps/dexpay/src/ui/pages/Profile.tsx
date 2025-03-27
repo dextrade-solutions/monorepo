@@ -2,7 +2,6 @@ import { Button, Card, CardContent, Box, Typography } from '@mui/material';
 import { LogOut } from 'lucide-react';
 import React from 'react';
 
-import PredefinedCurrenciesForm from '../components/invoices/form/PredefinedCurrenciesForm';
 import { useAuth } from '../hooks/use-auth';
 
 export default function Profile() {
@@ -24,22 +23,6 @@ export default function Profile() {
           </Typography>
           <Typography fontWeight="bold">Email</Typography>
           <Typography>{me?.email}</Typography>
-        </CardContent>
-      </Card>
-
-      <Card
-        elevation={0}
-        sx={{
-          my: 2,
-          bgcolor: 'secondary.dark',
-          borderRadius: 1,
-        }}
-      >
-        <CardContent>
-          <Typography color="text.secondary" variant="h5" mb={2}>
-            Invoices
-          </Typography>
-          <PredefinedCurrenciesForm />
         </CardContent>
       </Card>
 

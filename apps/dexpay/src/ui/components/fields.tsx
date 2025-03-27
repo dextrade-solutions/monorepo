@@ -10,6 +10,7 @@ import AutocompleteCoin from './ui/AutocompleteCoin';
 import DatePickerComponent from './ui/DatePicker';
 import PickCoin from './ui/PickCoin';
 import SelectCurrency from './ui/SelectCurrency';
+import SelectCoin from './ui/SelectCoin';
 
 export const TextFieldWithValidation = withValidationProvider(TextField);
 export const DatePickerWithValidation = withValidationProvider(
@@ -31,6 +32,7 @@ export const VPasswordField = withValidationProvider(PasswordField);
 export const VPickCoin = withValidationProvider(PickCoin);
 export const VNumericTextField = withValidationProvider(NumericTextField);
 export const VAutocompleteCoin = withValidationProvider(AutocompleteCoin);
+export const VSelectCoin = withValidationProvider(SelectCoin);
 export const VCheckbox = withValidationProvider(
   ({ value, handleChange, ...props }) => {
     return (
