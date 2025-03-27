@@ -1,4 +1,5 @@
-import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { init, isTMA } from '@telegram-apps/sdk';
 import { DexUiProvider, useDexUI } from 'dex-ui';
 import { useSelector } from 'react-redux';
 
@@ -13,6 +14,10 @@ import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
 import { store } from './store/store';
+
+if (isTMA()) {
+  init();
+}
 
 export function App() {
   const theme = useSelector(getCurrentTheme);

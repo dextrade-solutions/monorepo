@@ -1,7 +1,9 @@
 import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
-import { BUILT_IN_NETWORKS } from 'dex-helpers';
+import { BUILT_IN_NETWORKS, DEXTRADE_P2P_TELEGRAM_BOT } from 'dex-helpers';
 import { queryClient } from 'dex-helpers/shared';
+import { isTMA, openTelegramLink } from '@telegram-apps/sdk';
+
 import {
   Trade,
   AdItem,
@@ -169,6 +171,10 @@ export const createSwapP2P = (props: {
     };
 
     const exchangePairType = determineTradeTypeByAd(exchange);
+
+    if (isTMA()) {
+      return openTelegramLink(DEXTRADE_P2P_TELEGRAM_BOT);
+    }
     const response = await handleRequest(
       dispatch,
       P2PService.clientExchangeStart(exchangePairType, {
@@ -184,6 +190,7 @@ export const createSwapP2P = (props: {
       }),
       { on401 },
     );
+
     if (exchange.isAtomicSwap) {
       window.localStorage.setItem(response.data.id, JSON.stringify(keypair));
     }

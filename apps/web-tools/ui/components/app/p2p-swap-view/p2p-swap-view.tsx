@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { getAdLimitPerExchange, NetworkNames, NetworkTypes } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
-import { isEqual, floor } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

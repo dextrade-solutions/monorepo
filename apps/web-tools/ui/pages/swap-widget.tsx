@@ -1,5 +1,6 @@
 import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { isTMA } from '@telegram-apps/sdk';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Button, Swap } from 'dex-ui';
@@ -75,7 +76,7 @@ export default function SwapWidget() {
       if (fromValue) {
         tradequery.set('amount', fromValue.toString());
       }
-      if (searchParams.get('miniapp')) {
+      if (isTMA()) {
         navigate(`${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`);
         return;
       }
