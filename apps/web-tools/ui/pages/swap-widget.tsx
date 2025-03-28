@@ -3,13 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import { isTMA } from '@telegram-apps/sdk';
 import { formatFundsAmount, NetworkNames, SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
-import { Button, Swap } from 'dex-ui';
+import { AssetPriceOutput, Button, Swap } from 'dex-ui';
 import { groupBy, map, orderBy, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fromBase64 } from 'uint8array-tools';
 
-import { parseCoin } from '../../app/helpers/p2p';
+import { getMaxOutputDecimalPlaces, parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
 import { EXCHANGE_VIEW_ROUTE } from '../helpers/constants/routes';
 
@@ -94,8 +94,8 @@ export default function SwapWidget() {
         setFromValue(
           formatFundsAmount(
             newValue / currentAd.coinPair.price,
-            '',
-            assetFrom.network === NetworkNames.fiat ? 2 : 8,
+            undefined,
+            getMaxOutputDecimalPlaces(assetFrom),
           ),
         );
       }
@@ -105,8 +105,8 @@ export default function SwapWidget() {
         setToValue(
           formatFundsAmount(
             newValue * currentAd.coinPair.price,
-            '',
-            assetTo.network === NetworkNames.fiat ? 2 : 8,
+            undefined,
+            getMaxOutputDecimalPlaces(assetTo),
           ),
         );
       }
@@ -194,6 +194,7 @@ export default function SwapWidget() {
   const disableReverse =
     (assetFrom && !toAssets.grouped[assetFrom.iso]) ||
     (assetTo && !fromAssets.grouped[assetTo.iso]);
+
   return (
     <Box
       display="flex"
@@ -234,6 +235,23 @@ export default function SwapWidget() {
         onSellAmountChange={updateValues}
         onBuyAmountChange={(v) => updateValues(v, true)}
       />
+      {currentAd && (
+        <Box
+          color="text.secondary"
+          mt={2}
+          px={2}
+          width="100%"
+          display="flex"
+          justifyContent="space-between"
+        >
+          <Typography>Rate</Typography>
+          <AssetPriceOutput
+            price={currentAd.coinPair.price}
+            tickerFrom={currentAd.fromCoin.ticker}
+            tickerTo={currentAd.toCoin.ticker}
+          />
+        </Box>
+      )}
       <Grow in={Boolean(assetFrom && assetTo)}>
         <Box width="100%">
           <Button

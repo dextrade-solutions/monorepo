@@ -36,3 +36,13 @@ export function getNative(network: NetworkNames): AssetModel {
   }
   return item as AssetModel;
 }
+
+export function getMaxOutputDecimalPlaces(asset: AssetModel) {
+  if (
+    asset.symbol.toLowerCase().includes('usd') ||
+    asset.network === NetworkNames.fiat
+  ) {
+    return 2;
+  }
+  return 10;
+}
