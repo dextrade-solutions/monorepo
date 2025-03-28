@@ -20,5 +20,12 @@ export default function PaymentProcessing({
     return 'Something went wrong. Invoice is not created...';
   }
 
-  return <InvoiceView hideHeader invoice={invoice.data as IInvoiceFull} />;
+  return (
+    <InvoiceView
+      showInvoiceUrlQr
+      showQrListItem
+      hideHeader
+      invoice={invoice.data as IInvoiceFull}
+    />
+  );
 }

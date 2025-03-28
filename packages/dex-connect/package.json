@@ -9,7 +9,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "dex-helpers": "workspace:^",
     "events": "^3.3.0",
-    "wagmi": "2.14.9"
+    "wagmi": "^2.14.15"
   },
   "files": [
     "dist"

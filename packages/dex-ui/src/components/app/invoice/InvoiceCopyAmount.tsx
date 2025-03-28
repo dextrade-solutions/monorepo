@@ -7,15 +7,17 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { CopyData, QRCode } from '../../ui';
 
 export const InvoiceCopyAmount = ({
+  showInvoiceUrlQr,
   invoice,
   amount,
 }: {
+  showInvoiceUrlQr?: boolean;
   invoice: IInvoiceFull;
   amount: string;
 }) => {
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
   const [copiedAmount, handleCopyAmount] = useCopyToClipboard();
-  const paymentLink = invoice.payment_page_url.replace('pay.', 'ecom.');
+  const paymentLink = invoice.payment_page_url;
   return (
     <Box margin={3}>
       <Box display="flex">
@@ -35,12 +37,16 @@ export const InvoiceCopyAmount = ({
         </Typography>
         <CopyData data={invoice.address} />
       </Box>
-      <Box>
-        <QRCode value={paymentLink} hideDownloadQr />
-      </Box>
-      <Alert sx={{ mt: 2 }} severity="info">
-        Scan qr to open invoice on your device
-      </Alert>
+      {showInvoiceUrlQr && (
+        <>
+          <Box>
+            <QRCode value={paymentLink} hideDownloadQr />
+          </Box>
+          <Alert sx={{ mt: 2 }} severity="info">
+            Scan qr to open invoice on your device
+          </Alert>
+        </>
+      )}
       <Grid container spacing={1} my={2}>
         <Grid item xs={6}>
           <Button
