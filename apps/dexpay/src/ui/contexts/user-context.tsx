@@ -55,6 +55,7 @@ interface UserContextType {
   setCompleteReginstration: () => void;
   setPrimaryCurrency: (v: string) => void;
   authenticate: (accessToken: string, refreshToken: string) => Promise<void>;
+  refreshProjects: () => void;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -83,6 +84,7 @@ export const UserContext = createContext<UserContextType>({
   logout: () => {},
   signUp: () => {},
   authencticate: () => {},
+  refreshProjects: () => {},
 });
 
 const getRole = (projectPermissions = [], currentProjectId: number) => {
@@ -113,7 +115,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const memos = useQuery(
     Memo.my,
-    { page: 0 },
+    { page: 0, is_imported: 1 },
     {
       enabled: false,
     },
@@ -290,6 +292,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         ...prev!,
         primaryCurrency: v,
       }));
+    },
+    refreshProjects: () => {
+      projects.refetch();
     },
   };
 

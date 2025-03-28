@@ -220,6 +220,8 @@ export namespace Project {
 
     export interface Body {
       name: string;
+      username: string;
+      drain_is_enabled?: boolean;
     }
 
     export interface Response {

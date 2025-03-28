@@ -1,4 +1,4 @@
-import { TxStatus } from "../services/statuses";
+import { TxStatus } from '../services/statuses';
 
 export interface INetwork {
   id: number;
@@ -26,6 +26,9 @@ export interface IProject {
     updatedAt: string;
     deletedAt: string | null;
   }[];
+  drain_rule: {
+    is_enabled: boolean;
+  };
 }
 
 export interface IVault {
@@ -75,7 +78,6 @@ export interface ICoin {
   updatedAt: string;
   deletedAt: string | null;
 }
-
 
 export interface ITransaction {
   id: number;

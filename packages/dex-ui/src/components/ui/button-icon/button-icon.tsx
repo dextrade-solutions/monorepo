@@ -10,7 +10,7 @@ export const ButtonIcon = ({
   ariaLabel,
   className,
   color = 'default',
-  size = 'md',
+  size,
   iconName,
   disabled,
   iconProps,
@@ -39,7 +39,7 @@ export const ButtonIcon = ({
       disabled={disabled}
       {...props}
     >
-      <Icon name={iconName} size={size} {...iconProps} />
+      <Icon name={iconName} size={size || 'md'} {...iconProps} />
     </IconButton>
   );
 };

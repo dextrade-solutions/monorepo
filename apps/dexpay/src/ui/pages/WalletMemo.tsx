@@ -59,6 +59,14 @@ export default function WalletMemo() {
     },
   });
 
+  const handleMobileAppContinue = () => {
+    return projectInit.mutateAsync([
+      // @ts-expect-error id is always present
+      { id: auth.user?.project!.id },
+      { mnemonic_encrypted_id: Number(connectionId) },
+    ]);
+  };
+
   const externalConnection = useMutation(Memo.externalConnection, {
     onSuccess: (data) => {
       setExternalConnectionResponse(data);
@@ -486,6 +494,17 @@ export default function WalletMemo() {
                     onClick={tryAgainConnection}
                   >
                     Try Again
+                  </Button>
+                )}
+
+                {connectionStatus.data?.is_done && (
+                  <Button
+                    variant="contained"
+                    gradient
+                    sx={{ mt: 2 }}
+                    onClick={handleMobileAppContinue}
+                  >
+                    Continue
                   </Button>
                 )}
 
