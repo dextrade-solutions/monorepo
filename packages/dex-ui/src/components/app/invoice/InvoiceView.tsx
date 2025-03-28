@@ -449,7 +449,7 @@ export default function InvoiceView({
           )}
         </Box>
 
-        {isPreviewMode && isOverpaid && (
+        {isPreviewMode && isOverpaid && absDelta > 1 && (
           <Alert sx={{ justifyContent: 'center', my: 2 }} severity="info">
             The invoice is overpaid by {deltaStr}. Please contact support for a
             refund.
