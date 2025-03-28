@@ -161,7 +161,7 @@ export default function InvoiceView({
     invoice.converted_amount_requested_f || invoice.amount_requested_f,
   );
   const primarySendCoin = invoice.converted_coin?.iso;
-  const primaryRecievedAmount = Number(
+  const primaryRecievedAmount = parseFloat(
     invoice.converted_amount_received_total_f,
   );
   const primaryDelta = primarySendAmount - primaryRecievedAmount;
@@ -180,10 +180,12 @@ export default function InvoiceView({
     payStr = `Pay ${payStr}`;
   }
 
-  const deltaStr = formatCurrency(
-    Math.abs(primaryDelta || secondaryDelta),
-    primarySendCoin || secondarySendCoin,
-  );
+  const absDelta = Math.abs(primaryDelta || secondaryDelta);
+
+  const deltaStr =
+    absDelta < 1
+      ? absDelta.toFixed(8).replace(/0+$/u, '')
+      : formatCurrency(absDelta, primarySendCoin || secondarySendCoin);
 
   const mainIcon = <Icon size="lg" name="tag" />;
 
