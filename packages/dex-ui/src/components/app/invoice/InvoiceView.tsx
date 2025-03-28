@@ -10,11 +10,9 @@ import {
   Skeleton,
   Typography,
   Avatar,
-  ListItem,
-  Paper,
 } from '@mui/material';
 import { Connection, determineConnectionType } from 'dex-connect';
-import { formatCurrency, getQRuriPayment, shortenAddress } from 'dex-helpers';
+import { formatCurrency, isMobileWeb, shortenAddress } from 'dex-helpers';
 import assetsDict from 'dex-helpers/assets-dict';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
@@ -29,9 +27,10 @@ import {
   AssetItem,
 } from '../../ui';
 import WalletList from '../wallet-list';
-import { InvoiceStatus, PAYMENT_QR_SUPPORTED } from './constants';
+import { InvoiceStatus } from './constants';
 import { useGlobalModalContext } from '../modals';
 import { InvoiceCopyAmount } from './InvoiceCopyAmount';
+import InvoiceQr from './InvoiceQr';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import { IInvoiceFull } from './types/entities';
@@ -40,9 +39,13 @@ export default function InvoiceView({
   invoice,
   preview,
   hideHeader,
+  showInvoiceUrlQr,
+  showQrListItem,
   connections: allConnections = [],
   onBack,
 }: {
+  showInvoiceUrlQr?: boolean;
+  showQrListItem?: boolean;
   preview?: boolean;
   invoice: IInvoiceFull;
   hideHeader?: boolean;
@@ -217,7 +220,11 @@ export default function InvoiceView({
   const showCopy = (item: IInvoiceFull) => {
     showModal({
       component: () => (
-        <InvoiceCopyAmount invoice={item} amount={secondaryDelta} />
+        <InvoiceCopyAmount
+          showInvoiceUrlQr={showInvoiceUrlQr}
+          invoice={item}
+          amount={secondaryDelta}
+        />
       ),
     });
   };
@@ -262,158 +269,84 @@ export default function InvoiceView({
     </Button>
   ) : null;
 
-  const paymentQrWallets = paymentAsset
-    ? PAYMENT_QR_SUPPORTED[paymentAsset.iso] || []
-    : [];
-
   const renderPaymentMethods = () => (
     <MenuList>
-      {connectedWallet ? (
-        <>
-          <ListItemButton>
-            <ListItemAvatar>
-              <UrlIcon url={connectedWallet.icon} />
-            </ListItemAvatar>
-            <ListItemText
-              primary={connectedWallet.name}
-              secondary={shortenAddress(connectedWallet.connected.address)}
-            />
-          </ListItemButton>
-          <InvoicePayBtn
-            payCallback={() =>
-              connectedWallet.txSend({
-                asset: paymentAsset,
-                amount: secondaryDelta,
-                recipient: invoice.address,
-              })
-            }
-          />
-        </>
-      ) : (
-        <>
-          {paymentQrWallets.length > 0 && (
-            <ListItemButton
-              className="bordered"
-              data-testid="qrcode-payment-uri"
-              disabled={changeAddress.isPending}
-              onClick={() =>
-                showModal({
-                  name: 'QR_MODAL',
-                  hideDownloadQr: true,
-                  title: 'Payment QR',
-                  gradientProps: {
-                    type: 'linear',
-                    rotation: 45,
-                    colorStops: [
-                      { offset: 0, color: '#00C283' },
-                      { offset: 0.4, color: '#3b82f6' },
-                    ],
-                  },
-                  description: (
-                    <Box>
-                      <Typography textAlign="center">
-                        <Typography variant="body2" color="text.secondary">
-                          Recipient
-                        </Typography>
-                        {shortenAddress(invoice.address)}
-                      </Typography>
-                      <Paper
-                        elevation={0}
-                        sx={{ bgcolor: 'secondary.dark', my: 2 }}
-                      >
-                        <MenuList>
-                          <Typography p={1} variant="body2" fontWeight="bold">
-                            Supported apps
-                          </Typography>
-                          {paymentQrWallets.map((wallet) => (
-                            <ListItem key={wallet.name}>
-                              <ListItemAvatar>
-                                <UrlIcon size={40} url={wallet.icon} />
-                              </ListItemAvatar>
-                              <ListItemText primary={wallet.displayName} />
-                            </ListItem>
-                          ))}
-                        </MenuList>
-                      </Paper>
-
-                      <Alert severity="warning">
-                        Do not scan it in other apps, or you may lose your funds
-                        permanently.
-                      </Alert>
-                    </Box>
-                  ),
-                  value: getQRuriPayment(
-                    invoice.address,
-                    invoice.amount_requested_f,
-                    invoice.currency.network_name,
-                    paymentAsset.contract,
-                    paymentAsset?.decimals,
-                  ),
-                })
-              }
-            >
+      {connectedWallet
+        ? [
+            <ListItemButton key="connected-wallet-info">
               <ListItemAvatar>
-                <Icon ml={1} name="qr-code" size="xl" />
+                <UrlIcon url={connectedWallet.icon} />
               </ListItemAvatar>
               <ListItemText
-                primary="Payment QR"
-                secondary="Autocomplete address and amount"
+                primary={connectedWallet.name}
+                secondary={shortenAddress(connectedWallet.connected.address)}
               />
-            </ListItemButton>
-          )}
-          <ListItemButton
-            className="bordered"
-            data-testid="qrcode-address"
-            disabled={changeAddress.isPending}
-            onClick={() =>
-              showModal({
-                name: 'QR_MODAL',
-                title: 'Address QR',
-                hideDownloadQr: true,
-                showQrValue: true,
-                description: (
-                  <Box textAlign="center">
-                    <Typography color="text.secondary">Amount</Typography>
-                    <Typography variant="h4">
-                      <strong>
-                        {secondaryDelta} {paymentAsset.symbol}
-                      </strong>
-                    </Typography>
-                    <Typography color="text.secondary">Recipient</Typography>
-                  </Box>
-                ),
-                value: invoice.address,
-              })
-            }
-          >
-            <ListItemAvatar>
-              <Icon ml={1} name="qr-code" size="xl" />
-            </ListItemAvatar>
-            <ListItemText primary="Address QR" secondary="Scan address" />
-          </ListItemButton>
-          <ListItemButton
-            className="bordered"
-            disabled={changeAddress.isPending}
-            onClick={() => showCopy(invoice)}
-          >
-            <ListItemAvatar>
-              <Icon ml={1} name="copy" size="xl" />
-            </ListItemAvatar>
-            <ListItemText
-              primary="Copy"
-              secondary="Manual copy address and send assets"
-            />
-          </ListItemButton>
-          {!changeAddress.isPending && connections.length > 0 && (
-            <WalletList
-              wallets={connections}
-              hideConnectionType
-              connectingWallet={loadingWallet}
-              onSelectWallet={onSelectConnection}
-            />
-          )}
-        </>
-      )}
+            </ListItemButton>,
+            <InvoicePayBtn
+              key="invoice-pay-btn"
+              payCallback={() =>
+                connectedWallet.txSend({
+                  asset: paymentAsset,
+                  amount: secondaryDelta,
+                  recipient: invoice.address,
+                })
+              }
+            />,
+          ]
+        : [
+            showQrListItem && (
+              <ListItemButton
+                key="qr-code-payment-uri"
+                className="bordered"
+                data-testid="qrcode-payment-uri"
+                disabled={changeAddress.isPending || !paymentAsset || !invoice}
+                onClick={() =>
+                  showModal({
+                    component: () => (
+                      <Box m={2}>
+                        <InvoiceQr
+                          asset={paymentAsset}
+                          amount={secondaryDelta}
+                          invoice={invoice}
+                        />
+                      </Box>
+                    ),
+                  })
+                }
+              >
+                <ListItemAvatar>
+                  <Icon ml={1} name="qr-code" size="xl" />
+                </ListItemAvatar>
+                <ListItemText
+                  primary="QR code"
+                  secondary="Autocomplete invoice with QR code"
+                />
+              </ListItemButton>
+            ),
+            <ListItemButton
+              key="copy-address"
+              className="bordered"
+              disabled={changeAddress.isPending}
+              onClick={() => showCopy(invoice)}
+            >
+              <ListItemAvatar>
+                <Icon ml={1} name="copy" size="xl" />
+              </ListItemAvatar>
+              <ListItemText
+                primary="Copy"
+                secondary="Manual copy address and send assets"
+              />
+            </ListItemButton>,
+            !changeAddress.isPending && connections.length > 0 && (
+              <WalletList
+                key="wallet-list"
+                wallets={connections}
+                hideConnectionType
+                connectingWallet={loadingWallet}
+                onSelectWallet={onSelectConnection}
+              />
+            ),
+          ]}
     </MenuList>
   );
 

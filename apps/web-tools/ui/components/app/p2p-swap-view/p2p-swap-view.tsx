@@ -1,6 +1,11 @@
 import { Box, Button, Typography } from '@mui/material';
 import classNames from 'classnames';
-import { getAdLimitPerExchange, NetworkNames, NetworkTypes } from 'dex-helpers';
+import {
+  formatFundsAmount,
+  getAdLimitPerExchange,
+  NetworkNames,
+  NetworkTypes,
+} from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
 import { isEqual } from 'lodash';
@@ -28,6 +33,7 @@ import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import { SwapFees } from './swap-fees';
 import './index.scss';
+import { getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
 
 interface IProps {
   ad: AdItem;
@@ -115,7 +121,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin2 = await calcIncomingFee(sumInCoin2);
     sumInCoin2 -= feeInCoin2;
     assetInputTo.setInputAmount(
-      sumInCoin2 > 0 ? Number(sumInCoin2.toFixed(10)) : 0,
+      sumInCoin2 > 0
+        ? formatFundsAmount(
+            sumInCoin2,
+            undefined,
+            getMaxOutputDecimalPlaces(assetTo),
+          )
+        : 0,
     );
     assetInputTo.setLoading(false);
   }, RECALCULATE_DELAY);
@@ -127,7 +139,13 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const feeInCoin1 = feeInCoin2 / exchangeRate;
     sumInCoin1 += feeInCoin1;
     assetInputFrom.setInputAmount(
-      sumInCoin1 > 0 ? Number(sumInCoin1.toFixed(10)) : 0,
+      sumInCoin1 > 0
+        ? formatFundsAmount(
+            sumInCoin1,
+            undefined,
+            getMaxOutputDecimalPlaces(assetFrom),
+          )
+        : 0,
     );
     assetInputFrom.setLoading(false);
   }, RECALCULATE_DELAY);

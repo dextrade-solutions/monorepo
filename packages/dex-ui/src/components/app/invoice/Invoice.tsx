@@ -1,5 +1,6 @@
 import { Alert } from '@mui/material';
 import type { Connection } from 'dex-connect';
+import { isMobileWeb } from 'dex-helpers';
 
 import InvoicePreloader from './InvoicePreloader';
 import InvoiceView from './InvoiceView';
@@ -28,6 +29,7 @@ export default function Invoice({
   return (
     <InvoiceView
       invoice={invoice.data}
+      showQrListItem={!isMobileWeb}
       connections={connections}
       onBack={onBack}
     />
