@@ -1,7 +1,7 @@
 import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { isTMA } from '@telegram-apps/sdk';
-import { SECOND } from 'dex-helpers';
+import { formatFundsAmount, NetworkNames, SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Button, Swap } from 'dex-ui';
 import { groupBy, map, orderBy, uniqBy } from 'lodash';
@@ -14,8 +14,8 @@ import P2PService from '../../app/services/p2p-service';
 import { EXCHANGE_VIEW_ROUTE } from '../helpers/constants/routes';
 
 export default function SwapWidget() {
-  const [fromValue, setFromValue] = useState<number | undefined>();
-  const [toValue, setToValue] = useState<number | undefined>();
+  const [fromValue, setFromValue] = useState<string | undefined>();
+  const [toValue, setToValue] = useState<string | undefined>();
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,12 +91,24 @@ export default function SwapWidget() {
     if (reversed) {
       setToValue(newValue);
       if (currentAd) {
-        setFromValue(newValue / currentAd.coinPair.price);
+        setFromValue(
+          formatFundsAmount(
+            newValue / currentAd.coinPair.price,
+            '',
+            assetFrom.network === NetworkNames.fiat ? 2 : 8,
+          ),
+        );
       }
     } else {
       setFromValue(newValue);
       if (currentAd) {
-        setToValue(newValue * currentAd.coinPair.price);
+        setToValue(
+          formatFundsAmount(
+            newValue * currentAd.coinPair.price,
+            '',
+            assetTo.network === NetworkNames.fiat ? 2 : 8,
+          ),
+        );
       }
     }
   };

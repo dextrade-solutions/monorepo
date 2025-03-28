@@ -96,12 +96,11 @@ export function parseBalance(balance: string) {
 // Its "formatted" property is what we generally use to render values.
 export function formatFundsAmount(
   amount: string | number,
-  ticker: string = '',
-  decimalsToKeep?: number,
-  maxDecimalsLenForNoUsd = 8,
+  currencyCode: string = '',
+  maxDecimalsLenInitial = 10,
 ) {
-  let maxDecimalsLen = maxDecimalsLenForNoUsd;
-  if (ticker && ticker.toLowerCase().includes('usd')) {
+  let maxDecimalsLen = maxDecimalsLenInitial;
+  if (currencyCode && currencyCode.toLowerCase().includes('usd')) {
     maxDecimalsLen = 2;
   }
   let parsedStr: string;
@@ -112,27 +111,22 @@ export function formatFundsAmount(
   }
   const parsed = parsedStr.split('.');
   const beforeDecimal = parsed[0];
-  let afterDecimal = parsed[1] || '0';
+  const afterDecimal = parsed[1] || '0';
 
   let afterDecimalFormatted = '0';
-  if (decimalsToKeep === undefined) {
-    if (afterDecimal !== '0') {
-      const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // default: grabs 3 most significant digits
-      if (sigDigits) {
-        afterDecimalFormatted = sigDigits[0];
-      }
+  if (afterDecimal !== '0') {
+    const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // default: grabs 3 most significant digits
+    if (sigDigits) {
+      afterDecimalFormatted = sigDigits[0];
     }
-    if (afterDecimalFormatted.length >= maxDecimalsLen) {
-      afterDecimalFormatted = afterDecimalFormatted.slice(0, maxDecimalsLen);
-    }
-  } else {
-    afterDecimal += Array(decimalsToKeep).join('0');
-    afterDecimalFormatted = afterDecimal.slice(0, decimalsToKeep);
+  }
+  if (afterDecimalFormatted.length >= maxDecimalsLen) {
+    afterDecimalFormatted = afterDecimalFormatted.slice(0, maxDecimalsLen);
   }
   if (Number(afterDecimalFormatted) > 0) {
-    return `${beforeDecimal}.${afterDecimalFormatted} ${ticker}`;
+    return `${beforeDecimal}.${afterDecimalFormatted} ${currencyCode}`;
   }
-  return `${beforeDecimal} ${ticker}`;
+  return `${beforeDecimal} ${currencyCode}`;
 }
 
 export function getRandomFileName() {

@@ -11,6 +11,7 @@ interface NumericTextFieldProps
   onChange: (value: string) => void;
   loading?: boolean;
   reserve?: boolean;
+  clearable?: boolean;
   placeholder?: string;
   InputProps: TextFieldProps['InputProps'];
   endAdornment?: ReactNode;
@@ -20,6 +21,7 @@ interface NumericTextFieldProps
 const NumericTextField: React.FC<NumericTextFieldProps> = ({
   value,
   onChange,
+  clearable = true,
   loading = false,
   reserve = false,
   placeholder = '0',
@@ -42,7 +44,7 @@ const NumericTextField: React.FC<NumericTextFieldProps> = ({
       onChange={(e) => onChange(e.target.value)}
       InputProps={{
         autoComplete: 'off',
-        endAdornment: (
+        endAdornment: clearable && (
           <InputAdornment position="end">
             {Number(value) > 0 && !loading && (
               <ButtonIcon

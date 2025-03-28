@@ -98,6 +98,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
             variant="standard"
             placeholder={placeholder}
             value={value}
+            clearable={false}
             allowNegative={false}
             onChange={handleInputChange}
             disabled={loading}
