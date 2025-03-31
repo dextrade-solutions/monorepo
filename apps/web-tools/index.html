@@ -72,7 +72,7 @@
         }
 
         function isIOSWeb() {
-          return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
+          return /iPhone|iPad|iPod|AppleWebKit/.test(navigator.userAgent) && !window.MSStream;
         }
 
         function getSupportedFormat() {

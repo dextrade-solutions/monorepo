@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getCurrentTheme, setTheme } from '../../ducks/app/app';
@@ -17,7 +18,6 @@ import { ISO_LANGS } from '../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { updateCurrentLocale } from '../../store/actions';
 import { AppDispatch } from '../../store/store';
-import React from 'react';
 
 export default function GeneralSettings() {
   const t = useI18nContext();
