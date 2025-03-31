@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  Divider,
   FormControl,
   FormControlLabel,
   Radio,
@@ -8,6 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getCurrentTheme, setTheme } from '../../ducks/app/app';
@@ -66,6 +68,12 @@ export default function GeneralSettings() {
           ))}
         </RadioGroup>
       </FormControl>
+      <Divider sx={{ my: 3 }} />
+      <Typography fontWeight="bold">About</Typography>
+      <Typography>Version: {__VERSION__}</Typography>
+      <Typography variant="body2" color="text.secondary">
+        {window.navigator.userAgent}
+      </Typography>
     </Box>
   );
 }

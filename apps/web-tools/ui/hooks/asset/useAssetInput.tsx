@@ -14,6 +14,7 @@ import { fetchRates } from '../../../app/helpers/rates';
 import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
+import { isTMA } from '@telegram-apps/sdk';
 
 export const useAssetInput = ({
   asset,
@@ -41,7 +42,7 @@ export const useAssetInput = ({
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
 
-  const canChooseWallet = asset.network !== NetworkNames.fiat;
+  const canChooseWallet = !isTMA() && asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
   const walletId =

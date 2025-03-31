@@ -15,7 +15,7 @@ import {
   phone,
   humanizePaymentMethodName,
 } from 'dex-helpers';
-import { paymentService } from 'dex-services';
+import { DextradeTypes, paymentService } from 'dex-services';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,14 +32,28 @@ const CONTENT_TYPE_VALIDATORS = {
   PHONE: [phone],
 };
 
-const FieldProvider = ({ label, name, validators, onChange, renderInput }) => {
+interface FieldProviderProps {
+  label: string;
+  name: string;
+  validators: ((value: any) => string | null)[];
+  onChange: (name: string, value: any, errors: string[] | null) => void;
+  renderInput: (onChange: (value: any) => void) => React.ReactNode;
+}
+
+const FieldProvider = ({
+  label,
+  name,
+  validators,
+  onChange,
+  renderInput,
+}: FieldProviderProps) => {
   const { t } = useTranslation();
-  const [errors, setErrors] = useState([]);
-  const handleChange = (v) => {
+  const [errors, setErrors] = useState<string[]>([]);
+  const handleChange = (v: any) => {
     const targetName = name;
     const targetValue = v?.target ? v.target.value : v;
 
-    const foundErrors = validators.reduce((acc, validate) => {
+    const foundErrors = validators.reduce((acc: string[], validate) => {
       const error = (validate(targetValue) || '').replace('{v}', t('field'));
       return error ? [...acc, error] : acc;
     }, []);
@@ -55,52 +69,74 @@ const FieldProvider = ({ label, name, validators, onChange, renderInput }) => {
     <Box marginTop={2} marginBottom={2}>
       <Typography marginBottom={1}>{label}</Typography>
       {renderInput(handleChange)}
-      {Boolean(errors.length) && (
-        <Typography>{errors.join(',')}</Typography>
-      )}
+      {Boolean(errors.length) && <Typography>{errors.join(',')}</Typography>}
     </Box>
   );
 };
 
-FieldProvider.propTypes = {
-  renderInput: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  validators: PropTypes.arrayOf(PropTypes.func),
-  onChange: PropTypes.func.isRequired,
-};
+interface PaymentMethodFormProps {
+  edit?: DextradeTypes.PaymentMethodsModel;
+  currency?: string | null;
+  onCancel?: () => void;
+  onCreated?: () => void;
+  paymentMethodCurrencies?: () => Promise<DextradeTypes.CurrencyModel[]>;
+  paymentMethodList?: () => Promise<DextradeTypes.PaymentMethodModel[]>;
+  paymentMethodCreateOrUpdate?: (
+    data: any,
+  ) => Promise<DextradeTypes.PaymentMethodsModel>;
+}
 
 export const PaymentMethodForm = ({
   edit,
   currency = null,
   onCancel,
   onCreated,
-  paymentMethodCurrencies = () =>
-    paymentService.listAllCurrency().then((r) => r.data),
-  paymentMethodList = () => paymentService.listAllBanks().then((r) => r.data),
+  paymentMethodCurrencies,
+  paymentMethodList,
   paymentMethodCreateOrUpdate = (data) =>
     paymentService.save(data, { method: data.id ? 'PUT' : 'POST' }),
-}) => {
+}: PaymentMethodFormProps) => {
   const { t } = useTranslation();
-  const [formValues, setFormValues] = useState(
+  const [formValues, setFormValues] = useState<any>(
     edit || {
       currency,
     },
   );
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<Record<string, string[] | null>>({});
 
   const { isLoading: currenciesLoading, data: currencies = [] } = useQuery({
     queryKey: ['paymentMethodsCurrencies'],
-    queryFn: paymentMethodCurrencies,
+    queryFn: (params) => {
+      if (paymentMethodCurrencies) {
+        return paymentMethodCurrencies(params);
+      }
+      return paymentService.listAllCurrency().then((r) => r.data);
+    },
   });
 
   const { isLoading: paymentMethodsLoading, data: paymentMethods = [] } =
     useQuery({
-      queryKey: ['paymentMethods'],
-      queryFn: paymentMethodList,
+      queryKey: ['paymentMethods', formValues.currency],
+      queryFn: (params) => {
+        if (paymentMethodList) {
+          return paymentMethodList();
+        }
+
+        const [, currencyParam] = params.queryKey;
+        if (currencyParam) {
+          return paymentService
+            .listAllBankByCurrencyId(currencyParam)
+            .then((r) => r.data);
+        }
+        return paymentService.listAllBanks().then((r) => r.data);
+      },
     });
 
-  const handleOnChange = (targetName, targetValue, foundErrors) => {
+  const handleOnChange = (
+    targetName: string,
+    targetValue: any,
+    foundErrors: string[] | null,
+  ) => {
     const forUpdate = {
       [targetName]: targetValue,
     };
@@ -112,12 +148,12 @@ export const PaymentMethodForm = ({
   };
 
   const save = async () => {
-    const data = Object.keys(formValues).reduce((acc, formFieldName) => {
+    const data = Object.keys(formValues).reduce((acc: any, formFieldName) => {
       const [, fieldName] = formFieldName.split('.');
       if (fieldName) {
         const [, id] = fieldName.split(':');
         const field = formValues.paymentMethod.fields.find(
-          (f) => f.id === Number(id),
+          (f: any) => f.id === Number(id),
         );
         if (field) {
           return {
@@ -183,9 +219,9 @@ export const PaymentMethodForm = ({
       />
       <Box>
         {formValues.paymentMethod &&
-          formValues.paymentMethod.fields.map((field) => {
+          formValues.paymentMethod.fields.map((field: any) => {
             const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
-            const fieldValidators = [];
+            const fieldValidators: ((value: any) => string | null)[] = [];
             if (field.required) {
               fieldValidators.push(isRequired);
             }
@@ -214,9 +250,7 @@ export const PaymentMethodForm = ({
             );
           })}
       </Box>
-      <Alert severity="info">
-        {t('paymentMethodHint')}
-      </Alert>
+      <Alert severity="info">{t('paymentMethodHint')}</Alert>
       {formValues.paymentMethod && (
         <Box display="flex" marginTop={1}>
           {onCancel && (
