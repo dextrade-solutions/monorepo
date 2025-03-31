@@ -80,6 +80,7 @@ export default function InvoiceView({
   );
 
   const onChangeAsset = async (asset: AssetModel) => {
+    setError(undefined);
     const currency = currencies.data?.data.find((d) => d.iso === asset.iso);
     if (!currency) {
       throw new Error('onChangeAsset - Currency not found');
