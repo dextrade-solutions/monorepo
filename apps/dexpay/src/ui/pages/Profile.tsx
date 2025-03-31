@@ -1,6 +1,7 @@
 import { Button, Card, CardContent, Box, Typography } from '@mui/material';
-import { LogOut } from 'lucide-react';
+import { LogOut, Key } from 'lucide-react';
 import React from 'react';
+import { Link } from 'wouter';
 
 import { useAuth } from '../hooks/use-auth';
 
@@ -25,6 +26,23 @@ export default function Profile() {
           <Typography>{me?.email}</Typography>
         </CardContent>
       </Card>
+
+      {/* options */}
+      <Button
+        sx={{
+          bgcolor: '#ddd',
+          color: 'black',
+          justifyContent: 'start',
+          p: '12px 16px',
+        }}
+        color="error"
+        startIcon={<Key />}
+        to="/api-keys"
+        component={Link}
+        fullWidth
+      >
+        Api keys
+      </Button>
 
       <Button
         data-testid="logout"

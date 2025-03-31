@@ -4,8 +4,6 @@ import { $api } from './client';
 export default abstract class ApiTokensService {
   private static readonly PREFIX = 'api-keys';
 
-  // @danhutsuliak 
-
   // СПИСОК АПИ КЛЮЧЕЙ ДЕКСПЕЯ
   // GET
   // /v1/api-keys?page=0

@@ -19,9 +19,11 @@ import {
   ROUTE_WALLET_WITHDRAW,
 } from './constants/pages';
 import { useAuth } from './hooks/use-auth';
+import ApiTokens from './pages/ApiTokens';
 import LoginForm from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
 import CreateInvoice from './pages/CreateInvoice';
+import ForgotPassword from './pages/ForgotPassword';
 import Merchant from './pages/Merchant';
 import InvoiceDetailPage from './pages/MerchantInvoiceDetail';
 // import NotFound from './pages/not-found';
@@ -34,7 +36,6 @@ import Wallet from './pages/Wallet';
 import WalletDepositPage from './pages/WalletDeposit';
 import WalletMemo from './pages/WalletMemo';
 import WalletWithdrawPage from './pages/WalletWithdraw';
-import ForgotPassword from './pages/ForgotPassword';
 
 export default function Router() {
   const auth = useAuth();
@@ -87,6 +88,7 @@ export default function Router() {
       <Route path={ROUTE_P2P_CREATE} component={P2PCreate} />
       <Route path={ROUTE_HISTORY} component={TransactionHistory} />
       <Route path={ROUTE_PROFILE} component={Profile} />
+      <Route path={'/api-keys'} component={ApiTokens} />
     </Wouter>
   );
 }
