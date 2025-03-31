@@ -10,6 +10,10 @@ import {
   MenuItem,
   Typography,
   useMediaQuery,
+  Select,
+  FormControl,
+  InputLabel,
+  Divider,
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
 import assetDict from 'dex-helpers/assets-dict';
@@ -28,6 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
 import { getCurrentTheme, setTheme } from '../../ducks/app/app';
+import { getCurrentLocale } from '../../ducks/locale/locale';
 import {
   KYC_ROUTE,
   PAYMENT_METHODS_ROUTE,
@@ -35,18 +40,22 @@ import {
   SETTINGS_GENERAL_ROUTE,
   SWAPS_HISTORY_ROUTE,
 } from '../../helpers/constants/routes';
+import { ISO_LANGS } from '../../helpers/utils/i18n-helper';
 import { useAuthP2P } from '../../hooks/useAuthP2P';
 import { useAuthWallet } from '../../hooks/useAuthWallet';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { updateCurrentLocale } from '../../store/actions';
+import { AppDispatch } from '../../store/store';
 import { WalletConnection } from '../../types';
 
 export default function ButtonAppConfig() {
   const { logout } = useAuthP2P();
   const { showModal } = useGlobalModalContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { wallet, isAuthenticated } = useAuthWallet();
   const t = useI18nContext();
+  const currentLocale = useSelector(getCurrentLocale);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -85,6 +94,11 @@ export default function ButtonAppConfig() {
   const toggleDarkMode = () => {
     const toggleValue = isDarkMode ? 'light' : 'dark';
     dispatch(setTheme(toggleValue));
+  };
+  const supportedLocales = ['en', 'ru', 'zh-CN'];
+
+  const setCurrentLocale = async (key: string) => {
+    dispatch(updateCurrentLocale(key));
   };
   return (
     <>
@@ -200,20 +214,42 @@ export default function ButtonAppConfig() {
             <ListItemText>{t('upgrade')}</ListItemText>
           </ListItem>
         </MenuItem>
-        <MenuItem onClick={toggleDarkMode} data-testid="settings-theme">
+        <Divider />
+        <MenuItem disableRipple>
           <ListItem>
-            <ListItemIcon>
-              <DarkModeSwitch
-                checked={isDarkMode}
-                onChange={toggleDarkMode}
-                moonColor="white"
-                sunColor="dark"
-              />
-            </ListItemIcon>
-            <ListItemText>
-              {isDarkMode ? t('light-mode') : t('dark-mode')}
-            </ListItemText>
+            <FormControl
+              sx={{
+                maxWidth: 100,
+                mr: 2,
+              }}
+              fullWidth
+            >
+              <Select
+                variant="standard"
+                labelId="locale-select-label"
+                disableUnderline
+                id="locale-select"
+                value={currentLocale}
+                label={t('language')}
+                onChange={(e) => setCurrentLocale(e.target.value)}
+              >
+                {supportedLocales.map((locale) => (
+                  <MenuItem key={locale} value={locale}>
+                    {ISO_LANGS[locale]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </ListItem>
+
+          <ListItemSecondaryAction>
+            <DarkModeSwitch
+              checked={isDarkMode}
+              onChange={toggleDarkMode}
+              moonColor="white"
+              sunColor="dark"
+            />
+          </ListItemSecondaryAction>
         </MenuItem>
       </Menu>
     </>
