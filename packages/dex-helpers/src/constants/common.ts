@@ -25,6 +25,7 @@ export const DEXTRADE_APP_STORE_LINK =
 export const DEXTRADE_GOOGLE_PLAY_LINK =
   'https://play.google.com/store/apps/details?id=org.dextrade.wallet';
 
+export const DEXTRADE_ECOM_LINK = 'https://ecom.dextrade.com';
 export const DEXTRADE_P2P_LINK = 'https://p2p.dextrade.com';
 export const DEXTRADE_P2P_TELEGRAM_BOT = 'https://t.me/DexTradeP2PBot';
 export const DEXTRADE_P2P_TELEGRAM_MINIAPP =

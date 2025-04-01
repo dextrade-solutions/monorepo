@@ -17,6 +17,7 @@ import { ButtonIcon, UrlIcon } from '../../ui'; // Import your custom components
 interface WalletListItemProps {
   item: WalletItem;
   value?: WalletConnection;
+  deeplinkHostUrl?: string;
   hideConnectionType: boolean;
   onDisconnect: (item: WalletItem) => void;
   onSelect: (
@@ -29,6 +30,7 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
   item,
   value,
   hideConnectionType,
+  deeplinkHostUrl,
   onDisconnect,
   onSelect,
 }) => {
@@ -36,8 +38,12 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
   const isConnectedAndSelected =
     item.connected && isEqual(item.connected, value);
 
+  const deeplinkUrl = deeplinkHostUrl
+    ? `${deeplinkHostUrl}/${window.location.pathname}`
+    : window.location.href;
+
   const href = item.meta?.deepLink
-    ? item.meta.deepLink + window.location.href
+    ? item.meta.deepLink + deeplinkUrl
     : undefined;
   return (
     <ListItemButton

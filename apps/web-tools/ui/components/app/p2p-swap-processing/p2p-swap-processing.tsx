@@ -7,6 +7,7 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
+import { WalletConnectionType } from 'dex-connect';
 import {
   formatCurrency,
   formatFundsAmount,
@@ -16,13 +17,12 @@ import {
   TradeStatus,
   TradeType,
 } from 'dex-helpers';
-import { AssetModel, Trade, InvoiceModel } from 'dex-helpers/types';
+import { AssetModel, Trade } from 'dex-helpers/types';
 import {
   AssetItem,
   CountdownTimer,
   Icon,
   Invoice,
-  InvoiceView,
   PaymentMethodDisplay,
   PulseLoader,
   StepProgressBar,
@@ -57,7 +57,10 @@ interface IProps {
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const wallets = useWallets();
+  const allWallets = useWallets();
+  const wallets = allWallets.filter(
+    (w) => w.connectionType !== WalletConnectionType.dextrade,
+  );
   const [stagesStatuses, setStagesStatuses] = useState({
     allowance: null,
     safeInit: null,
@@ -141,36 +144,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     } else if (!from.isFiat) {
       if (exchange.invoiceUrl) {
         const invoiceId = exchange.invoiceUrl.split('com/')[1];
-        // const invoice: InvoiceModel = {
-        //   id: invoiceId,
-        //   address: exchange.exchangerWalletAddress,
-        //   amount_requested_f: exchange.amount1,
-        //   converted_amount_requested_f: exchange.amount1 * exchange.coinPair.priceCoin1InUsdt,
-        //   amount_received_total_f: '0',
-        //   converted_coin: {
-        //     iso: 'usd',
-        //   },
-        //   currency: {
-        //     iso_with_network: from.iso,
-        //   },
-        //   status: 1,
-        // };
-        // stages.push({
-        //   component: (
-        //     <Box
-        //       sx={{
-        //         p: 2,
-        //         borderRadius: 1,
-        //         border: 1,
-        //         borderColor: 'primary.main',
-        //         bgcolor: 'secondary.dark',
-        //       }}
-        //     >
-        //       <InvoiceView invoice={invoice} hideHeader connections={wallets} />
-        //     </Box>
-        //   ),
-        //   key: 'directTransfer',
-        // });
         stages.push({
           component: (
             <Box

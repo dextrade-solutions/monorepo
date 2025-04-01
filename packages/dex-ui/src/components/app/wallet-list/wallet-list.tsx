@@ -12,6 +12,7 @@ export default function WalletList({
   value,
   wallets = [],
   hideConnectionType,
+  deeplinkHostUrl,
   connectingWalletLabel = 'Connecting',
   onSelectWallet,
   connectingWallet,
@@ -19,6 +20,7 @@ export default function WalletList({
   value?: WalletConnection; // selected item
   wallets?: Connection[];
   hideConnectionType?: boolean;
+  deeplinkHostUrl?: string;
   connectingWalletLabel?: string;
   onSelectWallet?: (item: Connection) => void;
   connectingWallet?: Connection;
@@ -53,9 +55,7 @@ export default function WalletList({
     }
 
     if (onSelectWallet) {
-      
       await onSelectWallet(item);
-      
     }
   };
 
@@ -95,9 +95,7 @@ export default function WalletList({
         >
           {connectingWallet?.name === 'MetaMask' && (
             <Box mb={2}>
-              <Alert severity="info">
-                {t('metamaskLatestVersion')}
-              </Alert>
+              <Alert severity="info">{t('metamaskLatestVersion')}</Alert>
             </Box>
           )}
           {connectingWallet && (
@@ -156,6 +154,7 @@ export default function WalletList({
               <WalletListItem
                 item={item}
                 value={value}
+                deeplinkHostUrl={deeplinkHostUrl}
                 hideConnectionType={hideConnectionType}
                 onDisconnect={onDisconnect}
                 onSelect={onSelect}
@@ -164,9 +163,7 @@ export default function WalletList({
           </Grow>
         ))}
       {!renderList.length && (
-        <Typography color="text.secondary">
-          {t('noWalletsDetected')}
-        </Typography>
+        <Typography color="text.secondary">{t('noWalletsDetected')}</Typography>
       )}
     </>
   );
