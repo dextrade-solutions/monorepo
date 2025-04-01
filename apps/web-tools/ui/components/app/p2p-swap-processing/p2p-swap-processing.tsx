@@ -27,6 +27,7 @@ import {
   PulseLoader,
   StepProgressBar,
 } from 'dex-ui';
+import { MessageCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,7 +47,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
 import { useWallets } from '../../../hooks/asset/useWallets';
-import { MessageCircle } from 'lucide-react';
 
 interface IProps {
   exchange: Trade;
@@ -73,9 +73,11 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const [outgoingPaymentApproved, setOutgoingPaymentApproved] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
-  const canCancel = [TradeStatus.waitExchangerVerify, TradeStatus.new, TradeStatus.dispute].includes(
-    exchange.status,
-  );
+  const canCancel = [
+    TradeStatus.waitExchangerVerify,
+    TradeStatus.new,
+    TradeStatus.dispute,
+  ].includes(exchange.status);
 
   const pairType = determineTradeType(exchange);
   const isTradeStarted =

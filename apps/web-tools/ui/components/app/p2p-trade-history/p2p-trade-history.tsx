@@ -5,15 +5,16 @@ import React from 'react';
 import { InView } from 'react-intersection-observer';
 
 import { TradePreview } from './trade-preview';
+import { useAuth } from '../../../contexts/auth-context';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTrades } from '../../../queries/useTrades';
-import { useTradesActive } from '../../../queries/useTradesActive';
 
 export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   const t = useI18nContext();
 
-  const { isLoading: isLoadingTradesActive, data: tradesActive = [] } =
-    useTradesActive();
+  const {
+    tradesActive: { isLoading: isLoadingTradesActive, data: tradesActive = [] },
+  } = useAuth();
   const { isFetching, isLoading, fetchNextPage, data } = useTrades();
 
   if (isLoading || isLoadingTradesActive) {
@@ -35,7 +36,7 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
       startIcon={<Icon name="arrow-left-dex" />}
       onClick={onBack}
     >
-      {t('back')} {/* Translated here */}
+      {t('back')}
     </Button>
   );
 
@@ -73,7 +74,7 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
               justifyContent="space-between"
               padding={1}
             >
-              <Typography variant="h6">{t('History')}</Typography> {/* Translated here */}
+              <Typography variant="h6">{t('History')}</Typography>
               {tradesActive.length === 0 && backbutton}
             </Box>
             <Box marginY={1}>
@@ -99,7 +100,8 @@ export const P2PTradeHistory = ({ onBack }: { onBack: () => void }) => {
   }
   return (
     <Box display="flex" alignContent="center">
-      <Typography color="text.secondary">{t('Trades not found...')}</Typography> {/* Translated here */}
+      <Typography color="text.secondary">{t('Trades not found...')}</Typography>{' '}
+      {/* Translated here */}
       <div className="flex-grow" />
       {backbutton}
     </Box>

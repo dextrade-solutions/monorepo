@@ -10,10 +10,12 @@ import SetWalletComponent from './components/app/modals/set-wallet';
 import TradeHistoryRowModalComponent from './components/app/modals/trade-history-row-modal';
 import Web3ModalProvider from './components/app/web3-modal-provider';
 import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solana-provider';
+import { UserAuthProvider } from './contexts/auth-context';
 import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import Pages from './pages';
 import { store } from './store/store';
+import React from 'react';
 
 if (isTMA()) {
   init();
@@ -39,10 +41,12 @@ export function App() {
             theme={muiTheme}
             locale={locale}
           >
-            <CssBaseline />
-            <Container sx={{ py: 2 }} maxWidth="sm">
-              <Pages />
-            </Container>
+            <UserAuthProvider>
+              <CssBaseline />
+              <Container sx={{ py: 2 }} maxWidth="sm">
+                <Pages />
+              </Container>
+            </UserAuthProvider>
           </DexUiProvider>
         </Web3SolanaProvider>
       </Web3ModalProvider>
