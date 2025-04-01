@@ -12,7 +12,7 @@ export default function WalletList({
   value,
   wallets = [],
   hideConnectionType,
-  deeplinkHostUrl,
+  deeplinkUrl,
   connectingWalletLabel = 'Connecting',
   onSelectWallet,
   connectingWallet,
@@ -20,7 +20,7 @@ export default function WalletList({
   value?: WalletConnection; // selected item
   wallets?: Connection[];
   hideConnectionType?: boolean;
-  deeplinkHostUrl?: string;
+  deeplinkUrl?: string;
   connectingWalletLabel?: string;
   onSelectWallet?: (item: Connection) => void;
   connectingWallet?: Connection;
@@ -154,7 +154,7 @@ export default function WalletList({
               <WalletListItem
                 item={item}
                 value={value}
-                deeplinkHostUrl={deeplinkHostUrl}
+                deeplinkUrl={deeplinkUrl}
                 hideConnectionType={hideConnectionType}
                 onDisconnect={onDisconnect}
                 onSelect={onSelect}

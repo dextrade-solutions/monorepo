@@ -67,17 +67,13 @@
         </video>
       </div>
       <script>
-        function isSafari() {
-          return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-        }
-
-        function isIOSWeb() {
-          return /iPhone|iPad|iPod|AppleWebKit/.test(navigator.userAgent) && !window.MSStream;
-        }
+        const isAndroid = /android/i.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        const isIOSWeb = /iPhone|iPad|iPod|AppleWebKit/.test(navigator.userAgent) && !window.MSStream;
 
         function getSupportedFormat() {
             const video = document.createElement("video");
-            if (isIOSWeb() || isSafari()) {
+            if (!isAndroid && (isIOSWeb || isSafari)) {
                 return { src: "/images/logo/logo-animated.mov" };
             }
             return { src: "/images/logo/logo-animated.webm", type: "video/webm" };

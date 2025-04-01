@@ -10,7 +10,7 @@ import { IInvoiceFull } from './types/entities';
 interface InvoiceProps {
   connections: Connection[];
   id: string;
-  deeplinkHostUrl?: string;
+  deeplinkUrl?: string;
   preloaderType?: string; // You might want to define a more specific type here if you have a limited set of preloader types
   hideHeader?: boolean;
   preview?: boolean;
@@ -22,7 +22,7 @@ interface InvoiceProps {
 export default function Invoice({
   connections,
   id,
-  deeplinkHostUrl = DEXTRADE_ECOM_LINK,
+  deeplinkUrl,
   preloaderType,
   hideHeader,
   preview,
@@ -50,7 +50,7 @@ export default function Invoice({
       connections={connections}
       onBack={onBack}
       preview={preview}
-      deeplinkHostUrl={deeplinkHostUrl}
+      deeplinkUrl={`${DEXTRADE_ECOM_LINK}/${invoice.data.payment_page_id}`}
       showInvoiceUrlQr={showInvoiceUrlQr}
       hideHeader={hideHeader}
     />

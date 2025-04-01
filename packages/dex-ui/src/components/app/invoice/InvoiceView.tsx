@@ -41,7 +41,7 @@ export default function InvoiceView({
   hideHeader,
   showInvoiceUrlQr,
   showQrListItem,
-  deeplinkHostUrl,
+  deeplinkUrl,
   connections: allConnections = [],
   onBack,
 }: {
@@ -50,7 +50,7 @@ export default function InvoiceView({
   preview?: boolean;
   invoice: IInvoiceFull;
   hideHeader?: boolean;
-  deeplinkHostUrl?: string;
+  deeplinkUrl?: string;
   connections?: Connection[];
   onBack?: () => void;
 }) {
@@ -347,7 +347,7 @@ export default function InvoiceView({
                 key="wallet-list"
                 wallets={connections}
                 hideConnectionType
-                deeplinkHostUrl={deeplinkHostUrl}
+                deeplinkUrl={deeplinkUrl}
                 connectingWallet={loadingWallet}
                 onSelectWallet={onSelectConnection}
               />
