@@ -70,7 +70,9 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                   >
                     <CardActionArea
                       disabled={Boolean(reserve)}
-                      onClick={() => onChange(assetInput.balance.value)}
+                      onClick={() =>
+                        onChange(formatFundsAmount(assetInput.balance.value))
+                      }
                     >
                       <Typography component="span" marginRight={1}>
                         {assetInput.balance.formattedValue}
@@ -137,7 +139,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
                 border: 'none',
               }}
               variant="outlined"
-              onClick={() => onChange(reserve)}
+              onClick={() => onChange(formatFundsAmount(reserve))}
             >
               <CardActionArea>
                 <Typography variant="body2">

@@ -5,16 +5,29 @@ import { isMobileWeb } from 'dex-helpers';
 import InvoicePreloader from './InvoicePreloader';
 import InvoiceView from './InvoiceView';
 import useInvoice from './react-queries/queries/useInvoice';
+import { IInvoiceFull } from './types/entities';
+
+interface InvoiceProps {
+  connections: Connection[];
+  id: string;
+  preloaderType?: string; // You might want to define a more specific type here if you have a limited set of preloader types
+  hideHeader?: boolean;
+  preview?: boolean;
+  showInvoiceUrlQr?: boolean;
+  showQrListItem?: boolean;
+  onBack?: () => void;
+}
 
 export default function Invoice({
   connections,
   id,
+  preloaderType,
+  hideHeader,
+  preview,
+  showInvoiceUrlQr,
+  showQrListItem,
   onBack,
-}: {
-  id: string;
-  connections: Connection[]; // TODO: add type of connections
-  onBack?: () => void;
-}) {
+}: InvoiceProps) {
   const invoice = useInvoice({ id });
   if (invoice.isLoading) {
     return <InvoicePreloader />;
@@ -28,10 +41,15 @@ export default function Invoice({
   }
   return (
     <InvoiceView
-      invoice={invoice.data}
-      showQrListItem={!isMobileWeb}
+      invoice={invoice.data as IInvoiceFull}
+      showQrListItem={
+        showQrListItem === undefined ? !isMobileWeb : showQrListItem
+      }
       connections={connections}
       onBack={onBack}
+      preview={preview}
+      showInvoiceUrlQr={showInvoiceUrlQr}
+      hideHeader={hideHeader}
     />
   );
 }

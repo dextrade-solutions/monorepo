@@ -172,10 +172,10 @@ export const createSwapP2P = (props: {
 
     const exchangePairType = determineTradeTypeByAd(exchange);
 
-    if (isTMA()) {
-      miniApp.close();
-      return openTelegramLink(DEXTRADE_P2P_TELEGRAM_BOT);
-    }
+    // if (isTMA()) {
+    //   miniApp.close();
+    //   return openTelegramLink(DEXTRADE_P2P_TELEGRAM_BOT);
+    // }
     const response = await handleRequest(
       dispatch,
       P2PService.clientExchangeStart(exchangePairType, {

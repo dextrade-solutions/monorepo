@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  Skeleton,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -73,6 +74,57 @@ const PaymentMethods = ({
       onClose && onClose();
     }
   };
+
+  const renderPaymentMethodItem = (bankAccount: DextradeTypes.PaymentMethodsModel) => (
+    <Box
+      key={bankAccount.userPaymentMethodId}
+      display="flex"
+      justifyContent="space-between"
+      marginBottom={2}
+    >
+      <FormControlLabel
+        value={bankAccount.userPaymentMethodId}
+        control={<Radio color="primary" />}
+        label={
+          <Box>
+            <Typography>
+              {humanizePaymentMethodName(
+                bankAccount.paymentMethod.name,
+                t,
+              )}
+            </Typography>
+            <Typography color="text.secondary">
+              {getStrPaymentMethodInstance(bankAccount)}
+            </Typography>
+          </Box>
+        }
+      />
+      {value !== bankAccount && (
+        <Button
+          onClick={() => remove(bankAccount.userPaymentMethodId)}
+        >
+          <Icon name="trash-dex" size="lg" />
+        </Button>
+      )}
+    </Box>
+  );
+
+  const renderSkeleton = () => (
+    <>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <Box
+          key={index}
+          display="flex"
+          justifyContent="space-between"
+          marginBottom={2}
+        >
+          <Skeleton width="80%" height={50} />
+          <Skeleton variant="circular" width={30} height={30} />
+        </Box>
+      ))}
+    </>
+  );
+
   return (
     <Box>
       <Box display="flex" alignItems="center" marginBottom={2}>
@@ -86,9 +138,6 @@ const PaymentMethods = ({
           </Button>
         )}
       </Box>
-      {/* <Typography variant="body2" textAlign="center" color="text.secondary">
-        Please, choose or create a new payment method
-      </Typography> */}
       {createMode ? (
         <Box>
           <PaymentMethodForm currency={currency} onCreated={onCreated} />
@@ -100,39 +149,7 @@ const PaymentMethods = ({
               value={value?.userPaymentMethodId}
               onChange={onChangeHandler}
             >
-              {paymentMethods.map((bankAccount) => (
-                <Box
-                  key={bankAccount.userPaymentMethodId}
-                  display="flex"
-                  justifyContent="space-between"
-                  marginBottom={2}
-                >
-                  <FormControlLabel
-                    value={bankAccount.userPaymentMethodId}
-                    control={<Radio color="primary" />}
-                    label={
-                      <Box>
-                        <Typography>
-                          {humanizePaymentMethodName(
-                            bankAccount.paymentMethod.name,
-                            t,
-                          )}
-                        </Typography>
-                        <Typography color="text.secondary">
-                          {getStrPaymentMethodInstance(bankAccount)}
-                        </Typography>
-                      </Box>
-                    }
-                  />
-                  {value !== bankAccount && (
-                    <Button
-                      onClick={() => remove(bankAccount.userPaymentMethodId)}
-                    >
-                      <Icon name="trash-dex" size="lg" />
-                    </Button>
-                  )}
-                </Box>
-              ))}
+              {isLoading ? renderSkeleton() : paymentMethods.map(renderPaymentMethodItem)}
             </RadioGroup>
           </FormControl>
           {paymentMethods.length === 0 && !isLoading && (
@@ -140,7 +157,6 @@ const PaymentMethods = ({
               <Alert severity="info">{t('noPaymentMethods')}</Alert>
             </Box>
           )}
-          {isLoading && <Box>{t('loading')}</Box>}
           <Box marginTop={1}>
             <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
               <Box display="flex" alignItems="center">

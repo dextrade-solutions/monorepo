@@ -76,19 +76,19 @@ export const P2P_STAGES: P2PStage[] = [
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
   },
-  {
-    labelKey: 'trade.stage.completed', // Example i18n key
-    pairTypes: [
-      TradeType.atomicSwap,
-      TradeType.cryptoCrypto,
-      TradeType.cryptoFiat,
-      TradeType.fiatCrypto,
-      TradeType.fiatFiat,
-    ],
-    checkStatus: (trade: Trade) => {
-      return trade.statusHistory.find(
-        (v) => v.status === TradeStatus.completed,
-      );
-    },
-  },
+  // {
+  //   labelKey: 'trade.stage.completed', // Example i18n key
+  //   pairTypes: [
+  //     TradeType.atomicSwap,
+  //     TradeType.cryptoCrypto,
+  //     TradeType.cryptoFiat,
+  //     TradeType.fiatCrypto,
+  //     TradeType.fiatFiat,
+  //   ],
+  //   checkStatus: (trade: Trade) => {
+  //     return trade.statusHistory.find(
+  //       (v) => v.status === TradeStatus.completed,
+  //     );
+  //   },
+  // },
 ];

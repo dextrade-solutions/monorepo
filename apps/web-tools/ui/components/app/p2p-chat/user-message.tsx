@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { relativeFromCurrentDate } from 'dex-helpers';
 import { useGlobalModalContext } from 'dex-ui';
+import { useEffect, useState } from 'react';
 
 import { MessageItem } from './types';
 import { DEXTRADE_BASE_URL } from '../../../../app/helpers/constants';
@@ -8,10 +9,22 @@ import { DEXTRADE_BASE_URL } from '../../../../app/helpers/constants';
 export const UserMessage = ({ isSender, value, type, cdt }: MessageItem) => {
   const { showModal } = useGlobalModalContext();
   const imgLink = `${DEXTRADE_BASE_URL}/public/image/${value}`;
+  const [relativeTime, setRelativeTime] = useState(
+    relativeFromCurrentDate(cdt),
+  );
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setRelativeTime(relativeFromCurrentDate(cdt));
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [cdt]);
+
   return (
     <Box
       display="flex"
-      justifyContent={isSender ? 'flex-start' : 'flex-end'}
+      justifyContent={isSender ? 'flex-end' : 'flex-start'}
       marginY={1}
     >
       <Box
@@ -44,7 +57,7 @@ export const UserMessage = ({ isSender, value, type, cdt }: MessageItem) => {
         )}
         <Box padding={type === 'image' ? 2 : 0}>
           <Typography variant="caption" color="text.secondary">
-            {relativeFromCurrentDate(cdt)}
+            {relativeTime}
           </Typography>
         </Box>
       </Box>

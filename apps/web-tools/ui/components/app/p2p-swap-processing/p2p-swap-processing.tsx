@@ -16,11 +16,13 @@ import {
   TradeStatus,
   TradeType,
 } from 'dex-helpers';
-import { AssetModel, Trade } from 'dex-helpers/types';
+import { AssetModel, Trade, InvoiceModel } from 'dex-helpers/types';
 import {
   AssetItem,
   CountdownTimer,
   Icon,
+  Invoice,
+  InvoiceView,
   PaymentMethodDisplay,
   PulseLoader,
   StepProgressBar,
@@ -43,6 +45,8 @@ import { useAtomicSwap } from '../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
+import { useWallets } from '../../../hooks/asset/useWallets';
+import { MessageCircle } from 'lucide-react';
 
 interface IProps {
   exchange: Trade;
@@ -53,6 +57,7 @@ interface IProps {
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const wallets = useWallets();
   const [stagesStatuses, setStagesStatuses] = useState({
     allowance: null,
     safeInit: null,
@@ -68,7 +73,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const [outgoingPaymentApproved, setOutgoingPaymentApproved] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
 
-  const canCancel = [TradeStatus.waitExchangerVerify, TradeStatus.new].includes(
+  const canCancel = [TradeStatus.waitExchangerVerify, TradeStatus.new, TradeStatus.dispute].includes(
     exchange.status,
   );
 
@@ -132,20 +137,70 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         key: 'safeClaim',
       });
     } else if (!from.isFiat) {
-      stages.push({
-        component: (
-          <StageDirectTransfer
-            key="directTransfer"
-            from={from}
-            trade={exchange}
-            value={stagesStatuses.directTransfer}
-            onChange={(newStatus: StageStatuses) =>
-              setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }))
-            }
-          />
-        ),
-        key: 'directTransfer',
-      });
+      if (exchange.invoiceUrl) {
+        const invoiceId = exchange.invoiceUrl.split('com/')[1];
+        // const invoice: InvoiceModel = {
+        //   id: invoiceId,
+        //   address: exchange.exchangerWalletAddress,
+        //   amount_requested_f: exchange.amount1,
+        //   converted_amount_requested_f: exchange.amount1 * exchange.coinPair.priceCoin1InUsdt,
+        //   amount_received_total_f: '0',
+        //   converted_coin: {
+        //     iso: 'usd',
+        //   },
+        //   currency: {
+        //     iso_with_network: from.iso,
+        //   },
+        //   status: 1,
+        // };
+        // stages.push({
+        //   component: (
+        //     <Box
+        //       sx={{
+        //         p: 2,
+        //         borderRadius: 1,
+        //         border: 1,
+        //         borderColor: 'primary.main',
+        //         bgcolor: 'secondary.dark',
+        //       }}
+        //     >
+        //       <InvoiceView invoice={invoice} hideHeader connections={wallets} />
+        //     </Box>
+        //   ),
+        //   key: 'directTransfer',
+        // });
+        stages.push({
+          component: (
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: 1,
+                border: 1,
+                borderColor: 'primary.main',
+                bgcolor: 'secondary.dark',
+              }}
+            >
+              <Invoice id={invoiceId} hideHeader connections={wallets} />
+            </Box>
+          ),
+          key: 'directTransfer',
+        });
+      } else {
+        stages.push({
+          component: (
+            <StageDirectTransfer
+              key="directTransfer"
+              from={from}
+              trade={exchange}
+              value={stagesStatuses.directTransfer}
+              onChange={(newStatus: StageStatuses) =>
+                setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }))
+              }
+            />
+          ),
+          key: 'directTransfer',
+        });
+      }
     }
   }
 
@@ -186,7 +241,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       content = (
         <Box>
           {outgoingPaymentApproved ? (
-            <Alert>{t('You are confirmed')} {from.symbol} {t('transfer')}</Alert>
+            <Alert>
+              {t('You are confirmed')} {from.symbol} {t('transfer')}
+            </Alert>
           ) : (
             <>
               <Alert severity="info">
@@ -250,6 +307,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   } else if (exchange.status === TradeStatus.clientTransactionVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Client transaction sending');
+  } else if (exchange.status === TradeStatus.dispute) {
+    statusImage = <MessageCircle />;
+    headerText = t('Dispute');
   } else if (exchange.status === TradeStatus.exchangerTransactionVerify) {
     statusImage = <PulseLoader />;
     headerText = t('Trade Processing');
@@ -335,7 +395,12 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       <Typography marginBottom={1} variant="h4">
         {headerText}
       </Typography>
-      <Typography variant="body2" marginBottom={4} alignItems="center">
+      <Typography
+        variant="body2"
+        marginBottom={4}
+        alignItems="center"
+        color="text.secondary"
+      >
         {t('Trade')} {shortenAddress(exchange.id)} {t('with')}{' '}
         <strong>{exchange.exchangerName}</strong>
       </Typography>
