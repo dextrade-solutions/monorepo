@@ -320,7 +320,7 @@ export const PaymentMethodForm = ({
               {saving ? (
                 <CircularProgress size={24} color="inherit" />
               ) : (
-                t('save')
+                t('Add')
               )}
             </Button>
           </Box>
