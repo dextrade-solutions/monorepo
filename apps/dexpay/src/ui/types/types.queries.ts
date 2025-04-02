@@ -22,6 +22,7 @@ import type {
   IStatistic,
   ITransactionWithdrawal,
   IInvoiceFull,
+  IAddressTransferFrom,
 } from './types.entities';
 
 export namespace Auth {
@@ -351,6 +352,7 @@ export namespace Address {
   export namespace Generate {
     export type Response = IAddress & {
       currency: ICurrency & { network: INetwork };
+      transfer_from: IAddressTransferFrom;
     };
 
     export interface Body {
@@ -553,6 +555,20 @@ export namespace Transaction {
       }
 
       export interface Response {}
+    }
+  }
+
+  export namespace TransferFrom {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Body {
+      address_id: number;
+    }
+
+    export interface Response {
+      success: boolean; // Adjust based on actual API response
     }
   }
 }

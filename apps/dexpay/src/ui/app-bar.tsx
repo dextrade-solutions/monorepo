@@ -1,6 +1,8 @@
 import { AppBar, Box, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
+import GasPreferenceModal from './components/modals/GasPreferenceModal';
 import {
   ROUTE_HISTORY,
   ROUTE_HOME,
@@ -31,6 +33,17 @@ const Appbar = () => {
   const auth = useAuth();
   const [location] = useHashLocation();
   const title = titles[location] || ''; // Get title based on route or default to empty string
+  const [openGasPreferenceModal, setOpenGasPreferenceModal] = useState(false);
+
+  useEffect(() => {
+    console.log(localStorage.getItem('gasPreference'));
+    if (
+      !localStorage.getItem('gasPreference') ||
+      localStorage.getItem('gasPreference') === 'NATIVE'
+    ) {
+      setOpenGasPreferenceModal(true);
+    }
+  }, []);
 
   if (auth.user!.isCashier) {
     return null;
@@ -54,6 +67,12 @@ const Appbar = () => {
         >
           {title} {/* Display dynamic title */}
         </Typography>
+        {auth.user?.isRegistrationCompleted && (
+          <GasPreferenceModal
+            open={openGasPreferenceModal}
+            onClose={() => setOpenGasPreferenceModal(false)}
+          />
+        )}
       </Box>
     </AppBar>
   );

@@ -71,6 +71,13 @@ export interface IAddress {
   deletedAt: string | null;
 }
 
+export interface IAddressTransferFrom {
+  status: number;
+  is_done: boolean;
+  is_pending: boolean;
+  status_label: 'WAITING_FOR_TOKEN_DEPOSIT' | 'PENDING' | 'ERROR' | 'CONNECTED';
+}
+
 export interface ICoin {
   id: number;
   iso: string;

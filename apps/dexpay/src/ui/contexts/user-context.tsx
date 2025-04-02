@@ -41,6 +41,7 @@ interface UserContextType {
     all: IVault[];
     hotWallet: IVault | undefined;
   };
+  showCustomFeeTokenModal: boolean;
   login: (email: string, pass: string) => Promise<void>;
   twoFA: (options: {
     code: string;
