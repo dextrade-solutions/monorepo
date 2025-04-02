@@ -7,6 +7,7 @@ import {
   TextareaAutosize,
   Typography,
   CircularProgress,
+  Skeleton,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -18,7 +19,7 @@ import {
 } from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const PAYMENT_METHOD_FORM_FIELDS = {
@@ -68,7 +69,9 @@ const FieldProvider = ({
   };
   return (
     <Box marginTop={2} marginBottom={2}>
-      <Typography marginBottom={1}>{label}</Typography>
+      <Typography marginBottom={1} color="text.secondary">
+        {label}
+      </Typography>
       {renderInput(handleChange)}
       {Boolean(errors.length) && <Typography>{errors.join(',')}</Typography>}
     </Box>
@@ -78,6 +81,7 @@ const FieldProvider = ({
 interface PaymentMethodFormProps {
   edit?: DextradeTypes.PaymentMethodsModel;
   currency?: string | null;
+  supportedIdsList?: number[];
   onCancel?: () => void;
   onCreated?: () => void;
   paymentMethodCurrencies?: () => Promise<DextradeTypes.CurrencyModel[]>;
@@ -90,6 +94,7 @@ interface PaymentMethodFormProps {
 export const PaymentMethodForm = ({
   edit,
   currency = null,
+  supportedIdsList,
   onCancel,
   onCreated,
   paymentMethodCurrencies,
@@ -116,23 +121,35 @@ export const PaymentMethodForm = ({
     },
   });
 
-  const { isLoading: paymentMethodsLoading, data: paymentMethods = [] } =
-    useQuery({
-      queryKey: ['paymentMethods', formValues.currency],
-      queryFn: (params) => {
-        if (paymentMethodList) {
-          return paymentMethodList();
-        }
+  const { isLoading: paymentMethodsLoading, data } = useQuery({
+    queryKey: ['paymentMethods', formValues.currency],
+    queryFn: (params) => {
+      if (paymentMethodList) {
+        return paymentMethodList();
+      }
 
-        const [, currencyParam] = params.queryKey;
-        if (currencyParam) {
-          return paymentService
-            .listAllBankByCurrencyId(currencyParam)
-            .then((r) => r.data);
-        }
-        return paymentService.listAllBanks().then((r) => r.data);
-      },
-    });
+      const [, currencyParam] = params.queryKey;
+      if (currencyParam) {
+        return paymentService
+          .listAllBankByCurrencyId(currencyParam)
+          .then((r) => r.data);
+      }
+      return paymentService.listAllBanks().then((r) => r.data);
+    },
+  });
+
+  const paymentMethods = useMemo(() => {
+    let result: DextradeTypes.BankDictModel[] = data || [];
+    if (supportedIdsList) {
+      result = result.filter((item) =>
+        supportedIdsList.includes(item.paymentMethodId),
+      );
+    }
+    return result;
+  }, [data, supportedIdsList]);
+
+  const defaultCurrency = currencies[0]?.iso;
+  const defaultPaymentMethod = paymentMethods[0];
 
   const handleOnChange = (
     targetName: string,
@@ -169,15 +186,17 @@ export const PaymentMethodForm = ({
         return acc;
       }, {});
 
+      const paymentMethod = formValues.paymentMethod || defaultPaymentMethod;
+
       const payload = {
         id: formValues.userPaymentMethodId,
         data: JSON.stringify(data),
-        currency: formValues.currency || 'THB',
-        paymentMethodId: formValues.paymentMethod.paymentMethodId,
+        currency: defaultCurrency || formValues.currency || 'THB',
+        paymentMethodId: paymentMethod.paymentMethodId,
         balance: 0,
       };
-      await paymentMethodCreateOrUpdate(payload);
-      onCreated && onCreated();
+      const { data: id } = await paymentMethodCreateOrUpdate(payload);
+      onCreated && onCreated(id);
     } catch (error) {
       console.error('Error saving payment method:', error);
       // Handle error, e.g., show an error message to the user
@@ -190,104 +209,123 @@ export const PaymentMethodForm = ({
     return !Object.values(errors).some((err) => err !== null && err.length > 0);
   };
 
+  const isLoading = !defaultPaymentMethod;
+
+  const renderLoading = () => (
+    <Box>
+      <Skeleton variant="rounded" height={50} sx={{ mb: 2 }} />
+      <Skeleton variant="rounded" height={50} sx={{ mb: 2 }} />
+      <Skeleton variant="rounded" height={50} sx={{ mb: 2 }} />
+      <Skeleton variant="rounded" height={50} sx={{ mb: 2 }} />
+    </Box>
+  );
+
   return (
     <Box>
-      <FieldProvider
-        name="currency"
-        validators={[isRequired]}
-        label={t('currency')}
-        renderInput={(onChangeWrapper) => (
-          <Autocomplete
-            value={formValues.currency}
-            onChange={(_, v) => onChangeWrapper(v.iso)}
-            options={currencies}
-            disabled={Boolean(currency) || currenciesLoading}
-            fullWidth
-            isOptionEqualToValue={(option, v) => option.iso === v}
-            getOptionLabel={(option) =>
-              option.iso ? `${option.iso} (${option.name})` : option
-            }
-            renderInput={(props) => <TextField {...props} />}
-          />
-        )}
-        onChange={handleOnChange}
-      />
-      <FieldProvider
-        name="paymentMethod"
-        validators={[isRequired]}
-        label={t('paymentMethod')}
-        renderInput={(onChangeWrapper) => (
-          <Autocomplete
-            value={formValues.paymentMethod}
-            onChange={(_, v) => onChangeWrapper(v)}
-            options={paymentMethods}
-            fullWidth
-            disabled={paymentMethodsLoading}
-            getOptionLabel={(option) =>
-              humanizePaymentMethodName(option.name, t)
-            }
-            renderInput={(props) => <TextField {...props} />}
-          />
-        )}
-        onChange={handleOnChange}
-      />
-      <Box>
-        {formValues.paymentMethod &&
-          formValues.paymentMethod.fields.map((field: any) => {
-            const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
-            const fieldValidators: ((value: any) => string | null)[] = [];
-            if (field.required) {
-              fieldValidators.push(isRequired);
-            }
-            if (field.validate) {
-              const validators =
-                CONTENT_TYPE_VALIDATORS[field.contentType] || [];
-              fieldValidators.push(...validators);
-            }
-            const fieldName = `paymentMethodFields.${field.contentType}:${field.id}`;
-            return (
-              <FieldProvider
-                key={field.id}
-                name={fieldName}
-                validators={fieldValidators}
-                label={field.name || t(field.contentType)}
-                onChange={handleOnChange}
-                renderInput={(onChangeWrapper) => (
-                  <Field
-                    value={formValues[fieldName]}
-                    onChange={onChangeWrapper}
-                    base64
-                    fullWidth
-                  />
-                )}
-              />
-            );
-          })}
-      </Box>
-      <Alert severity="info">{t('paymentMethodHint')}</Alert>
-      <Box display="flex" marginTop={1}>
-        {onCancel && (
-          <Button
-            className="bank-account-picker__cancel-btn"
-            onClick={onCancel}
-          >
-            {t('cancel')}
-          </Button>
-        )}
-        <div className="flex-grow"></div>
-        <Button
-          variant="contained"
-          className="bank-account-picker__save-btn"
-          disabled={!isFormValid() || saving}
-          onClick={save}
-        >
-          {saving ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            t('save')
+      {!currency && (
+        <FieldProvider
+          name="currency"
+          validators={[isRequired]}
+          label={t('currency')}
+          renderInput={(onChangeWrapper) => (
+            <Autocomplete
+              value={formValues.currency || defaultCurrency}
+              onChange={(_, v) => onChangeWrapper(v.iso)}
+              options={currencies}
+              disabled={Boolean(currency) || currenciesLoading}
+              fullWidth
+              isOptionEqualToValue={(option, v) => option.iso === v}
+              getOptionLabel={(option) =>
+                option.iso ? `${option.iso} (${option.name})` : option
+              }
+              renderInput={(props) => <TextField {...props} />}
+            />
           )}
-        </Button>
-      </Box>
+          onChange={handleOnChange}
+        />
+      )}
+      {isLoading && renderLoading()}
+      {!isLoading && (
+        <>
+          <FieldProvider
+            name="paymentMethod"
+            validators={[isRequired]}
+            label={t('paymentMethod')}
+            renderInput={(onChangeWrapper) => (
+              <Autocomplete
+                defaultValue={defaultPaymentMethod}
+                value={formValues.paymentMethod}
+                onChange={(_, v) => onChangeWrapper(v)}
+                options={paymentMethods}
+                fullWidth
+                disabled={paymentMethodsLoading}
+                getOptionLabel={(option) =>
+                  humanizePaymentMethodName(option.name, t)
+                }
+                renderInput={(props) => <TextField {...props} />}
+              />
+            )}
+            onChange={handleOnChange}
+          />
+          <Box>
+            {formValues.paymentMethod &&
+              formValues.paymentMethod.fields.map((field: any) => {
+                const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
+                const fieldValidators: ((value: any) => string | null)[] = [];
+                if (field.required) {
+                  fieldValidators.push(isRequired);
+                }
+                if (field.validate) {
+                  const validators =
+                    CONTENT_TYPE_VALIDATORS[field.contentType] || [];
+                  fieldValidators.push(...validators);
+                }
+                const fieldName = `paymentMethodFields.${field.contentType}:${field.id}`;
+                return (
+                  <FieldProvider
+                    key={field.id}
+                    name={fieldName}
+                    validators={fieldValidators}
+                    label={field.name || t(field.contentType)}
+                    onChange={handleOnChange}
+                    renderInput={(onChangeWrapper) => (
+                      <Field
+                        value={formValues[fieldName]}
+                        onChange={onChangeWrapper}
+                        base64
+                        fullWidth
+                      />
+                    )}
+                  />
+                );
+              })}
+          </Box>
+          <Alert severity="info">{t('paymentMethodHint')}</Alert>
+          <Box display="flex" marginTop={1}>
+            {onCancel && (
+              <Button
+                className="bank-account-picker__cancel-btn"
+                onClick={onCancel}
+              >
+                {t('cancel')}
+              </Button>
+            )}
+            <div className="flex-grow"></div>
+            <Button
+              variant="contained"
+              className="bank-account-picker__save-btn"
+              disabled={!isFormValid() || saving}
+              onClick={save}
+            >
+              {saving ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                t('save')
+              )}
+            </Button>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

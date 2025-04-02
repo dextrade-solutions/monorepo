@@ -15,7 +15,7 @@ import {
   humanizePaymentMethodName,
 } from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Icon from '../../ui/icon';
@@ -24,6 +24,7 @@ import PaymentMethodForm from '../payment-method-form';
 interface IProps {
   value?: DextradeTypes.PaymentMethodsModel[]; // Changed to array
   currency: string;
+  supportedIdsList?: number[];
   onSelect: (paymentMethods: DextradeTypes.PaymentMethodsModel[]) => void; // Changed to array
   onClose: () => void;
   removePaymentMethod?: (id: number) => Promise<any>;
@@ -34,6 +35,7 @@ interface IProps {
 const PaymentMethods = ({
   value = [], // Default to empty array
   currency,
+  supportedIdsList,
   selectable = false, // Default to false
   onSelect,
   onClose,
@@ -50,17 +52,37 @@ const PaymentMethods = ({
     setCreateMode(!createMode);
   };
 
-  const {
-    isLoading,
-    data: paymentMethods = [],
-    refetch,
-  } = useQuery({
+  const { isLoading, data, refetch } = useQuery({
     queryKey: ['userPaymentMethods'],
     queryFn: getUserPaymentMethods,
   });
 
-  const onCreated = async () => {
-    await refetch();
+  const paymentMethods = useMemo(() => {
+    let result: DextradeTypes.PaymentMethodsModel[] = data || [];
+    if (supportedIdsList) {
+      result = result.filter((item) =>
+        supportedIdsList.includes(item.paymentMethod?.paymentMethodId),
+      );
+    }
+    return result;
+  }, [data, supportedIdsList]);
+
+  useEffect(() => {
+    if (!isLoading && paymentMethods) {
+      if (!paymentMethods.length) {
+        setCreateMode(true);
+      }
+    }
+  }, [paymentMethods, isLoading]);
+
+  const onCreated = async (id: number) => {
+    const updatesPaymentMethods = await refetch();
+    setSelectedPaymentMethods([
+      ...selectedPaymentMethods,
+      updatesPaymentMethods.data.find(
+        (item) => item.userPaymentMethodId === id,
+      ),
+    ]);
     toggleCreateMode();
   };
 
@@ -120,27 +142,22 @@ const PaymentMethods = ({
                 <Typography>
                   {humanizePaymentMethodName(bankAccount.paymentMethod.name, t)}
                 </Typography>
-                <Typography color="text.secondary">
-                  {getStrPaymentMethodInstance(bankAccount)}
-                </Typography>
               </Box>
             }
           />
         )}
         {!selectable && (
-          <Box>
-            <Typography>
-              {humanizePaymentMethodName(bankAccount.paymentMethod.name, t)}
-            </Typography>
-            <Typography color="text.secondary">
-              {getStrPaymentMethodInstance(bankAccount)}
-            </Typography>
-          </Box>
+          <>
+            <Box>
+              <Typography>
+                {humanizePaymentMethodName(bankAccount.paymentMethod.name, t)}
+              </Typography>
+            </Box>
+            <Button onClick={() => remove(bankAccount.userPaymentMethodId)}>
+              <Icon name="trash-dex" size="lg" />
+            </Button>
+          </>
         )}
-        {/* Remove button always visible */}
-        <Button onClick={() => remove(bankAccount.userPaymentMethodId)}>
-          <Icon name="trash-dex" size="lg" />
-        </Button>
       </Box>
     );
   };
@@ -168,6 +185,7 @@ const PaymentMethods = ({
         <Box>
           <PaymentMethodForm
             onCancel={() => setCreateMode(false)}
+            supportedIdsList={supportedIdsList}
             currency={currency}
             onCreated={onCreated}
           />
@@ -206,7 +224,7 @@ const PaymentMethods = ({
                 onSelect(selectedPaymentMethods);
               }}
             >
-              Save
+              Continue
             </Button>
           )}
         </Box>

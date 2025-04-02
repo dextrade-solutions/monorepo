@@ -9,11 +9,13 @@ import { ModalProps } from '../types';
 const SetPaymentMethod = ({
   asset,
   value,
+  supportedIdsList,
   onChange,
   hideModal,
 }: {
   asset: AssetModel;
   value: UserPaymentMethod | null;
+  supportedIdsList?: number[];
   onChange: (v: UserPaymentMethod) => void;
 } & ModalProps) => {
   const { t } = useTranslation();
@@ -43,6 +45,7 @@ const SetPaymentMethod = ({
       <PaymentMethods
         value={value}
         selectable
+        supportedIdsList={supportedIdsList}
         currency={asset.symbol}
         onSelect={selectPaymentMethod}
       />

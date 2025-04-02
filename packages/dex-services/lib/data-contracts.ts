@@ -142,7 +142,7 @@ export interface ProviderExchangerSettingsListRequestModel {
 
 export interface BankDictModel {
   /** @format int64 */
-  paymentMethodId?: number;
+  paymentMethodId: number;
   name?: string;
   description?: string;
   fields?: BankFieldsInfoModel[];

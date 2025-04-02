@@ -26,11 +26,17 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
   hasValidationErrors: boolean;
+  onShowPaymentMethods: () => void;
   onChange: (v: string | number) => void;
   reserve?: number;
 }
 
-export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
+export const AssetAmountField = ({
+  assetInput,
+  onChange,
+  onShowPaymentMethods,
+  reserve,
+}: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
   const t = useI18nContext();
@@ -166,7 +172,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
               size="large"
               fullWidth
               disableElevation
-              onClick={() => assetInput.showPaymentMethod()}
+              onClick={onShowPaymentMethods}
             >
               {paymentMethod && (
                 <Box display="flex">

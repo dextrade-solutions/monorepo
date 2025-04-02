@@ -68,13 +68,14 @@ export const useAssetInput = ({
     });
   };
 
-  const showPaymentMethod = () => {
+  const showPaymentMethod = (supportedIdsList?: number[]) => {
     login({
       onSuccess: () =>
         showModal({
           name: 'SET_PAYMENT_METHOD',
           asset,
           value: paymentMethod,
+          supportedIdsList,
           onChange: (v) => setPaymentMethod(v),
         }),
     });
