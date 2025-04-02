@@ -52,9 +52,11 @@ export function useEVMProviders({ config }: { config: any }) {
               throw new Error('Asset chainid not found');
             }
             const value = parseUnits(String(amount), asset.decimals);
+            const [from] = await item.getAccounts();
             const txParams = generateTxParams({
               asset,
               value,
+              from,
               to: recipient,
             });
             try {

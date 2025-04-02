@@ -155,7 +155,12 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                 bgcolor: 'secondary.dark',
               }}
             >
-              <Invoice id={invoiceId} hideHeader connections={wallets} />
+              <Invoice
+                preloaderType="skeleton"
+                id={invoiceId}
+                hideHeader
+                connections={wallets}
+              />
             </Box>
           ),
           key: 'directTransfer',

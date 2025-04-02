@@ -1,9 +1,8 @@
 import { remove0x } from '@metamask/utils';
 import { createSlice } from '@reduxjs/toolkit';
+import { isTMA, miniApp, openTelegramLink } from '@telegram-apps/sdk';
 import { BUILT_IN_NETWORKS, DEXTRADE_P2P_TELEGRAM_BOT } from 'dex-helpers';
 import { queryClient } from 'dex-helpers/shared';
-import { isTMA, miniApp, openTelegramLink } from '@telegram-apps/sdk';
-
 import {
   Trade,
   AdItem,
@@ -187,6 +186,7 @@ export const createSwapP2P = (props: {
         clientWalletAddress: getSerializedAddressFromInput(from),
         clientWalletAddressInNetwork2: getSerializedAddressFromInput(to),
         clientSlippage: slippage,
+        isInvoicePayment: from.asset.isFiat || to.asset.isFiat,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),
       { on401 },

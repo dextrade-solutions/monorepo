@@ -6,12 +6,12 @@ import InvoicePreloader from './InvoicePreloader';
 import InvoiceView from './InvoiceView';
 import useInvoice from './react-queries/queries/useInvoice';
 import { IInvoiceFull } from './types/entities';
+import React from 'react';
 
 interface InvoiceProps {
   connections: Connection[];
   id: string;
-  deeplinkUrl?: string;
-  preloaderType?: string; // You might want to define a more specific type here if you have a limited set of preloader types
+  preloaderType?: 'skeleton' | 'dextrade'; // You might want to define a more specific type here if you have a limited set of preloader types
   hideHeader?: boolean;
   preview?: boolean;
   showInvoiceUrlQr?: boolean;
@@ -22,7 +22,6 @@ interface InvoiceProps {
 export default function Invoice({
   connections,
   id,
-  deeplinkUrl,
   preloaderType,
   hideHeader,
   preview,
@@ -32,7 +31,7 @@ export default function Invoice({
 }: InvoiceProps) {
   const invoice = useInvoice({ id });
   if (invoice.isLoading) {
-    return <InvoicePreloader />;
+    return <InvoicePreloader preloaderType={preloaderType} />;
   }
   if (invoice.isError) {
     return (
