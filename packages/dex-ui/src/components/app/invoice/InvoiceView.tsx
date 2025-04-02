@@ -274,6 +274,11 @@ export default function InvoiceView({
     </Button>
   ) : null;
 
+  // TODO: open binance
+  // function openBinanceWithRecipient(address: string) {
+  //   const url = `binance://wallet?recipient=${address}`;
+  //   window.location.href = url;
+  // }
   const renderPaymentMethods = () => (
     <MenuList>
       {connectedWallet
@@ -342,6 +347,17 @@ export default function InvoiceView({
                 secondary="Manual copy address and send assets"
               />
             </ListItemButton>,
+            // <ListItemButton
+            //   key="copy-address"
+            //   className="bordered"
+            //   disabled={changeAddress.isPending}
+            //   onClick={() => openBinanceWithRecipient(invoice.address)}
+            // >
+            //   <ListItemAvatar>
+            //     <Icon ml={1} name="copy" size="xl" />
+            //   </ListItemAvatar>
+            //   <ListItemText primary="Binance" secondary="Open binance app" />
+            // </ListItemButton>,
             !changeAddress.isPending && connections.length > 0 && (
               <WalletList
                 key="wallet-list"

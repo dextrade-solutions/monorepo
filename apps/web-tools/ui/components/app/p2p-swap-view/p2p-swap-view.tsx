@@ -270,27 +270,29 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         pb={2}
       >
         <P2PSwapSummary exchange={ad} />
-        <Box display="flex" justifyContent="space-between" marginTop={1}>
-          <Box display="flex" alignItems="center">
-            <Typography marginRight={1}>{t('slippageTolerance')}</Typography>
+        {!assetFrom.isFiat && !assetTo.isFiat && (
+          <Box display="flex" justifyContent="space-between" marginTop={1}>
+            <Box display="flex" alignItems="center">
+              <Typography marginRight={1}>{t('slippageTolerance')}</Typography>
+            </Box>
+            <Typography fontWeight="bold">
+              {slippage}%{' '}
+              <ButtonIcon
+                iconProps={{
+                  color: 'text.primary',
+                }}
+                onClick={() =>
+                  showModal({
+                    name: 'SLIPPAGE_MODAL',
+                    value: slippage,
+                    onChange: (v: number) => setSlippage(v),
+                  })
+                }
+                iconName="setting-dex"
+              />
+            </Typography>
           </Box>
-          <Typography fontWeight="bold">
-            {slippage}%{' '}
-            <ButtonIcon
-              iconProps={{
-                color: 'text.primary',
-              }}
-              onClick={() =>
-                showModal({
-                  name: 'SLIPPAGE_MODAL',
-                  value: slippage,
-                  onChange: (v: number) => setSlippage(v),
-                })
-              }
-              iconName="setting-dex"
-            />
-          </Typography>
-        </Box>
+        )}
         <Box mt={2}>
           <SwapFees
             superFee={assetFrom.standard === NetworkTypes.trc20}

@@ -26,7 +26,14 @@ export default function P2PSwap() {
         paddingX={1}
         marginBottom={2}
       >
-        <Typography fontWeight="bold" variant="h4">
+        <Typography
+          fontWeight="bold"
+          variant="h4"
+          onClick={() => {
+            window.location.href =
+              'bnc://app.binance.com/transfer?coin=ETH&amount=1&address=0x6B175474E89094C44Da98b954EedeAC495271d0F&network=ERC20';
+          }}
+        >
           P2P
         </Typography>
         <div className="flex-grow" />
