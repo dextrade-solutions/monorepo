@@ -34,6 +34,8 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
   const t = useI18nContext();
+
+  const [paymentMethod] = assetInput.paymentMethod || [];
   return (
     <Card
       className="asset-amount-field"
@@ -166,14 +168,16 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
               disableElevation
               onClick={() => assetInput.showPaymentMethod()}
             >
-              {assetInput.paymentMethod && (
+              {paymentMethod && (
                 <Box display="flex">
                   <Box>
-                    {getStrPaymentMethodInstance(assetInput.paymentMethod)}
+                    {getStrPaymentMethodInstance(paymentMethod)}{' '}
+                    {assetInput.paymentMethod.length > 1 &&
+                      `(+${assetInput.paymentMethod.length - 1})`}
                   </Box>
                 </Box>
               )}
-              {!assetInput.paymentMethod && t('Payment method')}
+              {!paymentMethod && t('Payment method')}
             </Button>
           )}
           {(assetInput.permissions.canPasteWallet ||

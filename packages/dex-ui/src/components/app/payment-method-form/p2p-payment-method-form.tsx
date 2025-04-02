@@ -6,6 +6,7 @@ import {
   TextField,
   TextareaAutosize,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -103,6 +104,7 @@ export const PaymentMethodForm = ({
     },
   );
   const [errors, setErrors] = useState<Record<string, string[] | null>>({});
+  const [saving, setSaving] = useState(false);
 
   const { isLoading: currenciesLoading, data: currencies = [] } = useQuery({
     queryKey: ['paymentMethodsCurrencies'],
@@ -148,32 +150,44 @@ export const PaymentMethodForm = ({
   };
 
   const save = async () => {
-    const data = Object.keys(formValues).reduce((acc: any, formFieldName) => {
-      const [, fieldName] = formFieldName.split('.');
-      if (fieldName) {
-        const [, id] = fieldName.split(':');
-        const field = formValues.paymentMethod.fields.find(
-          (f: any) => f.id === Number(id),
-        );
-        if (field) {
-          return {
-            ...acc,
-            [fieldName]: formValues[formFieldName],
-          };
+    try {
+      setSaving(true);
+      const data = Object.keys(formValues).reduce((acc: any, formFieldName) => {
+        const [, fieldName] = formFieldName.split('.');
+        if (fieldName) {
+          const [, id] = fieldName.split(':');
+          const field = formValues.paymentMethod.fields.find(
+            (f: any) => f.id === Number(id),
+          );
+          if (field) {
+            return {
+              ...acc,
+              [fieldName]: formValues[formFieldName],
+            };
+          }
         }
-      }
-      return acc;
-    }, {});
+        return acc;
+      }, {});
 
-    const payload = {
-      id: formValues.userPaymentMethodId,
-      data: JSON.stringify(data),
-      currency: formValues.currency || 'THB',
-      paymentMethodId: formValues.paymentMethod.paymentMethodId,
-      balance: 0,
-    };
-    await paymentMethodCreateOrUpdate(payload);
-    onCreated && onCreated();
+      const payload = {
+        id: formValues.userPaymentMethodId,
+        data: JSON.stringify(data),
+        currency: formValues.currency || 'THB',
+        paymentMethodId: formValues.paymentMethod.paymentMethodId,
+        balance: 0,
+      };
+      await paymentMethodCreateOrUpdate(payload);
+      onCreated && onCreated();
+    } catch (error) {
+      console.error('Error saving payment method:', error);
+      // Handle error, e.g., show an error message to the user
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const isFormValid = () => {
+    return !Object.values(errors).some((err) => err !== null && err.length > 0);
   };
 
   return (
@@ -251,27 +265,29 @@ export const PaymentMethodForm = ({
           })}
       </Box>
       <Alert severity="info">{t('paymentMethodHint')}</Alert>
-      {formValues.paymentMethod && (
-        <Box display="flex" marginTop={1}>
-          {onCancel && (
-            <Button
-              className="bank-account-picker__cancel-btn"
-              color="secondary"
-              onClick={onCancel}
-            >
-              {t('cancel')}
-            </Button>
-          )}
-          <div className="flex-grow"></div>
+      <Box display="flex" marginTop={1}>
+        {onCancel && (
           <Button
-            variant="contained"
-            className="bank-account-picker__save-btn"
-            onClick={save}
+            className="bank-account-picker__cancel-btn"
+            onClick={onCancel}
           >
-            {t('save')}
+            {t('cancel')}
           </Button>
-        </Box>
-      )}
+        )}
+        <div className="flex-grow"></div>
+        <Button
+          variant="contained"
+          className="bank-account-picker__save-btn"
+          disabled={!isFormValid() || saving}
+          onClick={save}
+        >
+          {saving ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            t('save')
+          )}
+        </Button>
+      </Box>
     </Box>
   );
 };

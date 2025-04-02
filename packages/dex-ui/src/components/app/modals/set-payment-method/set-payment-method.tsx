@@ -42,6 +42,7 @@ const SetPaymentMethod = ({
       </Box>
       <PaymentMethods
         value={value}
+        selectable
         currency={asset.symbol}
         onSelect={selectPaymentMethod}
       />
