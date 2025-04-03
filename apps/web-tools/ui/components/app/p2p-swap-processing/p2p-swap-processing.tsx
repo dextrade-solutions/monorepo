@@ -48,7 +48,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
 import { useWallets } from '../../../hooks/asset/useWallets';
-import { useTelegramViewportHack } from '../../../hooks/useTelegramViewportHack';
 
 interface IProps {
   exchange: Trade;
@@ -69,9 +68,6 @@ document.addEventListener(
 );
 
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  useTelegramViewportHack(ref);
-
   const t = useI18nContext();
   const navigate = useNavigate();
   const allWallets = useWallets();

@@ -1,6 +1,7 @@
 import { Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { init, isTMA } from '@telegram-apps/sdk';
 import { DexUiProvider, useDexUI } from 'dex-ui';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import ConnectedWallets from './components/app/modals/connected-wallets';
@@ -13,9 +14,9 @@ import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solan
 import { UserAuthProvider } from './contexts/auth-context';
 import { getCurrentTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
+import { useTelegramViewportHack } from './hooks/useTelegramViewportHack';
 import Pages from './pages';
 import { store } from './store/store';
-import React from 'react';
 
 if (isTMA()) {
   init();
@@ -25,6 +26,9 @@ export function App() {
   const theme = useSelector(getCurrentTheme);
   const locale = useSelector(getCurrentLocale);
   const { muiTheme } = useDexUI({ theme });
+
+  const ref = useRef<HTMLDivElement>(null);
+  useTelegramViewportHack(ref);
   return (
     <ThemeProvider theme={muiTheme}>
       <Web3ModalProvider>
@@ -43,7 +47,12 @@ export function App() {
           >
             <UserAuthProvider>
               <CssBaseline />
-              <Container sx={{ py: 2 }} maxWidth="sm">
+              <Container
+                ref={ref}
+                className="h-root"
+                sx={{ py: 2 }}
+                maxWidth="sm"
+              >
                 <Pages />
               </Container>
             </UserAuthProvider>

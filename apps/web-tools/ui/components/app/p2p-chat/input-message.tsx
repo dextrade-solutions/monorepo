@@ -6,6 +6,8 @@ import {
   TextField,
   Zoom,
 } from '@mui/material';
+import { isTMA } from '@telegram-apps/sdk';
+import { isMobileWeb } from 'dex-helpers';
 import { ButtonIcon } from 'dex-ui';
 import React, { useState } from 'react';
 
@@ -41,24 +43,30 @@ export const InputMessage = ({
     }
   };
 
+  let boxSxProps = {
+    width: '100%',
+    transition: 'padding-bottom 0.3s ease-in-out',
+    boxSizing: 'border-box',
+  };
+
+  if (isTMA() || isMobileWeb) {
+    boxSxProps = {
+      ...boxSxProps,
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      padding: (theme) => theme.spacing(2),
+      bgcolor: 'primary.light',
+    };
+  }
+
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        padding: (theme) => theme.spacing(2),
-        paddingBottom: (theme) => theme.spacing(5),
-        transition: 'padding-bottom 0.3s ease-in-out',
-        boxSizing: 'border-box',
-        bgcolor: 'primary.light',
-      }}
-    >
+    <Box sx={boxSxProps}>
       <TextField
         value={text}
         placeholder="Write a message..."
         fullWidth
+        variant="outlined"
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
