@@ -76,6 +76,7 @@ const PaymentMethods = ({
 
   const userPaymentMethods = useMemo(() => {
     let result: DextradeTypes.PaymentMethodsModel[] = data || [];
+
     if (supportedIdsList) {
       result = result.filter((item) =>
         supportedIdsList.includes(item.paymentMethod?.paymentMethodId),

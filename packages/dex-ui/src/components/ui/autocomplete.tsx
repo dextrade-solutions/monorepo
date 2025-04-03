@@ -48,10 +48,28 @@ export default function Autocomplete<
       <Box>
         {props.value ? (
           <Box>
-            <Chip
-              label={getOptionLabel(props.value)}
-              onDelete={() => props.onChange(undefined, undefined)}
-            />
+            <Box>
+              <Chip
+                label={getOptionLabel(props.value)}
+                onDelete={
+                  options.length > 1 &&
+                  (() => props.onChange(undefined, undefined))
+                }
+              />
+            </Box>
+            <Box
+              sx={{
+                borderRadius: 1,
+                mt: 2,
+                backgroundImage: 'url(/images/testatm1.jpg)', // Fixed line
+                minHeight: 200,
+                backgroundSize: 'contain',
+              }}
+            >
+              {getOptionLabel(props.value).includes('ATM Krungthai') && (
+                <img src="" />
+              )}
+            </Box>
           </Box>
         ) : (
           <Paper sx={{ my: 2, bgcolor: 'transparent', overflow: 'auto' }}>
