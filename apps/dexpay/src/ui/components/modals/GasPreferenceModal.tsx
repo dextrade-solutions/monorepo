@@ -63,7 +63,7 @@ export default function GasPreferenceModal({
               sx={{
                 bgcolor: 'secondary.dark',
                 cursor: 'pointer',
-                '&:hover': { bgcolor: 'secondary.main' },
+                '&:hover': { bgcolor: 'primary.light' },
               }}
               onClick={() => handleUsdtSelect(option.value)}
             >
