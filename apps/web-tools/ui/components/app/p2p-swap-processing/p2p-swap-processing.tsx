@@ -29,7 +29,7 @@ import {
   StepProgressBar,
 } from 'dex-ui';
 import { MessageCircle } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AllowanceStage from './stage-allowance';
@@ -375,7 +375,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
 
   return (
     <Box
-      ref={ref}
       className="swap-processing"
       display="flex"
       alignItems="center"

@@ -20,6 +20,7 @@ import { MessageItem } from './types';
 import { UserMessage } from './user-message';
 import { DEXTRADE_HOST } from '../../../../app/helpers/constants';
 import { getSessionPublicKey } from '../../../ducks/auth';
+import { useTelegramViewportHack } from '../../../hooks/useTelegramViewportHack';
 
 export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
   const [wsChat, setWsChat] = useState<WebSocket | null>(null);
@@ -60,6 +61,7 @@ export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
     setWsChat(ws);
   };
 
+  // useTelegramViewportHack(messagesEndRef);
   useEffect(() => {
     openWebSocket();
     return () => {
@@ -114,7 +116,7 @@ export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
           }
         />
       </CardActionArea>
-      <Collapse in={expanded} timeout="auto">
+      <Collapse in={expanded} timeout="auto" mountOnEnter>
         <CardContent sx={{ mb: 5 }}>
           <Box maxHeight={400} overflow="auto">
             {messages.map((m, idx) => (

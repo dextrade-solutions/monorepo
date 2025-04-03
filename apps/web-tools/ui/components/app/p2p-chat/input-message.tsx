@@ -21,6 +21,7 @@ export const InputMessage = ({
 }) => {
   const [text, setText] = useState('');
   const [attachmentUpoading, setAttachmentUpoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const messageIsNotEmpty = Boolean(text && text.trim());
 
@@ -55,7 +56,7 @@ export const InputMessage = ({
       position: 'fixed',
       bottom: 0,
       left: 0,
-      padding: (theme) => theme.spacing(2),
+      p: 3,
       bgcolor: 'primary.light',
     };
   }
@@ -67,18 +68,26 @@ export const InputMessage = ({
         placeholder="Write a message..."
         fullWidth
         inputProps={{
+          sx: {
+            height: '1em',
+            margin: isFocused ? '14px 0px' : '0px 0px',
+            transition: 'margin 0.2s ease-in-out',
+          },
           autoComplete: 'off',
           spellCheck: 'false',
           autoCorrect: 'off',
         }}
-        variant="outlined"
+        variant="standard"
         onChange={(e) => setText(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             sendMessage();
           }
         }}
         InputProps={{
+          disableUnderline: true,
           startAdornment: (
             <InputAdornment position="start">
               <InputMessageAttachments

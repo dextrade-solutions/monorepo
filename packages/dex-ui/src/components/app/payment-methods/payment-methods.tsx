@@ -94,12 +94,12 @@ const PaymentMethods = ({
 
   const onCreated = async (id: number) => {
     const updatesPaymentMethods = await refetch();
-    const newPaymentMethod = updatesPaymentMethods.data.find(
-      (item) => item.userPaymentMethodId === id,
-    );
-    if (newPaymentMethod) {
-      setSelectedPaymentMethods([newPaymentMethod]);
-    }
+    // const newPaymentMethod = updatesPaymentMethods.data.find(
+    //   (item) => item.userPaymentMethodId === id,
+    // );
+    // if (newPaymentMethod) {
+    //   setSelectedPaymentMethods([newPaymentMethod]);
+    // }
     toggleCreateMode();
   };
 
