@@ -55,6 +55,18 @@ interface IProps {
   to: AssetModel;
 }
 
+document.addEventListener(
+  'touchstart',
+  function (event) {
+    const isInput = event.target.closest('input, textarea');
+
+    if (!isInput) {
+      document.activeElement.blur();
+    }
+  },
+  { passive: true },
+);
+
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -477,7 +489,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         {content && <Box marginY={4}>{content}</Box>}
       </Box>
       <div className="flex-grow" />
-      <Divider sx={{ width: '100%' }} />
+      <Divider sx={{ mt: 2, width: '100%' }} />
       <Button
         fullWidth
         onClick={onSubmit}
