@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardProps,
   Collapse,
+  Divider,
   Typography,
 } from '@mui/material';
 import classNames from 'classnames';

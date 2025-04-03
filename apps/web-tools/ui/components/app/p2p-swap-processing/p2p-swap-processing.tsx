@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
   Typography,
 } from '@mui/material';
 import { WalletConnectionType } from 'dex-connect';
@@ -184,6 +185,18 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     }
   }
 
+  const onSubmit = async () => {
+    if (canCancel) {
+      try {
+        setCancelLoading(true);
+        await P2PService.cancelExchange(exchange.id);
+      } catch {
+        setCancelLoading(false);
+      }
+    }
+    navigate(SWAPS_HISTORY_ROUTE);
+  };
+
   if (!exchange) {
     return (
       <Typography textAlign="center" marginY={2} variant="h6">
@@ -348,18 +361,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     headerText = t('Trade Processing');
   }
 
-  const onSubmit = async () => {
-    if (canCancel) {
-      try {
-        setCancelLoading(true);
-        await P2PService.cancelExchange(exchange.id);
-      } catch {
-        setCancelLoading(false);
-      }
-    }
-    navigate(SWAPS_HISTORY_ROUTE);
-  };
-
   return (
     <Box
       className="swap-processing"
@@ -475,6 +476,17 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         </Box>
         {content && <Box marginY={4}>{content}</Box>}
       </Box>
+      <div className="flex-grow" />
+      <Divider sx={{ width: '100%' }} />
+      <Button
+        fullWidth
+        onClick={onSubmit}
+        disabled={(isTradeStarted && !canCancel) || cancelLoading}
+      >
+        {submitText}
+      </Button>
+      <Divider sx={{ width: '100%' }} />
+      <div className="flex-grow" />
       {exchange.exchangerSettings.provider !== 'DEXPAY' && (
         <Box width="100%" marginY={2}>
           <P2PChat
@@ -484,14 +496,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
           />
         </Box>
       )}
-      <div className="flex-grow" />
-      <Button
-        fullWidth
-        onClick={onSubmit}
-        disabled={(isTradeStarted && !canCancel) || cancelLoading}
-      >
-        {submitText}
-      </Button>
     </Box>
   );
 };

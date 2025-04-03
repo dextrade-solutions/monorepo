@@ -1,6 +1,5 @@
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
   TextField,
@@ -21,6 +20,8 @@ import { DextradeTypes, paymentService } from 'dex-services';
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { Autocomplete } from '../../ui';
 
 const PAYMENT_METHOD_FORM_FIELDS = {
   TEXT_AREA: TextareaAutosize,
@@ -82,6 +83,7 @@ interface PaymentMethodFormProps {
   edit?: DextradeTypes.PaymentMethodsModel;
   currency?: string | null;
   supportedIdsList?: number[];
+  excludedIdsList?: number[];
   onCancel?: () => void;
   onCreated?: () => void;
   paymentMethodCurrencies?: () => Promise<DextradeTypes.CurrencyModel[]>;
@@ -95,6 +97,7 @@ export const PaymentMethodForm = ({
   edit,
   currency = null,
   supportedIdsList,
+  excludedIdsList,
   onCancel,
   onCreated,
   paymentMethodCurrencies,
@@ -108,6 +111,7 @@ export const PaymentMethodForm = ({
       currency,
     },
   );
+  const [isMounted, setIsMounted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[] | null>>({});
   const [saving, setSaving] = useState(false);
 
@@ -145,11 +149,27 @@ export const PaymentMethodForm = ({
         supportedIdsList.includes(item.paymentMethodId),
       );
     }
+    if (excludedIdsList) {
+      result = result.filter(
+        (item) => !excludedIdsList.includes(item.paymentMethodId),
+      );
+    }
     return result;
-  }, [data, supportedIdsList]);
+  }, [data, supportedIdsList, excludedIdsList]);
 
-  const defaultCurrency = currencies[0]?.iso;
-  const defaultPaymentMethod = paymentMethods[0];
+  const defaultCurrency = formValues.currency || currencies[0]?.iso || 'THB';
+
+  useEffect(() => {
+    if (!isMounted && defaultCurrency && paymentMethods.length) {
+      setIsMounted(true);
+      setFormValues({
+        ...formValues,
+        currency: defaultCurrency,
+        paymentMethod:
+          paymentMethods.length === 1 ? paymentMethods[0] : undefined,
+      });
+    }
+  }, [isMounted, formValues, paymentMethods, defaultCurrency]);
 
   const handleOnChange = (
     targetName: string,
@@ -186,12 +206,12 @@ export const PaymentMethodForm = ({
         return acc;
       }, {});
 
-      const paymentMethod = formValues.paymentMethod || defaultPaymentMethod;
+      const { paymentMethod } = formValues;
 
       const payload = {
         id: formValues.userPaymentMethodId,
         data: JSON.stringify(data),
-        currency: defaultCurrency || formValues.currency || 'THB',
+        currency: formValues.currency,
         paymentMethodId: paymentMethod.paymentMethodId,
         balance: 0,
       };
@@ -208,8 +228,6 @@ export const PaymentMethodForm = ({
   const isFormValid = () => {
     return !Object.values(errors).some((err) => err !== null && err.length > 0);
   };
-
-  const isLoading = !defaultPaymentMethod;
 
   const renderLoading = () => (
     <Box>
@@ -244,8 +262,8 @@ export const PaymentMethodForm = ({
           onChange={handleOnChange}
         />
       )}
-      {isLoading && renderLoading()}
-      {!isLoading && (
+      {paymentMethodsLoading && renderLoading()}
+      {!paymentMethodsLoading && (
         <>
           <FieldProvider
             name="paymentMethod"
@@ -253,12 +271,11 @@ export const PaymentMethodForm = ({
             label={t('paymentMethod')}
             renderInput={(onChangeWrapper) => (
               <Autocomplete
-                defaultValue={defaultPaymentMethod}
+                paper
                 value={formValues.paymentMethod}
                 onChange={(_, v) => onChangeWrapper(v)}
                 options={paymentMethods}
                 fullWidth
-                disabled={paymentMethodsLoading}
                 getOptionLabel={(option) =>
                   humanizePaymentMethodName(option.name, t)
                 }
@@ -300,7 +317,9 @@ export const PaymentMethodForm = ({
                 );
               })}
           </Box>
-          <Alert severity="info">{t('paymentMethodHint')}</Alert>
+          {formValues.paymentMethod?.fields.length > 0 && (
+            <Alert severity="info">{t('paymentMethodHint')}</Alert>
+          )}
           <Box display="flex" marginTop={1}>
             {onCancel && (
               <Button

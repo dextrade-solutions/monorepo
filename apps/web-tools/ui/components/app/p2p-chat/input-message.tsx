@@ -6,12 +6,11 @@ import {
   TextField,
   Zoom,
 } from '@mui/material';
-import { useState } from 'react';
+import { ButtonIcon } from 'dex-ui';
+import React, { useState } from 'react';
 
 import { InputMessageAttachments } from './input-message-attachments';
 import P2PService from '../../../../app/services/p2p-service';
-import { ButtonIcon } from 'dex-ui';
-import React from 'react';
 
 export const InputMessage = ({
   onSend,
@@ -43,7 +42,10 @@ export const InputMessage = ({
   };
 
   return (
-    <Box paddingTop={2}>
+    <Box
+      sx={{ position: 'fixed', bottom: 0, left: 0, width: '100%' }}
+      paddingTop={2}
+    >
       <TextField
         value={text}
         placeholder="Write a message..."

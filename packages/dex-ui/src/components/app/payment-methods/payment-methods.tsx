@@ -186,6 +186,9 @@ const PaymentMethods = ({
           <PaymentMethodForm
             onCancel={() => setCreateMode(false)}
             supportedIdsList={supportedIdsList}
+            excludedIdsList={paymentMethods.flatMap(
+              (i) => i.paymentMethod?.paymentMethodId,
+            )}
             currency={currency}
             onCreated={onCreated}
           />
