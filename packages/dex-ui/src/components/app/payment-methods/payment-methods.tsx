@@ -126,6 +126,7 @@ const PaymentMethods = ({
       }
     } else {
       setSelectedPaymentMethods([paymentMethod]); // Always set as an array
+      onSelect([paymentMethod]);
     }
   };
 
@@ -271,7 +272,7 @@ const PaymentMethods = ({
               </Button>
             </Box>
           )}
-          {selectable && (
+          {selectable && multiselect && (
             <Button
               sx={{ mt: 1 }}
               color="primary"
