@@ -43,8 +43,17 @@ export const InputMessage = ({
 
   return (
     <Box
-      sx={{ position: 'fixed', bottom: 0, left: 0, width: '100%' }}
-      paddingTop={2}
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        padding: (theme) => theme.spacing(2),
+        paddingBottom: (theme) => theme.spacing(5),
+        transition: 'padding-bottom 0.3s ease-in-out',
+        boxSizing: 'border-box',
+        bgcolor: 'primary.light',
+      }}
     >
       <TextField
         value={text}
@@ -72,7 +81,7 @@ export const InputMessage = ({
                   <div>
                     <ButtonIcon
                       iconName="send-1"
-                      color="secondary"
+                      color="secondary.contrastText"
                       onClick={() => sendMessage()}
                     />
                   </div>

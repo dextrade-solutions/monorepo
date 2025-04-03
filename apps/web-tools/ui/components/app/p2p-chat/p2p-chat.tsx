@@ -114,8 +114,8 @@ export function P2PChat({ trade, ...cardProps }: { trade: Trade } & CardProps) {
           }
         />
       </CardActionArea>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
+      <Collapse in={expanded} timeout="auto">
+        <CardContent sx={{ mb: 10 }}>
           <Box maxHeight={400} overflow="auto">
             {messages.map((m, idx) => (
               <UserMessage key={idx} {...m} />
