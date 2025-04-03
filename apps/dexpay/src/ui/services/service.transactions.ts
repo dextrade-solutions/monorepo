@@ -59,4 +59,13 @@ export default abstract class TransactionService {
       )
       .json<Transaction.Withdrawal.Confirm.Response>();
   }
+
+  static transferFromRequest(
+    params: Transaction.TransferFrom.Params,
+    json: Transaction.TransferFrom.Body,
+  ) {
+    return $api
+      .post(`${params.projectId}/transfer-from/request`, { json })
+      .json<Transaction.TransferFrom.Response>();
+  }
 }

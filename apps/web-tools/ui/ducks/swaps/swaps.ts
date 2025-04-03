@@ -189,6 +189,7 @@ export const createSwapP2P = (props: {
         clientWalletAddress: getSerializedAddressFromInput(from),
         clientWalletAddressInNetwork2: getSerializedAddressFromInput(to),
         clientSlippage: slippage,
+        isInvoicePayment: from.asset.isFiat || to.asset.isFiat,
         params: exchange.isAtomicSwap ? generateRequestString() : undefined,
       }),
       { on401 },
