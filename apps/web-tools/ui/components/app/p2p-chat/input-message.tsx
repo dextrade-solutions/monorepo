@@ -66,6 +66,11 @@ export const InputMessage = ({
         value={text}
         placeholder="Write a message..."
         fullWidth
+        inputProps={{
+          autoComplete: 'off',
+          spellCheck: 'false',
+          autoCorrect: 'off',
+        }}
         variant="outlined"
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
