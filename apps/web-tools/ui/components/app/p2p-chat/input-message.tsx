@@ -1,11 +1,4 @@
-import {
-  Box,
-  Fade,
-  Grow,
-  InputAdornment,
-  TextField,
-  Zoom,
-} from '@mui/material';
+import { Box, InputAdornment, TextField, Zoom } from '@mui/material';
 import { isTMA } from '@telegram-apps/sdk';
 import { isMobileWeb } from 'dex-helpers';
 import { ButtonIcon } from 'dex-ui';
