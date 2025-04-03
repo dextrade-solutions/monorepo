@@ -29,7 +29,7 @@ import {
   StepProgressBar,
 } from 'dex-ui';
 import { MessageCircle } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AllowanceStage from './stage-allowance';
@@ -48,6 +48,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import P2PChat from '../p2p-chat';
 import { StageStatuses } from './stage-statuses';
 import { useWallets } from '../../../hooks/asset/useWallets';
+import { useTelegramViewportHack } from '../../../hooks/useTelegramViewportHack';
 
 interface IProps {
   exchange: Trade;
@@ -68,6 +69,9 @@ document.addEventListener(
 );
 
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useTelegramViewportHack(ref);
+
   const t = useI18nContext();
   const navigate = useNavigate();
   const allWallets = useWallets();
@@ -375,14 +379,12 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
 
   return (
     <Box
+      ref={ref}
       className="swap-processing"
       display="flex"
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      sx={{
-        minHeight: 'calc(100vh - 32px)',
-      }}
     >
       <div className="flex-grow" />
       <Typography marginBottom={1} variant="h4">
