@@ -229,9 +229,12 @@ const PaymentMethods = ({
     return result;
   }, [paymentMethodsQuery.data, supportedIdsList, userPaymentMethods]);
 
+  if (isLoading && paymentMethodsQuery.isLoading) {
+    return renderSkeleton();
+  }
+
   return (
     <Box>
-      <Box display="flex" alignItems="center" marginBottom={2}></Box>
       {createMode ? (
         <Box>
           <PaymentMethodForm
@@ -246,15 +249,11 @@ const PaymentMethods = ({
           <FormControl fullWidth>
             {multiselect ? (
               <FormGroup>
-                {isLoading
-                  ? renderSkeleton()
-                  : userPaymentMethods.map(renderPaymentMethodItem)}
+                {userPaymentMethods.map(renderPaymentMethodItem)}
               </FormGroup>
             ) : (
               <RadioGroup>
-                {isLoading
-                  ? renderSkeleton()
-                  : userPaymentMethods.map(renderPaymentMethodItem)}
+                {userPaymentMethods.map(renderPaymentMethodItem)}
               </RadioGroup>
             )}
           </FormControl>
