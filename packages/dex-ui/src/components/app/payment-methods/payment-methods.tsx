@@ -8,6 +8,8 @@ import {
   Typography,
   Skeleton,
   FormGroup,
+  RadioGroup,
+  Radio,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -22,21 +24,23 @@ import Icon from '../../ui/icon';
 import PaymentMethodForm from '../payment-method-form';
 
 interface IProps {
-  value?: DextradeTypes.PaymentMethodsModel[]; // Changed to array
+  value?: DextradeTypes.PaymentMethodsModel[]; // Now always an array
   currency: string;
   supportedIdsList?: number[];
-  onSelect: (paymentMethods: DextradeTypes.PaymentMethodsModel[]) => void; // Changed to array
+  onSelect: (userPaymentMethods: DextradeTypes.PaymentMethodsModel[]) => void; // Now always an array
   onClose: () => void;
   removePaymentMethod?: (id: number) => Promise<any>;
   getUserPaymentMethods?: () => Promise<any>;
-  selectable?: boolean; // New prop
+  selectable?: boolean;
+  multiselect: boolean;
 }
 
 const PaymentMethods = ({
-  value = [], // Default to empty array
+  value = [],
   currency,
   supportedIdsList,
-  selectable = false, // Default to false
+  multiselect = false,
+  selectable = false,
   onSelect,
   onClose,
   removePaymentMethod = (id) => paymentService.delete1({ id }),
@@ -46,7 +50,20 @@ const PaymentMethods = ({
   const [createMode, setCreateMode] = useState(false);
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState<
     DextradeTypes.PaymentMethodsModel[]
-  >([]);
+  >([]); // Now always an array
+
+  const paymentMethodsQuery = useQuery({
+    queryKey: ['paymentMethods', currency],
+    queryFn: (params) => {
+      const [, currencyParam] = params.queryKey;
+      if (currencyParam) {
+        return paymentService
+          .listAllBankByCurrencyId(currencyParam)
+          .then((r) => r.data);
+      }
+      return paymentService.listAllBanks().then((r) => r.data);
+    },
+  });
 
   const toggleCreateMode = () => {
     setCreateMode(!createMode);
@@ -57,7 +74,7 @@ const PaymentMethods = ({
     queryFn: getUserPaymentMethods,
   });
 
-  const paymentMethods = useMemo(() => {
+  const userPaymentMethods = useMemo(() => {
     let result: DextradeTypes.PaymentMethodsModel[] = data || [];
     if (supportedIdsList) {
       result = result.filter((item) =>
@@ -68,21 +85,21 @@ const PaymentMethods = ({
   }, [data, supportedIdsList]);
 
   useEffect(() => {
-    if (!isLoading && paymentMethods) {
-      if (!paymentMethods.length) {
+    if (!isLoading && userPaymentMethods) {
+      if (!userPaymentMethods.length) {
         setCreateMode(true);
       }
     }
-  }, [paymentMethods, isLoading]);
+  }, [userPaymentMethods, isLoading]);
 
   const onCreated = async (id: number) => {
     const updatesPaymentMethods = await refetch();
-    setSelectedPaymentMethods([
-      ...selectedPaymentMethods,
-      updatesPaymentMethods.data.find(
-        (item) => item.userPaymentMethodId === id,
-      ),
-    ]);
+    const newPaymentMethod = updatesPaymentMethods.data.find(
+      (item) => item.userPaymentMethodId === id,
+    );
+    if (newPaymentMethod) {
+      setSelectedPaymentMethods([newPaymentMethod]);
+    }
     toggleCreateMode();
   };
 
@@ -95,16 +112,20 @@ const PaymentMethods = ({
     e: React.ChangeEvent<HTMLInputElement>,
     paymentMethod: DextradeTypes.PaymentMethodsModel,
   ) => {
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      setSelectedPaymentMethods([...selectedPaymentMethods, paymentMethod]);
+    if (multiselect) {
+      const isChecked = e.target.checked;
+      if (isChecked) {
+        setSelectedPaymentMethods([...selectedPaymentMethods, paymentMethod]);
+      } else {
+        setSelectedPaymentMethods(
+          selectedPaymentMethods.filter(
+            (item) =>
+              item.userPaymentMethodId !== paymentMethod.userPaymentMethodId,
+          ),
+        );
+      }
     } else {
-      setSelectedPaymentMethods(
-        selectedPaymentMethods.filter(
-          (item) =>
-            item.userPaymentMethodId !== paymentMethod.userPaymentMethodId,
-        ),
-      );
+      setSelectedPaymentMethods([paymentMethod]); // Always set as an array
     }
   };
 
@@ -124,18 +145,30 @@ const PaymentMethods = ({
         justifyContent="space-between"
         marginBottom={2}
       >
-        {selectable && ( // Conditionally render Checkbox
+        {selectable && (
           <FormControlLabel
             control={
-              <Checkbox
-                checked={selectedPaymentMethods.some(
-                  (item) =>
-                    item.userPaymentMethodId ===
-                    bankAccount.userPaymentMethodId,
-                )}
-                onChange={(e) => onChangeHandler(e, bankAccount)}
-                color="primary"
-              />
+              multiselect ? (
+                <Checkbox
+                  checked={selectedPaymentMethods.some(
+                    (item) =>
+                      item.userPaymentMethodId ===
+                      bankAccount.userPaymentMethodId,
+                  )}
+                  onChange={(e) => onChangeHandler(e, bankAccount)}
+                  color="primary"
+                />
+              ) : (
+                <Radio
+                  checked={selectedPaymentMethods.some(
+                    (item) =>
+                      item.userPaymentMethodId ===
+                      bankAccount.userPaymentMethodId,
+                  )}
+                  onChange={(e) => onChangeHandler(e, bankAccount)}
+                  color="primary"
+                />
+              )
             }
             label={
               <Box>
@@ -178,6 +211,24 @@ const PaymentMethods = ({
     </>
   );
 
+  const paymentMethods = useMemo(() => {
+    const excludedIdsList = userPaymentMethods.flatMap(
+      (i) => i.paymentMethod?.paymentMethodId,
+    );
+    let result: DextradeTypes.BankDictModel[] = paymentMethodsQuery.data || [];
+    if (supportedIdsList) {
+      result = result.filter((item) =>
+        supportedIdsList.includes(item.paymentMethodId),
+      );
+    }
+    if (excludedIdsList) {
+      result = result.filter(
+        (item) => !excludedIdsList.includes(item.paymentMethodId),
+      );
+    }
+    return result;
+  }, [paymentMethodsQuery.data, supportedIdsList, userPaymentMethods]);
+
   return (
     <Box>
       <Box display="flex" alignItems="center" marginBottom={2}></Box>
@@ -185,10 +236,7 @@ const PaymentMethods = ({
         <Box>
           <PaymentMethodForm
             onCancel={() => setCreateMode(false)}
-            supportedIdsList={supportedIdsList}
-            excludedIdsList={paymentMethods.flatMap(
-              (i) => i.paymentMethod?.paymentMethodId,
-            )}
+            paymentMethods={paymentMethods}
             currency={currency}
             onCreated={onCreated}
           />
@@ -196,24 +244,34 @@ const PaymentMethods = ({
       ) : (
         <Box marginTop={2}>
           <FormControl fullWidth>
-            <FormGroup>
-              {isLoading
-                ? renderSkeleton()
-                : paymentMethods.map(renderPaymentMethodItem)}
-            </FormGroup>
+            {multiselect ? (
+              <FormGroup>
+                {isLoading
+                  ? renderSkeleton()
+                  : userPaymentMethods.map(renderPaymentMethodItem)}
+              </FormGroup>
+            ) : (
+              <RadioGroup>
+                {isLoading
+                  ? renderSkeleton()
+                  : userPaymentMethods.map(renderPaymentMethodItem)}
+              </RadioGroup>
+            )}
           </FormControl>
-          {paymentMethods.length === 0 && !isLoading && (
+          {userPaymentMethods.length === 0 && !isLoading && (
             <Box marginBottom={4}>
               <Alert severity="info">{t('noPaymentMethods')}</Alert>
             </Box>
           )}
-          <Box marginTop={1}>
-            <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
-              <Box display="flex" alignItems="center">
-                <Typography>{t('addPaymentMethod')}</Typography>
-              </Box>
-            </Button>
-          </Box>
+          {paymentMethods.length > 0 && (
+            <Box marginTop={1}>
+              <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
+                <Box display="flex" alignItems="center">
+                  <Typography>{t('addPaymentMethod')}</Typography>
+                </Box>
+              </Button>
+            </Box>
+          )}
           {selectable && (
             <Button
               sx={{ mt: 1 }}
