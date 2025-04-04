@@ -98,8 +98,9 @@ export default function WalletDepositAddress({
         ) && (
           <Button
             fullWidth
-            variant="contained"
+            variant="text"
             size="small"
+            sx={{ color: 'blue' }}
             onClick={() => {
               setTransferFrom();
             }}
