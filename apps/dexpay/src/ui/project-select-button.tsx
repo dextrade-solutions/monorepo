@@ -2,9 +2,12 @@ import { Avatar, Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { bgPrimaryGradient, useGlobalModalContext } from 'dex-ui';
 import { ChevronDown } from 'lucide-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAuth } from './hooks/use-auth';
+import { useMutation } from './hooks/use-query';
+import { Memo, Projects } from './services';
+import { IMemo } from './types';
 
 // const StyledButton = styled(Button)(({ theme }) => ({
 //   color: theme.palette.text.tertiary,
@@ -38,7 +41,32 @@ const ProjectSelectButton = () => {
       projects,
     });
   };
-  const projectName = user?.project.name!;
+  const projectName = user?.project?.name!;
+
+  const projectInit = useMutation(Projects.init, {
+    onSuccess: () => {
+      console.log('project init success');
+    },
+  });
+
+  useEffect(() => {
+    const initProject = async () => {
+      setTimeout(async () => {
+        let memosList: IMemo[] = [];
+        const response = await Memo.my({ page: 0, is_imported: 1 });
+        memosList = response.list.currentPageResult;
+
+        if (projects && memosList.length && user && user.project) {
+          projectInit.mutateAsync([
+            { id: user.project.id },
+            { mnemonic_encrypted_id: memosList[0]?.id },
+          ]);
+        }
+      }, 1000);
+    };
+
+    initProject();
+  }, []);
 
   return (
     <Button onClick={handleClick} disabled={!user.isRegistrationCompleted}>

@@ -16,7 +16,7 @@ export default function WalletDepositAddress({
   const auth = useAuth();
 
   const generateAddress = useQuery(Address.generate, [
-    { projectId: auth.user?.project.id, vaultId: auth.vaults.hotWallet!.id },
+    { projectId: auth.user?.project?.id, vaultId: auth.vaults.hotWallet?.id },
     { currency_id: currency.id },
   ]);
 
@@ -27,8 +27,8 @@ export default function WalletDepositAddress({
       history.state?.transfer_from === 'true'
     ) {
       Transaction.transferFromRequest(
-        { projectId: auth.user?.project.id },
-        { address_id: generateAddress.data.id },
+        { projectId: auth.user?.project?.id },
+        { address_id: generateAddress?.data?.id },
       );
       history.replaceState({}, '');
     }
@@ -55,9 +55,9 @@ export default function WalletDepositAddress({
   return (
     <Box>
       <Stack spacing={1} sx={{ mb: 2 }}>
-        <ItemRow label="Network" value={currency.network.public_name} />
+        <ItemRow label="Network" value={currency?.network?.public_name} />
         {currency.token_type && (
-          <ItemRow label="Token type" value={currency.token_type} />
+          <ItemRow label="Token type" value={currency?.token_type} />
         )}
 
         {generateAddress.data?.transfer_from && (

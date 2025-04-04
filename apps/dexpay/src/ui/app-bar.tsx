@@ -36,11 +36,8 @@ const Appbar = () => {
   const [openGasPreferenceModal, setOpenGasPreferenceModal] = useState(false);
 
   useEffect(() => {
-    console.log(localStorage.getItem('gasPreference'));
-    if (
-      !localStorage.getItem('gasPreference') ||
-      localStorage.getItem('gasPreference') === 'NATIVE'
-    ) {
+    // console.log(localStorage.getItem('gasPreference'));
+    if (!localStorage.getItem('gasPreference')) {
       setOpenGasPreferenceModal(true);
     }
   }, []);
