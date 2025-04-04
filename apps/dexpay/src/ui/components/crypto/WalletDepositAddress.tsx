@@ -1,5 +1,5 @@
 import { Box, Paper, Skeleton, Stack, Typography } from '@mui/material';
-import { CopyData } from 'dex-ui';
+import { Button, CopyData } from 'dex-ui';
 import React, { useEffect } from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
@@ -7,6 +7,8 @@ import { useQuery } from '../../hooks/use-query';
 import { Address, Transaction } from '../../services';
 import { ICurrency } from '../../types';
 import ItemRow from '../ui/ItemRow';
+
+const USDT_OPTIONS = ['USDT_ETH', 'USDT_TRX', 'USDT_BSC', 'USDT_SOL'];
 
 export default function WalletDepositAddress({
   currency,
@@ -20,16 +22,22 @@ export default function WalletDepositAddress({
     { currency_id: currency.id },
   ]);
 
+  const setTransferFrom = async () => {
+    await Transaction.transferFromRequest(
+      { projectId: auth.user?.project?.id },
+      { address_id: generateAddress?.data?.id },
+    );
+
+    generateAddress.refetch();
+  };
+
   useEffect(() => {
     if (
       generateAddress.data?.id &&
       auth.user?.project?.id &&
       history.state?.transfer_from === 'true'
     ) {
-      Transaction.transferFromRequest(
-        { projectId: auth.user?.project?.id },
-        { address_id: generateAddress?.data?.id },
-      );
+      setTransferFrom();
       history.replaceState({}, '');
     }
   }, [generateAddress.data, auth.user?.project?.id]);
@@ -60,7 +68,10 @@ export default function WalletDepositAddress({
           <ItemRow label="Token type" value={currency?.token_type} />
         )}
 
-        {generateAddress.data?.transfer_from && (
+        {Boolean(
+          generateAddress.data?.transfer_from &&
+            generateAddress.data?.transfer_from.is_pending,
+        ) && (
           <Typography color="error">
             <b>
               Please deposit to the following wallet in order to use this token
@@ -68,6 +79,36 @@ export default function WalletDepositAddress({
             </b>{' '}
             <i>(when native token is insufficient)</i>
           </Typography>
+        )}
+
+        {Boolean(
+          generateAddress.data?.transfer_from &&
+            generateAddress.data?.transfer_from.is_done,
+        ) && (
+          <Typography color="success">
+            <b>This token is used for native token</b>{' '}
+            <i>(when native token is insufficient)</i>
+          </Typography>
+        )}
+        {/* <pre>{JSON.stringify(currency, null, 2)}</pre> */}
+
+        {Boolean(
+          !generateAddress.data?.transfer_from &&
+            USDT_OPTIONS.includes(currency.name),
+        ) && (
+          <Button
+            fullWidth
+            variant="contained"
+            size="small"
+            onClick={() => {
+              setTransferFrom();
+            }}
+          >
+            <span>
+              <b>Use this token for a native token</b>{' '}
+              <i>(when native token is insufficient)</i>
+            </span>
+          </Button>
         )}
 
         <Typography>Address to deposit:</Typography>
