@@ -45,6 +45,7 @@ const SetPaymentMethod = ({
       <PaymentMethods
         value={value}
         selectable
+        multiselect
         supportedIdsList={supportedIdsList}
         currency={asset.symbol}
         onSelect={selectPaymentMethod}

@@ -5,8 +5,8 @@ import {
   TextField,
   TextareaAutosize,
   Typography,
+  Grow,
   CircularProgress,
-  Skeleton,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -18,7 +18,7 @@ import {
 } from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Autocomplete } from '../../ui';
@@ -108,6 +108,7 @@ export const PaymentMethodForm = ({
       currency,
     },
   );
+  const [paymentMethod, setPaymentMethod] = useState();
   const [isMounted, setIsMounted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[] | null>>({});
   const [saving, setSaving] = useState(false);
@@ -123,6 +124,14 @@ export const PaymentMethodForm = ({
   });
 
   const defaultCurrency = formValues.currency || currencies[0]?.iso || 'THB';
+
+  useEffect(() => {
+    setPaymentMethod(
+      (formValues.selectedPaymentMethods || []).find(
+        (p: any) => p.fields.length > 0,
+      ),
+    );
+  }, [formValues.selectedPaymentMethods]);
 
   useEffect(() => {
     if (!isMounted && defaultCurrency && paymentMethods.length) {
@@ -154,32 +163,39 @@ export const PaymentMethodForm = ({
   const save = async () => {
     try {
       setSaving(true);
-      const data = Object.keys(formValues).reduce((acc: any, formFieldName) => {
-        const [, fieldName] = formFieldName.split('.');
-        if (fieldName) {
-          const [, id] = fieldName.split(':');
-          const field = formValues.paymentMethod.fields.find(
-            (f: any) => f.id === Number(id),
-          );
-          if (field) {
-            return {
-              ...acc,
-              [fieldName]: formValues[formFieldName],
-            };
-          }
-        }
-        return acc;
-      }, {});
 
-      const { paymentMethod } = formValues;
-
-      const payload = {
+      const payload = (formValues.selectedPaymentMethods || []).map((p) => ({
         id: formValues.userPaymentMethodId,
-        data: JSON.stringify(data),
+        data: JSON.stringify({}),
         currency: formValues.currency,
-        paymentMethodId: paymentMethod.paymentMethodId,
+        paymentMethodId: p.paymentMethodId,
         balance: 0,
-      };
+      }));
+
+      if (paymentMethod) {
+        const data = Object.keys(formValues).reduce(
+          (acc: any, formFieldName) => {
+            const [, fieldName] = formFieldName.split('.');
+            if (fieldName) {
+              const [, id] = fieldName.split(':');
+              const field = paymentMethod.fields.find(
+                (f: any) => f.id === Number(id),
+              );
+              if (field) {
+                return {
+                  ...acc,
+                  [fieldName]: formValues[formFieldName],
+                };
+              }
+            }
+            return acc;
+          },
+          {},
+        );
+
+        payload.push({ ...paymentMethod, data });
+      }
+
       const { data: id } = await paymentMethodCreateOrUpdate(payload);
       onCreated && onCreated(id);
     } catch (error) {
@@ -194,52 +210,81 @@ export const PaymentMethodForm = ({
     return !Object.values(errors).some((err) => err !== null && err.length > 0);
   };
 
+  const renderSaveBtn = () => {
+    const btnText = paymentMethod ? t('Save') : t('Confirm');
+    return (
+      <Button
+        fullWidth={!paymentMethod}
+        variant="contained"
+        className="bank-account-picker__save-btn"
+        disabled={!isFormValid() || saving}
+        onClick={save}
+      >
+        {saving ? <CircularProgress size={24} color="inherit" /> : btnText}
+      </Button>
+    );
+  };
+
   return (
     <Box>
-      {!currency && (
-        <FieldProvider
-          name="currency"
-          validators={[isRequired]}
-          label={t('currency')}
-          renderInput={(onChangeWrapper) => (
-            <Autocomplete
-              value={formValues.currency || defaultCurrency}
-              onChange={(_, v) => onChangeWrapper(v.iso)}
-              options={currencies}
-              disabled={Boolean(currency) || currenciesLoading}
-              fullWidth
-              isOptionEqualToValue={(option, v) => option.iso === v}
-              getOptionLabel={(option) =>
-                option.iso ? `${option.iso} (${option.name})` : option
-              }
-              renderInput={(props) => <TextField {...props} />}
+      {!paymentMethod && (
+        <>
+          {!currency && (
+            <FieldProvider
+              name="currency"
+              validators={[isRequired]}
+              label={t('currency')}
+              renderInput={(onChangeWrapper) => (
+                <Autocomplete
+                  value={formValues.currency || defaultCurrency}
+                  onChange={(_, v) => onChangeWrapper(v.iso)}
+                  options={currencies}
+                  disabled={Boolean(currency) || currenciesLoading}
+                  fullWidth
+                  isOptionEqualToValue={(option, v) => option.iso === v}
+                  getOptionLabel={(option) =>
+                    option.iso ? `${option.iso} (${option.name})` : option
+                  }
+                  renderInput={(props) => <TextField {...props} />}
+                />
+              )}
+              onChange={handleOnChange}
             />
           )}
-          onChange={handleOnChange}
-        />
-      )}
-      <FieldProvider
-        name="paymentMethod"
-        validators={[isRequired]}
-        label={t('paymentMethod')}
-        renderInput={(onChangeWrapper) => (
-          <Autocomplete
-            paper
-            value={formValues.paymentMethod}
-            onChange={(_, v) => onChangeWrapper(v)}
-            options={paymentMethods}
-            fullWidth
-            getOptionLabel={(option) =>
-              humanizePaymentMethodName(option.name, t)
-            }
-            renderInput={(props) => <TextField {...props} />}
+          <FieldProvider
+            name="selectedPaymentMethods"
+            validators={[isRequired]}
+            label="Choose payment methods"
+            renderInput={(onChangeWrapper) => (
+              <Autocomplete
+                paper
+                multiple
+                value={formValues.selectedPaymentMethods}
+                onChange={(_, v) => {
+                  const method = v[v.length - 1];
+                  if (method.fields.length === 0) {
+                    onChangeWrapper(v);
+                  } else {
+                    setPaymentMethod(method);
+                  }
+                }}
+                options={paymentMethods}
+                fullWidth
+                getOptionLabel={(option) =>
+                  humanizePaymentMethodName(option.name, t)
+                }
+                renderInput={(props) => <TextField {...props} />}
+              />
+            )}
+            onChange={handleOnChange}
           />
-        )}
-        onChange={handleOnChange}
-      />
-      <Box>
-        {formValues.paymentMethod &&
-          formValues.paymentMethod.fields.map((field: any) => {
+        </>
+      )}
+
+      {paymentMethod && (
+        <Box>
+          <Typography>{paymentMethod.name}</Typography>
+          {paymentMethod.fields.map((field: any) => {
             const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
             const fieldValidators: ((value: any) => string | null)[] = [];
             if (field.required) {
@@ -269,29 +314,18 @@ export const PaymentMethodForm = ({
               />
             );
           })}
-      </Box>
-      {formValues.paymentMethod?.fields.length > 0 && (
-        <Alert severity="info">{t('paymentMethodHint')}</Alert>
+          <Alert severity="info">{t('paymentMethodHint')}</Alert>
+          <Box display="flex" marginTop={1}>
+            <Button onClick={() => setPaymentMethod(undefined)}>Cancel</Button>
+            <div className="flex-grow" />
+            {renderSaveBtn()}
+          </Box>
+        </Box>
       )}
-      <Box display="flex" marginTop={1}>
-        {onCancel && (
-          <Button
-            className="bank-account-picker__cancel-btn"
-            onClick={onCancel}
-          >
-            {t('cancel')}
-          </Button>
-        )}
-        <div className="flex-grow"></div>
-        <Button
-          variant="contained"
-          className="bank-account-picker__save-btn"
-          disabled={!isFormValid() || saving}
-          onClick={save}
-        >
-          {saving ? <CircularProgress size={24} color="inherit" /> : t('Add')}
-        </Button>
-      </Box>
+
+      {Boolean(!paymentMethod && formValues.selectedPaymentMethods) && (
+        <Box>{renderSaveBtn()}</Box>
+      )}
     </Box>
   );
 };

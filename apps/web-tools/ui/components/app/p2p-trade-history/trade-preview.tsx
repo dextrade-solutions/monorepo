@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import {
   formatCurrency,
-  formatFundsAmount,
   relativeFromCurrentDate,
   TRADE_ACTIVE_STATUSES,
 } from 'dex-helpers';

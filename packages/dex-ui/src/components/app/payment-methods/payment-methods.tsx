@@ -237,60 +237,14 @@ const PaymentMethods = ({
 
   return (
     <Box>
-      {createMode ? (
-        <Box>
-          <PaymentMethodForm
-            onCancel={() => setCreateMode(false)}
-            paymentMethods={paymentMethods}
-            currency={currency}
-            onCreated={onCreated}
-          />
-        </Box>
-      ) : (
-        <Box marginTop={2}>
-          <FormControl fullWidth>
-            {multiselect ? (
-              <FormGroup>
-                {userPaymentMethods.map(renderPaymentMethodItem)}
-              </FormGroup>
-            ) : (
-              <RadioGroup>
-                {userPaymentMethods.map(renderPaymentMethodItem)}
-              </RadioGroup>
-            )}
-          </FormControl>
-          {userPaymentMethods.length === 0 && !isLoading && (
-            <Box marginBottom={4}>
-              <Alert severity="info">{t('noPaymentMethods')}</Alert>
-            </Box>
-          )}
-          {paymentMethods.length > 0 && (
-            <Box marginTop={1}>
-              <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
-                <Box display="flex" alignItems="center">
-                  <Typography>{t('addPaymentMethod')}</Typography>
-                </Box>
-              </Button>
-            </Box>
-          )}
-          {selectable && multiselect && (
-            <Button
-              sx={{ mt: 1 }}
-              color="primary"
-              fullWidth
-              disabled={selectedPaymentMethods.length === 0}
-              variant={
-                selectedPaymentMethods.length === 0 ? 'text' : 'contained'
-              }
-              onClick={() => {
-                onSelect(selectedPaymentMethods);
-              }}
-            >
-              Continue
-            </Button>
-          )}
-        </Box>
-      )}
+      <Box>
+        <PaymentMethodForm
+          onCancel={() => setCreateMode(false)}
+          paymentMethods={paymentMethods}
+          currency={currency}
+          onCreated={onCreated}
+        />
+      </Box>
       {onClose && (
         <Button onClick={onClose} fullWidth>
           {t('close')}
