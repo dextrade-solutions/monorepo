@@ -100,7 +100,11 @@ export default function WalletDepositAddress({
             fullWidth
             variant="text"
             size="small"
-            sx={{ color: 'blue' }}
+            sx={{
+              color: 'blue',
+              textDecoration: 'underline',
+              textAlign: 'left',
+            }}
             onClick={() => {
               setTransferFrom();
             }}
