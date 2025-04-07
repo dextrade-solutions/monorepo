@@ -151,7 +151,7 @@ export const AssetAmountField = ({
             >
               <CardActionArea>
                 <Typography variant="body2">
-                  {t('Limit')}: {formatFundsAmount(reserve, asset.symbol)}
+                  {t('Limit')}: {formatCurrency(reserve, asset.symbol)}
                 </Typography>
               </CardActionArea>
             </Card>

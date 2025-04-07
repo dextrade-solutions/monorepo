@@ -31,7 +31,7 @@ const CONFIG = {
 export const getStrPaymentMethodInstance = (
   paymentMethod: UserPaymentMethod,
 ) => {
-  const fieldsData = JSON.parse(paymentMethod.data);
+  const fieldsData = JSON.parse(paymentMethod.data || '{}');
   const priorityContentType = CONFIG.priorityContentFields.find(
     (contentType) => fieldsData[contentType] !== undefined,
   );

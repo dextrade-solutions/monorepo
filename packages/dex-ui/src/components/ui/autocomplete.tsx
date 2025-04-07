@@ -20,6 +20,7 @@ interface CustomAutocompleteProps<
   FreeSolo extends boolean | undefined = undefined,
 > extends AutocompleteProps<Value, Multiple, DisableClearable, FreeSolo> {
   paper?: boolean;
+  disableSearch?: boolean;
 }
 
 export default function Autocomplete<
@@ -28,7 +29,15 @@ export default function Autocomplete<
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
 >(props: CustomAutocompleteProps<Value, Multiple, DisableClearable, FreeSolo>) {
-  const { paper, options, multiple, renderOption, value, onChange } = props;
+  const {
+    paper,
+    options,
+    multiple,
+    renderOption,
+    value,
+    onChange,
+    disableSearch,
+  } = props;
   const [inputValue, setInputValue] = useState('');
 
   const getOptionLabel = (option: any) => {
@@ -75,10 +84,7 @@ export default function Autocomplete<
                       const newValue = (
                         Array.isArray(value) ? value : [value]
                       ).filter((_, i) => i !== index);
-                      onChange(
-                        undefined,
-                        newValue.length ? newValue : undefined,
-                      );
+                      onChange(true, newValue.length ? newValue : undefined);
                     }}
                   />
                 ))
@@ -95,7 +101,7 @@ export default function Autocomplete<
         )}
         {(!value || multiple) && (
           <Paper elevation={0} sx={{ my: 2, overflow: 'auto' }}>
-            {options.length > 2 && (
+            {!disableSearch && (
               <>
                 <TextField
                   sx={{
