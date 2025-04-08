@@ -360,7 +360,19 @@ export interface IAdvert {
 }
 
 export interface ITrade {
-  id?: number;
+  id: number;
+  external_id: string;
+  createdAt: string;
+  updatedAt: string;
+  status: number;
+  amount_from_processed: string;
+  amount_to_processed: string;
+  fixed_rate_in_second: string;
+  liqudity_address_from: IAddress;
+  liqudity_address_to: IAddress;
+  fee_in_to_currency: string;
+  fee_in_from_currency: string;
+  deletedAt: string | null;
 }
 
 export interface IPermission {

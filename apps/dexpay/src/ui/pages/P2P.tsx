@@ -17,17 +17,14 @@ import {
   CopyData,
   useGlobalModalContext,
 } from 'dex-ui';
-import {
-  Code,
-  Plus,
-  User2,
-} from 'lucide-react';
+import { Code, Plus, User2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
 import Loader from '../components/p2p/Loader';
 import TradingPair from '../components/p2p/TradingPair';
+import TradesIndex from '../components/trades/TradesIndex';
 import SelectCurrency from '../components/ui/SelectCurrency';
 import Tabs from '../components/ui/Tabs';
 import DextradeUserEditForm from '../components/user/DextradeUserEditForm';
@@ -261,12 +258,12 @@ export default function P2P() {
         variant="fullWidth"
       >
         <Tab label="Pairs" value="pairs" />
-        <Tab disabled label="Trades History" value="trades" />
+        <Tab label="Trades History" value="trades" />
       </Tabs>
 
       <Box mt={2}>
         {tabValue === 'pairs' && <TradingPair />}
-        {tabValue === 'trades' && <TradingPair />}
+        {tabValue === 'trades' && <TradesIndex />}
       </Box>
     </Box>
   );
