@@ -1171,6 +1171,21 @@ export namespace Trade {
       project_id?: number;
     }
   }
+
+  export namespace PNL {
+    export interface Params {
+      projectId: number;
+    }
+
+    export interface Response {
+      pnl: {
+        pair_id: number;
+        currency_id: number;
+        pnl: string;
+        pnl_usdt: string;
+      }[];
+    }
+  }
 }
 
 export namespace TwoFA {
