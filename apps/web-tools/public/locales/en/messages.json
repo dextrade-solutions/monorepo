@@ -518,7 +518,7 @@
     "message": "Exchanger Payment Method"
   },
   "If exchanger is not responding, you can cancel the exchange": {
-    "message": "If exchanger is not responding, you can cancel the exchange"
+    "message": "If exchanger is not responding, you can cancel the trade"
   },
   "You are confirmed the payment": {
     "message": "You are confirmed the payment"

@@ -1,45 +1,40 @@
-import {
-  Alert,
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-  Skeleton,
-} from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import {
-  getStrPaymentMethodInstance,
-  humanizePaymentMethodName,
-} from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useMemo } from 'react';
 
-import Icon from '../../ui/icon';
 import PaymentMethodForm from '../payment-method-form';
 
 interface IProps {
-  value?: DextradeTypes.PaymentMethodsModel;
+  value?: DextradeTypes.PaymentMethodsModel[]; // Now always an array
   currency: string;
-  onSelect: (paymentMethod: DextradeTypes.PaymentMethodsModel) => void;
-  onClose: () => void;
+  supportedIdsList?: number[];
+  onSelect: (userPaymentMethods: DextradeTypes.PaymentMethodsModel[]) => void; // Now always an array
+  onClose?: () => void;
   removePaymentMethod?: (id: number) => Promise<any>;
-  getUserPaymentMethods?: () => Promise<any>;
+  getUserPaymentMethods?: () => Promise<DextradeTypes.UserPaymentMethod[]>;
 }
 
 const PaymentMethods = ({
-  value,
+  value = [],
   currency,
+  supportedIdsList,
   onSelect,
-  onClose,
-  removePaymentMethod = (id) => paymentService.delete1({ id }),
   getUserPaymentMethods = () => paymentService.listAll1().then((r) => r.data),
 }: IProps) => {
-  const { t } = useTranslation();
   const [createMode, setCreateMode] = useState(false);
+  const paymentMethodsQuery = useQuery({
+    queryKey: ['paymentMethods', currency],
+    queryFn: (params) => {
+      const [, currencyParam] = params.queryKey;
+      if (currencyParam) {
+        return paymentService
+          .listAllBankByCurrencyId(currencyParam)
+          .then((r) => r.data);
+      }
+      return paymentService.listAllBanks().then((r) => r.data);
+    },
+  });
 
   const toggleCreateMode = () => {
     setCreateMode(!createMode);
@@ -47,67 +42,12 @@ const PaymentMethods = ({
 
   const {
     isLoading,
-    data: paymentMethods = [],
+    data: userPaymentMethods = [],
     refetch,
   } = useQuery({
     queryKey: ['userPaymentMethods'],
     queryFn: getUserPaymentMethods,
   });
-
-  const onCreated = async () => {
-    await refetch();
-    toggleCreateMode();
-  };
-
-  const remove = async (id: number) => {
-    await removePaymentMethod(id);
-    refetch();
-  };
-
-  const onChangeHandler = (e) => {
-    const item = paymentMethods.find(
-      ({ userPaymentMethodId }) =>
-        userPaymentMethodId === Number(e.target.value),
-    );
-    if (item) {
-      onSelect(item);
-      onClose && onClose();
-    }
-  };
-
-  const renderPaymentMethodItem = (bankAccount: DextradeTypes.PaymentMethodsModel) => (
-    <Box
-      key={bankAccount.userPaymentMethodId}
-      display="flex"
-      justifyContent="space-between"
-      marginBottom={2}
-    >
-      <FormControlLabel
-        value={bankAccount.userPaymentMethodId}
-        control={<Radio color="primary" />}
-        label={
-          <Box>
-            <Typography>
-              {humanizePaymentMethodName(
-                bankAccount.paymentMethod.name,
-                t,
-              )}
-            </Typography>
-            <Typography color="text.secondary">
-              {getStrPaymentMethodInstance(bankAccount)}
-            </Typography>
-          </Box>
-        }
-      />
-      {value !== bankAccount && (
-        <Button
-          onClick={() => remove(bankAccount.userPaymentMethodId)}
-        >
-          <Icon name="trash-dex" size="lg" />
-        </Button>
-      )}
-    </Box>
-  );
 
   const renderSkeleton = () => (
     <>
@@ -125,47 +65,62 @@ const PaymentMethods = ({
     </>
   );
 
+  const paymentMethods = useMemo(() => {
+    let result: DextradeTypes.BankDictModel[] = paymentMethodsQuery.data || [];
+    if (supportedIdsList) {
+      result = result.filter((item) =>
+        supportedIdsList.includes(item.paymentMethodId),
+      );
+    }
+    if (userPaymentMethods.length) {
+      result = result.map((item) => ({
+        ...item,
+        userPaymentMethod: userPaymentMethods.find(
+          (i) => i.paymentMethod.paymentMethodId === item.paymentMethodId,
+        ),
+      }));
+    }
+    return result;
+  }, [paymentMethodsQuery.data, userPaymentMethods, supportedIdsList]);
+
+  const selectedPaymentMethods = paymentMethods.filter((item) =>
+    value.find(
+      (i) =>
+        i.userPaymentMethodId === item.userPaymentMethod?.userPaymentMethodId,
+    ),
+  );
+
+  const onCreated = async (
+    v: DextradeTypes.PaymentMethodsModel[],
+    updatedAll: boolean,
+  ) => {
+    refetch();
+    if (updatedAll) {
+      onSelect(v);
+    }
+    if (paymentMethods.length === 1) {
+      onSelect(v);
+    }
+    toggleCreateMode();
+  };
+
+  if (isLoading || paymentMethodsQuery.isLoading) {
+    return renderSkeleton();
+  }
+
   return (
     <Box>
-      <Box display="flex" alignItems="center" marginBottom={2}>
-        {createMode && (
-          <Button
-            startIcon={<Icon name="arrow-left-dex" />}
-            color="secondary"
-            onClick={() => setCreateMode(false)}
-          >
-            {t('back')}
-          </Button>
-        )}
-      </Box>
-      {createMode ? (
-        <Box>
-          <PaymentMethodForm currency={currency} onCreated={onCreated} />
-        </Box>
-      ) : (
-        <Box marginTop={2}>
-          <FormControl fullWidth>
-            <RadioGroup
-              value={value?.userPaymentMethodId}
-              onChange={onChangeHandler}
-            >
-              {isLoading ? renderSkeleton() : paymentMethods.map(renderPaymentMethodItem)}
-            </RadioGroup>
-          </FormControl>
-          {paymentMethods.length === 0 && !isLoading && (
-            <Box marginBottom={4}>
-              <Alert severity="info">{t('noPaymentMethods')}</Alert>
-            </Box>
-          )}
-          <Box marginTop={1}>
-            <Button variant="outlined" onClick={toggleCreateMode} fullWidth>
-              <Box display="flex" alignItems="center">
-                <Typography>{t('addPaymentMethod')}</Typography>
-              </Box>
-            </Button>
-          </Box>
-        </Box>
-      )}
+      <PaymentMethodForm
+        value={selectedPaymentMethods}
+        paymentMethods={paymentMethods}
+        currency={currency}
+        onChoosePaymentMethod={(v) => {
+          if (paymentMethods.length === 1) {
+            onSelect([v]);
+          }
+        }}
+        onCreated={onCreated}
+      />
     </Box>
   );
 };

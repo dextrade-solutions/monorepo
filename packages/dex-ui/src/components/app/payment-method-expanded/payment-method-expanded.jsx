@@ -9,7 +9,7 @@ import Image from '../../ui/image';
 
 export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
   const { t } = useTranslation();
-  const fields = JSON.parse(item.data);
+  const fields = JSON.parse(item.data || '{}');
 
   function getOutput(fieldKey, value) {
     const [contentType, id] = fieldKey.split(':');
@@ -19,33 +19,20 @@ export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
     );
     const fieldName = field.name || t(field.contentType);
     switch (field.contentType) {
-      case PaymentContentTypes.accountOpeningDepartment:
-      case PaymentContentTypes.bankName:
-      case PaymentContentTypes.cardNumber:
-      case PaymentContentTypes.email:
-      case PaymentContentTypes.iban:
-      case PaymentContentTypes.ibanOrCardNumber:
-      case PaymentContentTypes.last4digits:
-      case PaymentContentTypes.username:
-      case PaymentContentTypes.phone:
-      case PaymentContentTypes.fullName:
-      case PaymentContentTypes.ban:
-        return (
-          <Box key={fieldKey} display="flex" alignItems="center">
-            <Typography className="flex-grow nowrap" textAlign="left">
-              {fieldName}
-            </Typography>
-            <CopyData data={value} />
-          </Box>
-        );
       case PaymentContentTypes.image:
       case PaymentContentTypes.imageQR:
         return <Image src={value} />;
       default:
         return (
-          <Box key={fieldKey}>
-            <Typography>{fieldName}</Typography>
-            <Typography>{value}</Typography>
+          <Box key={fieldKey} display="flex" alignItems="center">
+            <Typography
+              className="flex-grow nowrap"
+              color="text.secondary"
+              textAlign="left"
+            >
+              {fieldName}
+            </Typography>
+            <CopyData data={value} />
           </Box>
         );
     }

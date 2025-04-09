@@ -1,17 +1,11 @@
-import {
-  Box,
-  Fade,
-  Grow,
-  InputAdornment,
-  TextField,
-  Zoom,
-} from '@mui/material';
-import { useState } from 'react';
+import { Box, InputAdornment, TextField, Zoom } from '@mui/material';
+import { isTMA } from '@telegram-apps/sdk';
+import { isMobileWeb } from 'dex-helpers';
+import { ButtonIcon } from 'dex-ui';
+import React, { useState } from 'react';
 
 import { InputMessageAttachments } from './input-message-attachments';
 import P2PService from '../../../../app/services/p2p-service';
-import { ButtonIcon } from 'dex-ui';
-import React from 'react';
 
 export const InputMessage = ({
   onSend,
@@ -20,6 +14,7 @@ export const InputMessage = ({
 }) => {
   const [text, setText] = useState('');
   const [attachmentUpoading, setAttachmentUpoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const messageIsNotEmpty = Boolean(text && text.trim());
 
@@ -42,19 +37,50 @@ export const InputMessage = ({
     }
   };
 
+  let boxSxProps = {
+    width: '100%',
+    transition: 'padding-bottom 0.3s ease-in-out',
+    boxSizing: 'border-box',
+  };
+
+  if (isTMA() || isMobileWeb) {
+    boxSxProps = {
+      ...boxSxProps,
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      p: 3,
+      bgcolor: 'primary.light',
+    };
+  }
+
   return (
-    <Box paddingTop={2}>
+    <Box sx={boxSxProps}>
       <TextField
         value={text}
         placeholder="Write a message..."
         fullWidth
+        inputProps={{
+          sx: {
+            height: '1em',
+            margin: isFocused ? '14px 0px' : '0px 0px',
+            transition: 'margin 0.2s ease-in-out',
+          },
+          autoComplete: 'off',
+          spellCheck: 'false',
+          autoCorrect: 'off',
+        }}
+        variant="standard"
         onChange={(e) => setText(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             sendMessage();
           }
         }}
         InputProps={{
+          disableUnderline: true,
           startAdornment: (
             <InputAdornment position="start">
               <InputMessageAttachments
@@ -70,7 +96,7 @@ export const InputMessage = ({
                   <div>
                     <ButtonIcon
                       iconName="send-1"
-                      color="secondary"
+                      color="secondary.contrastText"
                       onClick={() => sendMessage()}
                     />
                   </div>

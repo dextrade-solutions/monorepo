@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
   Typography,
 } from '@mui/material';
 import { WalletConnectionType } from 'dex-connect';
@@ -53,6 +54,18 @@ interface IProps {
   from: AssetModel;
   to: AssetModel;
 }
+
+document.addEventListener(
+  'touchstart',
+  function (event) {
+    const isInput = event.target.closest('input, textarea');
+
+    if (!isInput) {
+      document.activeElement.blur();
+    }
+  },
+  { passive: true },
+);
 
 export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
   const t = useI18nContext();
@@ -183,6 +196,18 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       }
     }
   }
+
+  const onSubmit = async () => {
+    if (canCancel) {
+      try {
+        setCancelLoading(true);
+        await P2PService.cancelExchange(exchange.id);
+      } catch {
+        setCancelLoading(false);
+      }
+    }
+    navigate(SWAPS_HISTORY_ROUTE);
+  };
 
   if (!exchange) {
     return (
@@ -348,18 +373,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
     headerText = t('Trade Processing');
   }
 
-  const onSubmit = async () => {
-    if (canCancel) {
-      try {
-        setCancelLoading(true);
-        await P2PService.cancelExchange(exchange.id);
-      } catch {
-        setCancelLoading(false);
-      }
-    }
-    navigate(SWAPS_HISTORY_ROUTE);
-  };
-
   return (
     <Box
       className="swap-processing"
@@ -367,9 +380,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      sx={{
-        minHeight: 'calc(100vh - 32px)',
-      }}
     >
       <div className="flex-grow" />
       <Typography marginBottom={1} variant="h4">
@@ -409,7 +419,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
           </Box>
           <CardContent>
             <Typography>
-              {formatFundsAmount(
+              {formatCurrency(
                 exchange.amount1,
                 exchange.exchangerSettings.from.ticker,
               )}{' '}
@@ -442,7 +452,7 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
           </Box>
           <CardContent>
             <Typography>
-              {formatFundsAmount(
+              {formatCurrency(
                 exchange.amount2,
                 exchange.exchangerSettings.to.ticker,
               )}{' '}
@@ -475,6 +485,17 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         </Box>
         {content && <Box marginY={4}>{content}</Box>}
       </Box>
+      <div className="flex-grow" />
+      <Button
+        sx={{ my: 1 }}
+        variant="outlined"
+        fullWidth
+        onClick={onSubmit}
+        disabled={(isTradeStarted && !canCancel) || cancelLoading}
+      >
+        {submitText}
+      </Button>
+      <div className="flex-grow" />
       {exchange.exchangerSettings.provider !== 'DEXPAY' && (
         <Box width="100%" marginY={2}>
           <P2PChat
@@ -484,14 +505,6 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
           />
         </Box>
       )}
-      <div className="flex-grow" />
-      <Button
-        fullWidth
-        onClick={onSubmit}
-        disabled={(isTradeStarted && !canCancel) || cancelLoading}
-      >
-        {submitText}
-      </Button>
     </Box>
   );
 };
