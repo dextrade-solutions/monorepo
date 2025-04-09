@@ -74,7 +74,7 @@ export default function P2P() {
         const widgetCode = `<iframe
             src="${widgetLink}"
             width="100%"
-            height="600px"
+            height="100%"
             title="DexPay Swap"
             style="border: none;"
           />`;
