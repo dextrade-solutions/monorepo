@@ -53,11 +53,11 @@ const Login = () => {
         <Button
           fullWidth
           color="tertiary"
-          size="small"
+          size="large"
           sx={{
             marginTop: 2,
           }}
-          startIcon={<ArrowLeft size={18} />}
+          startIcon={<ArrowLeft size={20} />}
           onClick={clearTwoFA}
         >
           Go back
