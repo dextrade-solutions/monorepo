@@ -12,6 +12,7 @@ import {
   Divider,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
+import { debounce } from 'lodash';
 import { Copy } from 'lucide-react';
 import React, { useState, useCallback, useMemo } from 'react';
 
@@ -50,7 +51,7 @@ export default function TradesIndex() {
   console.log(me);
 
   // Query for trades based on role
-  const { data: tradesData, isLoading } = useQuery(
+  const { data: tradesData } = useQuery(
     // eslint-disable-next-line no-nested-ternary
     isAdmin
       ? Trade.listByAdmin
@@ -70,47 +71,25 @@ export default function TradesIndex() {
     window.scrollTo(0, 0);
   };
 
-  const handleFilter = useCallback((field: string, value: string) => {
-    setQueryParams((prev) => ({
-      ...prev,
-      page: 0,
-      [field]: value || undefined,
-    }));
-  }, []);
+  const handleFilter = useCallback(
+    debounce((field: string, value: string) => {
+      setQueryParams((prev) => {
+        const next = { ...prev, page: 0 };
+        if (value) {
+          next[field] = value;
+        } else {
+          delete next[field];
+        }
+        return next;
+      });
+    }, 500),
+    [],
+  );
 
   const copyToClipboard = async (text: string) => {
     await navigator.clipboard.writeText(text);
     // You can add a toast notification here if needed
   };
-
-  if (isLoading) {
-    return (
-      <Box p={2}>
-        <Grid container spacing={2}>
-          {[1, 2, 3].map((i) => (
-            <Grid item xs={12} sm={6} md={4} key={i}>
-              <Card elevation={0} sx={{ bgcolor: 'secondary.dark' }}>
-                <CardContent>
-                  <Stack spacing={1}>
-                    {[1, 2, 3, 4].map((j) => (
-                      <Box
-                        key={j}
-                        sx={{
-                          height: 24,
-                          bgcolor: 'action.hover',
-                          borderRadius: 1,
-                        }}
-                      />
-                    ))}
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    );
-  }
 
   return (
     <Box p={2}>
