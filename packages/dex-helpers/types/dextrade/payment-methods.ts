@@ -26,7 +26,7 @@ export type ConstructorField = {
 };
 
 export type PaymentMethod = {
-  paymentMethodId: string;
+  paymentMethodId: number;
   name: string;
   fields: ConstructorField[];
 };

@@ -50,7 +50,7 @@ export function InputMessageAttachments({
       />
       <ButtonIcon
         disabled={loading}
-        color="secondary"
+        color="secondary.contrastText"
         iconName="attachment"
         onClick={handleClick}
       />

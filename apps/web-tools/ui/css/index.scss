@@ -4,3 +4,6 @@
 @import url('utilities.scss');
 @import url('colors.scss');
 
+.h-root {
+  height: var(--tg-viewport-height);
+}

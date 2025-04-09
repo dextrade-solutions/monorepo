@@ -10,7 +10,7 @@ class ImageModal extends Component<
 > {
   render(): ReactNode {
     return (
-      <Box>
+      <Box onClick={this.props.hideModal}>
         <img
           src={this.props.link}
           style={{

@@ -428,10 +428,10 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
               <TextFieldWithValidation
                 margin="normal"
                 fullWidth
-                label="Transaction Fee"
                 type="number"
                 form={form}
                 name="transactionFee"
+                label={`Transaction Fee ${form.values.coin2?.symbol}`}
                 onChange={(e) => e.target.value}
               />
             </AccordionDetails>

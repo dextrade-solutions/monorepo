@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import {
-  formatFundsAmount,
+  formatCurrency,
   relativeFromCurrentDate,
   TRADE_ACTIVE_STATUSES,
 } from 'dex-helpers';
@@ -51,14 +51,14 @@ export function TradePreview({ trade }: { trade: Trade }) {
             <Box textAlign="right">
               <Typography color="primary">
                 +{' '}
-                {formatFundsAmount(
+                {formatCurrency(
                   trade.exchangerSentAmount || trade.amount2,
                   trade.exchangerSettings.to.ticker,
                 )}
               </Typography>
               <Typography>
                 -{' '}
-                {formatFundsAmount(
+                {formatCurrency(
                   trade.amount1,
                   trade.exchangerSettings.from.ticker,
                 )}

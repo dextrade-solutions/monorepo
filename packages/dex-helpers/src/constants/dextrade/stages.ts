@@ -17,20 +17,20 @@ export interface P2PStage {
 }
 
 export const P2P_STAGES: P2PStage[] = [
-  {
-    labelKey: 'trade.stage.startingSwap', // Example i18n key
-    pairTypes: [
-      TradeType.atomicSwap,
-      TradeType.cryptoCrypto,
-      TradeType.cryptoFiat,
-      TradeType.fiatCrypto,
-      TradeType.fiatFiat,
-    ],
-    checkStatus: (trade: Trade) => {
-      const statuses = [TradeStatus.waitExchangerVerify];
-      return trade.statusHistory.find((v) => statuses.includes(v.status));
-    },
-  },
+  // {
+  //   labelKey: 'trade.stage.startingSwap', // Example i18n key
+  //   pairTypes: [
+  //     TradeType.atomicSwap,
+  //     TradeType.cryptoCrypto,
+  //     TradeType.cryptoFiat,
+  //     TradeType.fiatCrypto,
+  //     TradeType.fiatFiat,
+  //   ],
+  //   checkStatus: (trade: Trade) => {
+  //     const statuses = [TradeStatus.waitExchangerVerify];
+  //     return trade.statusHistory.find((v) => statuses.includes(v.status));
+  //   },
+  // },
   {
     labelKey: 'trade.stage.transferConfirmation', // Example i18n key
     pairTypes: [TradeType.fiatCrypto, TradeType.fiatFiat],
@@ -76,19 +76,19 @@ export const P2P_STAGES: P2PStage[] = [
       return trade.statusHistory.find((v) => statuses.includes(v.status));
     },
   },
-  // {
-  //   labelKey: 'trade.stage.completed', // Example i18n key
-  //   pairTypes: [
-  //     TradeType.atomicSwap,
-  //     TradeType.cryptoCrypto,
-  //     TradeType.cryptoFiat,
-  //     TradeType.fiatCrypto,
-  //     TradeType.fiatFiat,
-  //   ],
-  //   checkStatus: (trade: Trade) => {
-  //     return trade.statusHistory.find(
-  //       (v) => v.status === TradeStatus.completed,
-  //     );
-  //   },
-  // },
+  {
+    labelKey: 'trade.stage.completed', // Example i18n key
+    pairTypes: [
+      TradeType.atomicSwap,
+      TradeType.cryptoCrypto,
+      TradeType.cryptoFiat,
+      TradeType.fiatCrypto,
+      TradeType.fiatFiat,
+    ],
+    checkStatus: (trade: Trade) => {
+      return trade.statusHistory.find(
+        (v) => v.status === TradeStatus.completed,
+      );
+    },
+  },
 ];

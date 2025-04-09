@@ -26,14 +26,22 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
   hasValidationErrors: boolean;
+  onShowPaymentMethods: () => void;
   onChange: (v: string | number) => void;
   reserve?: number;
 }
 
-export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
+export const AssetAmountField = ({
+  assetInput,
+  onChange,
+  onShowPaymentMethods,
+  reserve,
+}: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
   const t = useI18nContext();
+
+  const [paymentMethod] = assetInput.paymentMethod || [];
   return (
     <Card
       className="asset-amount-field"
@@ -143,7 +151,7 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
             >
               <CardActionArea>
                 <Typography variant="body2">
-                  {t('Limit')}: {formatFundsAmount(reserve, asset.symbol)}
+                  {t('Limit')}: {formatCurrency(reserve, asset.symbol)}
                 </Typography>
               </CardActionArea>
             </Card>
@@ -164,16 +172,18 @@ export const AssetAmountField = ({ assetInput, onChange, reserve }: IProps) => {
               size="large"
               fullWidth
               disableElevation
-              onClick={() => assetInput.showPaymentMethod()}
+              onClick={onShowPaymentMethods}
             >
-              {assetInput.paymentMethod && (
+              {paymentMethod && (
                 <Box display="flex">
                   <Box>
-                    {getStrPaymentMethodInstance(assetInput.paymentMethod)}
+                    {getStrPaymentMethodInstance(paymentMethod)}{' '}
+                    {assetInput.paymentMethod.length > 1 &&
+                      `(+${assetInput.paymentMethod.length - 1})`}
                   </Box>
                 </Box>
               )}
-              {!assetInput.paymentMethod && t('Payment method')}
+              {!paymentMethod && t('Payment method')}
             </Button>
           )}
           {(assetInput.permissions.canPasteWallet ||

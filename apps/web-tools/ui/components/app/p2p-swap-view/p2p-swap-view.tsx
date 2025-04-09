@@ -229,6 +229,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     });
   };
 
+  const onShowPaymentMethods = () => {
+    assetInputTo.showPaymentMethod(
+      availablePaymentMethods.flatMap((i) => i.paymentMethod.paymentMethodId),
+    );
+  };
+
   return (
     <Box>
       <Box marginBottom={2}>
@@ -260,6 +266,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           hasValidationErrors={hasValidationErrors}
           reserve={getAdLimitPerExchange(ad)}
           onChange={onInputAmountTo}
+          onShowPaymentMethods={onShowPaymentMethods}
         />
       </Box>
       <Box
@@ -344,7 +351,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           onClick={() => {
             // return assetInputFrom.makeTransfer(ad.walletAddress);
             if (needPickupClientPaymentMethod) {
-              return assetInputTo.showPaymentMethod();
+              return onShowPaymentMethods();
             } else if (needPickupExchangerPaymentMethod) {
               return pickupExchangerPaymentMethod();
             } else if (needPickupRecipientAddress) {

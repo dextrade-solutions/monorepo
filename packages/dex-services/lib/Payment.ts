@@ -63,7 +63,7 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
    */
   save = (data: PaymentMethodsCreateModel, params: RequestParams = {}) =>
     this.request<number, Record<string, string>>({
-      path: `/api/payment/methods`,
+      path: `/api/payment/methods/list`,
       method: "POST",
       body: data,
       type: ContentType.Json,

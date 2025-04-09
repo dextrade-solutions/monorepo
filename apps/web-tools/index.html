@@ -10,6 +10,11 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
     <link rel="mask-icon" href="/mask-icon.svg" color="#FFFFFF">
     <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
+    <style>
+      body.swap-widget-route {
+        background: transparent;
+      }
+    </style>
   </head>
   <body>
     <div id="root">
@@ -94,6 +99,15 @@
             }
         }
 
+        function updateBodyClass() {
+          if (window.location.pathname.includes('/swap-widget')) {
+            document.body.classList.add('swap-widget-route');
+          } else {
+            document.body.classList.remove('swap-widget-route');
+          }
+        }
+        
+        updateBodyClass();
         initPreloader();
       </script>
     </div>
