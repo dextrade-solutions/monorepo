@@ -1,8 +1,9 @@
 import { Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { init, isTMA } from '@telegram-apps/sdk';
 import { DexUiProvider, useDexUI } from 'dex-ui';
-import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 import ConnectedWallets from './components/app/modals/connected-wallets';
 import DepositWalletComponent from './components/app/modals/deposit-wallet';
@@ -12,7 +13,7 @@ import TradeHistoryRowModalComponent from './components/app/modals/trade-history
 import Web3ModalProvider from './components/app/web3-modal-provider';
 import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solana-provider';
 import { UserAuthProvider } from './contexts/auth-context';
-import { getCurrentTheme } from './ducks/app/app';
+import { getCurrentTheme, setTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
 import { useTelegramViewportHack } from './hooks/useTelegramViewportHack';
 import Pages from './pages';
@@ -26,9 +27,20 @@ export function App() {
   const theme = useSelector(getCurrentTheme);
   const locale = useSelector(getCurrentLocale);
   const { muiTheme } = useDexUI({ theme });
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   const ref = useRef<HTMLDivElement>(null);
   useTelegramViewportHack(ref);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const mode = queryParams.get('mode');
+    if (mode) {
+      dispatch(setTheme(mode));
+    }
+  }, [location.search, dispatch]);
+
   return (
     <ThemeProvider theme={muiTheme}>
       <Web3ModalProvider>

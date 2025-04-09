@@ -57,6 +57,10 @@
             transform: rotate(360deg);
           }
         }
+        /* Swap Widget Route Styles */
+        body.swap-widget-route {
+          background: transparent;
+        }
       </style>
 
       <!-- Loading Screen -->
@@ -94,6 +98,15 @@
             }
         }
 
+        function updateBodyClass() {
+          if (window.location.pathname.includes('/swap-widget')) {
+            document.body.classList.add('swap-widget-route');
+          } else {
+            document.body.classList.remove('swap-widget-route');
+          }
+        }
+        
+        updateBodyClass();
         initPreloader();
       </script>
     </div>
