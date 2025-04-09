@@ -20,6 +20,7 @@ import {
 } from 'dex-ui';
 import { Code, Plus, User2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { toBase64 } from 'uint8array-tools';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import CreateDexTradeUser from '../components/p2p/CreateDextradeUser';
@@ -33,6 +34,24 @@ import { ROUTE_P2P_CREATE } from '../constants/pages';
 import { useAuth } from '../hooks/use-auth';
 import { useQuery } from '../hooks/use-query';
 import { DexTrade } from '../services';
+
+interface WidgetQueryParams {
+  name?: string;
+  mode?: 'light' | 'dark' | 'system';
+  toNetworkName?: string;
+  toTicker?: string;
+}
+
+const createQueryString = (params: WidgetQueryParams): string => {
+  const query = Object.entries(params)
+    .filter(([, value]) => value !== undefined)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+    )
+    .join('&');
+  return query ? `?${query}` : '';
+};
 
 export default function P2P() {
   const [_, navigate] = useHashLocation();
@@ -64,13 +83,20 @@ export default function P2P() {
         }, [prefersDarkMode]);
 
         const merchantName = dextradeUser.data?.user?.username;
-        let queryString = `?name=${merchantName}&mode=${theme}`;
+
+        const queryParams: WidgetQueryParams = {
+          name: merchantName,
+          mode: theme,
+        };
 
         if (embedWidgetDefaultCurrency) {
-          queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
+          queryParams.toNetworkName = embedWidgetDefaultCurrency.network;
+          queryParams.toTicker = embedWidgetDefaultCurrency.symbol;
         }
+
+        const queryString = createQueryString(queryParams);
         const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
-        const telegramLink = `${DEXTRADE_P2P_TELEGRAM_MINIAPP}?startapp=1`;
+        const telegramLink = `${DEXTRADE_P2P_TELEGRAM_MINIAPP}?startapp=${toBase64(Buffer.from(queryString))}`;
         const widgetCode = `<iframe
             src="${widgetLink}"
             width="100%"
