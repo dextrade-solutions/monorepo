@@ -201,7 +201,7 @@ export default function TradesIndex() {
                       label="Amount From"
                       value={
                         trade.amount_from_processed
-                          ? `${formatCurrency(trade.amount_from_processed, trade.liqudity_address_from?.currency?.iso)} ${trade.liqudity_address_from?.currency?.iso}`
+                          ? `${formatCurrency(trade.amount_from_processed, trade.liqudity_address_from?.currency?.iso)}`
                           : '-'
                       }
                     />
@@ -210,7 +210,7 @@ export default function TradesIndex() {
                       label="Amount To"
                       value={
                         trade.amount_to_processed
-                          ? `${formatCurrency(trade.amount_to_processed, trade.liqudity_address_to?.currency?.iso)} ${trade.liqudity_address_to?.currency?.iso}`
+                          ? `${formatCurrency(trade.amount_to_processed, trade.liqudity_address_to?.currency?.iso)}`
                           : '-'
                       }
                     />
@@ -227,7 +227,7 @@ export default function TradesIndex() {
                       label="Fee"
                       value={
                         trade.fee_in_to_currency
-                          ? `${formatCurrency(trade.fee_in_to_currency, trade.liqudity_address_to?.currency?.iso)} ${trade.liqudity_address_to?.currency?.iso}`
+                          ? `${formatCurrency(trade.fee_in_to_currency, trade.liqudity_address_to?.currency?.iso)}`
                           : '-'
                       }
                     />
