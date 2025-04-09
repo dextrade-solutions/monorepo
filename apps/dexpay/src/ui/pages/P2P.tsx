@@ -48,7 +48,6 @@ export default function P2P() {
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
 
   const showConfigureEmbedWidget = () => {
-
     showModal({
       component: () => {
         const [widgetType, setWidgetType] = useState<'iframe' | 'telegram'>(
@@ -77,6 +76,7 @@ export default function P2P() {
             width="100%"
             height="600px"
             title="DexPay Swap"
+            style="border: none;"
           />`;
 
         return (
