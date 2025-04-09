@@ -229,6 +229,9 @@ export default function TradesIndex() {
                       >
                         <b>PnL</b>
                         <span>
+                          {Number(trade.profit_in_usdt_processed) > 0
+                            ? '+'
+                            : ''}
                           {formatCurrency(
                             trade.profit_in_usdt_processed || 0,
                             '',
