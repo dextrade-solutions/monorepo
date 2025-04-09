@@ -8,6 +8,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  useMediaQuery,
 } from '@mui/material';
 import { DEXTRADE_P2P_LINK, DEXTRADE_P2P_TELEGRAM_MINIAPP } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
@@ -38,6 +39,7 @@ export default function P2P() {
   const { user } = useAuth();
   const { showModal, hideModal } = useGlobalModalContext();
   const projectId = user?.project?.id!;
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const [tabValue, setTabValue] = useState('pairs');
   const [embedWidgetDefaultCurrency, setEmbedWidgetDefaultCurrency] =
@@ -46,35 +48,37 @@ export default function P2P() {
   const dextradeUser = useQuery(DexTrade.userGet, [{ projectId }]);
 
   const showConfigureEmbedWidget = () => {
-    const merchantName = dextradeUser.data?.user?.username;
-    let queryString = `?name=${merchantName}`;
-    const telegramParams = [merchantName];
-
-    if (embedWidgetDefaultCurrency) {
-      queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
-      telegramParams.push(
-        ...[
-          embedWidgetDefaultCurrency.network,
-          embedWidgetDefaultCurrency.symbol,
-        ],
-      );
-    }
-    const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
-    const telegramLink = `${DEXTRADE_P2P_TELEGRAM_MINIAPP}?startapp=${telegramParams.join(
-      '__',
-    )}`;
-    const widgetCode = `<iframe
-        src="${widgetLink}"
-        width="100%"
-        height="600px"
-        title="DexPay Swap"
-      />`;
 
     showModal({
       component: () => {
         const [widgetType, setWidgetType] = useState<'iframe' | 'telegram'>(
           'iframe',
         );
+        const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(
+          'system',
+        );
+
+        useEffect(() => {
+          if (theme === 'system') {
+            setTheme(prefersDarkMode ? 'dark' : 'light');
+          }
+        }, [prefersDarkMode]);
+
+        const merchantName = dextradeUser.data?.user?.username;
+        let queryString = `?name=${merchantName}&mode=${theme}`;
+
+        if (embedWidgetDefaultCurrency) {
+          queryString += `&toNetworkName=${embedWidgetDefaultCurrency.network}&toTicker=${embedWidgetDefaultCurrency.symbol}`;
+        }
+        const widgetLink = `${DEXTRADE_P2P_LINK}/swap-widget${queryString}`;
+        const telegramLink = `${DEXTRADE_P2P_TELEGRAM_MINIAPP}?startapp=1`;
+        const widgetCode = `<iframe
+            src="${widgetLink}"
+            width="100%"
+            height="600px"
+            title="DexPay Swap"
+          />`;
+
         return (
           <Box m={3} sx={{ mb: 5 }}>
             <Box display="flex" alignItems="center">
@@ -125,6 +129,39 @@ export default function P2P() {
             </FormControl>
             <Box display="flex" alignItems="center" mt={2}>
               <CircleNumber number={3} size={30} />
+              <Typography color="text.secondary" ml={1}>
+                Choose theme
+              </Typography>
+            </Box>
+            <FormControl>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                value={theme}
+                onChange={(e) =>
+                  setTheme(e.target.value as 'light' | 'dark' | 'system')
+                }
+              >
+                <FormControlLabel
+                  value="light"
+                  control={<Radio />}
+                  label="Light"
+                />
+                <FormControlLabel
+                  value="dark"
+                  control={<Radio />}
+                  label="Dark"
+                />
+                <FormControlLabel
+                  value="system"
+                  control={<Radio />}
+                  label="System"
+                />
+              </RadioGroup>
+            </FormControl>
+            <Box display="flex" alignItems="center" mt={2}>
+              <CircleNumber number={4} size={30} />
               <Typography color="text.secondary" ml={1}>
                 Embed this code on your website
               </Typography>
