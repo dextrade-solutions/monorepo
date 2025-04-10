@@ -978,6 +978,21 @@ export namespace Pair {
 
     export type Response = IPriceSourcePair[];
   }
+
+  export namespace CreateExchangerSettings {
+    export interface Params {
+      coinPair: {
+        currencyAggregator: string;
+        price: string;
+      };
+    }
+
+    export interface Response {
+      data: {
+        status: boolean;
+      };
+    }
+  }
 }
 
 export namespace Profile {

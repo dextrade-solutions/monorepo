@@ -12,7 +12,7 @@ export default abstract class PairsService {
   static list(params: Pair.List.Params, query: Pair.List.Query) {
     return $api
       .get(`${PairsService.PREFIX}/project/${params.projectId}`, {
-        searchParams: query
+        searchParams: query,
       })
       .json<Pair.List.Response>();
   }
@@ -35,7 +35,10 @@ export default abstract class PairsService {
    */
   static update(params: Pair.Update.Params, json: Pair.Update.Body) {
     return $api
-      .patch(`${PairsService.PREFIX}/project/${params.projectId}/${params.id}`, { json })
+      .patch(
+        `${PairsService.PREFIX}/project/${params.projectId}/${params.id}`,
+        { json },
+      )
       .json<Pair.Update.Response>();
   }
 
@@ -55,7 +58,7 @@ export default abstract class PairsService {
   static priceSources(query: Pair.PriceSources.Query) {
     return $api
       .get(`${PairsService.PREFIX}/price-sources-settings`, {
-        searchParams: query
+        searchParams: query,
       })
       .json<Pair.PriceSources.Response>();
   }
@@ -66,8 +69,20 @@ export default abstract class PairsService {
   static priceSourcesForPair(query: Pair.PriceSourcesForPair.Query) {
     return $api
       .get(`${PairsService.PREFIX}/price-sources-settings/for-pair`, {
-        searchParams: query
+        searchParams: query,
       })
       .json<Pair.PriceSourcesForPair.Response>();
+  }
+
+  /**
+   *
+   * @param params
+   */
+  static createExchangerSettings(params: Pair.CreateExchangerSettings.Params) {
+    return $api
+      .post(`create/exchanger-settings`, {
+        json: params,
+      })
+      .json<Pair.CreateExchangerSettings.Response>();
   }
 }

@@ -135,7 +135,7 @@ export default function TradesIndex() {
             mt: 2,
           }}
         >
-          <Typography color="text.secondary">Total PNL</Typography>
+          <Typography color="text.secondary">Total P&L</Typography>
           <Typography
             variant="h6"
             sx={{
@@ -227,7 +227,7 @@ export default function TradesIndex() {
                           alignItems: 'flex-end',
                         }}
                       >
-                        <b>PnL</b>
+                        <b>P&L</b>
                         <span>
                           {Number(trade.profit_in_usdt_processed) > 0
                             ? '+'
