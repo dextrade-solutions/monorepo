@@ -58,7 +58,6 @@ export default function StageDirectTransfer({
 
   const initiateNewTx = () => {
     const tradeData = getTradeExtra();
-    onChange(StageStatuses.requested);
 
     if (sendTransactionFailure) {
       setSendTransactionFailure('');
@@ -69,6 +68,7 @@ export default function StageDirectTransfer({
       tradeData.commit();
       sendTransaction(recipient, amount, txSentHandlers);
     }
+    onChange(StageStatuses.requested);
   };
 
   useEffect(() => {

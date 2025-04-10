@@ -64,7 +64,7 @@ export function trustWalletConnect() {
       const chainId = await provider?.request({ method: 'eth_chainId' });
       return normalizeChainId(chainId);
     },
-    async getProvider() {
+    async getProvider({ chainId } = {}) {
       if (!walletProvider) {
         walletProvider = getTrustWalletProvider();
         if (!walletProvider) {
@@ -75,7 +75,13 @@ export function trustWalletConnect() {
         walletProvider.on('chainChanged', this.onChainChanged.bind(this));
         walletProvider.on('disconnect', this.onDisconnect.bind(this));
       }
-
+      if (chainId) {
+        try {
+          await this.switchChain({ chainId });
+        } catch (e) {
+          console.error('switch chain error', e);
+        }
+      }
       return Promise.resolve(walletProvider);
     },
     async isAuthorized() {
@@ -88,8 +94,13 @@ export function trustWalletConnect() {
       const accounts = await this.getAccounts();
       return Boolean(accounts.length);
     },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onAccountsChanged() {},
+    onAccountsChanged(accounts: string[]) {
+      if (accounts.length === 0) this.onDisconnect();
+      else
+        config.emitter.emit('change', {
+          accounts: accounts.map((x) => getAddress(x)),
+        });
+    },
     async onChainChanged(chainId: string) {
       const accounts = await this.getAccounts();
       config.emitter.emit('change', {
@@ -99,6 +110,17 @@ export function trustWalletConnect() {
     },
     async onDisconnect() {
       config.emitter.emit('disconnect');
+    },
+    async switchChain({ chainId }) {
+      const provider = await this.getProvider();
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${chainId.toString(16)}` }],
+        });
+      } catch (error) {
+        console.error('switch chain error', error);
+      }
     },
   }));
 }
