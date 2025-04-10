@@ -25,6 +25,7 @@ import {
 import React, { useState } from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
+import DexTradeService from '../../services/service.dextrade';
 import { IAdvert } from '../../types';
 import { TextFieldWithValidation } from '../fields';
 import ItemRow from '../ui/ItemRow';
@@ -68,7 +69,7 @@ interface EditModalProps {
 
 const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
   const { user } = useAuth();
-  const projectId = user?.project?.id!;
+  const projectId = user.project.id;
 
   const form = useForm({
     values: {
@@ -79,7 +80,7 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
       exchangersPolicy: advert.details.exchangersPolicy,
     },
     method: async (values) => {
-      await updateAd.mutateAsync([
+      await DexTradeService.advertUpdate(
         { projectId },
         {
           dextrade_id: advert.details.id,
@@ -95,7 +96,7 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
           },
           exchangersPolicy: values.exchangersPolicy,
         },
-      ]);
+      );
       onClose();
     },
   });
@@ -123,18 +124,18 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
               fullWidth
               label="Minimum Exchange Amount"
               name="minimumExchangeAmountCoin1"
-              type="number"
-              value={form.values.minimumExchangeAmountCoin1}
+              form={form}
+              autoFocus
+              sx={{ mt: 2 }}
               onChange={(e) => e.target.value}
-              error={Boolean(form.errors.minimumExchangeAmountCoin1)}
-              helperText={form.errors.minimumExchangeAmountCoin1}
             />
             <TextFieldWithValidation
               fullWidth
               label="Maximum Exchange Amount"
               name="maximumExchangeAmountCoin1"
-              type="number"
-              value={form.values.maximumExchangeAmountCoin1}
+              form={form}
+              autoFocus
+              sx={{ mt: 2 }}
               onChange={(e) => e.target.value}
               error={Boolean(form.errors.maximumExchangeAmountCoin1)}
               helperText={form.errors.maximumExchangeAmountCoin1}
@@ -143,8 +144,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
               fullWidth
               label="Price Adjustment"
               name="priceAdjustment"
-              type="number"
-              value={form.values.priceAdjustment}
+              form={form}
+              autoFocus
+              sx={{ mt: 2 }}
               onChange={(e) => e.target.value}
               error={Boolean(form.errors.priceAdjustment)}
               helperText={form.errors.priceAdjustment}
@@ -153,7 +155,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
               fullWidth
               label="Transaction Fee"
               name="transactionFee"
-              value={form.values.transactionFee}
+              form={form}
+              autoFocus
+              sx={{ mt: 2 }}
               onChange={(e) => e.target.value}
               error={Boolean(form.errors.transactionFee)}
               helperText={form.errors.transactionFee}
@@ -162,7 +166,9 @@ const EditModal: React.FC<EditModalProps> = ({ open, onClose, advert }) => {
               fullWidth
               label="Exchangers Policy"
               name="exchangersPolicy"
-              value={form.values.exchangersPolicy}
+              form={form}
+              autoFocus
+              sx={{ mt: 2 }}
               onChange={(e) => e.target.value}
               error={Boolean(form.errors.exchangersPolicy)}
               helperText={form.errors.exchangersPolicy}
@@ -259,13 +265,13 @@ const AdItem: React.FC<AdItemProps> = ({
           <ChevronRight size={20} />
 
           <Box ml="auto">
-            {/* <IconButton
+            <IconButton
               data-testid="ad-edit"
               color="tertiary"
               onClick={openEditModal}
             >
               <Pencil size={16} />
-            </IconButton> */}
+            </IconButton>
             <IconButton
               data-testid="ad-toggle-active"
               color={active ? 'error' : 'success'}
