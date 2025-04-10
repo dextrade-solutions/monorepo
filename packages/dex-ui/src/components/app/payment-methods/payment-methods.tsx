@@ -84,10 +84,11 @@ const PaymentMethods = ({
   }, [paymentMethodsQuery.data, userPaymentMethods, supportedIdsList]);
 
   const selectedPaymentMethods = paymentMethods.filter((item) =>
-    value.find(
-      (i) =>
-        i.userPaymentMethodId === item.userPaymentMethod?.userPaymentMethodId,
-    ),
+    value.find((i) => {
+      return (
+        i.userPaymentMethodId === item.userPaymentMethod?.userPaymentMethodId
+      );
+    }),
   );
 
   const onCreated = async (
@@ -97,8 +98,7 @@ const PaymentMethods = ({
     refetch();
     if (updatedAll) {
       onSelect(v);
-    }
-    if (paymentMethods.length === 1) {
+    } else if (paymentMethods.length === 1) {
       onSelect(v);
     }
     toggleCreateMode();
@@ -114,11 +114,6 @@ const PaymentMethods = ({
         value={selectedPaymentMethods}
         paymentMethods={paymentMethods}
         currency={currency}
-        onChoosePaymentMethod={(v) => {
-          if (paymentMethods.length === 1) {
-            onSelect([v]);
-          }
-        }}
         onCreated={onCreated}
       />
     </Box>

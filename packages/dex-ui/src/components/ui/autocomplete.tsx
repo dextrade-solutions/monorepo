@@ -79,7 +79,11 @@ export default function Autocomplete<
                 (Array.isArray(value) ? value : [value]).map((v, index) => (
                   <Chip
                     key={index}
-                    label={getOptionLabel(v)}
+                    label={
+                      renderOption
+                        ? renderOption(undefined, v, { selected: true })
+                        : getOptionLabel(v)
+                    }
                     onDelete={() => {
                       const newValue = (
                         Array.isArray(value) ? value : [value]
@@ -100,7 +104,7 @@ export default function Autocomplete<
           </Box>
         )}
         {(!value || multiple) && (
-          <Paper elevation={0} sx={{ my: 2, overflow: 'auto' }}>
+          <Paper elevation={0} sx={{ overflow: 'auto' }}>
             {!disableSearch && (
               <>
                 <TextField
@@ -123,6 +127,7 @@ export default function Autocomplete<
               {renderList.map((option, index) => (
                 <ListItemButton
                   key={index}
+                  sx={{ my: 1 }}
                   className="bordered"
                   onClick={() => {
                     if (multiple) {
@@ -136,7 +141,13 @@ export default function Autocomplete<
                   }}
                 >
                   {renderOption ? (
-                    renderOption(undefined, option)
+                    renderOption(undefined, option, {
+                      selected: Array.isArray(value)
+                        ? value.some(
+                            (v) => getOptionLabel(v) === getOptionLabel(option),
+                          )
+                        : getOptionLabel(value) === getOptionLabel(option),
+                    })
                   ) : (
                     <ListItemText primary={getOptionLabel(option)} />
                   )}

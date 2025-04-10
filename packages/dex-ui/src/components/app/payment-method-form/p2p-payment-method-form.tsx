@@ -186,7 +186,7 @@ export const PaymentMethodForm = ({
     if (!isMounted && defaultCurrency && paymentMethods.length) {
       if (paymentMethods.length === 1) {
         const [method] = paymentMethods;
-        if (method.fields.length > 0) {
+        if (method.fields.length > 0 && !method.userPaymentMethod) {
           handleSetCurrentPaymentMethod(paymentMethods[0]);
         }
       }
@@ -209,7 +209,7 @@ export const PaymentMethodForm = ({
       ).map((p: DextradeTypes.BankDictModel) => ({
         id: formValues.userPaymentMethodId,
         balanceIsRequired: false,
-        paymentMethod: { paymentMethodId: p.paymentMethodId },
+        paymentMethod: p,
         currency: { iso: formValues.currency },
       }));
 
@@ -234,7 +234,7 @@ export const PaymentMethodForm = ({
         );
         paymentMethodsPayload.push({
           balanceIsRequired: false,
-          paymentMethod: { paymentMethodId: paymentMethod.paymentMethodId },
+          paymentMethod,
           data: JSON.stringify(data),
           currency: { iso: formValues.currency },
         });
@@ -310,11 +310,41 @@ export const PaymentMethodForm = ({
                 multiple
                 disableSearch
                 value={formValues.selectedPaymentMethods}
+                renderOption={(_, option, { selected }) => (
+                  <Box
+                    width="100%"
+                    display="flex"
+                    alignItems="center"
+                    overflow="hidden"
+                  >
+                    <Box
+                      sx={{
+                        minWidth: 4,
+                        minHeight: '100%',
+                        bgcolor: 'primary.main',
+                        my: 0.5,
+                        borderRadius: 1,
+                        opacity: 0.5,
+                        alignSelf: 'stretch',
+                      }}
+                      marginRight={2}
+                    />
+                    {option.userPaymentMethod && !selected ? (
+                      <PaymentMethodExpanded
+                        paymentMethod={option.userPaymentMethod}
+                        nocopy
+                      />
+                    ) : (
+                      <Typography>{option.name}</Typography>
+                    )}
+                  </Box>
+                )}
                 onChange={(isDeletion, v = []) => {
                   const method = v[v.length - 1];
                   if (
                     v.length === 0 ||
                     method.fields.length === 0 ||
+                    method.userPaymentMethod ||
                     isDeletion
                   ) {
                     onChangeWrapper(v);
@@ -337,71 +367,44 @@ export const PaymentMethodForm = ({
 
       {paymentMethod && (
         <Box>
-          {edit ? (
-            <>
-              <Typography>{paymentMethod.name}</Typography>
-              {paymentMethod.fields.map((field: any) => {
-                const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
-                const fieldValidators: ((value: any) => string | null)[] = [];
-                if (field.required) {
-                  fieldValidators.push(isRequired);
-                }
-                if (field.validate) {
-                  const validators =
-                    CONTENT_TYPE_VALIDATORS[field.contentType] || [];
-                  fieldValidators.push(...validators);
-                }
-                const fieldName = `${field.contentType}:${field.id}`;
-                const fieldLabel = field.name || t(field.contentType);
-                const fieldValue = formValues[fieldName];
-                return (
-                  <FieldProvider
-                    key={field.id}
-                    name={fieldName}
-                    validators={fieldValidators}
-                    label={fieldLabel}
-                    onChange={handleOnChange}
-                    renderInput={(onChangeWrapper) => (
-                      <Field
-                        value={fieldValue}
-                        onChange={onChangeWrapper}
-                        base64
-                        fullWidth
-                      />
-                    )}
+          <Typography>{paymentMethod.name}</Typography>
+          {paymentMethod.fields.map((field: any) => {
+            const Field = PAYMENT_METHOD_FORM_FIELDS[field.fieldType];
+            const fieldValidators: ((value: any) => string | null)[] = [];
+            if (field.required) {
+              fieldValidators.push(isRequired);
+            }
+            if (field.validate) {
+              const validators =
+                CONTENT_TYPE_VALIDATORS[field.contentType] || [];
+              fieldValidators.push(...validators);
+            }
+            const fieldName = `${field.contentType}:${field.id}`;
+            const fieldLabel = field.name || t(field.contentType);
+            const fieldValue = formValues[fieldName];
+            return (
+              <FieldProvider
+                key={field.id}
+                name={fieldName}
+                validators={fieldValidators}
+                label={fieldLabel}
+                onChange={handleOnChange}
+                renderInput={(onChangeWrapper) => (
+                  <Field
+                    value={fieldValue}
+                    onChange={onChangeWrapper}
+                    base64
+                    fullWidth
                   />
-                );
-              })}
-              <Alert severity="info">{t('paymentMethodHint')}</Alert>
-            </>
-          ) : (
-            <PaymentMethodExpanded
-              paymentMethod={paymentMethod.userPaymentMethod}
-            />
-          )}
+                )}
+              />
+            );
+          })}
+          <Alert severity="info">{t('paymentMethodHint')}</Alert>
           <Box display="flex" marginTop={3}>
             <Button onClick={() => setPaymentMethod(undefined)}>Cancel</Button>
             <div className="flex-grow" />
-            {edit ? (
-              renderSaveBtn()
-            ) : (
-              <>
-                <Button
-                  sx={{ mr: 2 }}
-                  onClick={() => setEdit(true)}
-                  endIcon={<Edit />}
-                  variant="outlined"
-                >
-                  {t('Edit')}
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={confirmChoosePaymentMethod}
-                >
-                  {t('Select')}
-                </Button>
-              </>
-            )}
+            {renderSaveBtn()}
           </Box>
         </Box>
       )}

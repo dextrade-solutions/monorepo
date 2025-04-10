@@ -468,12 +468,14 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
         </Card>
       </Box>
       <Box width="100%">
-        <StepProgressBar
-          stages={P2P_STAGES.filter(({ pairTypes }) =>
-            pairTypes.includes(pairType),
-          )}
-          value={{ trade: exchange }}
-        />
+        {exchange.status !== TradeStatus.waitExchangerVerify && (
+          <StepProgressBar
+            stages={P2P_STAGES.filter(({ pairTypes }) =>
+              pairTypes.includes(pairType),
+            )}
+            value={{ trade: exchange }}
+          />
+        )}
         <Box marginTop={3}>
           {stages
             .filter(

@@ -7,7 +7,15 @@ import { useTranslation } from 'react-i18next';
 import CopyData from '../../ui/copy-data';
 import Image from '../../ui/image';
 
-export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
+export default function PaymentMethodExpanded({
+  title,
+  paymentMethod: item,
+  nocopy,
+}: {
+  title: string;
+  paymentMethod: any;
+  nocopy?: boolean;
+}) {
   const { t } = useTranslation();
   const fields = JSON.parse(item.data || '{}');
 
@@ -32,32 +40,37 @@ export default function PaymentMethodExpanded({ title, paymentMethod: item }) {
             >
               {fieldName}
             </Typography>
-            <CopyData data={value} />
+            {nocopy ? (
+              <Typography fontWeight="bold">{value}</Typography>
+            ) : (
+              <CopyData data={value} />
+            )}
           </Box>
         );
     }
   }
 
+  const fieldsList = Object.entries(fields);
+
   return (
-    <Box>
-      <Typography marginBottom={2} color="text.secondary">
-        {title}
-      </Typography>
-      <Typography marginBottom={4} variant="h5">
+    <Box width="100%">
+      {title && (
+        <Typography marginBottom={2} color="text.secondary">
+          {title}
+        </Typography>
+      )}
+      <Typography>
         {humanizePaymentMethodName(item.paymentMethod.name, t)}
       </Typography>
-      {Object.entries(fields)
-        .filter(([_, value]) => Boolean(value))
-        .map(([field, value]) => (
-          <Box key={field} marginBottom={2} marginTop={2}>
-            {getOutput(field, value)}
-          </Box>
-        ))}
+      {fieldsList.length > 0 && (
+        <Box sx={{ bgcolor: 'secondary.dark', borderRadius: 0.5, mt: 1, p: 1 }}>
+          {fieldsList
+            .filter(([_, value]) => Boolean(value))
+            .map(([field, value]) => (
+              <Box key={field}>{getOutput(field, value)}</Box>
+            ))}
+        </Box>
+      )}
     </Box>
   );
 }
-
-PaymentMethodExpanded.propTypes = {
-  title: PropTypes.string,
-  paymentMethod: PropTypes.object,
-};
