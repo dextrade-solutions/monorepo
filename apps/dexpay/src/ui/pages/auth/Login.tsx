@@ -1,6 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import { Button, useForm } from 'dex-ui';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
 
 import { VPasswordField } from '../../components/fields';
 import LoginForm from '../../components/login/LoginForm';
@@ -25,6 +26,7 @@ const Login = () => {
   const {
     twoFAdata: { codeToken: loginCodeToken },
     twoFA,
+    clearTwoFA,
   } = useAuth();
 
   useEffect(() => {
@@ -42,15 +44,31 @@ const Login = () => {
 
   const defaultLogin = useMemo(() => {
     return loginCodeToken ? (
-      <OtpConfirm
-        email={loginForm.values.email}
-        method={(code) => twoFA({ code })}
-        resendMethod={loginForm.submit}
-      />
+      <>
+        <OtpConfirm
+          email={loginForm.values.email}
+          method={(code) => twoFA({ code })}
+          resendMethod={loginForm.submit}
+        />
+        <Button
+          fullWidth
+          color="tertiary"
+          size="large"
+          sx={{
+            marginTop: 2,
+          }}
+          startIcon={<ArrowLeft size={20} />}
+          onClick={clearTwoFA}
+        >
+          Go back
+        </Button>
+      </>
     ) : (
-      <LoginForm form={loginForm} />
+      <Box>
+        <LoginForm form={loginForm} />
+      </Box>
     );
-  }, [loginCodeToken, loginForm, twoFA]);
+  }, [loginCodeToken, loginForm, twoFA, clearTwoFA]);
 
   const invationForm = useForm({
     values: {

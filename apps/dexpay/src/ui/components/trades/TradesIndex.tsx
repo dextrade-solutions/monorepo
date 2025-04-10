@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
-import { debounce } from 'lodash';
+import { debounce, sumBy } from 'lodash';
 import { Copy } from 'lucide-react';
 import React, { useState, useCallback, useMemo } from 'react';
 
@@ -48,13 +48,11 @@ export default function TradesIndex() {
     );
   }, [me]);
 
-  console.log(me);
-
   // Query for trades based on role
   const { data: tradesData } = useQuery(
     // eslint-disable-next-line no-nested-ternary
     isAdmin
-      ? Trade.listByAdmin
+      ? Trade.listBy
       : user?.project?.id
         ? (params) =>
             Trade.listByProject({ projectId: user?.project?.id }, params)
@@ -64,6 +62,23 @@ export default function TradesIndex() {
 
   const trades = tradesData?.currentPageResult || [];
   const totalRecords = (tradesData?.totalPages || 0) * LIMIT;
+
+  const { data: pnlData } = useQuery(
+    user?.project?.id ? Trade.getPNL : null,
+    user?.project?.id ? { projectId: user.project.id } : undefined,
+  );
+
+  const totalPnlUsdt = useMemo(
+    () =>
+      sumBy(pnlData?.pnl || [], (pnl) => Number(pnl.pnl_usdt) || 0).toString(),
+    [pnlData],
+  );
+
+  const pnlColor = useMemo(() => {
+    if (Number(totalPnlUsdt) > 0) return 'success.main';
+    if (Number(totalPnlUsdt) < 0) return 'error.main';
+    return 'text.primary';
+  }, [totalPnlUsdt]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handlePageChange = (_: any, newPage: number) => {
@@ -111,6 +126,30 @@ export default function TradesIndex() {
             sx={{ flexGrow: 1 }}
           />
         </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+            mt: 2,
+          }}
+        >
+          <Typography color="text.secondary">Total PNL</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: pnlColor,
+              fontWeight: 500,
+            }}
+          >
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {Number(totalPnlUsdt) > 0 ? '+' : ''}
+            {Math.abs(Number(totalPnlUsdt)) < 0.01 && Number(totalPnlUsdt) !== 0
+              ? `${Number(totalPnlUsdt) < 0 ? '-' : ''} <$0.01`
+              : formatCurrency(totalPnlUsdt, 'usd')}
+          </Typography>
+        </Box>
       </Paper>
 
       {trades.length === 0 ? (
@@ -155,19 +194,51 @@ export default function TradesIndex() {
                       </Typography>
                     </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ wordBreak: 'break-all' }}
+                        >
+                          {`${trade.external_id.slice(0, 5)}...${trade.external_id.slice(-5)}`}
+                        </Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() => copyToClipboard(trade.external_id)}
+                        >
+                          <Copy size={16} />
+                        </IconButton>
+                      </Box>
                       <Typography
-                        variant="body2"
-                        sx={{ wordBreak: 'break-all' }}
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'flex-end',
+                        }}
                       >
-                        {`${trade.external_id.slice(0, 5)}...${trade.external_id.slice(-5)}`}
+                        <b>PnL</b>
+                        <span>
+                          {Number(trade.profit_in_usdt_processed) > 0
+                            ? '+'
+                            : ''}
+                          {formatCurrency(
+                            trade.profit_in_usdt_processed || 0,
+                            '',
+                          )}
+                          USDT
+                        </span>
                       </Typography>
-                      <IconButton
-                        size="small"
-                        onClick={() => copyToClipboard(trade.external_id)}
-                      >
-                        <Copy size={16} />
-                      </IconButton>
                     </Box>
 
                     <Typography variant="caption" color="text.secondary">

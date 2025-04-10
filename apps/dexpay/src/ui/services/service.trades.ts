@@ -35,6 +35,22 @@ export default abstract class TradeService {
       .json<Trade.List.Response>();
   }
 
+  /**
+   * Get trades for admin
+   * @param query
+   */
+  static listBy(query?: Trade.List.Query) {
+    return $api
+      .get(`${TradeService.PREFIX}`, { searchParams: query })
+      .json<Trade.List.Response>();
+  }
+
+  static getPNL(params: Trade.PNL.Params) {
+    return $api
+      .get(`statistic/${params.projectId}/exchanges/pnl`)
+      .json<Trade.PNL.Response>();
+  }
+
   // static list(params: Trade.List.Params, query?: Trade.List.Query) {
   //   return $api
   //     .get(`${params.projectId}/${TradeService.PREFIX}`, { searchParams: query })

@@ -373,6 +373,42 @@ export interface ITrade {
   fee_in_to_currency: string;
   fee_in_from_currency: string;
   deletedAt: string | null;
+  rate_fetched_data: {
+    rateServiceName: string;
+    rateData: {
+      rate: string;
+      fetchedAt: number;
+    };
+  };
+  public_id: string;
+  address_to: string;
+  tag_to: string | null;
+  project_id: number;
+  hold_id: number;
+  liqudity_address_to_id: number;
+  liqudity_address_from_id: number;
+  user_id: number;
+  pair_id: number;
+  pair: IPair;
+  currency_from_id: number;
+  currency_to_id: number;
+  direction: string;
+  is_expired: boolean;
+  invoice_id: number;
+  withdrawal_request_id: number;
+  amount_from_requested: string;
+  amount_to_requested: string;
+  profit_in_from_currency_processed: string | null;
+  profit_in_to_currency_processed: string | null;
+  profit_in_usdt_processed: string | null;
+  converted: {
+    id: number;
+    address_id: number;
+    balance_usdt: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+  };
 }
 
 export interface IPermission {

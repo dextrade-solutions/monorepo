@@ -124,6 +124,7 @@ const OtpConfirm = ({
             <Button
               fullWidth
               color="tertiary"
+              size="large"
               onClick={handleResend}
               disabled={isResending}
             >

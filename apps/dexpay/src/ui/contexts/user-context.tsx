@@ -50,6 +50,7 @@ interface UserContextType {
     method?: number;
     newPassword?: string;
   }) => Promise<void>;
+  clearTwoFA: () => void;
   logout: () => void;
   signUp: (body: AuthTypes.SignUp.Body) => Promise<void>;
   setProject: React.Dispatch<React.SetStateAction<IProject | null>>; // Add setProject
@@ -277,6 +278,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         { isNewMode },
         { code_token: codeToken, method, code, new_password: newPassword },
       ]);
+    },
+    clearTwoFA: () => {
+      setTwoFa((v) => ({
+        ...v,
+        codeToken: '',
+      }));
     },
     logout: () => {
       setUser(null);
