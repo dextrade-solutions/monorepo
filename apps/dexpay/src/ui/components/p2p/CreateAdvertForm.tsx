@@ -103,9 +103,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
   const pairsCreate = useMutation(Pairs.create);
-  const pairsCreateExchangerSettings = useMutation(
-    Pairs.createExchangerSettings,
-  );
 
   const form = useForm<CreateAdvertFormValues>({
     values: {
@@ -219,8 +216,10 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     const pairConfig =
       values.priceSourceProvider.key === 'FIXED_PRICE'
         ? {
-            currencyAggregator: 'FIXED_PRICE',
-            price: values.fixedPrice,
+            coinPair: {
+              currencyAggregator: 'FIXED_PRICE',
+              price: values.fixedPrice,
+            },
           }
         : {
             [values.priceSourceProvider.query]: {
@@ -241,15 +240,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         liquidity_address_main_id: address1.id,
         liquidity_address_second_id: address2.id,
         ...pairConfig,
-      },
-    ]);
-
-    await pairsCreateExchangerSettings.mutateAsync([
-      {
-        coinPair: {
-          currencyAggregator: 'FIXED_PRICE',
-          price: values.fixedPrice,
-        },
       },
     ]);
 
