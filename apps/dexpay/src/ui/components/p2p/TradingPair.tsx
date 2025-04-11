@@ -194,13 +194,14 @@ export default function TradingPair() {
         return (
           <Box ref={lastElement ? intersectionRef : undefined} key={index}>
             <AdItem
+              advert={ad}
               fromCoin={ad.details.from}
               toCoin={ad.details.to}
               price={ad.details.coinPair.price}
               minimumExchangeAmountCoin1={ad.details.minimumExchangeAmountCoin1}
               maximumExchangeAmountCoin1={ad.details.maximumExchangeAmountCoin1}
               profitCommission={ad.details.priceAdjustment}
-              priceSource={ad.pair?.rate_source_options.serviceName}
+              priceSource={ad.pair?.rate_source_options?.serviceName || '-'}
               // statusMessage={ad.comment} TODO: Add message if balance is not correct
               exchangerName={ad.dextrade_user.username}
               onDelete={() => handleDelete(ad)}

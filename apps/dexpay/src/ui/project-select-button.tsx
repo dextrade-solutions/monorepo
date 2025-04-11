@@ -43,11 +43,7 @@ const ProjectSelectButton = () => {
   };
   const projectName = user?.project?.name!;
 
-  const projectInit = useMutation(Projects.init, {
-    onSuccess: () => {
-      console.log('project init success');
-    },
-  });
+  const projectInit = useMutation(Projects.init);
 
   useEffect(() => {
     const initProject = async () => {

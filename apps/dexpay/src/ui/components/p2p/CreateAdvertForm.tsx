@@ -8,6 +8,10 @@ import {
   Paper,
   Skeleton,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { AssetModel } from 'dex-helpers/types';
@@ -36,7 +40,7 @@ import {
 interface PriceSourceProvider {
   label: string;
   key: string;
-  query: string;
+  query?: string; // Make query optional since fixed price won't need it
 }
 
 // Define the form values type
@@ -49,7 +53,9 @@ export interface CreateAdvertFormValues {
   minimumExchangeAmountCoin1: number | null;
   maximumExchangeAmountCoin1: string | null;
   priceAdjustment: string;
+  transactionFeeType: 'auto' | 'youPay' | 'fixed';
   transactionFee: string;
+  fixedPrice: string;
 }
 
 /**
@@ -61,10 +67,14 @@ const priceSourceProviders = [
     key: 'coin-market-cap',
     query: 'rateSourceCoinMarketCap',
   },
+  // {
+  //   label: 'CoinGecko',
+  //   key: 'coin-gecko',
+  //   query: 'rateSourceCoinGecko',
+  // },
   {
-    label: 'CoinGecko',
-    key: 'coin-gecko',
-    query: 'rateSourceCoinGecko',
+    label: 'Fixed Price',
+    key: 'FIXED_PRICE',
   },
 ];
 
@@ -93,6 +103,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
   const pairsCreate = useMutation(Pairs.create);
+  const pairsCreateExchangerSettings = useMutation(
+    Pairs.createExchangerSettings,
+  );
 
   const form = useForm<CreateAdvertFormValues>({
     values: {
@@ -104,7 +117,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       minimumExchangeAmountCoin1: null,
       maximumExchangeAmountCoin1: null,
       priceAdjustment: '',
+      transactionFeeType: 'auto',
       transactionFee: '',
+      fixedPrice: '',
     },
     validationSchema: Validation.DexTrade.Advert.create,
     method: saveAd,
@@ -201,6 +216,23 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     if (!address2) {
       throw new Error('Address for coin to not found');
     }
+    const pairConfig =
+      values.priceSourceProvider.key === 'FIXED_PRICE'
+        ? {
+            currencyAggregator: 'FIXED_PRICE',
+            price: values.fixedPrice,
+          }
+        : {
+            [values.priceSourceProvider.query]: {
+              main_iso: getIsoPriceSourceCoin({ raiseError: true })
+                .service_currency_iso,
+              second_iso: getIsoPriceSourceCoin({
+                raiseError: true,
+                reversed: true,
+              }).service_currency_iso,
+            },
+          };
+
     const result = await pairsCreate.mutateAsync([
       { projectId },
       {
@@ -208,16 +240,19 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         currency_second_id: values.coin2.currency.id,
         liquidity_address_main_id: address1.id,
         liquidity_address_second_id: address2.id,
-        [values.priceSourceProvider.query]: {
-          main_iso: getIsoPriceSourceCoin({ raiseError: true })
-            .service_currency_iso,
-          second_iso: getIsoPriceSourceCoin({
-            raiseError: true,
-            reversed: true,
-          }).service_currency_iso,
+        ...pairConfig,
+      },
+    ]);
+
+    await pairsCreateExchangerSettings.mutateAsync([
+      {
+        coinPair: {
+          currencyAggregator: 'FIXED_PRICE',
+          price: values.fixedPrice,
         },
       },
     ]);
+
     await advCreate.mutateAsync([
       { projectId },
       {
@@ -225,8 +260,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         exchangersPolicy: values.exchangersPolicy,
         priceAdjustment: values.priceAdjustment || '0',
         minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1,
-        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1 || undefined,
-        transactionFee: values.transactionFee || undefined,
+        maximumExchangeAmountCoin1:
+          values.maximumExchangeAmountCoin1 || undefined,
+        transactionFee: values.transactionFee || null,
       },
     ]);
   }
@@ -328,46 +364,62 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
               ),
             }}
           />
-          <Accordion
-            disableGutters
-            elevation={0}
-            sx={{
-              my: 2,
-              color: 'text.tertiary',
-              borderColor: 'tertiary.light',
-              borderStyle: 'solid',
-              borderWidth: 1,
-              borderRadius: 1,
-              '&:before': {
-                display: 'none',
-              },
-            }}
-            data-testid="invoice-create-options-accordion"
-          >
-            <AccordionSummary
-              expandIcon={<Icon size="sm" name="chevron-down" />}
-            >
-              <Typography mr={1}>
-                {form.values.priceSourceProvider.label}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                {form.values.coin1?.symbol} ID:{' '}
-                {priceSourcesCoin1.isLoading
-                  ? 'Loading...'
-                  : getIsoPriceSourceCoin()?.service_currency_iso ||
-                    'Not found'}
-              </Typography>
-              <Typography>
-                {form.values.coin2?.symbol} ID:{' '}
-                {priceSourcesCoin2.isLoading
-                  ? 'Loading...'
-                  : getIsoPriceSourceCoin({ reversed: true })
-                      ?.service_currency_iso || 'Not found'}
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
+          <Box sx={{ my: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Price Source</InputLabel>
+              <Select
+                value={form.values.priceSourceProvider.key}
+                onChange={(e) => {
+                  const provider = priceSourceProviders.find(
+                    (p) => p.key === e.target.value,
+                  );
+                  form.setValue('priceSourceProvider', provider);
+                }}
+                label="Price Source"
+              >
+                {priceSourceProviders.map((provider) => (
+                  <MenuItem key={provider.key} value={provider.key}>
+                    {provider.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* eslint-disable-next-line no-negated-condition */}
+            {form.values.priceSourceProvider.key !== 'FIXED_PRICE' ? (
+              <Box sx={{ mt: 2 }}>
+                <Typography>
+                  {form.values.coin1?.symbol} ID:{' '}
+                  {priceSourcesCoin1.isLoading
+                    ? 'Loading...'
+                    : getIsoPriceSourceCoin()?.service_currency_iso ||
+                      'Not found'}
+                </Typography>
+                <Typography>
+                  {form.values.coin2?.symbol} ID:{' '}
+                  {priceSourcesCoin2.isLoading
+                    ? 'Loading...'
+                    : getIsoPriceSourceCoin({ reversed: true })
+                        ?.service_currency_iso || 'Not found'}
+                </Typography>
+              </Box>
+            ) : (
+              <VNumericTextField
+                margin="normal"
+                fullWidth
+                label="Fixed Price"
+                name="fixedPrice"
+                form={form}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {form.values.coin2?.symbol}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          </Box>
         </>
       )}
       {form.values.coin1 && form.values.coin2 && (
@@ -396,6 +448,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           <Accordion
             disableGutters
             elevation={0}
+            defaultExpanded
             sx={{
               my: 2,
               color: 'text.tertiary',
@@ -425,15 +478,69 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 form={form}
                 onChange={(e) => e.target.value}
               />
-              <TextFieldWithValidation
-                margin="normal"
-                fullWidth
-                type="number"
-                form={form}
-                name="transactionFee"
-                label={`Transaction Fee ${form.values.coin2?.symbol}`}
-                onChange={(e) => e.target.value}
-              />
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  Transaction Fee
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <input
+                      type="radio"
+                      id="transactionFeeType-auto"
+                      name="transactionFeeType"
+                      value="auto"
+                      checked={form.values.transactionFeeType === 'auto'}
+                      onChange={() => {
+                        form.setValue('transactionFeeType', 'auto');
+                        form.setValue('transactionFee', ''); // will be null via advCreate.mutateAsync
+                      }}
+                    />
+                    <label htmlFor="transactionFeeType-auto">
+                      Auto (network fee)
+                    </label>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <input
+                      type="radio"
+                      id="transactionFeeType-youPay"
+                      name="transactionFeeType"
+                      value="youPay"
+                      checked={form.values.transactionFeeType === 'youPay'}
+                      onChange={() => {
+                        form.setValue('transactionFeeType', 'youPay');
+                        form.setValue('transactionFee', '0');
+                      }}
+                    />
+                    <label htmlFor="transactionFeeType-youPay">
+                      You pay network fee for clients
+                    </label>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <input
+                      type="radio"
+                      id="transactionFeeType-fixed"
+                      name="transactionFeeType"
+                      value="fixed"
+                      checked={form.values.transactionFeeType === 'fixed'}
+                      onChange={() => {
+                        form.setValue('transactionFeeType', 'fixed');
+                        form.setValue('transactionFee', '');
+                      }}
+                    />
+                    <label htmlFor="transactionFeeType-fixed">Fixed fee</label>
+                  </Box>
+                  {form.values.transactionFeeType === 'fixed' && (
+                    <TextFieldWithValidation
+                      fullWidth
+                      type="number"
+                      form={form}
+                      name="transactionFee"
+                      label={`Enter your fixed fee (${form.values.coin2?.symbol})`}
+                      onChange={(e) => e.target.value}
+                    />
+                  )}
+                </Box>
+              </Box>
             </AccordionDetails>
           </Accordion>
 

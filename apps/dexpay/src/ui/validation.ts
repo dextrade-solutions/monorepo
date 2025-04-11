@@ -278,6 +278,7 @@ export namespace Validation {
         transactionFee: string(),
         exchangersPolicy: string(),
         username: string(),
+        fixedPrice: string().optional().nullable(),
       });
 
       export const update = object({
