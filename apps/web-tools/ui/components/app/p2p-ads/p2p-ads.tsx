@@ -13,17 +13,17 @@ import { flatMap } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useDispatch, useSelector } from 'react-redux';
-import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
+import { getAdPathname } from '../../../../app/helpers/p2p';
 import P2PService from '../../../../app/services/p2p-service';
 import {
   getFromTokenInputValue,
   setFromToken,
   setToToken,
 } from '../../../ducks/swaps/swaps';
-import { EXCHANGE_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useQueryAds } from '../../../hooks/useQueryAds';
 
@@ -95,14 +95,13 @@ export default function P2PAds() {
 
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
-      pathname: EXCHANGE_VIEW_ROUTE,
-      search: `?${createSearchParams({
+      pathname: getAdPathname({
         fromNetworkName: ad.fromCoin.networkName,
         fromTicker: ad.fromCoin.ticker,
         toNetworkName: ad.toCoin.networkName,
         toTicker: ad.toCoin.ticker,
         name: ad.name,
-      })}`,
+      }),
     });
   };
   const renderList = flatMap(data?.pages || []);

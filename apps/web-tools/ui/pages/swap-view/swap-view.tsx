@@ -3,23 +3,33 @@ import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { Icon, Button, Atom } from 'dex-ui';
-import { orderBy } from 'lodash';
 import React, { useMemo, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fromBase64 } from 'uint8array-tools';
 
 import { SwapViewContent } from './swap-view-content';
+import { parseCoin } from '../../../app/helpers/p2p';
 import P2PService from '../../../app/services/p2p-service';
+import { setFromTokenInputValue } from '../../ducks/swaps/swaps';
 import { HOME_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { parseCoin } from '../../../app/helpers/p2p';
-import { useDispatch } from 'react-redux';
-import { setFromTokenInputValue } from '../../ducks/swaps/swaps';
 
 export default function AdView() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const [searchParams] = useSearchParams();
+  const searchParams = useMemo(() => {
+    try {
+      const decodedString = Buffer.from(fromBase64(id), 'hex').toString();
+      return new URLSearchParams(decodedString);
+    } catch (error) {
+      console.error('Error decoding URLSearchParams:', error);
+      return new URLSearchParams();
+    }
+  }, [id]);
+
   const merchant = searchParams.get('name');
   const initialAmount = searchParams.get('amount');
 

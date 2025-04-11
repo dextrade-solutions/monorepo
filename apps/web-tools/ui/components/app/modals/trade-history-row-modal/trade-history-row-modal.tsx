@@ -24,15 +24,12 @@ import {
   ModalProps,
 } from 'dex-ui';
 import { useMemo } from 'react';
-import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { SECOND } from '../../../../../app/constants/time';
-import { parseCoin } from '../../../../../app/helpers/p2p';
+import { getAdPathname, parseCoin } from '../../../../../app/helpers/p2p';
 import { determineTradeType } from '../../../../../app/helpers/utils';
-import {
-  AWAITING_SWAP_ROUTE,
-  EXCHANGE_VIEW_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { AWAITING_SWAP_ROUTE } from '../../../../helpers/constants/routes';
 import { useAtomicSwap } from '../../../../hooks/useAtomicSwap';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import P2PDisplayStatus from '../../p2p-display-status';
@@ -95,14 +92,13 @@ const TradeHistoryRowModal = ({
 
   const openAd = () => {
     navigate({
-      pathname: EXCHANGE_VIEW_ROUTE,
-      search: `?${createSearchParams({
+      pathname: getAdPathname({
         fromNetworkName: trade.exchangerSettings.from.networkName,
         fromTicker: trade.exchangerSettings.from.ticker,
         toNetworkName: trade.exchangerSettings.to.networkName,
         toTicker: trade.exchangerSettings.to.ticker,
         name: trade.exchangerName,
-      })}`,
+      }),
     });
     hideModal();
   };

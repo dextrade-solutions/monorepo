@@ -1,6 +1,16 @@
 import { BUILT_IN_NETWORKS, getIsoCoin, NetworkNames } from 'dex-helpers';
 import * as allAssets from 'dex-helpers/assets-dict';
-import { AssetModel, CoinModel } from 'dex-helpers/types';
+import {
+  AdItem,
+  AssetModel,
+  CoinModel,
+  Trade,
+  TradeHistoryRow,
+} from 'dex-helpers/types';
+import { createSearchParams } from 'react-router-dom';
+import { toBase64 } from 'uint8array-tools';
+
+import { EXCHANGE_VIEW_ROUTE } from '../../ui/helpers/constants/routes';
 
 // Create a type-safe asset dictionary
 const assetDict: { [key: string]: AssetModel } = allAssets;
@@ -45,4 +55,21 @@ export function getMaxOutputDecimalPlaces(asset: AssetModel) {
     return 2;
   }
   return 10;
+}
+
+// Define a type for the expected parameters
+export type AdPathnameParams = {
+  fromTicker: string;
+  toTicker: string;
+  fromNetworkName: string;
+  toNetworkName: string;
+  name: string;
+  amount?: string;
+};
+
+export function getAdPathname(params: AdPathnameParams) {
+  const adBase64Id = toBase64(
+    Buffer.from(createSearchParams(params).toString()),
+  );
+  return EXCHANGE_VIEW_ROUTE.replace(':id', adBase64Id);
 }
