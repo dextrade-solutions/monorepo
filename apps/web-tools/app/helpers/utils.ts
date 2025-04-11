@@ -86,8 +86,12 @@ export function compareVersions(v1: string, v2: string): number {
     const v1Part = v1Parts[i] || 0; // Handle missing parts
     const v2Part = v2Parts[i] || 0;
 
-    if (v1Part < v2Part) return -1;
-    if (v1Part > v2Part) return 1;
+    if (v1Part < v2Part) {
+      return -1;
+    }
+    if (v1Part > v2Part) {
+      return 1;
+    }
   }
 
   return 0; // Versions are equal

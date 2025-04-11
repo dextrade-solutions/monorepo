@@ -42,7 +42,7 @@ export const useAssetInput = ({
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
 
-  const canChooseWallet = !isTMA() && asset.network !== NetworkNames.fiat;
+  const canChooseWallet = asset.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
   const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
   const walletId =

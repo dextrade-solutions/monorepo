@@ -1,13 +1,13 @@
 import { Box, Grow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { isTMA } from '@telegram-apps/sdk';
-import { formatFundsAmount, NetworkNames, SECOND } from 'dex-helpers';
+import { formatFundsAmount, SECOND } from 'dex-helpers';
 import { AdItem, AssetModel } from 'dex-helpers/types';
 import { AssetPriceOutput, Button, Swap } from 'dex-ui';
 import { groupBy, map, orderBy, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { fromBase64 } from 'uint8array-tools';
+import { fromBase64, toBase64 } from 'uint8array-tools';
 
 import { getMaxOutputDecimalPlaces, parseCoin } from '../../app/helpers/p2p';
 import P2PService from '../../app/services/p2p-service';
@@ -76,11 +76,14 @@ export default function SwapWidget() {
       if (fromValue) {
         tradequery.set('amount', fromValue.toString());
       }
+      const exchangeId = toBase64(Buffer.from(tradequery.toString()));
+      const pathname = EXCHANGE_VIEW_ROUTE.replace(':id', exchangeId);
+
       if (isTMA()) {
-        navigate(`${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`);
+        navigate(pathname);
         return;
       }
-      const url = `https://p2p.dextrade.com${EXCHANGE_VIEW_ROUTE}/?${tradequery.toString()}`;
+      const url = `https://p2p.dextrade.com/${pathname}`;
       window.open(url, '_blank');
     }
   };

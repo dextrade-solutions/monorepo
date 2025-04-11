@@ -43,9 +43,10 @@ export default function Invoice({
   return (
     <InvoiceView
       invoice={invoice.data as IInvoiceFull}
-      showQrListItem={
-        showQrListItem === undefined ? !isMobileWeb : showQrListItem
-      }
+      showQrListItem
+      // showQrListItem={
+      //   showQrListItem === undefined ? !isMobileWeb : showQrListItem
+      // }
       connections={connections}
       onBack={onBack}
       preview={preview}
