@@ -73,16 +73,4 @@ export default abstract class PairsService {
       })
       .json<Pair.PriceSourcesForPair.Response>();
   }
-
-  /**
-   *
-   * @param params
-   */
-  static createExchangerSettings(params: Pair.CreateExchangerSettings.Params) {
-    return $api
-      .post(`create/exchanger-settings`, {
-        json: params,
-      })
-      .json<Pair.CreateExchangerSettings.Response>();
-  }
 }
