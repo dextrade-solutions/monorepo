@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AWAITING_SWAP_ROUTE } from '../helpers/constants/routes';
 import { useTradesActive } from '../queries/useTradesActive';
+import { isTMA } from '@telegram-apps/sdk';
 
 // Define the type for the context value
 interface UserAuthContextValue {
@@ -35,7 +36,7 @@ export const UserAuthProvider: React.FC<UserAuthProviderProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (tradesActive.data && tradesActive.data.length > 0) {
+    if (tradesActive.data && tradesActive.data.length > 0 && isTMA()) {
       navigate(`${AWAITING_SWAP_ROUTE}/${tradesActive.data[0].id}`);
     }
   }, [tradesActive.data]);
