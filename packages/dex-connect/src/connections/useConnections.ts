@@ -50,9 +50,10 @@ export function useConnections({
     const icon = instance.icon || getWalletIcon(instance.name);
     const { name, type } = instance;
     const id = `${name}:${type}`;
+    const meta = WALLETS_META.find((i) => i.name.includes(name.toLowerCase()));
     return {
       id,
-      meta: WALLETS_META.find((i) => i.name.includes(name.toLowerCase())),
+      meta,
       connectionType: instance.type,
       icon,
       name,

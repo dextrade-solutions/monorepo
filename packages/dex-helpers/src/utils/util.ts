@@ -2,10 +2,10 @@ import BigNumber from 'bignumber.js';
 import bowser from 'bowser';
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
+import i18next from 'i18next';
 import * as lodash from 'lodash';
 import { DateTime } from 'luxon';
 import * as punycode from 'punycode/punycode';
-import i18next from 'i18next';
 
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 import {
@@ -105,26 +105,26 @@ export function formatFundsAmount(
   }
   let parsedStr: string;
   if (typeof amount === 'number') {
-    parsedStr = amount.toFixed(18);
+    parsedStr = amount.toFixed(10);
   } else {
     parsedStr = amount;
   }
   const parsed = parsedStr.split('.');
   const beforeDecimal = parsed[0];
-  const afterDecimal = parsed[1] || '0';
+  let afterDecimal = parsed[1] || '0';
 
-  let afterDecimalFormatted = '0';
   if (afterDecimal !== '0') {
+    afterDecimal = afterDecimal.replace(/0+$/, ''); // Remove trailing zeros
     const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // default: grabs 3 most significant digits
     if (sigDigits) {
-      afterDecimalFormatted = sigDigits[0];
+      afterDecimal = sigDigits[0];
     }
   }
-  if (afterDecimalFormatted.length >= maxDecimalsLen) {
-    afterDecimalFormatted = afterDecimalFormatted.slice(0, maxDecimalsLen);
+  if (afterDecimal.length >= maxDecimalsLen) {
+    afterDecimal = afterDecimal.slice(0, maxDecimalsLen);
   }
-  if (Number(afterDecimalFormatted) > 0) {
-    return `${beforeDecimal}.${afterDecimalFormatted} ${currencyCode}`;
+  if (Number(afterDecimal) > 0) {
+    return `${beforeDecimal}.${afterDecimal} ${currencyCode}`;
   }
   return `${beforeDecimal} ${currencyCode}`;
 }

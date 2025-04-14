@@ -5,7 +5,8 @@ import { parseUnits } from 'viem';
 import { WalletConnectionType } from '../constants';
 import { ConnectionProvider, TxParams } from './interface';
 
-export function useSolanaProviders() { // TODO: pass context WalletProvider here!
+export function useSolanaProviders() {
+  // TODO: pass context WalletProvider here!
   const { wallets, select, signMessage: signMessageWallet } = useWallet();
 
   const { connection } = useConnection();

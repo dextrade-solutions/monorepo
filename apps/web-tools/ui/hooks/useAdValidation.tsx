@@ -26,6 +26,14 @@ export function useAdValidation({
 }: AdParams) {
   const t = useI18nContext();
 
+  let tickerFrom = ad.fromCoin.ticker;
+  let tickerTo = ad.toCoin.ticker;
+
+  if (tickerFrom === tickerTo) {
+    tickerFrom = ad.fromCoin.networkType;
+    tickerTo = ad.toCoin.networkType;
+  }
+
   const params: ValidationParams = {
     submitBtnText: t('Start Swap'), // Changed here
     hasValidationErrors: false,
@@ -35,7 +43,7 @@ export function useAdValidation({
     assetInputFrom.amount &&
     Number(assetInputFrom.amount) < Number(ad.minimumExchangeAmountCoin1)
   ) {
-    params.submitBtnText = t('Min amount is') + ` ${ad.minimumExchangeAmountCoin1} ${assetInputFrom.asset.symbol}`; // Changed here
+    params.submitBtnText = `${t('Min amount is')} ${ad.minimumExchangeAmountCoin1} ${tickerFrom}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -44,7 +52,7 @@ export function useAdValidation({
     assetInputTo.amount &&
     Number(assetInputTo.amount) < Number(ad.minimumExchangeAmountCoin2)
   ) {
-    params.submitBtnText = t('Min amount is') + ` ${ad.minimumExchangeAmountCoin2} ${assetInputTo.asset.symbol}`; // Changed here
+    params.submitBtnText = `${t('Min amount is')} ${ad.minimumExchangeAmountCoin2} ${tickerTo}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -60,7 +68,7 @@ export function useAdValidation({
     assetInputFrom.amount &&
     Number(assetInputFrom.balance?.value) < Number(assetInputFrom.amount)
   ) {
-    params.submitBtnText = t('Insufficient') + ` ${assetInputFrom.asset.symbol} ` + t('balance'); // Changed here
+    params.submitBtnText = `${t('Insufficient')} ${tickerFrom} ${t('balance')}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -69,7 +77,11 @@ export function useAdValidation({
     assetInputTo.amount &&
     getAdLimitPerExchange(ad) < Number(assetInputTo.amount)
   ) {
-    params.submitBtnText = t('Max limit in') + ` ${formatFundsAmount(getAdLimitPerExchange(ad))} ${assetInputTo.asset.symbol} ` + t('exceeded'); // Changed here
+    params.submitBtnText = `${t(
+      'Max limit in',
+    )} ${formatFundsAmount(getAdLimitPerExchange(ad))} ${tickerTo} ${t(
+      'exceeded',
+    )}`; // Changed here
     params.hasValidationErrors = true;
     params.disabledBtn = true;
     return params;
@@ -77,7 +89,8 @@ export function useAdValidation({
   if (!assetInputTo.asset.isFiat && !assetInputTo.account?.address) {
     params.submitBtnText = (
       <Typography>
-        {t('Set your')} <strong>{assetInputTo.asset.symbol}</strong> {t('wallet')} {/* Changed here */}
+        {t('Set your')} <strong>{tickerTo}</strong> {t('wallet')}{' '}
+        {/* Changed here */}
       </Typography>
     );
     return params;

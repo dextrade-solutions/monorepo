@@ -23,6 +23,14 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
     ad.maximumExchangeAmountCoin2 &&
     ad.maximumExchangeAmountCoin2 === ad.reserveSum;
 
+  let tickerFrom = ad.fromCoin.ticker;
+  let tickerTo = ad.toCoin.ticker;
+
+  if (tickerFrom === tickerTo) {
+    tickerFrom = ad.fromCoin.networkType;
+    tickerTo = ad.toCoin.networkType;
+  }
+
   return (
     <Box className="p2p-swap-summary">
       <div>
@@ -46,9 +54,8 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
         <Box mb={1}>
           <AssetPriceOutput
             price={ad.coinPair.price}
-            tickerFrom={ad.fromCoin.ticker}
-            tickerTo={ad.toCoin.ticker}
-            isPerOne
+            tickerFrom={tickerFrom}
+            tickerTo={tickerTo}
           />
         </Box>
         <Typography display="flex" alignItems="center">
@@ -57,8 +64,8 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             <AssetPriceOutput
               amount={ad.reserveSum} // in coin 2
               price={ad.coinPair.price}
-              tickerFrom={ad.toCoin.ticker}
-              tickerTo={ad.fromCoin.ticker}
+              tickerFrom={tickerTo}
+              tickerTo={tickerFrom}
             />
           </span>
         </Typography>
@@ -69,8 +76,8 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
               <AssetPriceOutput
                 amount={ad.minimumExchangeAmountCoin1}
                 price={1 / ad.coinPair.price}
-                tickerFrom={ad.fromCoin.ticker}
-                tickerTo={ad.toCoin.ticker}
+                tickerFrom={tickerFrom}
+                tickerTo={tickerTo}
               />
             </span>
           </Typography>
@@ -82,21 +89,12 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
               <AssetPriceOutput
                 amount={ad.maximumExchangeAmountCoin1}
                 price={1 / ad.coinPair.price}
-                tickerFrom={ad.fromCoin.ticker}
-                tickerTo={ad.toCoin.ticker}
+                tickerFrom={tickerFrom}
+                tickerTo={tickerTo}
               />
             </span>
           </Typography>
         )}
-        {/* Should we display user exchangerFee?
-              {exchangerFeeCalulated > 0 && (
-              <Typography display="flex">
-                <span className="flex-grow">{t('exchangerFee')}</span>
-                <span className="row-summary__value">
-                  {exchangerFeeCalulated.toFixed(6)} {fromCoin.ticker}
-                </span>
-              </Typography>
-            )} */}
       </div>
       {showPaymentMethods && (
         <Box display="flex" marginTop={2}>

@@ -38,16 +38,16 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
   const isConnectedAndSelected =
     item.connected && isEqual(item.connected, value);
 
-  const href = item.meta?.deepLink
-    ? item.meta.deepLink + (deeplinkUrl || window.location.href)
-    : undefined;
   return (
     <ListItemButton
       sx={{
         bgcolor: isConnectedAndSelected ? 'secondary.dark' : undefined,
       }}
       className="bordered"
-      href={href}
+      href={
+        item.meta.getInAppBrowse &&
+        item.meta.getInAppBrowse(deeplinkUrl || window.location.href)
+      }
       target={item.meta?.deepLink ? '_blank' : undefined} // Only set target if deepLink exists
       onClick={(e) => {
         onSelect(e, item);
@@ -57,7 +57,7 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
         <UrlIcon
           size={40}
           borderRadius="10px"
-          url={item.icon}
+          url={item.meta?.icon || item.icon}
           alt={`${item.name} Icon`}
         />{' '}
       </ListItemAvatar>
