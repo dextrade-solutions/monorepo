@@ -87,7 +87,7 @@ export namespace Validation {
       new_password: string()
         .required('New password is a required field')
         .min(8, (ctx) => `New password must be at least ${ctx.min} characters`)
-        .max(20, (ctx) => `New password must be at least ${ctx.max} characters`)
+        .max(20, (ctx) => `New password must be at most ${ctx.max} characters`)
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
           'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
