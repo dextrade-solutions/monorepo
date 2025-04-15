@@ -103,7 +103,7 @@ export default function WalletList({
               <UrlIcon
                 size={40}
                 borderRadius="10px"
-                url={connectingWallet.icon}
+                url={connectingWallet.meta?.icon || connectingWallet.icon}
               />
               <Typography my={1}>
                 {connectingWalletLabel} {connectingWallet.name}

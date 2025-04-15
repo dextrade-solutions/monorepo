@@ -83,7 +83,7 @@ export default function SwapWidget() {
         navigate(pathname);
         return;
       }
-      const url = `https://p2p.dextrade.com/${pathname}`;
+      const url = `https://p2p.dextrade.com${pathname}`;
       window.open(url, '_blank');
     }
   };
