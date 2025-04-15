@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import { AdItem, AssetModel } from 'dex-helpers/types';
+import React from 'react';
 
 import P2PSwapView from '../../components/app/p2p-swap-view';
 import { useI18nContext } from '../../hooks/useI18nContext';

@@ -1,5 +1,6 @@
 import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { determineConnectionType } from 'dex-connect';
+import { DEXTRADE_P2P_LINK } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import {
   CopyData,
@@ -21,10 +22,12 @@ import { useDisconnectWallet } from '../hooks/use-disconnect-wallet';
 const SetWallet = ({
   asset,
   value: savedValue,
+  adPath,
   isToAsset,
   onChange,
   hideModal,
 }: {
+  adPath?: string;
   asset: AssetModel;
   value?: WalletConnection;
   open: boolean;
@@ -72,7 +75,6 @@ const SetWallet = ({
       setLoadingWallet(null);
     }
   };
-
   const inputWalletAddressError = addressValidator(inputWalletAddress);
   return (
     <Box padding={5}>
@@ -91,16 +93,14 @@ const SetWallet = ({
       </Box>
       {value?.address ? (
         <Box>
-          {/* Translated text: "My current address:" */}
           <Typography>{t('My current address:')}</Typography>
-          {/* Translated text: "This address using for {isToAsset ? 'receiving' : 'sending'} {asset.symbol}" */}
           <Typography color="text.secondary" variant="body2" marginBottom={1}>
-            {t('This address using for')} {isToAsset ? t('receiving') : t('sending')} {asset.symbol}
+            {t('This address using for')}{' '}
+            {isToAsset ? t('receiving') : t('sending')} {asset.symbol}
           </Typography>
           <Box marginBottom={3}>
             <CopyData tooltipPosition="top" width="100%" data={value.address} />
           </Box>
-          {/* Translated text: "Change" */}
           <Button
             variant="outlined"
             fullWidth
@@ -112,7 +112,6 @@ const SetWallet = ({
             {t('Change')}
           </Button>
           {value.walletName && (
-            // Translated text: "Disconnect Wallet"
             <Button
               startIcon={<Icon name="disconnect" />}
               variant="outlined"
@@ -129,9 +128,10 @@ const SetWallet = ({
             <WalletList
               wallets={wallets}
               value={savedValue}
-              hideConnectionType
+              deeplinkUrl={adPath && `${DEXTRADE_P2P_LINK}${adPath}`}
               connectingWallet={loadingWallet}
               onSelectWallet={onSelectWallet}
+              hideConnectionType
             />
           )}
           {canPasteAddress && canConnectExternalWallet && (
@@ -141,14 +141,12 @@ const SetWallet = ({
           )}
           {canPasteAddress && (
             <Box>
-              {/* Translated text: "Paste recipient wallet address" */}
               <Typography marginBottom={1} variant="h6">
                 {t('Paste recipient wallet address')}
               </Typography>
               <Box>
-                {/* Translated text: "Recipient address" */}
                 <TextField
-                  placeholder={t("Recipient address")}
+                  placeholder={t('Recipient address')}
                   fullWidth
                   size="medium"
                   error={inputWalletAddress && inputWalletAddressError}
@@ -157,7 +155,6 @@ const SetWallet = ({
                 />
                 {inputWalletAddress && (
                   <Box marginTop={1}>
-                    {/* Translated text: "Attach address" */}
                     <Button
                       fullWidth
                       disabled={Boolean(inputWalletAddressError)}

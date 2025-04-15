@@ -33,12 +33,16 @@ import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import { SwapFees } from './swap-fees';
 import './index.scss';
-import { getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
+import {
+  getAdPathname,
+  getMaxOutputDecimalPlaces,
+} from '../../../../app/helpers/p2p';
 
 interface IProps {
   ad: AdItem;
   assetFrom: AssetModel;
   assetTo: AssetModel;
+  onSetWallet: () => void;
 }
 
 const RECALCULATE_DELAY = 1000;
@@ -57,11 +61,14 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const assetInputFrom = useAssetInput({
     asset: assetFrom,
+    ad,
   });
   const assetInputTo = useAssetInput({
     asset: assetTo,
+    ad,
     isToAsset: true,
   });
+
   const exchangeRate = ad.coinPair.price;
   const availablePaymentMethods = ad.paymentMethods;
   const needPickupExchangerPaymentMethod = assetInputFrom.asset.isFiat;

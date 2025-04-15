@@ -1,5 +1,11 @@
-import { NetworkNames } from 'dex-helpers';
-import { AssetModel, CoinModel, UserPaymentMethod } from 'dex-helpers/types';
+import { isTMA } from '@telegram-apps/sdk';
+import { formatFundsAmount, NetworkNames } from 'dex-helpers';
+import {
+  AdItem,
+  AssetModel,
+  CoinModel,
+  UserPaymentMethod,
+} from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
 import { useEffect, useState } from 'react';
@@ -9,19 +15,20 @@ import { parseUnits } from 'viem';
 import { useAssetBalance } from './useAssetBalance';
 import { useSendTransaction } from './useSendTransaction';
 import { useWallets } from './useWallets';
-import { getNative } from '../../../app/helpers/p2p';
+import { getAdPathname, getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
 import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
-import { isTMA } from '@telegram-apps/sdk';
 
 export const useAssetInput = ({
   asset,
   isToAsset,
+  ad,
 }: {
   asset: AssetModel;
   isToAsset?: boolean;
+  ad: AdItem;
 }) => {
   const { showModal } = useGlobalModalContext();
   const dispatch = useDispatch();
@@ -52,11 +59,24 @@ export const useAssetInput = ({
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
+    const amount = Number(inputAmount);
+    const adPath = getAdPathname({
+      fromNetworkName: ad.fromCoin.networkName,
+      fromTicker: ad.fromCoin.ticker,
+      toNetworkName: ad.toCoin.networkName,
+      toTicker: ad.toCoin.ticker,
+      name: ad.name,
+      amount: formatFundsAmount(
+        isToAsset ? amount / ad.coinPair.price : amount,
+      ),
+    });
+
     showModal({
       name: 'SET_WALLET',
       asset,
       isToAsset,
       value: walletConnection,
+      adPath,
       onChange: (v: WalletConnection) => {
         dispatch(
           setAssetAccount({
