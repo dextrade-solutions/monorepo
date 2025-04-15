@@ -45,7 +45,7 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
       }}
       className="bordered"
       href={
-        item.meta.getInAppBrowse &&
+        item.meta?.getInAppBrowse &&
         item.meta.getInAppBrowse(deeplinkUrl || window.location.href)
       }
       target={item.meta?.deepLink ? '_blank' : undefined} // Only set target if deepLink exists
