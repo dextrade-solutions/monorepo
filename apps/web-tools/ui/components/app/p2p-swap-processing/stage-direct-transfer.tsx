@@ -76,7 +76,7 @@ export default function StageDirectTransfer({
       value !== StageStatuses.requested &&
       trade?.status === TradeStatus.new
     ) {
-      initiateNewTx();
+      // initiateNewTx();
     } else if (trade.clientTransactionHash) {
       onChange(StageStatuses.success);
       hideModal();
