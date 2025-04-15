@@ -30,6 +30,8 @@ import { IAdvert } from '../../types';
 import { TextFieldWithValidation } from '../fields';
 import ItemRow from '../ui/ItemRow';
 import StyledLink from '../ui/Link';
+import { ROUTE_P2P_EDIT } from '../../constants/pages';
+import { navigate } from 'wouter/use-hash-location';
 
 interface AdItemProps {
   advert: IAdvert;
@@ -241,7 +243,10 @@ const AdItem: React.FC<AdItemProps> = ({
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   // Add openEditModal function
-  const openEditModal = () => setEditModalOpen(true);
+  const openEditModal = () =>
+    navigate(
+      ROUTE_P2P_EDIT.replace(':id', advert?.dextrade_id?.toString() || ''),
+    );
   const closeEditModal = () => setEditModalOpen(false);
 
   return (

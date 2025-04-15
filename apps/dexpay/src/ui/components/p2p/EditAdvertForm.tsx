@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { AssetModel } from 'dex-helpers/types';
 import {
   CircleNumber,
@@ -24,18 +24,19 @@ import {
   AssetPriceOutput,
 } from 'dex-ui';
 import { orderBy } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
+import { useCurrencies } from '../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../hooks/use-query';
 import { Pairs, DexTrade, Address, Invoice, Rates } from '../../services'; // Adjust path as needed
+import { ICurrency } from '../../types/types.entities';
 import { Validation } from '../../validation';
 import {
   SelectCurrencyWithValidation,
   TextFieldWithValidation,
   VNumericTextField,
 } from '../fields';
-
 // Define the shape of the price source provider
 interface PriceSourceProvider {
   label: string;
@@ -44,10 +45,10 @@ interface PriceSourceProvider {
 }
 
 // Define the form values type
-export interface CreateAdvertFormValues {
+export interface EditAdvertFormValues {
   pairId: number;
-  coin1: AssetModel | null; // Use ICurrency from your types
-  coin2: AssetModel | null;
+  coin1: ICurrency | null; // Use ICurrency from your types
+  coin2: ICurrency | null;
   priceSourceProvider: PriceSourceProvider;
   exchangersPolicy: string;
   minimumExchangeAmountCoin1: number | null;
@@ -78,12 +79,45 @@ const priceSourceProviders = [
   },
 ];
 
-const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
+const EditAdvertForm = ({
+  onSuccess,
+  advertId,
+}: {
+  onSuccess: () => void;
+  advertId: number;
+}) => {
   const { user } = useAuth();
   const projectId = user?.project?.id!;
   const queryClient = useQueryClient();
-  // const [rate, setRate] = useState<number>();
-  const advCreate = useMutation(DexTrade.advertCreateFromPair, {
+
+  const { data, fetchNextPage } = useInfiniteQuery({
+    queryKey: ['ads-list-all'],
+    queryFn: () => DexTrade.advertsList({ projectId }, { no_pagination: 1 }),
+    initialPageParam: 0,
+    getNextPageParam: () => {
+      return 0;
+    },
+  });
+
+  // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
+  const renderList = (data?.pages.flatMap((i) => i) || []).filter(
+    (ad) => ad.details && ad.details.direction === 2,
+  );
+
+  // Get advert from existing ads list query cache
+  const advert = useMemo(
+    () =>
+      renderList.find((ad) => {
+        return ad.dextrade_id === advertId;
+      }),
+    [renderList, advertId],
+  );
+
+  useEffect(() => {
+    fetchNextPage();
+  }, [fetchNextPage]);
+
+  const advEdit = useMutation(DexTrade.advertUpdate, {
     onSuccess,
     onMutate: () => {
       return queryClient.removeQueries({ queryKey: ['ads-list'] });
@@ -102,9 +136,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       queryClient.invalidateQueries({ queryKey: ['ads-list'] });
     },
   });
-  const pairsCreate = useMutation(Pairs.create);
 
-  const form = useForm<CreateAdvertFormValues>({
+  const form = useForm<EditAdvertFormValues>({
     values: {
       pairId: 0,
       coin1: null,
@@ -121,8 +154,70 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     validationSchema: Validation.DexTrade.Advert.create,
     method: saveAd,
   });
+
+  const { items: currencies } = useCurrencies();
+
+  useEffect(() => {
+    if (advert) {
+      form.setValue('pairId', advert.pair_id || 0);
+      form.setValue(
+        'coin1',
+        currencies.find(
+          (i) => i.currency.id === advert?.pair?.currency_main_id,
+        ),
+      );
+      form.setValue(
+        'coin2',
+        currencies.find(
+          (i) => i.currency.id === advert?.pair?.currency_second_id,
+        ),
+      );
+
+      form.setValue(
+        'priceSourceProvider',
+        priceSourceProviders.find(
+          (p) => p.key === (advert.details.provider || 'coin-market-cap'),
+        ) || priceSourceProviders[0],
+      );
+      form.setValue('exchangersPolicy', advert.details.exchangersPolicy || '');
+      form.setValue(
+        'minimumExchangeAmountCoin1',
+        Number(advert.details.minimumExchangeAmountCoin1) || 0,
+      );
+      form.setValue(
+        'maximumExchangeAmountCoin1',
+        String(advert.details.maximumExchangeAmountCoin1 || ''),
+      );
+      form.setValue(
+        'priceAdjustment',
+        String(advert.details.priceAdjustment || 0),
+      );
+      form.setValue(
+        'transactionFeeType',
+        advert.details.transactionFee === null
+          ? 'auto'
+          : advert.details.transactionFee === '0' ||
+              advert.details.transactionFee === 0
+            ? 'youPay'
+            : 'fixed',
+      );
+      form.setValue(
+        'transactionFee',
+        advert.details.transactionFee === null
+          ? ''
+          : String(advert.details.transactionFee),
+      );
+      form.setValue(
+        'fixedPrice',
+        advert.details.provider === 'FIXED_PRICE'
+          ? String(advert.details.coinPair?.price || '')
+          : '',
+      );
+    }
+  }, [advert]);
+
   const isBothCoinsSelected = Boolean(form.values.coin1 && form.values.coin2);
-  const pairIso = `${form.values.coin1?.currency.iso}:${form.values.coin2?.currency.iso}`;
+  const pairIso = `${form.values.coin1?.currency?.iso}:${form.values.coin2?.currency?.iso}`;
 
   const rateQuery = useQuery(
     Rates.getRate,
@@ -140,7 +235,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     Pairs.priceSources,
     [
       {
-        currency_id: form.values.coin1?.currency.id,
+        currency_id: form.values.coin1?.currency?.id,
       },
     ],
     {
@@ -152,7 +247,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     Pairs.priceSources,
     [
       {
-        currency_id: form.values.coin2?.currency.id,
+        currency_id: form.values.coin2?.currency?.id,
       },
     ],
     {
@@ -181,19 +276,19 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
     return result;
   }
 
-  async function saveAd(values: CreateAdvertFormValues) {
+  async function saveAd(values: EditAdvertFormValues) {
     const addressesResp = await Address.listByCurrency(
       {
         projectId: user.project!.id,
       },
       {
         page: 0,
-        'currency_id[0]': values.coin1.currency.id,
-        'currency_id[1]': values.coin2.currency.id,
+        'currency_id[0]': values?.coin1?.currency.id,
+        'currency_id[1]': values?.coin2?.currency.id,
       },
     );
-    const currency1Id = values.coin1.currency.id;
-    const currency2Id = values.coin2.currency.id;
+    const currency1Id = values?.coin1?.currency.id;
+    const currency2Id = values?.coin2?.currency.id;
 
     const addresses = addressesResp.currentPageResult || [];
     const [address1] = orderBy(
@@ -218,46 +313,53 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         ? {
             coinPair: {
               currencyAggregator: 'FIXED_PRICE',
-              price: values.fixedPrice,
+              price: Number(values.fixedPrice),
             },
           }
         : {
-            [values.priceSourceProvider.query]: {
+            [values.priceSourceProvider.query!]: {
               main_iso: getIsoPriceSourceCoin({ raiseError: true })
-                .service_currency_iso,
+                ?.service_currency_iso,
               second_iso: getIsoPriceSourceCoin({
                 raiseError: true,
                 reversed: true,
-              }).service_currency_iso,
+              })?.service_currency_iso,
             },
           };
 
-    const result = await pairsCreate.mutateAsync([
+    await advEdit.mutateAsync([
       { projectId },
       {
-        currency_main_id: values.coin1.currency.id,
-        currency_second_id: values.coin2.currency.id,
-        liquidity_address_main_id: address1.id,
-        liquidity_address_second_id: address2.id,
-        ...pairConfig,
-      },
-    ]);
-
-    await advCreate.mutateAsync([
-      { projectId },
-      {
-        pair_id: result.id,
-        exchangersPolicy: values.exchangersPolicy,
+        dextrade_id: advert!.dextrade_id!,
+        exchangersPolicy: values.exchangersPolicy.trim(),
         priceAdjustment: values.priceAdjustment || '0',
-        minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1,
-        maximumExchangeAmountCoin1:
-          values.maximumExchangeAmountCoin1 || undefined,
-        transactionFee: values.transactionFee || null,
+        minimumExchangeAmountCoin1:
+          Number(values.minimumExchangeAmountCoin1) || 0,
+        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
+          ? Number(values.maximumExchangeAmountCoin1)
+          : undefined,
+        transactionFee:
+          values.transactionFeeType === 'auto'
+            ? null
+            : values.transactionFeeType === 'youPay'
+              ? '0'
+              : values.transactionFee || null,
+        ...pairConfig,
       },
     ]);
   }
 
   const rate = rateQuery.data && rateQuery.data[pairIso]?.rateFloat;
+
+  if (!advert) {
+    return (
+      <Box sx={{ p: 2 }}>
+        {JSON.stringify(renderList)}
+
+        <Typography>Advert not found</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box component="form" onSubmit={form.submit} noValidate sx={{ mt: 1 }}>
@@ -267,8 +369,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           Pair
         </Typography>
       </Box>
-      <pre>{JSON.stringify(form.values, null, 2)}</pre>
-
+      {/* <pre>{JSON.stringify(form.values, null, 2)}</pre> */}
       <Paper
         elevation={0}
         sx={{
@@ -484,7 +585,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       checked={form.values.transactionFeeType === 'auto'}
                       onChange={() => {
                         form.setValue('transactionFeeType', 'auto');
-                        form.setValue('transactionFee', ''); // will be null via advCreate.mutateAsync
+                        form.setValue('transactionFee', ''); // will be null via advEdit.mutateAsync
                       }}
                     />
                     <label htmlFor="transactionFeeType-auto">
@@ -543,9 +644,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             color="primary"
             disabled={Boolean(form.primaryError)}
             sx={{ mt: 3, mb: 2 }}
-            data-testid="btn-create-advert"
+            data-testid="btn-update-advert"
           >
-            {form.primaryError || 'Create Advert'}
+            {form.primaryError || 'Update Advert'}
           </Button>
         </>
       )}
@@ -553,4 +654,4 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   );
 };
 
-export default CreateAdvertForm;
+export default EditAdvertForm;

@@ -274,10 +274,19 @@ export default function TradesIndex() {
                     />
 
                     <ItemRow
-                      label="Fee"
+                      label="Specified Fee"
                       value={
                         trade.fee_in_to_currency
                           ? `${formatCurrency(trade.fee_in_to_currency, trade.liqudity_address_to?.currency?.iso)}`
+                          : '-'
+                      }
+                    />
+
+                    <ItemRow
+                      label="Transaction Fee"
+                      value={
+                        trade.outgoing_transaction?.network_fee
+                          ? `${formatCurrency(trade.outgoing_transaction.network_fee, trade.liqudity_address_to?.currency?.iso)}`
                           : '-'
                       }
                     />

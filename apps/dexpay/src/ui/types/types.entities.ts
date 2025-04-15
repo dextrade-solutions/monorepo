@@ -380,6 +380,7 @@ export interface ITrade {
       fetchedAt: number;
     };
   };
+  outgoing_transaction?: ITransaction;
   public_id: string;
   address_to: string;
   tag_to: string | null;
