@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, Box, Typography } from '@mui/material';
-import { LogOut, Key } from 'lucide-react';
+import { LogOut, Key, Lock, ChevronRight } from 'lucide-react';
 import React from 'react';
 import { Link } from 'wouter';
 
@@ -30,18 +30,44 @@ export default function Profile() {
       {/* options */}
       <Button
         sx={{
-          bgcolor: '#ddd',
+          bgcolor: 'secondary.dark',
           color: 'black',
-          justifyContent: 'start',
           p: '12px 16px',
+          mb: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
         }}
         color="error"
-        startIcon={<Key />}
         to="/api-keys"
         component={Link}
         fullWidth
       >
-        Api keys
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Key />
+          Api keys
+        </div>
+        <ChevronRight />
+      </Button>
+
+      {/* options */}
+      <Button
+        sx={{
+          bgcolor: 'secondary.dark',
+          color: 'black',
+          p: '12px 16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+        color="error"
+        to="/change-password"
+        component={Link}
+        fullWidth
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Lock />
+          Change Password
+        </div>
+        <ChevronRight />
       </Button>
 
       <Button
