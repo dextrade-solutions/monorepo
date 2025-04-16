@@ -36,6 +36,7 @@ export function useEVMProviders({ config }: { config: any }) {
       const result = await sendTransactionAsync({
         connector: item,
         to: txParams.to,
+        chainId: txParams.chainId,
         value: txParams.value,
         data: txParams.data,
       });
