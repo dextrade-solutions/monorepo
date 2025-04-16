@@ -13,6 +13,7 @@ import {
   ROUTE_MERCHANT,
   ROUTE_P2P,
   ROUTE_P2P_CREATE,
+  ROUTE_P2P_EDIT,
   ROUTE_PROFILE,
   ROUTE_REGISTER,
   ROUTE_WALLET_DEPOSIT,
@@ -29,6 +30,7 @@ import InvoiceDetailPage from './pages/MerchantInvoiceDetail';
 // import NotFound from './pages/not-found';
 import P2P from './pages/P2P';
 import P2PCreate from './pages/P2PCreate';
+import P2PEdit from './pages/P2PEdit';
 import Profile from './pages/Profile';
 import Terminal from './pages/Terminal';
 import TransactionHistory from './pages/TransactionHistory';
@@ -86,6 +88,7 @@ export default function Router() {
       <Route path={ROUTE_INVOICE_EDIT} component={CreateInvoice} />
       <Route path={ROUTE_P2P} component={P2P} />
       <Route path={ROUTE_P2P_CREATE} component={P2PCreate} />
+      <Route path={ROUTE_P2P_EDIT} component={P2PEdit} />
       <Route path={ROUTE_HISTORY} component={TransactionHistory} />
       <Route path={ROUTE_PROFILE} component={Profile} />
       <Route path={'/api-keys'} component={ApiTokens} />

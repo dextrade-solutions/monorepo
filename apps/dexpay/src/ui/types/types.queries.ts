@@ -1084,6 +1084,17 @@ export namespace DexTrade {
       export type Response = IAdvert[];
     }
 
+    export namespace Get {
+      export interface Params {
+        projectId: number;
+        advertId: number;
+      }
+
+      export interface Response {
+        advert: IAdvert;
+      }
+    }
+
     export namespace Create {
       export interface Params {
         projectId: number;

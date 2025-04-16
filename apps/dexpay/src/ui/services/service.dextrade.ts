@@ -109,4 +109,12 @@ export default abstract class DexTradeService {
       .delete(`${params.projectId}/${DexTradeService.PREFIX}/ads`, { json })
       .json<DexTrade.Advert.Delete.Response>();
   }
+
+  static advertGet(params: { projectId: string; advertId: number }) {
+    return $api
+      .get(
+        `${params.projectId}/${DexTradeService.PREFIX}/ads/ad/${params.advertId}`,
+      )
+      .json<DexTrade.Advert.Get.Response>();
+  }
 }

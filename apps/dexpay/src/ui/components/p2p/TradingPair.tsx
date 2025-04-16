@@ -174,7 +174,7 @@ export default function TradingPair() {
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
   const renderList = (
     data?.pages.flatMap((i) => i.currentPageResult) || []
-  ).filter((ad) => ad.details.direction === 2);
+  ).filter((ad) => ad?.details?.direction === 2);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
