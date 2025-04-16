@@ -4,6 +4,7 @@ import { sumBy } from 'lodash';
 import React, { memo } from 'react';
 
 import { useCurrencies } from '../../hooks/use-currencies';
+import { CopyData, TxSendStage } from 'dex-ui';
 
 export const Balance = memo(
   ({

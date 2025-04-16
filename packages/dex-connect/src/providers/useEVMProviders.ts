@@ -59,14 +59,11 @@ export function useEVMProviders({ config }: { config: any }) {
               from,
               to: recipient,
             });
-            try {
-              await switchChainAsync({
-                connector: item,
-                chainId: asset.chainId,
-              });
-            } catch (e) {
-              // do nothing
-            }
+            await switchChainAsync({
+              connector: item,
+              chainId: asset.chainId,
+            });
+            await new Promise((resolve) => setTimeout(resolve, 500));
             return sendTransactionAsync({
               connector: item,
               chainId: asset.chainId,

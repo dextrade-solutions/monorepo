@@ -13,11 +13,14 @@ const Login = () => {
   const auth = useAuth();
   const loginForm = useForm({
     values: {
-      email: '',
+      email: localStorage.getItem('lastLoginEmail') || '',
       password: '',
     },
     validationSchema: Validation.Auth.signIn,
-    method: (values) => auth.login(values.email, values.password),
+    method: (values) => {
+      localStorage.setItem('lastLoginEmail', values.email);
+      return auth.login(values.email, values.password);
+    },
   });
   const [inviteParams, setInviteParams] = useState<{
     codeToken: string;
