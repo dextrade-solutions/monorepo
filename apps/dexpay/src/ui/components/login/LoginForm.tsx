@@ -58,7 +58,7 @@ const LoginForm = ({ form }: { form: ReturnType<typeof useForm> }) => {
         width="100%"
       >
         <Typography mr={1} color="text.secondary">
-          Don’t have an account?
+          Don't have an account?
         </Typography>
         <Link href={ROUTE_REGISTER} data-testid="login-signup-link">
           Sign Up

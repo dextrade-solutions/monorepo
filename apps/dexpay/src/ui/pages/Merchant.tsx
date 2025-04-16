@@ -83,25 +83,6 @@ export default function Merchant() {
             </Button>
           </Box>
         </Balance>
-        {/* <Paper elevation={0} sx={{ bgcolor: 'secondary.dark', p: 2, mb: 1 }}>
-          <Typography variant="body2" color="textSecondary">
-            Balance
-          </Typography>
-          <Box display="flex" my={3}>
-            {statistic.data ? (
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                color="text.tertiary"
-                data-testid="merchant-income-amount"
-              >
-                {formatCurrency(statistic.data.received.total_usdt, 'usd')}
-              </Typography>
-            ) : (
-              <Skeleton width={100} height={60} />
-            )}
-          </Box>
-        </Paper> */}
       </Box>
       <Box data-testid="merchant-invoices-section">
         <Typography

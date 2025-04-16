@@ -1,7 +1,7 @@
 const Palette = {
   light: {
     success: {
-      light: '#01B67B',
+      light: '#cce9df',
       main: '#01B67B', // Change this to your desired success color
       dark: '#388E3C',
       contrastText: '#01B67B',
