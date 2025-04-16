@@ -26,7 +26,6 @@ export namespace Validation {
       newPassword: string()
         .required('Password is a required field')
         .min(8, (ctx) => `Password must be at least ${ctx.min} characters`)
-        .max(20, (ctx) => `Password must be at most ${ctx.max} characters`)
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~])/,
           'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
@@ -37,10 +36,6 @@ export namespace Validation {
           8,
           (ctx) => `Confirm password must be at least ${ctx.min} characters`,
         )
-        .max(
-          20,
-          (ctx) => `Confirm password must be at most ${ctx.max} characters`,
-        )
         .oneOf([ref('newPassword')], 'Password mismatch'),
     });
     export const signUp = object({
@@ -50,7 +45,6 @@ export namespace Validation {
       password: string()
         .required('Password is a required field')
         .min(8, (ctx) => `Password must be at least ${ctx.min} characters`)
-        .max(20, (ctx) => `Password must be at most ${ctx.max} characters`)
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:'",<>\.\?\/\\|`~])/,
           'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
@@ -60,10 +54,6 @@ export namespace Validation {
         .min(
           8,
           (ctx) => `Confirm password must be at least ${ctx.min} characters`,
-        )
-        .max(
-          20,
-          (ctx) => `Confirm password must be at most ${ctx.max} characters`,
         )
         .oneOf([ref('password')], 'Password mismatch'),
       first_name: string().required('First name is a required field'),
@@ -77,7 +67,6 @@ export namespace Validation {
       password: string()
         .required('Password is a required field')
         .min(8, (ctx) => `Password must be at least ${ctx.min} characters`)
-        .max(20, (ctx) => `Password must be at most ${ctx.max} characters`),
     });
 
     export const forgotPassword = object({
@@ -87,7 +76,6 @@ export namespace Validation {
       new_password: string()
         .required('New password is a required field')
         .min(8, (ctx) => `New password must be at least ${ctx.min} characters`)
-        .max(20, (ctx) => `New password must be at most ${ctx.max} characters`)
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
           'Must Contain One Uppercase, One Lowercase, One Number and One Special Case Character',
@@ -97,10 +85,6 @@ export namespace Validation {
         .min(
           8,
           (ctx) => `Confirm password must be at least ${ctx.min} characters`,
-        )
-        .max(
-          20,
-          (ctx) => `Confirm password must be at most ${ctx.max} characters`,
         )
         .oneOf([ref('new_password')], 'Password mismatch'),
     });
