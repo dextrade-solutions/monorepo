@@ -141,7 +141,6 @@ export const OKX = {
 export const RABBY_WALLET = {
   name: 'rabby wallet',
   displayName: 'Rabby Wallet',
-  icon: `/images/wallets/rabby.svg`,
   get installed() {
     return typeof window !== 'undefined' && Boolean(window.ethereum?.isRabby);
   },

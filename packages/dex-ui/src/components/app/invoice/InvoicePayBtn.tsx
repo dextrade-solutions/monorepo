@@ -3,6 +3,7 @@ import { TxStageStatuses } from 'dex-connect';
 import { useState } from 'react';
 
 import { CopyData, TxSendStage } from '../../ui';
+import React from 'react';
 
 export const InvoicePayBtn = ({
   payCallback,
