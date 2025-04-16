@@ -14,7 +14,7 @@ import { ConnectionProvider } from './interface';
 export function useEVMProviders({ config }: { config: any }) {
   const connectors = useConnectors({ config });
   const { sendTransactionAsync } = useSendTransaction({ config });
-  const { switchChainAsync } = useSwitchChain({ config });
+  const { switchChain } = useSwitchChain({ config });
   const { signMessageAsync } = useSignMessage({ config });
   return connectors
     .filter(
@@ -56,18 +56,40 @@ export function useEVMProviders({ config }: { config: any }) {
             const txParams = generateTxParams({
               asset,
               value,
-              from,
-              to: recipient,
+              from: from as `0x${string}`,
+              to: recipient as `0x${string}`,
             });
-            await switchChainAsync({
-              connector: item,
-              chainId: asset.chainId,
-            });
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            return sendTransactionAsync({
-              connector: item,
-              chainId: asset.chainId,
-              ...txParams,
+
+            const sendTx = async (): Promise<string> => {
+              const result = await sendTransactionAsync({
+                connector: item,
+                to: recipient as `0x${string}`,
+                value: txParams.value,
+                data: txParams.data,
+              });
+              return result;
+            };
+
+            return new Promise<string>((resolve, reject) => {
+              const handleChainSwitch = async () => {
+                try {
+                  const result = await sendTx();
+                  resolve(result);
+                } catch (error) {
+                  reject(error);
+                }
+              };
+
+              switchChain(
+                {
+                  connector: item,
+                  chainId: asset.chainId,
+                },
+                {
+                  onSuccess: handleChainSwitch,
+                  onError: handleChainSwitch,
+                },
+              );
             });
           };
 
