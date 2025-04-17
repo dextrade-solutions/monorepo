@@ -399,7 +399,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
             if (needPickupClientPaymentMethod) {
               return onShowPaymentMethods();
             } else if (needPickupExchangerPaymentMethod) {
-              if (ad.name === 'TRANSAK') {
+              if (ad.provider === 'TRANSAK') {
                 return openTransakClient();
               }
               return pickupExchangerPaymentMethod();
