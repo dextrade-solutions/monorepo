@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { generateTxParams } from 'dex-helpers';
 import { parseUnits } from 'viem';
 import {
@@ -15,43 +14,8 @@ import { ConnectionProvider } from './interface';
 export function useEVMProviders({ config }: { config: any }) {
   const connectors = useConnectors({ config });
   const { sendTransactionAsync } = useSendTransaction({ config });
-  const { switchChain } = useSwitchChain({ config });
+  const { switchChainAsync } = useSwitchChain({ config });
   const { signMessageAsync } = useSignMessage({ config });
-  const [txHash, setTxHash] = useState<string | null>(null);
-  const [pendingTx, setPendingTx] = useState<{
-    item: any;
-    asset: any;
-    txParams: any;
-  } | null>(null);
-
-  useEffect(() => {
-    if (!pendingTx) {
-      return;
-    }
-
-    let isMounted = true;
-    const { item, txParams } = pendingTx;
-
-    const sendTx = async (): Promise<string> => {
-      const result = await sendTransactionAsync({
-        connector: item,
-        to: txParams.to,
-        chainId: txParams.chainId,
-        value: txParams.value,
-        data: txParams.data,
-      });
-      setTxHash(result);
-    };
-
-    if (isMounted) {
-      sendTx();
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pendingTx, switchChain, sendTransactionAsync]);
-
   return connectors
     .filter(
       ({ id }) =>
@@ -77,41 +41,42 @@ export function useEVMProviders({ config }: { config: any }) {
         },
         async txSend(params) {
           const { asset, amount, recipient } = params;
-          const value = parseUnits(String(amount), asset.decimals || 18);
-          const [from] = await item.getAccounts();
-          const txParams = generateTxParams({
-            asset,
-            value,
-            from: from as `0x${string}`,
-            to: recipient as `0x${string}`,
-          });
-
           const isConnected = await item.isAuthorized();
 
           if (!isConnected) {
             await item.connect();
           }
 
-          if (!asset.chainId) {
-            throw new Error('Asset chainid not found');
-          }
-
-          switchChain(
-            {
+          const approveTx = async () => {
+            if (!asset.chainId) {
+              throw new Error('Asset chainid not found');
+            }
+            const value = parseUnits(String(amount), asset.decimals);
+            const [from] = await item.getAccounts();
+            const txParams = generateTxParams({
+              asset,
+              value,
+              from,
+              to: recipient,
+            });
+            await switchChainAsync({
               connector: item,
               chainId: asset.chainId,
-            },
-            {
-              onSuccess: () => setPendingTx({ item, asset, txParams }),
-              onError: () => setPendingTx({ item, asset, txParams }),
-            },
-          );
-          return txHash || '';
+            });
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            return sendTransactionAsync({
+              connector: item,
+              chainId: asset.chainId,
+              ...txParams,
+            });
+          };
+
+          return approveTx();
         },
         signMessage(message: string) {
           return signMessageAsync({ connector: item, message });
         },
       };
       return connector;
-    })
+    });
 }

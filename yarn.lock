@@ -5443,10 +5443,10 @@ __metadata:
 
 "@metamask/announcement-controller@file:../../core/packages/announcement-controller::locator=dex-trade%40workspace%3Aapps%2Fweb-wallet":
   version: 5.0.2
-  resolution: "@metamask/announcement-controller@file:../../core/packages/announcement-controller#../../core/packages/announcement-controller::hash=a281f3&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
+  resolution: "@metamask/announcement-controller@file:../../core/packages/announcement-controller#../../core/packages/announcement-controller::hash=d29c29&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
   dependencies:
     "@metamask/base-controller": "npm:^4.1.1"
-  checksum: 10/00e80539e36b9e82aa1e150d837a1dd13ec3d29e688c1100b152d7a29bdc83b50f86f79c7ec5261c535d8aa25d6009535c8ef82a0a9b72080c206f52aae90f3c
+  checksum: 10/30ebe1952a939fa4a77db0886ccedabe4d805fb72f230e9be83f92fbbd5b7d3e9ffe884a79fe04745600dddd7079422316316747f7d05997a2124451bfa9ff1e
   languageName: node
   linkType: hard
 
@@ -5578,11 +5578,11 @@ __metadata:
 
 "@metamask/base-controller@file:../../core/packages/base-controller::locator=dex-trade%40workspace%3Aapps%2Fweb-wallet":
   version: 4.1.1
-  resolution: "@metamask/base-controller@file:../../core/packages/base-controller#../../core/packages/base-controller::hash=fcb8c9&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
+  resolution: "@metamask/base-controller@file:../../core/packages/base-controller#../../core/packages/base-controller::hash=5e8361&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
   dependencies:
     "@metamask/utils": "npm:^8.3.0"
     immer: "npm:^9.0.6"
-  checksum: 10/2835be246eec16977d69375d01576ce979d6c63243a8f5501bd875078f4b03ab40b44dac66aa99db24a8e0e8df9d4353c35b299bfe51b559fa28868326435ea0
+  checksum: 10/800d3c77d8f4dc6a9edc58152ee281728bc3257ca577cefe830121a4451ae9684ea34612b37dd782a5b7e1b9b2c22f61c29dac65fde81fe0b571ab269e0402e0
   languageName: node
   linkType: hard
 
@@ -5674,7 +5674,7 @@ __metadata:
 
 "@metamask/controller-utils@file:../../core/packages/controller-utils::locator=dex-trade%40workspace%3Aapps%2Fweb-wallet":
   version: 8.0.3
-  resolution: "@metamask/controller-utils@file:../../core/packages/controller-utils#../../core/packages/controller-utils::hash=d2bd78&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
+  resolution: "@metamask/controller-utils@file:../../core/packages/controller-utils#../../core/packages/controller-utils::hash=3ac591&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
@@ -5683,7 +5683,7 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     ethereumjs-util: "npm:^7.0.10"
     fast-deep-equal: "npm:^3.1.3"
-  checksum: 10/efef9a33c2fb28c7d6d35809423a6823c7fa9b77161bba53c88c26973b7d6d8610a13c2c50b00393fda1632d8786d8d757eb8e2a3429876dc4d70c92c9cd3ee7
+  checksum: 10/0cc064d4b52f9b717fe6e87c966361da3ce775f94d5f008f647f7e60d02adbdd7b2235d614ff95f0f61e61cd6cb897e3a736dbc6a89c7c1e3483125491b3d0be
   languageName: node
   linkType: hard
 
@@ -5960,7 +5960,7 @@ __metadata:
 
 "@metamask/eth-json-rpc-middleware@file:../../core/packages/eth-json-rpc-middleware::locator=dex-trade%40workspace%3Aapps%2Fweb-wallet":
   version: 12.1.0
-  resolution: "@metamask/eth-json-rpc-middleware@file:../../core/packages/eth-json-rpc-middleware#../../core/packages/eth-json-rpc-middleware::hash=ae5793&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
+  resolution: "@metamask/eth-json-rpc-middleware@file:../../core/packages/eth-json-rpc-middleware#../../core/packages/eth-json-rpc-middleware::hash=5bbd9b&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
   dependencies:
     "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
     "@metamask/eth-sig-util": "npm:^7.0.0"
@@ -5971,7 +5971,7 @@ __metadata:
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/33647b37f35f88b69b4ca82d16319134ac24e1ca7bad24af47983595b294d38d9b6ea25e210fcc6134eae844f0730b29c3dfe1cf6cf4c8200d3a07c66ae5ac9f
+  checksum: 10/891bc47c315d642631c6e1915306affd20a3534a864d4931d839dce8be37429c697413fe5da1ea361f9eefdeac57026a60ea2adc03e4b3f6c2beb492060dd691
   languageName: node
   linkType: hard
 
@@ -5994,12 +5994,12 @@ __metadata:
 
 "@metamask/eth-json-rpc-provider@file:../../core/packages/eth-json-rpc-provider::locator=dex-trade%40workspace%3Aapps%2Fweb-wallet":
   version: 2.3.2
-  resolution: "@metamask/eth-json-rpc-provider@file:../../core/packages/eth-json-rpc-provider#../../core/packages/eth-json-rpc-provider::hash=6d2e40&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
+  resolution: "@metamask/eth-json-rpc-provider@file:../../core/packages/eth-json-rpc-provider#../../core/packages/eth-json-rpc-provider::hash=f576d5&locator=dex-trade%40workspace%3Aapps%2Fweb-wallet"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^7.3.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.3.0"
-  checksum: 10/7663810dc5048e588054d4e8a6c46b400cb2a687d193227c9131c1ae2859ce12dbcf19693fdf2454e098fd01c589ea307e8f6a483a42f91f04be3520350ed0a2
+  checksum: 10/f77792aab3dc5f21292b8898412f3ee972a6d4e23bbb63bd528a61c7de9df468073651df0e7d3aca59884c12cbbae7c90086ac988d2a85eeb12e8159bb9f5c6b
   languageName: node
   linkType: hard
 
