@@ -14,3 +14,4 @@ export const ROUTE_P2P_CREATE = '/swaps/create';
 export const ROUTE_P2P_EDIT = '/swaps/:id/edit';
 export const ROUTE_HISTORY = '/history';
 export const ROUTE_PROFILE = '/profile';
+export const ROUTE_CHANGE_PASSWORD = '/change-password';

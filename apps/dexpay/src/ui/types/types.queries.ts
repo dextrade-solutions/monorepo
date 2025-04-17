@@ -1176,6 +1176,29 @@ export namespace Users {
   export namespace View {
     export type Response = IUser;
   }
+
+  export namespace ChangePassword {
+    export interface Body {
+      new_password: string;
+    }
+
+    export interface Response {
+      code_token: string;
+    }
+  }
+
+  export namespace ChangePasswordConfirm {
+    export interface Body {
+      new_password: string;
+      code_token: string;
+      code: string;
+    }
+
+    export interface Response {
+      access_token: string;
+      refresh_token: string;
+    }
+  }
 }
 
 export namespace Trade {

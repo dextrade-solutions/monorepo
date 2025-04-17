@@ -18,11 +18,13 @@ import {
   ROUTE_REGISTER,
   ROUTE_WALLET_DEPOSIT,
   ROUTE_WALLET_WITHDRAW,
+  ROUTE_CHANGE_PASSWORD,
 } from './constants/pages';
 import { useAuth } from './hooks/use-auth';
 import ApiTokens from './pages/ApiTokens';
 import LoginForm from './pages/auth/Login';
 import SignUp from './pages/auth/SignUp';
+import ChangePassword from './pages/ChangePassword';
 import CreateInvoice from './pages/CreateInvoice';
 import ForgotPassword from './pages/ForgotPassword';
 import Merchant from './pages/Merchant';
@@ -92,6 +94,7 @@ export default function Router() {
       <Route path={ROUTE_HISTORY} component={TransactionHistory} />
       <Route path={ROUTE_PROFILE} component={Profile} />
       <Route path={'/api-keys'} component={ApiTokens} />
+      <Route path={ROUTE_CHANGE_PASSWORD} component={ChangePassword} />
     </Wouter>
   );
 }

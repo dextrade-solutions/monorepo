@@ -15,4 +15,16 @@ export default abstract class UserService {
   static view() {
     return $api.get(`${UserService.PREFIX}/me`).json<Users.View.Response>();
   }
+
+  static changePassword(json: Users.ChangePassword.Body) {
+    return $api
+      .post(`${UserService.PREFIX}/change-password`, { json })
+      .json<Users.ChangePassword.Response>();
+  }
+
+  static changePasswordConfirm(json: Users.ChangePasswordConfirm.Body) {
+    return $api
+      .put(`${UserService.PREFIX}/change-password`, { json })
+      .json<Users.ChangePasswordConfirm.Response>();
+  }
 }
