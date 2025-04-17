@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { AssetModel } from 'dex-helpers/types';
 import {
   CircleNumber,
@@ -29,7 +29,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useAuth } from '../../hooks/use-auth';
 import { useCurrencies } from '../../hooks/use-currencies';
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { Pairs, DexTrade, Address, Invoice, Rates } from '../../services'; // Adjust path as needed
+import { Pairs, DexTrade, Address, Rates } from '../../services'; // Adjust path as needed
 import { ICurrency } from '../../types/types.entities';
 import { Validation } from '../../validation';
 import {
@@ -90,18 +90,13 @@ const EditAdvertForm = ({
   const projectId = user?.project?.id!;
   const queryClient = useQueryClient();
 
-  const { data, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['ads-list-all'],
-    queryFn: () => DexTrade.advertsList({ projectId }, { no_pagination: 1 }),
-    initialPageParam: 0,
-    getNextPageParam: () => {
-      return 0;
-    },
-  });
+  const { data, isLoading } = useQuery(() =>
+    DexTrade.advertsList({ projectId }, { no_pagination: 1 }),
+  );
 
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
-  const renderList = (data?.pages.flatMap((i) => i) || []).filter(
-    (ad) => ad.details && ad.details.direction === 2,
+  const renderList = (data?.flatMap((i) => i) || []).filter(
+    (ad) => ad.details && ad.details.direction === 1,
   );
 
   // Get advert from existing ads list query cache
@@ -112,10 +107,6 @@ const EditAdvertForm = ({
       }),
     [renderList, advertId],
   );
-
-  useEffect(() => {
-    fetchNextPage();
-  }, [fetchNextPage]);
 
   const advEdit = useMutation(DexTrade.advertUpdate, {
     onSuccess,
@@ -194,7 +185,8 @@ const EditAdvertForm = ({
       );
       form.setValue(
         'transactionFeeType',
-        advert.details.transactionFee === null
+        advert.details.transactionFee === null ||
+        advert.details.transactionFee === undefined
           ? 'auto'
           : advert.details.transactionFee === '0' ||
               advert.details.transactionFee === 0
@@ -332,30 +324,46 @@ const EditAdvertForm = ({
       {
         dextrade_id: advert!.dextrade_id!,
         exchangersPolicy: values.exchangersPolicy.trim(),
-        priceAdjustment: values.priceAdjustment || '0',
-        minimumExchangeAmountCoin1:
-          Number(values.minimumExchangeAmountCoin1) || 0,
-        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
-          ? Number(values.maximumExchangeAmountCoin1)
-          : undefined,
-        transactionFee:
-          values.transactionFeeType === 'auto'
-            ? null
-            : values.transactionFeeType === 'youPay'
-              ? '0'
-              : values.transactionFee || null,
-        ...pairConfig,
+        settingsMain: {
+          // minimumExchangeAmountCoin1?: number;
+          minimumExchangeAmountCoin1:
+            values.minimumExchangeAmountCoin1 || '0',
+
+          // maximumExchangeAmountCoin1?: number;
+          maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
+            ? values.maximumExchangeAmountCoin1
+            : undefined,
+
+          // priceAdjustment?: number;
+          priceAdjustment: values.priceAdjustment || '0',
+
+          // transactionFee?: number;
+          transactionFee:
+            values.transactionFeeType === 'auto'
+              ? null
+              : values.transactionFeeType === 'youPay'
+                ? '0'
+                : values.transactionFee || null,
+
+          // active?: boolean;
+          // active: true,
+
+          // tradeWithKycUsers?: boolean;
+          // tradeWithKycUsers: true,
+
+          ...pairConfig,
+        },
       },
     ]);
   }
 
+  console.log(advert);
+
   const rate = rateQuery.data && rateQuery.data[pairIso]?.rateFloat;
 
-  if (!advert) {
+  if (!advert && !isLoading) {
     return (
       <Box sx={{ p: 2 }}>
-        {JSON.stringify(renderList)}
-
         <Typography>Advert not found</Typography>
       </Box>
     );
