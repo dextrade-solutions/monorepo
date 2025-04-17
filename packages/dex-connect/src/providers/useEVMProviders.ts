@@ -1,11 +1,6 @@
 import { generateTxParams } from 'dex-helpers';
 import { parseUnits } from 'viem';
-import {
-  useConnectors,
-  useSendTransaction,
-  useSignMessage,
-  useSwitchChain,
-} from 'wagmi';
+import { useConnectors, useSendTransaction, useSignMessage } from 'wagmi';
 
 import { WalletConnectionType } from '../constants';
 import { getWalletIcon } from '../utils';
@@ -14,7 +9,6 @@ import { ConnectionProvider } from './interface';
 export function useEVMProviders({ config }: { config: any }) {
   const connectors = useConnectors({ config });
   const { sendTransactionAsync } = useSendTransaction({ config });
-  const { switchChainAsync } = useSwitchChain({ config });
   const { signMessageAsync } = useSignMessage({ config });
   return connectors
     .filter(
@@ -47,6 +41,18 @@ export function useEVMProviders({ config }: { config: any }) {
             await item.connect();
           }
 
+          const provider = await item.getProvider({ chainId: asset.chainId });
+          const currentChainId = await provider.request({
+            method: 'eth_chainId',
+          });
+          const hexChainId = `0x${asset.chainId!.toString(16)}`;
+          if (currentChainId !== hexChainId) {
+            await provider.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: hexChainId }],
+            });
+          }
+
           const approveTx = async () => {
             if (!asset.chainId) {
               throw new Error('Asset chainid not found');
@@ -59,11 +65,6 @@ export function useEVMProviders({ config }: { config: any }) {
               from,
               to: recipient,
             });
-            await switchChainAsync({
-              connector: item,
-              chainId: asset.chainId,
-            });
-            await new Promise((resolve) => setTimeout(resolve, 2000));
             return sendTransactionAsync({
               connector: item,
               chainId: asset.chainId,
