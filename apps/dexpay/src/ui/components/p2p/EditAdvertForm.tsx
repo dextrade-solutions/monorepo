@@ -75,7 +75,7 @@ const priceSourceProviders = [
   // },
   {
     label: 'Fixed Price',
-    key: 'FIXED_PRICE',
+    key: 'FIXED_RATE',
   },
 ];
 
@@ -127,6 +127,7 @@ const EditAdvertForm = ({
       queryClient.invalidateQueries({ queryKey: ['ads-list'] });
     },
   });
+  const pairsUpdate = useMutation(Pairs.update);
 
   const form = useForm<EditAdvertFormValues>({
     values: {
@@ -167,7 +168,10 @@ const EditAdvertForm = ({
       form.setValue(
         'priceSourceProvider',
         priceSourceProviders.find(
-          (p) => p.key === (advert.details.provider || 'coin-market-cap'),
+          (p) =>
+            p.key ===
+            (advert.pair?.rate_source_options?.serviceName ||
+              'coin-market-cap'),
         ) || priceSourceProviders[0],
       );
       form.setValue('exchangersPolicy', advert.details.exchangersPolicy || '');
@@ -199,10 +203,17 @@ const EditAdvertForm = ({
           ? ''
           : String(advert.details.transactionFee),
       );
+
+      if (
+        String(advert.pair?.rate_source_options.serviceName) === 'FIXED_RATE'
+      ) {
+        form.setValue('priceSourceProvider', priceSourceProviders[1]);
+      }
+
       form.setValue(
         'fixedPrice',
-        advert.details.provider === 'FIXED_PRICE'
-          ? String(advert.details.coinPair?.price || '')
+        advert.pair?.rate_source_options.serviceName === 'FIXED_RATE'
+          ? String(advert.pair?.rate_source_options?.serviceParams?.rate || '')
           : '',
       );
     }
@@ -301,11 +312,10 @@ const EditAdvertForm = ({
       throw new Error('Address for coin to not found');
     }
     const pairConfig =
-      values.priceSourceProvider.key === 'FIXED_PRICE'
+      values.priceSourceProvider.key === 'FIXED_RATE'
         ? {
-            coinPair: {
-              currencyAggregator: 'FIXED_PRICE',
-              price: Number(values.fixedPrice),
+            fixedRate: {
+              rate: values.fixedPrice,
             },
           }
         : {
@@ -319,6 +329,17 @@ const EditAdvertForm = ({
             },
           };
 
+    await pairsUpdate.mutateAsync([
+      { projectId, id: advert!.pair_id! },
+      {
+        currency_main_id: values.coin1.currency.id,
+        currency_second_id: values.coin2.currency.id,
+        liquidity_address_main_id: address1.id,
+        liquidity_address_second_id: address2.id,
+        ...pairConfig,
+      },
+    ]);
+
     await advEdit.mutateAsync([
       { projectId },
       {
@@ -327,11 +348,11 @@ const EditAdvertForm = ({
         settingsMain: {
           // minimumExchangeAmountCoin1?: number;
           minimumExchangeAmountCoin1:
-            values.minimumExchangeAmountCoin1 || '0',
+            String(values.minimumExchangeAmountCoin1) || '0',
 
           // maximumExchangeAmountCoin1?: number;
           maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
-            ? values.maximumExchangeAmountCoin1
+            ? String(values.maximumExchangeAmountCoin1)
             : undefined,
 
           // priceAdjustment?: number;
@@ -356,8 +377,6 @@ const EditAdvertForm = ({
       },
     ]);
   }
-
-  console.log(advert);
 
   const rate = rateQuery.data && rateQuery.data[pairIso]?.rateFloat;
 
@@ -486,25 +505,7 @@ const EditAdvertForm = ({
               </Select>
             </FormControl>
 
-            {/* eslint-disable-next-line no-negated-condition */}
-            {form.values.priceSourceProvider.key !== 'FIXED_PRICE' ? (
-              <Box sx={{ mt: 2 }}>
-                <Typography>
-                  {form.values.coin1?.symbol} ID:{' '}
-                  {priceSourcesCoin1.isLoading
-                    ? 'Loading...'
-                    : getIsoPriceSourceCoin()?.service_currency_iso ||
-                      'Not found'}
-                </Typography>
-                <Typography>
-                  {form.values.coin2?.symbol} ID:{' '}
-                  {priceSourcesCoin2.isLoading
-                    ? 'Loading...'
-                    : getIsoPriceSourceCoin({ reversed: true })
-                        ?.service_currency_iso || 'Not found'}
-                </Typography>
-              </Box>
-            ) : (
+            {form.values.priceSourceProvider.key === 'FIXED_RATE' && (
               <VNumericTextField
                 margin="normal"
                 fullWidth
@@ -519,6 +520,22 @@ const EditAdvertForm = ({
                   ),
                 }}
               />
+              // <Box sx={{ mt: 2 }}>
+              //   <Typography>
+              //     {form.values.coin1?.symbol} ID:{' '}
+              //     {priceSourcesCoin1.isLoading
+              //       ? 'Loading...'
+              //       : getIsoPriceSourceCoin()?.service_currency_iso ||
+              //         'Not found'}
+              //   </Typography>
+              //   <Typography>
+              //     {form.values.coin2?.symbol} ID:{' '}
+              //     {priceSourcesCoin2.isLoading
+              //       ? 'Loading...'
+              //       : getIsoPriceSourceCoin({ reversed: true })
+              //           ?.service_currency_iso || 'Not found'}
+              //   </Typography>
+              // </Box>
             )}
           </Box>
         </>

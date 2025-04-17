@@ -74,7 +74,7 @@ const priceSourceProviders = [
   // },
   {
     label: 'Fixed Price',
-    key: 'FIXED_PRICE',
+    key: 'FIXED_RATE',
   },
 ];
 
@@ -214,11 +214,10 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
       throw new Error('Address for coin to not found');
     }
     const pairConfig =
-      values.priceSourceProvider.key === 'FIXED_PRICE'
+      values.priceSourceProvider.key === 'FIXED_RATE'
         ? {
-            coinPair: {
-              currencyAggregator: 'FIXED_PRICE',
-              price: values.fixedPrice,
+            fixedRate: {
+              rate: values.fixedPrice,
             },
           }
         : {
@@ -249,9 +248,9 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         pair_id: result.id,
         exchangersPolicy: values.exchangersPolicy,
         priceAdjustment: values.priceAdjustment || '0',
-        minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1,
+        minimumExchangeAmountCoin1: String(values.minimumExchangeAmountCoin1),
         maximumExchangeAmountCoin1:
-          values.maximumExchangeAmountCoin1 || undefined,
+          String(values.maximumExchangeAmountCoin1) || undefined,
         transactionFee: values.transactionFee || null,
       },
     ]);
@@ -267,7 +266,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           Pair
         </Typography>
       </Box>
-      <pre>{JSON.stringify(form.values, null, 2)}</pre>
 
       <Paper
         elevation={0}
@@ -377,25 +375,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
               </Select>
             </FormControl>
 
-            {/* eslint-disable-next-line no-negated-condition */}
-            {form.values.priceSourceProvider.key !== 'FIXED_PRICE' ? (
-              <Box sx={{ mt: 2 }}>
-                <Typography>
-                  {form.values.coin1?.symbol} ID:{' '}
-                  {priceSourcesCoin1.isLoading
-                    ? 'Loading...'
-                    : getIsoPriceSourceCoin()?.service_currency_iso ||
-                      'Not found'}
-                </Typography>
-                <Typography>
-                  {form.values.coin2?.symbol} ID:{' '}
-                  {priceSourcesCoin2.isLoading
-                    ? 'Loading...'
-                    : getIsoPriceSourceCoin({ reversed: true })
-                        ?.service_currency_iso || 'Not found'}
-                </Typography>
-              </Box>
-            ) : (
+            {form.values.priceSourceProvider.key === 'FIXED_RATE' && (
               <VNumericTextField
                 margin="normal"
                 fullWidth
@@ -410,6 +390,22 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   ),
                 }}
               />
+              // <Box sx={{ mt: 2 }}>
+              //   <Typography>
+              //     {form.values.coin1?.symbol} ID:{' '}
+              //     {priceSourcesCoin1.isLoading
+              //       ? 'Loading...'
+              //       : getIsoPriceSourceCoin()?.service_currency_iso ||
+              //         'Not found'}
+              //   </Typography>
+              //   <Typography>
+              //     {form.values.coin2?.symbol} ID:{' '}
+              //     {priceSourcesCoin2.isLoading
+              //       ? 'Loading...'
+              //       : getIsoPriceSourceCoin({ reversed: true })
+              //           ?.service_currency_iso || 'Not found'}
+              //   </Typography>
+              // </Box>
             )}
           </Box>
         </>
