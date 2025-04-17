@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import classNames from 'classnames';
 import {
   formatFundsAmount,
@@ -33,10 +33,8 @@ import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import { SwapFees } from './swap-fees';
 import './index.scss';
-import {
-  getAdPathname,
-  getMaxOutputDecimalPlaces,
-} from '../../../../app/helpers/p2p';
+import { getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
+import { getCurrentTheme } from '../../../ducks/app/app';
 
 interface IProps {
   ad: AdItem;
@@ -49,13 +47,14 @@ const RECALCULATE_DELAY = 1000;
 
 export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const { showModal } = useGlobalModalContext();
+  const theme = useSelector(getCurrentTheme);
+  const muiTheme = useTheme();
   const t = useI18nContext();
   const navigate = useNavigate();
   const [slippage, setSlippage] = useState(0.5);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
-
   const { login } = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -123,6 +122,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     },
     [assetInputTo, assetTo, ad],
   );
+
   const recalculateTo = useDebouncedCallback(async (fromAmount) => {
     let sumInCoin2 = Number(fromAmount) * exchangeRate;
     const feeInCoin2 = await calcIncomingFee(sumInCoin2);
@@ -198,6 +198,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   } = {}) => {
     try {
       setLoadingStartExchange(true);
+
       const result = await login({
         onSuccess: (on401?: () => void) =>
           dispatch(
@@ -242,6 +243,45 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     );
   };
 
+  const openTransakClient = () => {
+    const baseUrl = 'https://global.transak.com';
+    const queryParams = new URLSearchParams({
+      // Basic parameters
+      apiKey: '79af8aca-433b-4b5c-8876-56532fcebc8b',
+      environment: 'PRODUCTION',
+
+      // Look & feel parameters
+      widgetHeight: '100%',
+      widgetWidth: '100%',
+      themeColor: muiTheme.palette.primary.main,
+      exchangeScreenTitle: 'Buy Crypto',
+      colorMode: theme.toUpperCase(),
+
+      // Order Data parameters
+      productsAvailed: 'BUY',
+      defaultCryptoCurrency: assetTo.symbol,
+      defaultFiatCurrency: assetFrom.symbol,
+      defaultCryptoAmount: String(Number(assetInputTo.amount) || 0),
+      defaultNetwork: 'bsc',
+      cryptoCurrencyCode: assetTo.symbol,
+      fiatCurrency: assetFrom.symbol,
+
+      // Advanced parameters
+      walletAddress: assetInputTo.account?.address || '',
+      disableWalletAddressForm: 'true',
+      redirectURL: `${window.location.origin}/transak-callback`,
+      partnerCustomerId: '1',
+      partnerOrderId: String(Date.now()),
+      isFeeCalculationHidden: 'false',
+      hideExchangeScreen: 'false',
+
+      // KYC parameters
+      isAutoFillUserData: 'true',
+    });
+
+    const transakUrl = `${baseUrl}?${queryParams.toString()}`;
+    window.open(transakUrl, '_blank');
+  };
   return (
     <Box>
       <Box marginBottom={2}>
@@ -356,10 +396,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
-            // return assetInputFrom.makeTransfer(ad.walletAddress);
             if (needPickupClientPaymentMethod) {
               return onShowPaymentMethods();
             } else if (needPickupExchangerPaymentMethod) {
+              if (ad.name === 'TRANSAK') {
+                return openTransakClient();
+              }
               return pickupExchangerPaymentMethod();
             } else if (needPickupRecipientAddress) {
               return assetInputTo.showConfigureWallet();
