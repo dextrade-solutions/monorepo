@@ -248,9 +248,12 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
         pair_id: result.id,
         exchangersPolicy: values.exchangersPolicy,
         priceAdjustment: values.priceAdjustment || '0',
-        minimumExchangeAmountCoin1: String(values.minimumExchangeAmountCoin1),
-        maximumExchangeAmountCoin1:
-          String(values.maximumExchangeAmountCoin1) || undefined,
+        minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1
+          ? String(values.minimumExchangeAmountCoin1)
+          : '0',
+        maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
+          ? String(values.maximumExchangeAmountCoin1)
+          : undefined,
         transactionFee: values.transactionFee || null,
       },
     ]);
@@ -525,6 +528,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                       name="transactionFee"
                       label={`Enter your fixed fee (${form.values.coin2?.symbol})`}
                       onChange={(e) => e.target.value}
+                      onWheel={(e) => e.target.blur()}
                     />
                   )}
                 </Box>
