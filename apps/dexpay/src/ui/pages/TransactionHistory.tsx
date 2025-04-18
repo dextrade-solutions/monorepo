@@ -1,6 +1,7 @@
 import { Tab, Box } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
+import DepositList from '../components/transaction/DepositList';
 import TransactionList from '../components/transaction/TransactionList';
 import WidthdrawalList from '../components/transaction/WidthdrawalList';
 import Tabs from '../components/ui/Tabs';
@@ -22,12 +23,14 @@ export default function TransactionHistory() {
           variant="fullWidth"
         >
           <Tab label="All" value="all" />
+          <Tab label="Deposits" value="deposits" />
           <Tab label="Withdrawals" value="withdrawals" />
         </Tabs>
       </Box>
 
       <Box>
         {activeTab === 'all' && <TransactionList />}
+        {activeTab === 'deposits' && <DepositList />}
         {activeTab === 'withdrawals' && <WidthdrawalList />}
       </Box>
     </Box>
