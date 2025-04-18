@@ -1,12 +1,6 @@
 import { BUILT_IN_NETWORKS, getIsoCoin, NetworkNames } from 'dex-helpers';
 import * as allAssets from 'dex-helpers/assets-dict';
-import {
-  AdItem,
-  AssetModel,
-  CoinModel,
-  Trade,
-  TradeHistoryRow,
-} from 'dex-helpers/types';
+import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { createSearchParams } from 'react-router-dom';
 import { toBase64 } from 'uint8array-tools';
 

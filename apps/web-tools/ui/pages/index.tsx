@@ -7,6 +7,7 @@ import { NoMatchPage } from './404';
 import DappOpen from './dapp';
 import Home from './home';
 import InvoicePage from './invoice';
+import PairGroups from './pair-groups';
 import AppSettings from './settings';
 import AppSettingsGeneral from './settings/general';
 import { Plans } from './settings/plans';
@@ -30,6 +31,7 @@ import {
   INVOICE_ROUTE,
   DAPP_ROUTE,
   SWAP_WIDGET_ROUTE,
+  PAIR_GROUPS_ROUTE,
 } from '../helpers/constants/routes';
 import { useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -59,6 +61,7 @@ export default function RoutesRoot() {
         <Route path={DAPP_ROUTE} element={<DappOpen />} />
         <Route path={EXCHANGE_VIEW_ROUTE} element={<SwapView />} />
         <Route path={SWAP_WIDGET_ROUTE} element={<SwapWidget />} />
+        <Route path={PAIR_GROUPS_ROUTE} element={<PairGroups />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}

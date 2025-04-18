@@ -23,6 +23,7 @@ import {
   ReserveModel,
   ReserveRequestModel,
   UserSessionInfoModel,
+  ExchangerFilterGroupModel,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -355,6 +356,19 @@ export class Exchanger<SecurityDataType = unknown> extends HttpClient<SecurityDa
   getNetworks = (params: RequestParams = {}) =>
     this.request<IdNetworkModel[], Record<string, string>>({
       path: `/api/exchanger/networks`,
+      method: "GET",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags exchanger-controller
+   * @name GetExchangerFilterGroup
+   * @request GET:/api/exchanger/filter/group
+   */
+  getExchangerFilterGroup = (params: RequestParams = {}) =>
+    this.request<ExchangerFilterGroupModel[], Record<string, string>>({
+      path: `/api/exchanger/filter/group`,
       method: "GET",
       ...params,
     });
