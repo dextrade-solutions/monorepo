@@ -81,29 +81,34 @@ export default function P2PAds() {
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
 
-  const { data: pairGroups } = useQuery({
+  const { isLoading: isPairGroupsLoading, data: pairGroups } = useQuery({
     queryKey: ['pairGroups'],
     queryFn: () => exchangerService.getExchangerFilterGroup(),
     enabled: !hasQueryParams,
   });
 
-  const { isFetching, isLoading, fetchNextPage, data, hasNextPage } =
-    useInfiniteQuery<AdItem[]>({
-      queryKey: ['p2pAds', filterModel],
-      queryFn: ({ pageParam }) =>
-        P2PService.filterAds({ ...filterModel, page: pageParam }).then(
-          (response) => response.data,
-        ),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < PER_PAGE_SIZE) {
-          return null;
-        }
-        return lastPage.length ? allPages.length + 1 : null;
-      },
-      refetchInterval: 10 * SECOND,
-      enabled: hasQueryParams,
-    });
+  const {
+    isFetching,
+    isLoading: isAdsLoading,
+    fetchNextPage,
+    data,
+    hasNextPage,
+  } = useInfiniteQuery<AdItem[]>({
+    queryKey: ['p2pAds', filterModel],
+    queryFn: ({ pageParam }) =>
+      P2PService.filterAds({ ...filterModel, page: pageParam }).then(
+        (response) => response.data,
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < PER_PAGE_SIZE) {
+        return null;
+      }
+      return lastPage.length ? allPages.length + 1 : null;
+    },
+    refetchInterval: 10 * SECOND,
+    enabled: hasQueryParams,
+  });
 
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
@@ -122,7 +127,7 @@ export default function P2PAds() {
   };
 
   const renderList = flatMap(data?.pages || []);
-
+  const isLoading = isPairGroupsLoading || isAdsLoading;
   const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
 
   return (
@@ -226,25 +231,23 @@ export default function P2PAds() {
           </Box>
         )}
 
-        {hasQueryParams && (
-          <InView
-            onChange={(inView) => {
-              if (inView && hasNextPage) {
-                fetchNextPage();
-              }
-            }}
-          >
-            {isLoading || (!isLoading && hasNextPage) ? (
-              [...Array(3)].map((_, idx) => (
-                <Box key={idx} marginTop={1} marginBottom={1}>
-                  <AdPreviewSkeleton />
-                </Box>
-              ))
-            ) : (
-              <Box padding={4}></Box>
-            )}
-          </InView>
-        )}
+        <InView
+          onChange={(inView) => {
+            if (inView && hasNextPage && hasQueryParams) {
+              fetchNextPage();
+            }
+          }}
+        >
+          {isLoading || (!isLoading && hasNextPage) ? (
+            [...Array(3)].map((_, idx) => (
+              <Box key={idx} marginTop={1} marginBottom={1}>
+                <AdPreviewSkeleton />
+              </Box>
+            ))
+          ) : (
+            <Box padding={4}></Box>
+          )}
+        </InView>
       </Box>
     </Box>
   );
