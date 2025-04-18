@@ -20,6 +20,7 @@ import Router from './router';
 import './css/index.scss';
 
 const updateSW = registerSW({
+  swUrl: `/sw.js?v=${__APP_VERSION__}`,
   onNeedRefresh() {
     if (confirm('A new version is available. Reload to update?')) {
       updateSW(true);
