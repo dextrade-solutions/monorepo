@@ -1323,3 +1323,13 @@ export interface CoinPairsAggregatorsModel {
   aggregators?: CoinPairAggregatorModel[];
   lowestPrice?: number;
 }
+
+export interface ExchangerFilterGroupModel {
+  fromTicker?: string;
+  toTicker?: string;
+  total?: number;
+  officialMerchantCount?: number;
+  minTradeAmount?: number;
+  maxTradeAmount?: number;
+  maxReserve?: number;
+}

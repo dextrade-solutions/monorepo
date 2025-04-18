@@ -31,7 +31,7 @@ export const getIsoCoin = (coin: CoinModel) => {
       iso = `BNB_${iso}`; // exception only of bnb network
     }
   } else if (isFiatCoin(coin)) {
-    iso = `${coin.ticker}_FIAT`;
+    iso = `${coin.ticker}`;
   } else {
     iso = `${coin.ticker}_${BUILT_IN_NETWORKS[coin.networkName].iso}`;
   }

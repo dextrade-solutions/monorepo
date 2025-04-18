@@ -11,3 +11,4 @@ export const PLANS_ROUTE = '/settings/plans';
 export const SETTINGS_GENERAL_ROUTE = '/settings/general';
 export const PAYMENT_METHODS_ROUTE = '/settings/payment-methods';
 export const INVOICE_ROUTE = '/invoice';
+export const PAIR_GROUPS_ROUTE = '/pair-groups';

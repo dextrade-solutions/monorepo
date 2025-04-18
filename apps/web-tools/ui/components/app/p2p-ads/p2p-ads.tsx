@@ -1,7 +1,8 @@
 import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
+import { exchangerService } from 'dex-services';
 import {
   AdPreview,
   AdPreviewSkeleton,
@@ -26,6 +27,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useQueryAds } from '../../../hooks/useQueryAds';
+import { PairGroupCard } from '../pair-group-card/pair-group-card';
 
 const PER_PAGE_SIZE = 8;
 
@@ -38,13 +40,15 @@ export default function P2PAds() {
   const { fromToken, toToken, providerName, setProviderName } = useQueryAds();
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
 
+  const hasQueryParams = Boolean(fromToken || toToken || providerName);
+
   const [sortBy, setSortBy] = useState(SortTypes.byPrice);
   const [sortDesc, setSortDesc] = useState(false);
 
   const toggleSortPicker = () => {
     showModal({
       name: 'ITEM_PICKER',
-      title: t('Sort by'), // Changed here
+      title: t('Sort by'),
       value: sortBy,
       options: Object.values(SortTypes).map((value) => ({
         text: t(value),
@@ -64,7 +68,7 @@ export default function P2PAds() {
     () => ({
       notSupportedCoins: [],
       amountInCoin1:
-        fromTokenInputValue === '' ? undefined : fromTokenInputValue,
+        fromTokenInputValue === '' ? undefined : Number(fromTokenInputValue),
       fromNetworkName: fromToken?.network,
       fromTicker: fromToken?.symbol,
       orderBy: sortBy,
@@ -76,22 +80,35 @@ export default function P2PAds() {
     }),
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
-  const { isFetching, isLoading, fetchNextPage, data, hasNextPage } =
-    useInfiniteQuery<AdItem[]>({
-      queryKey: ['p2pAds', filterModel],
-      queryFn: ({ pageParam }) =>
-        P2PService.filterAds({ ...filterModel, page: pageParam }).then(
-          (response) => response.data,
-        ),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length < PER_PAGE_SIZE) {
-          return null;
-        }
-        return lastPage.length ? allPages.length + 1 : null;
-      },
-      refetchInterval: 10 * SECOND,
-    });
+
+  const { isLoading: isPairGroupsLoading, data: pairGroups } = useQuery({
+    queryKey: ['pairGroups'],
+    queryFn: () => exchangerService.getExchangerFilterGroup(),
+    enabled: !hasQueryParams,
+  });
+
+  const {
+    isFetching,
+    isLoading: isAdsLoading,
+    fetchNextPage,
+    data,
+    hasNextPage,
+  } = useInfiniteQuery<AdItem[]>({
+    queryKey: ['p2pAds', filterModel],
+    queryFn: ({ pageParam }) =>
+      P2PService.filterAds({ ...filterModel, page: pageParam }).then(
+        (response) => response.data,
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < PER_PAGE_SIZE) {
+        return null;
+      }
+      return lastPage.length ? allPages.length + 1 : null;
+    },
+    refetchInterval: 10 * SECOND,
+    enabled: hasQueryParams,
+  });
 
   const handleAdPreviewClick = (ad: AdItem) => {
     navigate({
@@ -104,8 +121,13 @@ export default function P2PAds() {
       }),
     });
   };
-  const renderList = flatMap(data?.pages || []);
 
+  const handlePairGroupClick = (fromTicker: string, toTicker: string) => {
+    navigate(`/?fromToken=${fromTicker}&toToken=${toTicker}`);
+  };
+
+  const renderList = flatMap(data?.pages || []);
+  const isLoading = isPairGroupsLoading || isAdsLoading;
   const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
 
   return (
@@ -123,7 +145,7 @@ export default function P2PAds() {
           data-testid="p2p-ads__search-by-merchant"
           className="flex-grow"
           size="small"
-          placeholder={t('Search')} // Changed here
+          placeholder={t('Search')}
           fullWidth
           variant="standard"
           InputProps={{
@@ -166,23 +188,52 @@ export default function P2PAds() {
             {t('There are no ads with the selected coin(s).')}
           </Alert>
         )}
-        <TransitionGroup>
-          {renderList.map((i) => (
-            <Fade key={i.id}>
-              <Box data-testid={i.id} marginTop={1} marginBottom={1}>
-                <AdPreview
-                  ad={i}
-                  fromTokenAmount={fromTokenInputValue}
-                  onClick={() => handleAdPreviewClick(i)}
-                />
-              </Box>
-            </Fade>
-          ))}
-        </TransitionGroup>
+        {hasQueryParams ? (
+          <TransitionGroup>
+            {renderList.map((i) => (
+              <Fade key={i.id}>
+                <Box data-testid={i.id} marginTop={1} marginBottom={1}>
+                  <AdPreview
+                    ad={i}
+                    fromTokenAmount={Number(fromTokenInputValue)}
+                    onClick={() => handleAdPreviewClick(i)}
+                  />
+                </Box>
+              </Fade>
+            ))}
+          </TransitionGroup>
+        ) : (
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+            gap={2}
+          >
+            {pairGroups?.data.map((group) => (
+              <PairGroupCard
+                key={`${group.fromTicker}-${group.toTicker}`}
+                group={{
+                  fromTicker: group.fromTicker || '',
+                  toTicker: group.toTicker || '',
+                  total: group.total || 0,
+                  officialMerchantCount: group.officialMerchantCount || 0,
+                  minTradeAmount: group.minTradeAmount || 0,
+                  maxTradeAmount: group.maxTradeAmount || 0,
+                  maxReserve: group.maxReserve || 0,
+                }}
+                onClick={() =>
+                  handlePairGroupClick(
+                    group.fromTicker || '',
+                    group.toTicker || '',
+                  )
+                }
+              />
+            ))}
+          </Box>
+        )}
 
         <InView
           onChange={(inView) => {
-            if (inView && hasNextPage) {
+            if (inView && hasNextPage && hasQueryParams) {
               fetchNextPage();
             }
           }}

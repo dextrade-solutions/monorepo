@@ -9,7 +9,27 @@ import {
   NetworkNames,
 } from '../src/constants/dextrade/networks';
 
-const REGISTRIES = [
+interface Token {
+  chainId: number | null;
+  contract: string | null;
+  name: string;
+  decimals: number | null;
+  symbol: string;
+  uid: string;
+  network: string | null;
+  standard: string | null;
+  iso: string;
+  isFiat: boolean;
+  isNative: boolean;
+  weight: number;
+}
+
+interface Registry {
+  filename: string;
+  serializer: (filename: string) => Token[];
+}
+
+const REGISTRIES: Registry[] = [
   { filename: 'fiats', serializer: transformFiats },
   { filename: 'tokens-custom', serializer: transformTokens },
   { filename: 'tokens', serializer: transformTokens },
@@ -17,6 +37,12 @@ const REGISTRIES = [
     filename: 'natives',
     serializer: () => {
       return Object.entries(BUILT_IN_NETWORKS).map(([network, netConfig]) => {
+        const isMajorNetwork = [
+          NetworkNames.bitcoin,
+          NetworkNames.ethereum,
+          NetworkNames.binance,
+        ].includes(network as NetworkNames);
+
         return {
           chainId: netConfig.id,
           contract: null,
@@ -27,25 +53,23 @@ const REGISTRIES = [
           network,
           isFiat: false,
           isNative: true,
-          weight: [
-            NetworkNames.bitcoin,
-            NetworkNames.ethereum,
-            NetworkNames.binance,
-          ].includes(network)
-            ? 3
-            : 1,
+          weight: isMajorNetwork ? 3 : 1,
+          standard: null,
+          iso: network === NetworkNames.binance 
+            ? `BNB_${netConfig.iso}`
+            : netConfig.iso,
         };
-      }, []);
+      });
     },
   },
 ];
 
-function transformTokens(filename: string) {
+function transformTokens(filename: string): Token[] {
   const assets = require(`./registries/${filename}.json`);
-  return assets.reduce((acc, token) => {
+  return assets.reduce((acc: Token[], token) => {
     const { platforms } = token;
     const tokens = platforms.reduce(
-      (platformsAcc, { address, decimals, type }) => {
+      (platformsAcc: Token[], { address, decimals, type }) => {
         const networkInfo = NETWORK_INFO_BY_TOKEN_TYPE[type.toUpperCase()];
         if (!networkInfo) {
           return platformsAcc;
@@ -64,16 +88,17 @@ function transformTokens(filename: string) {
             isFiat: false,
             isNative: false,
             weight: ['usdt'].includes(token.code) ? 2 : 1,
+            iso: `${token.code.toUpperCase()}_${BUILT_IN_NETWORKS[networkInfo.network].iso}`,
           },
         ];
       },
-      [] as any[],
+      [],
     );
     return [...acc, ...tokens];
-  }, [] as any[]);
+  }, []);
 }
 
-function transformFiats(filename: string) {
+function transformFiats(filename: string): Token[] {
   const assets = require(`./registries/${filename}.json`);
   return assets.map((fiatTicker: string) => ({
     chainId: null,
@@ -87,6 +112,7 @@ function transformFiats(filename: string) {
     isFiat: true,
     isNative: false,
     weight: 0,
+    iso: `${fiatTicker.toUpperCase()}`,
   }));
 }
 
@@ -97,41 +123,54 @@ const serializeTokensPlugin = () => ({
       return registry.serializer(registry.filename);
     });
     const assetList = _.flatMap(result)
-      .map((asset) => {
-        let iso;
-        if (asset.isNative) {
-          iso = `${BUILT_IN_NETWORKS[asset.network].iso}`;
-          if (asset.network === NetworkNames.binance) {
-            iso = `BNB_${iso}`; // exception only of bnb network
-          }
-        } else if (asset.isFiat) {
-          iso = `${asset.symbol}_FIAT`;
-        } else {
-          iso = `${asset.symbol}_${BUILT_IN_NETWORKS[asset.network].iso}`;
-        }
-        return { ...asset, iso };
-      })
       .sort((a, b) => a.weight - b.weight)
       .reverse();
 
-    assetList.push({
+    const createAdditionalToken = (name: string, symbol: string, uid: string): Token => ({
       chainId: null,
       contract: null,
-      name: 'Bitcoin Lightning',
-      symbol: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.symbol,
-      decimals: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.decimals,
-      uid: BUILT_IN_NETWORKS[NetworkNames.bitcoin].uid,
-      network: NetworkNames.bitcoin,
-      standard: 'LIGHTNING',
-      iso: 'BTC_LIGHTNING',
+      name,
+      symbol,
+      decimals: null,
+      uid,
+      network: null,
+      standard: null,
+      iso: symbol,
       isFiat: false,
-      isNative: true,
+      isNative: false,
+      weight: 1,
     });
 
-    fsPromises.writeFile(`./assets-list.json`, JSON.stringify(assetList));
+    const additionalTokens: Token[] = [
+      {
+        chainId: null,
+        contract: null,
+        name: 'Bitcoin Lightning',
+        symbol: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.symbol,
+        decimals: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.decimals,
+        uid: BUILT_IN_NETWORKS[NetworkNames.bitcoin].uid,
+        network: NetworkNames.bitcoin,
+        standard: 'LIGHTNING',
+        iso: 'BTC_LIGHTNING',
+        isFiat: false,
+        isNative: true,
+        weight: 3,
+      },
+      createAdditionalToken('Tether', 'USDT', 'tether'),
+      createAdditionalToken('USD Coin', 'USDC', 'usd-coin'),
+      createAdditionalToken('SOAR', 'SOAR', 'soarchain'),
+      createAdditionalToken('BNB Binance Coin', 'BNB', 'binancecoin'),
+      createAdditionalToken('PHIL', 'PHIL', 'philtoken'),
+      createAdditionalToken('MEW', 'MEW', 'cat-in-a-dogs-world'),
+      createAdditionalToken('SQR', 'SQR', 'sqr'),
+    ];
+
+    const finalAssetList = [...assetList, ...additionalTokens];
+
+    fsPromises.writeFile(`./assets-list.json`, JSON.stringify(finalAssetList));
     fsPromises.writeFile(
       `./assets-dict.json`,
-      JSON.stringify(_.keyBy(assetList, 'iso')),
+      JSON.stringify(_.keyBy(finalAssetList, 'iso')),
     );
   },
 });
