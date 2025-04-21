@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Alert,
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { AssetModel } from 'dex-helpers/types';
@@ -35,6 +36,8 @@ import {
   TextFieldWithValidation,
   VNumericTextField,
 } from '../fields';
+import AdItem from './AdItem';
+import { useAdvertActions } from './useAdvertActions';
 
 // Define the shape of the price source provider
 interface PriceSourceProvider {
@@ -82,7 +85,12 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = useAuth();
   const projectId = user?.project?.id!;
   const queryClient = useQueryClient();
+  const { handleDelete, toggleActive } = useAdvertActions();
   // const [rate, setRate] = useState<number>();
+  const { data: existingAds, refetch } = useQuery(() =>
+    DexTrade.advertsList({ projectId }, { no_pagination: 1 }),
+  );
+
   const advCreate = useMutation(DexTrade.advertCreateFromPair, {
     onSuccess,
     onMutate: () => {
@@ -123,6 +131,12 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   });
   const isBothCoinsSelected = Boolean(form.values.coin1 && form.values.coin2);
   const pairIso = `${form.values.coin1?.currency.iso}:${form.values.coin2?.currency.iso}`;
+
+  // Check if pair already exists
+  const existingPair = existingAds?.find((ad) => {
+    const adPairIso = `${ad.details.to.ticker}:${ad.details.from.ticker}`;
+    return adPairIso === pairIso;
+  });
 
   const rateQuery = useQuery(
     Rates.getRate,
@@ -314,7 +328,45 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
           </Typography>
         </Box>
       </Paper>
-      {form.values.coin1 && form.values.coin2 && (
+      {isBothCoinsSelected && existingPair && (
+        <Box sx={{ mb: 2 }}>
+          <Alert severity="warning" sx={{ my: 2 }}>
+            A pair with these coins already exists:
+          </Alert>
+          <AdItem
+            reversed
+            advert={existingPair}
+            fromCoin={existingPair.details.from}
+            toCoin={existingPair.details.to}
+            price={existingPair.details.coinPair.price}
+            minimumExchangeAmountCoin1={
+              existingPair.details.minimumExchangeAmountCoin1
+            }
+            maximumExchangeAmountCoin1={String(
+              existingPair.details.maximumExchangeAmountCoin1,
+            )}
+            profitCommission={existingPair.details.priceAdjustment}
+            priceSource={
+              existingPair.pair?.rate_source_options?.serviceName || '-'
+            }
+            exchangerName={existingPair.details.name}
+            onDelete={async () => {
+              await handleDelete(existingPair);
+              refetch();
+            }}
+            toggleActive={async () => {
+              await toggleActive(existingPair);
+              refetch();
+            }}
+            active={existingPair.details.active}
+            transactionCount={existingPair.details.statistic.transactionCount}
+            earnings={{ amount: 0, currency: '', usdEquivalent: 0 }}
+            exchangeCommission={0}
+            marketPrice={existingPair.details.coinPair.originalPrice}
+          />
+        </Box>
+      )}
+      {isBothCoinsSelected && !existingPair && (
         <>
           <Box
             display="flex"
@@ -411,142 +463,144 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
               // </Box>
             )}
           </Box>
-        </>
-      )}
-      {form.values.coin1 && form.values.coin2 && (
-        <>
-          <Box display="flex" mt={4} alignItems="center">
-            <CircleNumber number={3} color="tertiary.main" />
-            <Typography ml={2} fontWeight="bold" color="text.tertiary">
-              Trade configuration
-            </Typography>
-          </Box>
-          <VNumericTextField
-            margin="normal"
-            fullWidth
-            label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
-            name="minimumExchangeAmountCoin1"
-            form={form}
-          />
-          <VNumericTextField
-            margin="normal"
-            fullWidth
-            label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
-            form={form}
-            name="maximumExchangeAmountCoin1"
-          />
+          <>
+            <Box display="flex" mt={4} alignItems="center">
+              <CircleNumber number={3} color="tertiary.main" />
+              <Typography ml={2} fontWeight="bold" color="text.tertiary">
+                Trade configuration
+              </Typography>
+            </Box>
+            <VNumericTextField
+              margin="normal"
+              fullWidth
+              label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
+              name="minimumExchangeAmountCoin1"
+              form={form}
+            />
+            <VNumericTextField
+              margin="normal"
+              fullWidth
+              label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
+              form={form}
+              name="maximumExchangeAmountCoin1"
+            />
 
-          <Accordion
-            disableGutters
-            elevation={0}
-            defaultExpanded
-            sx={{
-              my: 2,
-              color: 'text.tertiary',
-              borderColor: 'tertiary.light',
-              borderStyle: 'solid',
-              borderWidth: 1,
-              borderRadius: 1,
-              '&:before': {
-                display: 'none',
-              },
-            }}
-            data-testid="invoice-create-options-accordion"
-          >
-            <AccordionSummary
-              expandIcon={<Icon size="sm" name="chevron-down" />}
+            <Accordion
+              disableGutters
+              elevation={0}
+              defaultExpanded
+              sx={{
+                my: 2,
+                color: 'text.tertiary',
+                borderColor: 'tertiary.light',
+                borderStyle: 'solid',
+                borderWidth: 1,
+                borderRadius: 1,
+                '&:before': {
+                  display: 'none',
+                },
+              }}
+              data-testid="invoice-create-options-accordion"
             >
-              <Typography mr={1}>Options</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TextFieldWithValidation
-                margin="normal"
-                fullWidth
-                multiline
-                rows={4}
-                label="Exchangers Policy"
-                name="exchangersPolicy"
-                form={form}
-                onChange={(e) => e.target.value}
-              />
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  Transaction Fee
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <input
-                      type="radio"
-                      id="transactionFeeType-auto"
-                      name="transactionFeeType"
-                      value="auto"
-                      checked={form.values.transactionFeeType === 'auto'}
-                      onChange={() => {
-                        form.setValue('transactionFeeType', 'auto');
-                        form.setValue('transactionFee', ''); // will be null via advCreate.mutateAsync
-                      }}
-                    />
-                    <label htmlFor="transactionFeeType-auto">
-                      Auto (network fee)
-                    </label>
+              <AccordionSummary
+                expandIcon={<Icon size="sm" name="chevron-down" />}
+              >
+                <Typography mr={1}>Options</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TextFieldWithValidation
+                  margin="normal"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label="Exchangers Policy"
+                  name="exchangersPolicy"
+                  form={form}
+                  onChange={(e) => e.target.value}
+                />
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Transaction Fee
+                  </Typography>
+                  <Box
+                    sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <input
+                        type="radio"
+                        id="transactionFeeType-auto"
+                        name="transactionFeeType"
+                        value="auto"
+                        checked={form.values.transactionFeeType === 'auto'}
+                        onChange={() => {
+                          form.setValue('transactionFeeType', 'auto');
+                          form.setValue('transactionFee', ''); // will be null via advCreate.mutateAsync
+                        }}
+                      />
+                      <label htmlFor="transactionFeeType-auto">
+                        Auto (network fee)
+                      </label>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <input
+                        type="radio"
+                        id="transactionFeeType-youPay"
+                        name="transactionFeeType"
+                        value="youPay"
+                        checked={form.values.transactionFeeType === 'youPay'}
+                        onChange={() => {
+                          form.setValue('transactionFeeType', 'youPay');
+                          form.setValue('transactionFee', '0');
+                        }}
+                      />
+                      <label htmlFor="transactionFeeType-youPay">
+                        You pay network fee for clients
+                      </label>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <input
+                        type="radio"
+                        id="transactionFeeType-fixed"
+                        name="transactionFeeType"
+                        value="fixed"
+                        checked={form.values.transactionFeeType === 'fixed'}
+                        onChange={() => {
+                          form.setValue('transactionFeeType', 'fixed');
+                          form.setValue('transactionFee', '');
+                        }}
+                      />
+                      <label htmlFor="transactionFeeType-fixed">
+                        Fixed fee
+                      </label>
+                    </Box>
+                    {form.values.transactionFeeType === 'fixed' && (
+                      <TextFieldWithValidation
+                        fullWidth
+                        type="number"
+                        form={form}
+                        name="transactionFee"
+                        label={`Enter your fixed fee (${form.values.coin2?.symbol})`}
+                        onChange={(e) => e.target.value}
+                        onWheel={(e) => e.target.blur()}
+                      />
+                    )}
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <input
-                      type="radio"
-                      id="transactionFeeType-youPay"
-                      name="transactionFeeType"
-                      value="youPay"
-                      checked={form.values.transactionFeeType === 'youPay'}
-                      onChange={() => {
-                        form.setValue('transactionFeeType', 'youPay');
-                        form.setValue('transactionFee', '0');
-                      }}
-                    />
-                    <label htmlFor="transactionFeeType-youPay">
-                      You pay network fee for clients
-                    </label>
-                  </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <input
-                      type="radio"
-                      id="transactionFeeType-fixed"
-                      name="transactionFeeType"
-                      value="fixed"
-                      checked={form.values.transactionFeeType === 'fixed'}
-                      onChange={() => {
-                        form.setValue('transactionFeeType', 'fixed');
-                        form.setValue('transactionFee', '');
-                      }}
-                    />
-                    <label htmlFor="transactionFeeType-fixed">Fixed fee</label>
-                  </Box>
-                  {form.values.transactionFeeType === 'fixed' && (
-                    <TextFieldWithValidation
-                      fullWidth
-                      type="number"
-                      form={form}
-                      name="transactionFee"
-                      label={`Enter your fixed fee (${form.values.coin2?.symbol})`}
-                      onChange={(e) => e.target.value}
-                      onWheel={(e) => e.target.blur()}
-                    />
-                  )}
                 </Box>
-              </Box>
-            </AccordionDetails>
-          </Accordion>
+              </AccordionDetails>
+            </Accordion>
 
-          <Button
-            type="submit"
-            fullWidth
-            gradient
-            color="primary"
-            disabled={Boolean(form.primaryError)}
-            sx={{ mt: 3, mb: 2 }}
-            data-testid="btn-create-advert"
-          >
-            {form.primaryError || 'Create Advert'}
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              gradient
+              color="primary"
+              disabled={Boolean(form.primaryError)}
+              sx={{ mt: 3, mb: 2 }}
+              data-testid="btn-create-advert"
+            >
+              {form.primaryError || 'Create Advert'}
+            </Button>
+          </>
         </>
       )}
     </Box>

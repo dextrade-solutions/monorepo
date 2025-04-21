@@ -1,5 +1,4 @@
 import React from 'react';
-import { useParams } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
 
 import EditAdvertForm from '../components/p2p/EditAdvertForm';

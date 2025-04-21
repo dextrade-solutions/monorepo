@@ -237,6 +237,7 @@ const AdItem: React.FC<AdItemProps> = ({
     setExpanded((prev) => ({ ...prev, [key]: !expanded[key] }));
   };
   const queryString = `?fromToken=${fromCoin.ticker}&toToken=${toCoin.ticker}&merchant=${exchangerName}`;
+
   const adLink = `${DEXTRADE_P2P_LINK}/${queryString}`;
 
   // Add state for modal
