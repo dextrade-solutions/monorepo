@@ -24,7 +24,7 @@ import {
   AssetPriceOutput,
 } from 'dex-ui';
 import { orderBy } from 'lodash';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
 import { useCurrencies } from '../../hooks/use-currencies';
@@ -89,7 +89,7 @@ const EditAdvertForm = ({
   const { user } = useAuth();
   const projectId = user?.project?.id!;
   const queryClient = useQueryClient();
-
+  const isSwapped = useRef(false);
   const { data, isLoading } = useQuery(() =>
     DexTrade.advertsList({ projectId }, { no_pagination: 1 }),
   );
@@ -97,6 +97,9 @@ const EditAdvertForm = ({
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
   const renderList = (data?.flatMap((i) => i) || []).filter(
     (ad) => ad.details && ad.details.direction === 1,
+  );
+  const renderListReversed = (data?.flatMap((i) => i) || []).filter(
+    (ad) => ad.details && ad.details.direction === 2,
   );
 
   // Get advert from existing ads list query cache
@@ -106,6 +109,13 @@ const EditAdvertForm = ({
         return ad.dextrade_id === advertId;
       }),
     [renderList, advertId],
+  );
+  const advertReversed = useMemo(
+    () =>
+      renderListReversed.find((ad) => {
+        return ad.dextrade_id === advertId;
+      }),
+    [renderListReversed, advertId],
   );
 
   const advEdit = useMutation(DexTrade.advertUpdate, {
@@ -128,6 +138,14 @@ const EditAdvertForm = ({
     },
   });
   const pairsUpdate = useMutation(Pairs.update);
+
+  useEffect(() => {
+    console.log('advert', advert);
+  }, [advert]);
+
+  useEffect(() => {
+    console.log('advertReversed', advertReversed);
+  }, [advertReversed]);
 
   const form = useForm<EditAdvertFormValues>({
     values: {
@@ -190,7 +208,7 @@ const EditAdvertForm = ({
       form.setValue(
         'transactionFeeType',
         advert.details.transactionFee === null ||
-        advert.details.transactionFee === undefined
+          advert.details.transactionFee === undefined
           ? 'auto'
           : advert.details.transactionFee === '0' ||
               advert.details.transactionFee === 0
@@ -259,8 +277,7 @@ const EditAdvertForm = ({
   );
 
   const handleSwap = () => {
-    form.setValue('coin1', form.values.coin2);
-    form.setValue('coin2', form.values.coin1);
+    // TODO: Implement swap
   };
 
   function getIsoPriceSourceCoin({
@@ -347,10 +364,10 @@ const EditAdvertForm = ({
         exchangersPolicy: values.exchangersPolicy.trim(),
         settingsMain: {
           // minimumExchangeAmountCoin1?: number;
-          minimumExchangeAmountCoin1:
-            String(values.minimumExchangeAmountCoin1) || '0',
+          minimumExchangeAmountCoin1: values.minimumExchangeAmountCoin1
+            ? String(values.minimumExchangeAmountCoin1)
+            : '0',
 
-          // maximumExchangeAmountCoin1?: number;
           maximumExchangeAmountCoin1: values.maximumExchangeAmountCoin1
             ? String(values.maximumExchangeAmountCoin1)
             : undefined,
@@ -655,6 +672,7 @@ const EditAdvertForm = ({
                       name="transactionFee"
                       label={`Enter your fixed fee (${form.values.coin2?.symbol})`}
                       onChange={(e) => e.target.value}
+                      onWheel={(e) => e.target.blur()}
                     />
                   )}
                 </Box>
