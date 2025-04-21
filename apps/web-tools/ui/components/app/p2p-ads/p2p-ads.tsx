@@ -13,18 +13,14 @@ import {
 import { flatMap } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { InView } from 'react-intersection-observer';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 
 import { SortTypes } from './constants';
 import { getAdPathname } from '../../../../app/helpers/p2p';
 import P2PService from '../../../../app/services/p2p-service';
-import {
-  getFromTokenInputValue,
-  setFromToken,
-  setToToken,
-} from '../../../ducks/swaps/swaps';
+import { getFromTokenInputValue } from '../../../ducks/swaps/swaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useQueryAds } from '../../../hooks/useQueryAds';
 import { PairGroupCard } from '../pair-group-card/pair-group-card';
@@ -34,10 +30,10 @@ const PER_PAGE_SIZE = 8;
 export default function P2PAds() {
   const { showModal } = useGlobalModalContext();
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { fromToken, toToken, providerName, setProviderName } = useQueryAds();
+  const { fromToken, toToken, providerName } = useQueryAds();
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
 
   const hasQueryParams = Boolean(fromToken || toToken || providerName);
@@ -59,9 +55,7 @@ export default function P2PAds() {
   };
 
   const cleanFilter = () => {
-    setProviderName('');
-    dispatch(setFromToken(null));
-    dispatch(setToToken(null));
+    navigate('/');
   };
 
   const filterModel = useMemo(
@@ -126,6 +120,16 @@ export default function P2PAds() {
     navigate(`/?fromToken=${fromTicker}&toToken=${toTicker}`);
   };
 
+  const handleProviderNameChange = (value: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (value) {
+      newSearchParams.set('merchant', value);
+    } else {
+      newSearchParams.delete('merchant');
+    }
+    setSearchParams(newSearchParams);
+  };
+
   const renderList = flatMap(data?.pages || []);
   const isLoading = isPairGroupsLoading || isAdsLoading;
   const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
@@ -141,7 +145,7 @@ export default function P2PAds() {
         alignItems="center"
       >
         <TextField
-          value={providerName}
+          value={providerName || ''}
           data-testid="p2p-ads__search-by-merchant"
           className="flex-grow"
           size="small"
@@ -156,7 +160,7 @@ export default function P2PAds() {
               </InputAdornment>
             ),
           }}
-          onChange={(e) => setProviderName(e.target.value)}
+          onChange={(e) => handleProviderNameChange(e.target.value)}
         />
 
         {(fromToken || toToken || providerName) && (

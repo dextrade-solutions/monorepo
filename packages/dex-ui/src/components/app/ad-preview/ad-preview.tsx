@@ -50,6 +50,7 @@ const AdPreview = ({
         <CardContent>
           <Box display="flex" justifyContent="space-between" marginBottom={1}>
             <ExchangerUserPreview
+              width="100%"
               avatarUrl={getAvatarLink(ad.avatar)}
               name={ad.name}
               isActive={ad.isExchangerActive}
@@ -62,16 +63,18 @@ const AdPreview = ({
                 сompletionRate: ad.exchangeCompletionRate,
                 totalRating: ad.rating.totalRating,
               }}
+              endAdornment={
+                Boolean(Number(fromTokenAmount)) && (
+                  <Typography className="flex-grow" textAlign="right" color="success.main">
+                    ~{' '}
+                    {formatCurrency(
+                      fromTokenAmount * ad.priceInCoin2,
+                      ad.toCoin.ticker,
+                    )}
+                  </Typography>
+                )
+              }
             />
-            {Boolean(Number(fromTokenAmount)) && (
-              <Typography color="success.main">
-                ~{' '}
-                {formatCurrency(
-                  fromTokenAmount * ad.priceInCoin2,
-                  ad.toCoin.ticker,
-                )}
-              </Typography>
-            )}
           </Box>
           {!hideTickers && (
             <>

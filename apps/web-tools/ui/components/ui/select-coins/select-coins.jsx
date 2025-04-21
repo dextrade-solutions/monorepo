@@ -1,8 +1,8 @@
 import assetDict from 'dex-helpers/assets-dict';
 import { isEqual } from 'lodash';
-import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 
 import { SelectCoinsItem } from './select-coins-item';
 import { SelectCoinsSwap } from './select-coins-swap';
@@ -11,23 +11,14 @@ import {
   getToToken,
   setFromMaxModeOn,
   setFromTokenInputValue,
-  setFromToken,
-  setToToken,
 } from '../../../ducks/swaps/swaps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const allTokens = Object.values(assetDict);
 
-const SelectCoinsComponents = ({
-  selectedCoinFrom = null,
-  itemsCoinFrom = null,
-  onChangeFrom = null,
-  selectedCoinTo = null,
-  itemsCoinTo = null,
-  onChangeTo = null,
-  includeFiats,
-}) => {
+const SelectCoinsComponents = () => {
   const t = useI18nContext();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [checked, setChecked] = useState(false);
   const dispatch = useDispatch();
   const toToken = useSelector(getToToken, isEqual);
@@ -35,34 +26,38 @@ const SelectCoinsComponents = ({
 
   const toggle = useCallback(() => setChecked(!checked), [checked]);
 
+  const updateToken = useCallback((token, param) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (token) {
+      newSearchParams.set(param, token.iso);
+    } else {
+      newSearchParams.delete(param);
+    }
+    setSearchParams(newSearchParams);
+  }, [searchParams, setSearchParams]);
+
   const setCoinFrom = useCallback(
     (token) => {
-      if (onChangeFrom) {
-        onChangeFrom(token);
-        return;
-      }
-      dispatch(setFromToken(token));
+      updateToken(token, 'fromToken');
       dispatch(setFromTokenInputValue(0));
       dispatch(setFromMaxModeOn(false));
     },
-    [dispatch, onChangeFrom],
+    [dispatch, updateToken],
   );
 
   const setCoinTo = useCallback(
-    (token) => {
-      if (onChangeTo) {
-        onChangeTo(token);
-        return;
-      }
-      dispatch(setToToken(token));
-    },
-    [dispatch, onChangeTo],
+    (token) => updateToken(token, 'toToken'),
+    [updateToken],
   );
 
   const onSwapCoin = useCallback(() => {
-    dispatch(setFromToken(toToken));
-    dispatch(setToToken(fromToken));
-  }, [dispatch, fromToken, toToken]);
+    const newSearchParams = new URLSearchParams(searchParams);
+    if (toToken) newSearchParams.set('fromToken', toToken.iso);
+    else newSearchParams.delete('fromToken');
+    if (fromToken) newSearchParams.set('toToken', fromToken.iso);
+    else newSearchParams.delete('toToken');
+    setSearchParams(newSearchParams);
+  }, [fromToken, toToken, searchParams, setSearchParams]);
 
   return (
     <div className="select-coins" onClick={toggle}>
@@ -90,16 +85,6 @@ const SelectCoinsComponents = ({
       />
     </div>
   );
-};
-
-SelectCoinsComponents.propTypes = {
-  selectedCoinFrom: PropTypes.object,
-  itemsCoinFrom: PropTypes.array,
-  onChangeFrom: PropTypes.func,
-  selectedCoinTo: PropTypes.object,
-  itemsCoinTo: PropTypes.array,
-  onChangeTo: PropTypes.func,
-  includeFiats: PropTypes.bool,
 };
 
 export default SelectCoinsComponents;

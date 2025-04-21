@@ -1,5 +1,6 @@
 import { BoxProps, Box, Tooltip, Typography } from '@mui/material';
 import { relativeFromCurrentDate } from 'dex-helpers';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserAvatar from '../../ui/user-avatar';
@@ -16,6 +17,7 @@ export default function ExchangerUserPreview({
   isKycVerified,
   lastActive,
   rating,
+  endAdornment,
   ...boxProps
 }: {
   name: string;
@@ -25,6 +27,7 @@ export default function ExchangerUserPreview({
   lastActive?: number;
   isSelfAd?: boolean;
   isKycVerified?: boolean;
+  endAdornment?: ReactNode;
   rating: {
     exchangeCount: number;
     сompletionRate: number;
@@ -34,14 +37,14 @@ export default function ExchangerUserPreview({
   const { t } = useTranslation();
   return (
     <Box {...boxProps}>
-      <Box paddingRight={2} display="flex" alignItems="center">
+      <Box display="flex" alignItems="center">
         <UserAvatar
           name={name}
           icon={avatarUrl}
           isOfficial={isOfficial}
           online={isActive}
         />
-        <Box marginLeft={2} textAlign="left">
+        <Box marginLeft={2} width="100%" textAlign="left">
           <Box display="flex" alignItems="center">
             <Typography marginRight={1} fontWeight="bold">
               {name}
@@ -61,6 +64,7 @@ export default function ExchangerUserPreview({
                 </Box>
               </Tooltip>
             )}
+            {endAdornment}
           </Box>
           <Box display="flex" alignItems="center">
             {isSelfAd && (

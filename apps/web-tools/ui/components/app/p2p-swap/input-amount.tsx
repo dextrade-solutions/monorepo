@@ -1,6 +1,5 @@
-import { Box, InputAdornment, TextField } from '@mui/material';
-import { ButtonIcon } from 'dex-ui';
-import { NumericFormat } from 'react-number-format';
+import { Box, InputAdornment } from '@mui/material';
+import { ButtonIcon, NumericTextField } from 'dex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -26,33 +25,20 @@ export default function InputAmount() {
 
   return (
     <Box marginTop={3}>
-      <NumericFormat
+      <NumericTextField
         value={value}
         placeholder="You send amount"
         variant="standard"
         fullWidth
-        customInput={TextField}
-        decimalSeparator=","
+        clearable
         valueIsNumericString
         InputProps={{
           disableUnderline: true,
           style: {
             fontSize: 25,
           },
-          endAdornment: (
-            <InputAdornment position="end">
-              {Number(value) > 0 && (
-                <ButtonIcon
-                  iconName="close"
-                  color="secondary"
-                  size="sm"
-                  onClick={() => updateValue('')}
-                />
-              )}
-            </InputAdornment>
-          ),
         }}
-        onChange={(e) => updateValue(e.target.value.replace(',', '.'))}
+        onChange={updateValue}
       />
     </Box>
   );
