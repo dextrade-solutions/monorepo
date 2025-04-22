@@ -47,9 +47,6 @@ export const useAdvertActions = () => {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: ['ads-list'] });
       const previousAds = queryClient.getQueryData(['ads-list']);
-      if (!previousAds) {
-        return { previousAds };
-      }
       queryClient.setQueryData(['ads-list'], (oldData: any) => {
         const adToUpdate = variables[1];
         if (adToUpdate && adToUpdate.dextrade_id) {
@@ -91,7 +88,10 @@ export const useAdvertActions = () => {
         delete: () =>
           deleteAd.mutateAsync([
             { projectId },
-            { ad_id: ad.id, dextrade_id: ad.details.id },
+            {
+              // ad_id: ad.id, добавляем это если хотиим удалить оба объвления за раз
+              dextrade_id: ad.details.id,
+            },
           ]),
         toggleActive: () =>
           updateAd.mutateAsync([
@@ -115,17 +115,23 @@ export const useAdvertActions = () => {
   const handleDelete = (ad: IAdvert) => {
     return new Promise<void>((resolve, reject) => {
       showModal({
-        name: 'CONFIRM_MODAL',
-        title: (
-          <Box display="flex" alignItems="center">
-            <TrashIcon size={40} />
-            <Typography variant="h5" ml={2}>
-              Remove ad
+        title: 'Delete Advert',
+        content: (
+          <Box>
+            <Typography>
+              Are you sure you want to delete this advert?
             </Typography>
           </Box>
         ),
-        onConfirm: () => form.submit(ad, 'delete').then(resolve),
-        hideModal: () => {
+        onConfirm: async () => {
+          try {
+            await form.submit(ad, 'delete');
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        },
+        onCancel: () => {
           reject(new Error('Operation cancelled'));
         },
       });
@@ -133,20 +139,26 @@ export const useAdvertActions = () => {
   };
 
   const toggleActive = (ad: IAdvert) => {
-    const isActive = ad.details.active;
     return new Promise<void>((resolve, reject) => {
       showModal({
-        name: 'CONFIRM_MODAL',
-        title: (
-          <Box display="flex" alignItems="center">
-            {isActive ? <Pause size={40} /> : <Play size={40} />}
-            <Typography variant="h5" ml={2}>
-              {isActive ? 'Stop ad' : 'Start ad'}
+        title: ad.details.active ? 'Pause Advert' : 'Activate Advert',
+        content: (
+          <Box>
+            <Typography>
+              Are you sure you want to{' '}
+              {ad.details.active ? 'pause' : 'activate'} this advert?
             </Typography>
           </Box>
         ),
-        onConfirm: async () => form.submit(ad, 'toggleActive').then(resolve),
-        hideModal: () => {
+        onConfirm: async () => {
+          try {
+            await form.submit(ad, 'toggleActive');
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        },
+        onCancel: () => {
           reject(new Error('Operation cancelled'));
         },
       });

@@ -3,7 +3,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Divider,
   InputAdornment,
   Paper,
   Skeleton,
@@ -25,11 +24,11 @@ import {
   AssetPriceOutput,
 } from 'dex-ui';
 import { orderBy } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useAuth } from '../../hooks/use-auth';
 import { useMutation, useQuery } from '../../hooks/use-query';
-import { Pairs, DexTrade, Address, Invoice, Rates } from '../../services'; // Adjust path as needed
+import { Pairs, DexTrade, Address, Rates } from '../../services'; // Adjust path as needed
 import { Validation } from '../../validation';
 import {
   SelectCurrencyWithValidation,
@@ -134,7 +133,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   // Check if pair already exists
   const existingPair = existingAds?.find((ad) => {
-    const adPairIso = `${ad.details.to.ticker}:${ad.details.from.ticker}`;
+    const adPairIso = `${ad.details.from.ticker}:${ad.details.to.ticker}`;
     return adPairIso === pairIso;
   });
 
@@ -334,7 +333,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             A pair with these coins already exists:
           </Alert>
           <AdItem
-            reversed
             advert={existingPair}
             fromCoin={existingPair.details.from}
             toCoin={existingPair.details.to}
@@ -351,13 +349,10 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             }
             exchangerName={existingPair.details.name}
             onDelete={async () => {
-              await handleDelete(existingPair);
-              refetch();
+              handleDelete(existingPair);
+              await refetch();
             }}
-            toggleActive={async () => {
-              await toggleActive(existingPair);
-              refetch();
-            }}
+            toggleActive={() => toggleActive(existingPair)}
             active={existingPair.details.active}
             transactionCount={existingPair.details.statistic.transactionCount}
             earnings={{ amount: 0, currency: '', usdEquivalent: 0 }}
