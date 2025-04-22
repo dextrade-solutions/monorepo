@@ -349,8 +349,8 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             }
             exchangerName={existingPair.details.name}
             onDelete={async () => {
-              handleDelete(existingPair);
-              await refetch();
+              await handleDelete(existingPair);
+              refetch();
             }}
             toggleActive={() => toggleActive(existingPair)}
             active={existingPair.details.active}
