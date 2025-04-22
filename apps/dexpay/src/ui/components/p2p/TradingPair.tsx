@@ -67,7 +67,7 @@ export default function TradingPair() {
               profitCommission={ad.details.priceAdjustment}
               priceSource={ad.pair?.rate_source_options?.serviceName || '-'}
               // statusMessage={ad.comment} TODO: Add message if balance is not correct
-              exchangerName={ad.dextrade_user.username}
+              exchangerName={ad.dextrade_user?.username}
               onDelete={() => handleDelete(ad)}
               toggleActive={() => toggleActive(ad)}
               active={ad.details.active}

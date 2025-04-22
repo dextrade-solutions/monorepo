@@ -95,13 +95,7 @@ const EditAdvertForm = ({
   );
 
   // Extract the 'data' array from the response. Assume your API returns {data: [], total: number}
-  const renderList = (data?.flatMap((i) => i) || []).filter(
-    (ad) => ad.details && ad.details.direction === 1,
-  );
-  const renderListReversed = (data?.flatMap((i) => i) || []).filter(
-    (ad) => ad.details && ad.details.direction === 2,
-  );
-
+  const renderList = (data?.flatMap((i) => i) || []).filter((ad) => ad.details);
   // Get advert from existing ads list query cache
   const advert = useMemo(
     () =>
@@ -109,13 +103,6 @@ const EditAdvertForm = ({
         return ad.dextrade_id === advertId;
       }),
     [renderList, advertId],
-  );
-  const advertReversed = useMemo(
-    () =>
-      renderListReversed.find((ad) => {
-        return ad.dextrade_id === advertId;
-      }),
-    [renderListReversed, advertId],
   );
 
   const advEdit = useMutation(DexTrade.advertUpdate, {
@@ -138,14 +125,6 @@ const EditAdvertForm = ({
     },
   });
   const pairsUpdate = useMutation(Pairs.update);
-
-  useEffect(() => {
-    console.log('advert', advert);
-  }, [advert]);
-
-  useEffect(() => {
-    console.log('advertReversed', advertReversed);
-  }, [advertReversed]);
 
   const form = useForm<EditAdvertFormValues>({
     values: {
