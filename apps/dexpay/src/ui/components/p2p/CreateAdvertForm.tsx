@@ -133,7 +133,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   // Check if pair already exists
   const existingPair = existingAds?.find((ad) => {
-    const adPairIso = `${ad.details.from.ticker}:${ad.details.to.ticker}`;
+    const adPairIso = `${ad.details.to.ticker}:${ad.details.from.ticker}`;
     return adPairIso === pairIso;
   });
 
@@ -333,6 +333,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             A pair with these coins already exists:
           </Alert>
           <AdItem
+            reversed
             advert={existingPair}
             fromCoin={existingPair.details.from}
             toCoin={existingPair.details.to}
@@ -347,7 +348,7 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             priceSource={
               existingPair.pair?.rate_source_options?.serviceName || '-'
             }
-            exchangerName={existingPair.details.name}
+            exchangerName={existingPair.dextrade_user?.username}
             onDelete={async () => {
               await handleDelete(existingPair);
               refetch();
