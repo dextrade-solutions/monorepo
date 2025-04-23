@@ -5,6 +5,7 @@ import { queryClient } from 'dex-helpers/shared';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { DebugProvider } from './debug-provider';
 import { LoaderProvider } from './loader';
 import { ModalProvider } from '../components/app/modals';
 import '../i18n';
@@ -29,7 +30,9 @@ export const DexUiProvider = ({
     <ThemeProvider theme={theme}>
       <LoaderProvider>
         <QueryClientProvider client={queryClient}>
-          <ModalProvider modals={modals}>{children}</ModalProvider>
+          <DebugProvider>
+            <ModalProvider modals={modals}>{children}</ModalProvider>
+          </DebugProvider>
         </QueryClientProvider>
       </LoaderProvider>
     </ThemeProvider>

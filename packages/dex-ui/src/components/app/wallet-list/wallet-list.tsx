@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Grow, Typography } from '@mui/material';
 import { Connection, WalletConnection } from 'dex-connect';
 import { isMobileWeb } from 'dex-helpers';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import WalletListItem from './wallet-list-item';
@@ -28,6 +28,8 @@ export default function WalletList({
   const { t } = useTranslation();
   const [toInstallWallet, setToInstallWallet] = useState<Connection>();
   const { showModal } = useGlobalModalContext();
+
+
   const onDisconnect = async (item: (typeof wallets)[number]) => {
     showModal({
       name: 'CONFIRM_MODAL',
@@ -140,7 +142,7 @@ export default function WalletList({
             color="secondary"
             variant="outlined"
             onClick={() => {
-              setToInstallWallet(null);
+              setToInstallWallet(undefined);
             }}
           >
             {t('cancel')}

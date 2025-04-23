@@ -16,7 +16,6 @@ import {
   formatDate,
   formatFundsAmount,
   getBlockExplorerLink,
-  formatDuration,
 } from 'dex-helpers';
 import { Trade } from 'dex-helpers/types';
 import {
@@ -27,6 +26,7 @@ import {
   ModalProps,
   Icon,
 } from 'dex-ui';
+import { Duration } from 'luxon';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -128,22 +128,8 @@ const TradeHistoryRowModal = ({
     const endTime = sortedHistory[sortedHistory.length - 1].cdt;
     const durationMs = endTime - startTime;
 
-    const hours = Math.floor(durationMs / (1000 * 60 * 60));
-    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
-
-    const parts = [];
-    if (hours > 0) {
-      parts.push(`${hours}h`);
-    }
-    if (minutes > 0) {
-      parts.push(`${minutes}m`);
-    }
-    if (seconds > 0 || parts.length === 0) {
-      parts.push(`${seconds}s`);
-    }
-
-    return parts.join(' ');
+    const duration = Duration.fromMillis(durationMs);
+    return duration.toFormat('m:ss');
   }, [trade.statusHistory]);
 
   return (
@@ -231,7 +217,6 @@ const TradeHistoryRowModal = ({
                 : t('auto')}
             </Typography>
           </Box>
-          
         </Box>
       </Collapse>
       <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
