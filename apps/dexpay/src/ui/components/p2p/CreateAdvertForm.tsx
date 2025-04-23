@@ -37,6 +37,7 @@ import {
 } from '../fields';
 import AdItem from './AdItem';
 import { useAdvertActions } from './useAdvertActions';
+import { getIsoCoin } from 'dex-helpers';
 
 // Define the shape of the price source provider
 interface PriceSourceProvider {
@@ -130,11 +131,12 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
   });
   const isBothCoinsSelected = Boolean(form.values.coin1 && form.values.coin2);
   const pairIso = `${form.values.coin1?.currency.iso}:${form.values.coin2?.currency.iso}`;
+  const pairIsoName = `${form.values.coin1?.currency.name}:${form.values.coin2?.currency.name}`;
 
   // Check if pair already exists
   const existingPair = existingAds?.find((ad) => {
-    const adPairIso = `${ad.details.to.ticker}:${ad.details.from.ticker}`;
-    return adPairIso === pairIso;
+    const adPairIsoName = `${getIsoCoin(ad.details.to)}:${getIsoCoin(ad.details.from)}`;
+    return pairIsoName === adPairIsoName;
   });
 
   const rateQuery = useQuery(
@@ -441,22 +443,6 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
                   ),
                 }}
               />
-              // <Box sx={{ mt: 2 }}>
-              //   <Typography>
-              //     {form.values.coin1?.symbol} ID:{' '}
-              //     {priceSourcesCoin1.isLoading
-              //       ? 'Loading...'
-              //       : getIsoPriceSourceCoin()?.service_currency_iso ||
-              //         'Not found'}
-              //   </Typography>
-              //   <Typography>
-              //     {form.values.coin2?.symbol} ID:{' '}
-              //     {priceSourcesCoin2.isLoading
-              //       ? 'Loading...'
-              //       : getIsoPriceSourceCoin({ reversed: true })
-              //           ?.service_currency_iso || 'Not found'}
-              //   </Typography>
-              // </Box>
             )}
           </Box>
           <>
@@ -469,14 +455,14 @@ const CreateAdvertForm = ({ onSuccess }: { onSuccess: () => void }) => {
             <VNumericTextField
               margin="normal"
               fullWidth
-              label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
+              label={`Minimum Trade Amount ${form.values.coin2?.symbol}`}
               name="minimumExchangeAmountCoin1"
               form={form}
             />
             <VNumericTextField
               margin="normal"
               fullWidth
-              label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
+              label={`Maximum Trade Amount ${form.values.coin2?.symbol}`}
               form={form}
               name="maximumExchangeAmountCoin1"
             />

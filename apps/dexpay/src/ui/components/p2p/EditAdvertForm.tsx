@@ -547,14 +547,14 @@ const EditAdvertForm = ({
           <VNumericTextField
             margin="normal"
             fullWidth
-            label={`Minimum Trade Amount ${form.values.coin1?.symbol}`}
+            label={`Minimum Trade Amount ${form.values.coin2?.symbol}`}
             name="minimumExchangeAmountCoin1"
             form={form}
           />
           <VNumericTextField
             margin="normal"
             fullWidth
-            label={`Maximum Trade Amount ${form.values.coin1?.symbol}`}
+            label={`Maximum Trade Amount ${form.values.coin2?.symbol}`}
             form={form}
             name="maximumExchangeAmountCoin1"
           />

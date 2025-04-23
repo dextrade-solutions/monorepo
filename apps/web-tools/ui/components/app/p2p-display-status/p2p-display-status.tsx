@@ -9,14 +9,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 const ICON_BY_STATUS = {
   WAIT_EXCHANGER_VERIFY: <PulseLoader />,
   NEW: <PulseLoader />,
-  CANCELED: <Icon name="arrow-left-dex" size="lg" />,
+  CANCELED: <Icon name="arrow-left-dex" size="lg" color="error.dark" />,
   CLIENT_TRANSACTION_VERIFY: <PulseLoader />,
   CLIENT_TRANSACTION_FAILED: <PulseLoader />,
   WAIT_EXCHANGER_TRANSFER: <PulseLoader />,
   EXCHANGER_TRANSACTION_VERIFY: <PulseLoader />,
   EXCHANGER_TRANSACTION_FAILED: <Icon name="alert" color="error.main" />,
   VERIFIED: <PulseLoader />,
-  COMPLETED: <Icon color="success.light" name="check" size="lg" />,
+  COMPLETED: <Icon color="success.main" name="check" size="lg" />,
   EXPIRED: <Icon name="timer" />,
   DISPUTE: <Icon color="warning.light" name="info" />,
 };
