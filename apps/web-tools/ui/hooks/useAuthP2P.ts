@@ -1,3 +1,4 @@
+import { useOkto } from '@okto_web3/react-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 import { useConnectors, useSignMessage } from 'wagmi';
 import Web3 from 'web3';
@@ -18,6 +19,12 @@ import { useWallets } from './asset/useWallets';
 import useConnection from './wallets/useConnection';
 import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
+export enum AuthType {
+  keypair = 'keypair',
+  okto = 'okto',
+  connectedWallet = 'connectedWallet',
+}
+
 export function useAuthP2P() {
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
@@ -26,6 +33,7 @@ export function useAuthP2P() {
   const wallets = useWallets({
     includeKeypairWallet: true,
   });
+  const oktoClient = useOkto();
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
     authStatus,
@@ -37,56 +45,70 @@ export function useAuthP2P() {
       authWallet.wallet && authWallet.wallet.disconnect();
     },
     login: async ({
+      type = AuthType.connectedWallet,
       walletId,
+      credentialResponse,
       onSuccess,
     }: {
+      type: AuthType;
       walletId?: string | null;
+      credentialResponse?: { credential: string };
       onSuccess?: (...args: any) => any;
-    } = {}) => {
+    }) => {
       const { apikey } = getAuth(store.getState());
       const { signature } = getSession(store.getState());
-      let loginWallet =
-        authWallet.wallet || wallets.find((i) => i.id === walletId);
 
-      if (!loginWallet) {
-        // if auth wallet is not setted, then use keypair connection
-        loginWallet = keypairConnection;
-      }
-      const isConnected = loginWallet.connected;
-
-      if (!isConnected) {
-        await loginWallet.connect();
-      }
       const onSignedMessage = async (sign: string) => {
         await dispatch(
-          login(engine.keyringController.keyring, sign, loginWallet.id),
+          login(engine.keyringController.keyring, sign, walletId || type),
         );
         return onSuccess && onSuccess();
       };
 
       const processSign = async () => {
-        if (loginWallet.name === 'Keypair Wallet') {
-          // const sign = engine.keyringController.signDER(
-          //   engine.keyringController.publicKey,
-          // );
-          const web3 = new Web3();
-          const result = web3.eth.accounts.sign(
-            engine.keyringController.publicKey,
-            `0x${engine.keyringController.privateKey}`,
-          );
-          return onSignedMessage(result.signature);
-        }
-
         if (inProgress) {
           return null;
         }
         dispatch(setStatus(AuthStatus.signing));
-        // const connector = connectors.find((i) => i.name === loginWallet.name);
+
         try {
-          const result = await loginWallet.signMessage(
-            engine.keyringController.publicKey,
-          );
-          return onSignedMessage(result);
+          if (type === AuthType.keypair) {
+            const web3 = new Web3();
+            const result = web3.eth.accounts.sign(
+              engine.keyringController.publicKey,
+              `0x${engine.keyringController.privateKey}`,
+            );
+            return onSignedMessage(result.signature);
+          }
+          if (type === AuthType.okto) {
+            await oktoClient.loginUsingOAuth({
+              idToken: credentialResponse.credential,
+              provider: 'google',
+            });
+            const result = await oktoClient.signMessage(
+              engine.keyringController.publicKey,
+            );
+            return onSignedMessage(result);
+          }
+          if (type === AuthType.connectedWallet) {
+            const loginWallet =
+              authWallet.wallet || wallets.find((i) => i.id === walletId);
+
+            if (!loginWallet) {
+              throw new Error('Login wallet not found');
+            }
+
+            const isConnected = loginWallet.connected;
+
+            if (!isConnected) {
+              await loginWallet.connect();
+            }
+            const result = await loginWallet.signMessage(
+              engine.keyringController.publicKey,
+            );
+            return onSignedMessage(result);
+          }
+          throw new Error('Invalid auth type');
         } catch (e) {
           dispatch(setStatus(AuthStatus.failed));
           throw e;

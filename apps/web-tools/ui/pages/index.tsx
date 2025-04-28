@@ -33,7 +33,7 @@ import {
   SWAP_WIDGET_ROUTE,
   PAIR_GROUPS_ROUTE,
 } from '../helpers/constants/routes';
-import { useAuthP2P } from '../hooks/useAuthP2P';
+import { AuthType, useAuthP2P } from '../hooks/useAuthP2P';
 
 export default function RoutesRoot() {
   const { login } = useAuthP2P();
@@ -50,7 +50,7 @@ export default function RoutesRoot() {
   useEffect(() => {
     const { keyringController } = engine;
     keyringController.init({ sessionSeed });
-    login();
+    login({ type: AuthType.keypair });
   }, [dispatch, sessionSeed, navigate]);
 
   return (
