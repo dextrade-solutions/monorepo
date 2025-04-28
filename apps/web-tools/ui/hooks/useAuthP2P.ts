@@ -1,6 +1,5 @@
 import { useOkto } from '@okto_web3/react-sdk';
 import { useDispatch, useSelector } from 'react-redux';
-import { useConnectors, useSignMessage } from 'wagmi';
 import Web3 from 'web3';
 
 import { useAuthWallet } from './useAuthWallet';
@@ -16,8 +15,6 @@ import {
 } from '../ducks/auth';
 import { AppDispatch, store } from '../store/store';
 import { useWallets } from './asset/useWallets';
-import useConnection from './wallets/useConnection';
-import keypairWalletConnection from '../helpers/utils/connections/keypair';
 
 export enum AuthType {
   keypair = 'keypair',
@@ -28,7 +25,6 @@ export enum AuthType {
 export function useAuthP2P() {
   const dispatch = useDispatch<AppDispatch>();
   const authStatus = useSelector(getAuthStatus);
-  const keypairConnection = useConnection(keypairWalletConnection);
   const authWallet = useAuthWallet();
   const wallets = useWallets({
     includeKeypairWallet: true,
@@ -40,9 +36,11 @@ export function useAuthP2P() {
   );
 
   return {
-    logout: () => {
+    logout: async () => {
       dispatch(logout());
-      authWallet.wallet && authWallet.wallet.disconnect();
+      if (authWallet.wallet) {
+        authWallet.wallet && authWallet.wallet.disconnect();
+      }
     },
     login: async ({
       type = AuthType.connectedWallet,
