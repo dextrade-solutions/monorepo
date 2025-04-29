@@ -61,7 +61,7 @@ const AdPreview = ({
               rating={{
                 exchangeCount: ad.exchangeCount,
                 сompletionRate: ad.exchangeCompletionRate,
-                totalRating: ad.rating?.totalRating || 0,
+                totalRating: ad.rating.totalRating,
               }}
               endAdornment={
                 Boolean(Number(fromTokenAmount)) && (
@@ -131,7 +131,7 @@ const AdPreview = ({
             </Typography>
           </Box>
 
-          {Boolean(ad.paymentMethods?.length) && (
+          {Boolean(ad.paymentMethods.length) && (
             <Box marginTop={2}>
               {ad.paymentMethods.map((paymentMethod) => (
                 <Box

@@ -18,7 +18,6 @@ import { useWallets } from './asset/useWallets';
 
 export enum AuthType {
   keypair = 'keypair',
-  okto = 'okto',
   connectedWallet = 'connectedWallet',
 }
 
@@ -29,7 +28,6 @@ export function useAuthP2P() {
   const wallets = useWallets({
     includeKeypairWallet: true,
   });
-  // const oktoClient = useOkto();
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
     authStatus,
@@ -45,7 +43,6 @@ export function useAuthP2P() {
     login: async ({
       type = AuthType.connectedWallet,
       walletId,
-      credentialResponse,
       onSuccess,
     }: {
       type: AuthType;
@@ -77,16 +74,6 @@ export function useAuthP2P() {
               `0x${engine.keyringController.privateKey}`,
             );
             return onSignedMessage(result.signature);
-          }
-          if (type === AuthType.okto) {
-            await oktoClient.loginUsingOAuth({
-              idToken: credentialResponse.credential,
-              provider: 'google',
-            });
-            const result = await oktoClient.signMessage(
-              engine.keyringController.publicKey,
-            );
-            return onSignedMessage(result);
           }
           if (type === AuthType.connectedWallet) {
             const loginWallet =
