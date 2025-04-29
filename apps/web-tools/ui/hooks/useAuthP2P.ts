@@ -29,7 +29,7 @@ export function useAuthP2P() {
   const wallets = useWallets({
     includeKeypairWallet: true,
   });
-  const oktoClient = useOkto();
+  // const oktoClient = useOkto();
 
   const inProgress = [AuthStatus.signing, AuthStatus.authenticating].includes(
     authStatus,

@@ -1,5 +1,4 @@
 import { Box, Typography, Divider } from '@mui/material';
-import { GoogleLogin } from '@react-oauth/google';
 import { ButtonIcon, ModalProps, WalletList } from 'dex-ui';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -64,20 +63,6 @@ const LoginModal = ({
 
       <Box marginY={1}>
         <Divider />
-      </Box>
-
-      <Box mb={3}>
-        <GoogleLogin
-          onSuccess={(credentialResponse) =>
-            onSelectWallet({
-              item: {
-                name: 'OKTO',
-                credentialResponse,
-              },
-              type: AuthType.okto,
-            })
-          }
-        />
       </Box>
 
       <Box>

@@ -21,7 +21,7 @@
   "verified": "Verified",
   "declined": "Declined",
   "tryAgain": "Try again",
-  "kycInfo": "KYC (Know Your Client) is a global verification system used in financial services and banks to reduce financial scams and fraud. <br /> <br /> By law, ID documents are required for all transactions involving fiat currency.",
+  "kycInfo": "KYC (Know Your Client) is a global verification system used in financial services and banks to reduce financial scams and fraud. By law, ID documents are required for all transactions involving fiat currency.",
   "startKyc": "Start KYC",
   "telegramSupport": "Telegram support",  
   "save": "Save",

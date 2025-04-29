@@ -1,4 +1,5 @@
 import { createClient } from 'viem';
+import { okto } from '@okto_web3/wagmi-adapter';
 import { createConfig, http } from 'wagmi';
 import {
   arbitrum,
@@ -63,6 +64,12 @@ export const config = createConfig({
   chains,
   metadata,
   connectors: [
+    okto({
+      environment: 'sandbox',
+      clientPrivateKey: import.meta.env.VITE_OKTO_CLIENT_PRIVATE_KEY as `0x${string}`,
+      clientSWA: import.meta.env.VITE_OKTO_CLIENT_SWA as `0x${string}`,
+      googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+    }),
     metaMask(),
     trustWalletConnect(),
     walletConnect({

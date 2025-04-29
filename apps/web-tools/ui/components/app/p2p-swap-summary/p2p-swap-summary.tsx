@@ -46,7 +46,7 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             rating={{
               exchangeCount: ad.exchangeCount,
               сompletionRate: ad.exchangeCompletionRate,
-              totalRating: ad.rating.totalRating,
+              totalRating: ad.rating?.totalRating,
             }}
           />
         </Box>
