@@ -575,5 +575,32 @@
   },
    "Self custodian payment gateway": {
     "message": "自托管支付网关"
+  },
+  "Select Network": {
+    "message": "选择网络"
+  },
+  "Select Strategy": {
+    "message": "选择策略"
+  },
+  "Select Wallet": {
+    "message": "选择钱包"
+  },
+  "Step 1: Select Network": {
+    "message": "第1步：选择网络"
+  },
+  "Step 2: Select Strategy": {
+    "message": "第2步：选择策略"
+  },
+  "Step 3: Select Wallet": {
+    "message": "第3步：选择钱包"
+  },
+  "Previous": {
+    "message": "上一步"
+  },
+  "Next": {
+    "message": "下一步"
+  },
+  "Connecting to": {
+    "message": "正在连接到"
   }
 }
