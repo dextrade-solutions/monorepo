@@ -312,7 +312,7 @@ export class Payment<SecurityDataType = unknown> extends HttpClient<SecurityData
    * @request POST:/api/payment/fija/subscribe/address
    */
     subscribeAddress = (
-      data: { address: string; currency: string, strategy: string[] },
+      data: { address: string; currency: string, strategy: string },
       params: RequestParams = {},
     ) =>
       this.request<void, Record<string, string>>({

@@ -53,7 +53,7 @@ const FijaModal = ({ hideModal }: { onSuccess: () => void } & ModalProps) => {
       await paymentService.subscribeAddress({
         address: result.address,
         currency: selectedAsset?.iso,
-        strategy: [selectedStrategy],
+        strategy: selectedStrategy,
       });
       hideModal();
       window.location.href = 'http://dextrade.fija.finance';
@@ -71,9 +71,6 @@ const FijaModal = ({ hideModal }: { onSuccess: () => void } & ModalProps) => {
               <Autocomplete
                 disableSearch
                 renderOption={(_, option) => <AssetItem asset={option} />}
-                // getOptionLabel={(option) => {
-                //   debugger;
-                // }}
                 options={[assetDict.ETH, assetDict.ETH_ARB]}
                 paper
                 value={selectedAsset}
