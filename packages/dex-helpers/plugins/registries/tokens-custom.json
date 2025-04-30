@@ -103,6 +103,21 @@
     ]
   },
   {
+    "uid": "tether",
+    "name": "Tether",
+    "code": "USDT",
+    "market_cap_rank": null,
+    "coingecko_id": "tether",
+    "platforms": [
+      {
+        "type": "POLYGON",
+        "decimals": 6,
+        "address": "0x1E4a5963aBFD975d8c9021ce480b42188849D41d",
+        "symbol": null
+      }
+    ]
+  },
+  {
     "uid": "soarchain",
     "name": "Soar Token",
     "code": "SOAR",

@@ -21,6 +21,7 @@ export enum NetworkTypes {
   trc20 = 'TRC20',
   solana = 'SOLANA',
   xrc20 = 'XRC20',
+  polygon = 'POLYGON',
 }
 
 export enum NetworkNames {
@@ -174,6 +175,10 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
   [NetworkTypes.solana]: {
     network: NetworkNames.solana,
     info: BUILT_IN_NETWORKS[NetworkNames.solana],
+  },
+  [NetworkTypes.polygon]: {
+    network: NetworkNames.polygon,
+    info: BUILT_IN_NETWORKS[NetworkNames.polygon],
   },
   [NetworkTypes.xrc20]: {
     network: NetworkNames.xdc,
