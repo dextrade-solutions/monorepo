@@ -239,7 +239,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
 
   const onShowPaymentMethods = () => {
     assetInputTo.showPaymentMethod(
-      availablePaymentMethods.flatMap((i) => i.paymentMethod.paymentMethodId),
+      availablePaymentMethods?.flatMap((i) => i.paymentMethod.paymentMethodId),
     );
   };
 

@@ -8,6 +8,7 @@ import generateMnemonicHash from '../../app/helpers/generate-mnemonic-hash';
 import { recoverPubKeyFromSignature } from '../../app/helpers/pub-key';
 import P2PService from '../../app/services/p2p-service';
 import { AppDispatch, RootState } from '../store/store';
+import { AuthType } from '../hooks/useAuthP2P';
 
 export const getAuth = (state: RootState) => state.auth.authData;
 export const getAuthStatus = (state: RootState) => state.auth.authStatus;
@@ -80,7 +81,10 @@ export const login = (keyring: any, signature: string, walletId: string) => {
       .then((v) => Buffer.from(v.mnemonic).toString());
 
     const publicKey = Buffer.from(keyring.hdWallet.pubKey).toString('hex');
-    const [, walletConnectionType] = walletId.split(':');
+    let [, walletConnectionType] = walletId.split(':');
+    if (walletId === AuthType.okto) {
+      walletConnectionType = 'eip6963';
+    }
     const masterPublicKey = recoverPubKeyFromSignature(
       signature,
       prefixSignMessageByConnectionType(walletConnectionType, publicKey),

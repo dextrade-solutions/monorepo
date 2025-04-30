@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import { clearAuthState } from '../../../../ducks/auth';
 import { useWallets } from '../../../../hooks/asset/useWallets';
-import { useAuthP2P } from '../../../../hooks/useAuthP2P';
+import { AuthType, useAuthP2P } from '../../../../hooks/useAuthP2P';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const LoginModal = ({
@@ -13,14 +13,20 @@ const LoginModal = ({
   onSuccess,
 }: { onSuccess: () => void } & ModalProps) => {
   const t = useI18nContext();
-  const [loadingWallet, setLoadingWallet] =
-    useState<(typeof wallets)[number]>();
   const dispatch = useDispatch();
   const wallets = useWallets();
   const { login } = useAuthP2P();
+  const [loadingWallet, setLoadingWallet] =
+    useState<(typeof wallets)[number]>();
 
   const onSelectWallet = useCallback(
-    async (item: (typeof wallets)[number]) => {
+    async ({
+      item,
+      type,
+    }: {
+      item: (typeof wallets)[number];
+      type: AuthType;
+    }) => {
       setLoadingWallet(item);
       try {
         if (item.name === 'Wallet Connect') {
@@ -28,7 +34,9 @@ const LoginModal = ({
         }
         dispatch(clearAuthState());
         await login({
+          type,
           walletId: item.id,
+          credentialResponse: item.credentialResponse,
         });
         hideModal();
         onSuccess && onSuccess();
@@ -39,6 +47,7 @@ const LoginModal = ({
     },
     [hideModal, login, dispatch, onSuccess],
   );
+
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
@@ -55,12 +64,15 @@ const LoginModal = ({
       <Box marginY={1}>
         <Divider />
       </Box>
+
       <Box>
         <WalletList
           wallets={wallets}
           connectingWallet={loadingWallet}
           connectingWalletLabel={t('login-via')}
-          onSelectWallet={onSelectWallet}
+          onSelectWallet={(item) =>
+            onSelectWallet({ item, type: AuthType.connectedWallet })
+          }
         />
       </Box>
     </Box>
