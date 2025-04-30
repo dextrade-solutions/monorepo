@@ -43,6 +43,16 @@ const REGISTRIES: Registry[] = [
           NetworkNames.binance,
         ].includes(network as NetworkNames);
 
+        let { iso } = netConfig;
+
+        if (network === NetworkNames.binance) {
+          iso = `BNB_BSC`;
+        }
+
+        if (network === NetworkNames.arbitrum) {
+          iso = `ETH_ARB`;
+        }
+
         return {
           chainId: netConfig.id,
           contract: null,
@@ -55,9 +65,7 @@ const REGISTRIES: Registry[] = [
           isNative: true,
           weight: isMajorNetwork ? 3 : 1,
           standard: null,
-          iso: network === NetworkNames.binance 
-            ? `BNB_${netConfig.iso}`
-            : netConfig.iso,
+          iso,
         };
       });
     },
