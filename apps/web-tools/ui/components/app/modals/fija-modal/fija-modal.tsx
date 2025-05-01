@@ -71,7 +71,7 @@ const FijaModal = ({ hideModal }: { onSuccess: () => void } & ModalProps) => {
               <Autocomplete
                 disableSearch
                 renderOption={(_, option) => <AssetItem asset={option} />}
-                options={[assetDict.ETH, assetDict.ETH_ARB]}
+                options={[assetDict.ETH_ARB]}
                 paper
                 value={selectedAsset}
                 onChange={handleNetworkChange}
