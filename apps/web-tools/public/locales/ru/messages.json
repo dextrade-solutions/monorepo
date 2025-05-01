@@ -476,5 +476,32 @@
   "activity": { "message": "Активность" },
   "back": { "message": "Назад" },
   "youGive": { "message": "Вы отдаете" },
-  "youGet": { "message": "Вы получаете" }
+  "youGet": { "message": "Вы получаете" },
+  "Select Network": {
+    "message": "Выберите сеть"
+  },
+  "Select Strategy": {
+    "message": "Выберите стратегию"
+  },
+  "Select Wallet": {
+    "message": "Выберите кошелек"
+  },
+  "Step 1: Select Network": {
+    "message": "Шаг 1: Выберите сеть"
+  },
+  "Step 2: Select Strategy": {
+    "message": "Шаг 2: Выберите стратегию"
+  },
+  "Step 3: Select Wallet": {
+    "message": "Шаг 3: Выберите кошелек"
+  },
+  "Previous": {
+    "message": "Назад"
+  },
+  "Next": {
+    "message": "Далее"
+  },
+  "Connecting to": {
+    "message": "Подключение к"
+  }
 }

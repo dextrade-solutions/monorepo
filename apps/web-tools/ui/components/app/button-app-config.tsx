@@ -16,20 +16,20 @@ import {
   Divider,
 } from '@mui/material';
 import { shortenAddress } from 'dex-helpers';
-import assetDict from 'dex-helpers/assets-dict';
-import { paymentService } from 'dex-services';
 import {
   ButtonIcon,
   PulseLoader,
   useGlobalModalContext,
   UrlIcon,
   Icon,
+  WalletList,
 } from 'dex-ui';
 import { Percent } from 'lucide-react';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import { useWallets } from '../../hooks/asset/useWallets';
 
 import { getCurrentTheme, setTheme } from '../../ducks/app/app';
 import { getCurrentLocale } from '../../ducks/locale/locale';
@@ -46,7 +46,8 @@ import { useAuthWallet } from '../../hooks/useAuthWallet';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { updateCurrentLocale } from '../../store/actions';
 import { AppDispatch } from '../../store/store';
-import { WalletConnection } from '../../types';
+import FijaModal from './modals/fija-modal/fija-modal';
+
 
 export default function ButtonAppConfig() {
   const { logout } = useAuthP2P();
@@ -72,17 +73,16 @@ export default function ButtonAppConfig() {
     showModal({ name: 'LOGIN_MODAL' });
   };
 
+  const [showWalletSelection, setShowWalletSelection] = useState(false);
+  const wallets = useWallets();
+
   const dextradeEarn = () => {
-    const currency = assetDict.ARB;
+    setAnchorEl(null);
     showModal({
-      name: 'SET_WALLET',
-      asset: currency,
-      onChange: async (v: WalletConnection) => {
-        await paymentService.subscribeAddress({
-          address: v.address,
-          currency: 'ETH_ARB',
-        });
-        window.location.href = 'http://dextrade.fija.finance';
+      name: 'FIJA_MODAL',
+      component: FijaModal,
+      onSuccess: () => {
+        // Handle success if needed
       },
     });
   };
@@ -100,6 +100,7 @@ export default function ButtonAppConfig() {
   const setCurrentLocale = async (key: string) => {
     dispatch(updateCurrentLocale(key));
   };
+
   return (
     <>
       <ButtonIcon
@@ -109,7 +110,9 @@ export default function ButtonAppConfig() {
         iconProps={{
           color: 'text.primary',
         }}
-        onClick={onClick}
+        onClick={(event: React.MouseEvent<HTMLElement>) => {
+          setAnchorEl(event.currentTarget);
+        }}
       />
       <Menu
         anchorEl={anchorEl}
@@ -252,6 +255,47 @@ export default function ButtonAppConfig() {
           </ListItemSecondaryAction>
         </MenuItem>
       </Menu>
+
+      {showWalletSelection && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1300,
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: 'background.paper',
+              padding: 3,
+              borderRadius: 2,
+              width: '90%',
+              maxWidth: 500,
+            }}
+          >
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+              <Typography variant="h6">{t('Select Wallet')}</Typography>
+              <ButtonIcon
+                iconName="close"
+                size="sm"
+                onClick={() => setShowWalletSelection(false)}
+              />
+            </Box>
+            <WalletList
+              wallets={wallets}
+              onSelectWallet={handleWalletSelect}
+              connectingWalletLabel={t('Connecting to')}
+            />
+          </Box>
+        </Box>
+      )}
     </>
   );
 }
