@@ -69,6 +69,12 @@ export const WALLET_CONNECT = {
   icon: '/images/wallets/wallet-connect.svg',
   supportMobileBrowser: true,
 };
+export const OKTO_CONNECT = {
+  name: 'okto',
+  displayName: 'OKTO',
+  icon: '/images/wallets/okto-icon.png',
+  supportMobileBrowser: true,
+};
 export const XVERSE = {
   name: 'xverse',
   displayName: 'Xverse',
@@ -226,6 +232,7 @@ export const SOLFLARE = {
 
 export const WALLETS_META = [
   DEXTRADE_WALLET,
+  OKTO_CONNECT,
   WALLET_CONNECT,
   XVERSE,
   COINBASE,

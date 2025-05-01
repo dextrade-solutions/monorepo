@@ -35,6 +35,7 @@ export function useEVMProviders({ config }: { config: any }) {
         },
         async txSend(params) {
           const { asset, amount, recipient } = params;
+          debugger;
           const isConnected = await item.isAuthorized();
 
           if (!isConnected) {
@@ -67,7 +68,6 @@ export function useEVMProviders({ config }: { config: any }) {
             });
             return sendTransactionAsync({
               connector: item,
-              chainId: asset.chainId,
               ...txParams,
             });
           };

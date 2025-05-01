@@ -46,6 +46,7 @@ export function useConnections({
       connectionType.includes(provider.type),
     );
   }
+
   const connections = providers.map((instance): Connection => {
     const icon = instance.icon || getWalletIcon(instance.name);
     const { name, type } = instance;

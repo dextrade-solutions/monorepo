@@ -17,7 +17,7 @@ import {
   ModalProps,
   WalletList,
 } from 'dex-ui';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useWallets } from '../../../../hooks/asset/useWallets';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
