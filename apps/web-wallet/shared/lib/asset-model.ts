@@ -152,7 +152,6 @@ export class AssetModel implements Asset {
     } else {
       token = tokenOrTokenId;
     }
-
     this.chainId = token.localId.split(':')[0];
     this.localId = token.localId;
     this.name = token.name;

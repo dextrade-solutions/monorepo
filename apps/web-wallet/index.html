@@ -10,95 +10,118 @@
   <body>
     <div id="root">
       <style>
-        body {
-          padding: 0;
-          margin: 0;
+        /* Light mode */
+        @media (prefers-color-scheme: light) {
+            body {
+                background: #ffffff;
+            }
         }
-        #root {
+        /* dark mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                /* background: #1D1D1D; */
+            }
+        }
+
+        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          overflow: hidden; /* Hide scrollbars */
+        }
+        video {
+          background: transparent;
+        }
+        /* Loader Styles */
+        #loading-container {
           display: flex;
           justify-content: center;
           align-items: center;
           height: 100vh;
-          overflow: hidden;
-          position: relative;
-        }
-        #root .init {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          align-items: center;
-          flex-grow: 1;
-          height: 100%;
-          width: 100%;
         }
 
-        #root .init__content {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          align-items: center;
-          flex-grow: 1;
+        .spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-top: 4px solid #007bff;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
         }
 
-        #root .dex-logo {
-          width: 7rem;
-          margin-top: 100px;
-        }
-
-        /* LOADER */
-        #root .init-loader {
-          position: relative;
-          overflow: hidden;
-          border: 1px solid #fff;
-          background-color: #ddeef6;
-          border-radius: 10px;
-          width: 100px;
-          height: 4px;
-        }
-
-        #root .init-loader:before,
-        #root .init-loader:after {
-          content: '';
+        .version {
           position: absolute;
-          height: 100px;
-          background-color: #03A9F4;
-          animation: loader_first 1.5s infinite ease-out;
-        }
-        #root .init-loader:after {
-          background-color: #4FC3F7;
-          animation: loader_second 2s infinite ease-in;
-        }
-
-        #root .version {
+          bottom: 10%;
           font-family: arial;
-          text-align: center;
           opacity: .5;
+          text-align: center;
           font-size: .7rem;
-          margin-bottom: 40px;
         }
 
-        @keyframes loader_first {
-          0% {left: -100%; width: 100%;}
-          100% {left: 100%; width: 10%;}
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
-        @keyframes loader_second {
-          0% {left: -150%; width: 100%;}
-          100% {left: 100%; width: 10%;}
-        }
-
       </style>
-      <div class="init">
-        <div class="init__content">
-          <img class="dex-logo" src="./images/logo/dextrade-short.svg" alt="dextrade-logo" />
-          <div>
-            <p class="version">Version %APP_VERSION%</p>
-            <div class="init-loader"></div>
-          </div>
-        </div>
 
+      <!-- Loading Screen -->
+      <div id="loading-container">
+        <video id="preloaderVideo" width="150px" autoplay loop muted playsinline style="display: none;">
+            <source id="videoSource">
+            Your browser does not support the video tag.
+        </video>
+        <div class="version">
+          <strong>PWA Wallet</strong>
+          <p>Version %APP_VERSION%</p>
+        </div>
       </div>
+
+      <script>
+        const isAndroid = /android/i.test(navigator.userAgent);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        const isIOSWeb = /iPhone|iPad|iPod|AppleWebKit/.test(navigator.userAgent) && !window.MSStream;
+
+        function getSupportedFormat() {
+            const video = document.createElement("video");
+            if (!isAndroid && (isIOSWeb || isSafari)) {
+                return { src: "/images/logo/logo-animated.mov" };
+            }
+            return { src: "/images/logo/logo-animated.webm", type: "video/webm" };
+        }
+
+        function initPreloader() {
+            const video = document.getElementById("preloaderVideo");
+            const source = document.getElementById("videoSource");
+            const format = getSupportedFormat();
+
+            if (format) {
+                source.src = format.src;
+                if (format.type) {
+                  source.type = format.type;
+                }
+                video.load(); // Reload the video element to apply changes
+                video.style.display = "block";
+            }
+        }
+
+        function updateBodyClass() {
+          if (window.location.pathname.includes('/swap-widget')) {
+            document.body.classList.add('swap-widget-route');
+          } else {
+            document.body.classList.remove('swap-widget-route');
+          }
+        }
+
+        updateBodyClass();
+        initPreloader();
+      </script>
     </div>
-    <div id="popover-content"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
