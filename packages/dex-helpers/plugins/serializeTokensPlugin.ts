@@ -130,14 +130,12 @@ const serializeTokensPlugin = () => ({
     const result = REGISTRIES.map((registry) => {
       return registry.serializer(registry.filename);
     });
-    const assetList = _.flatMap(result)
-      .sort((a, b) => a.weight - b.weight)
-      .reverse();
 
     const createAdditionalToken = (
       name: string,
       symbol: string,
       uid: string,
+      weight = 1,
     ): Token => ({
       chainId: null,
       contract: null,
@@ -150,7 +148,7 @@ const serializeTokensPlugin = () => ({
       iso: symbol,
       isFiat: false,
       isNative: false,
-      weight: 1,
+      weight,
     });
 
     const additionalTokens: Token[] = [
@@ -169,7 +167,7 @@ const serializeTokensPlugin = () => ({
         isNative: true,
         weight: 3,
       },
-      createAdditionalToken('Tether', 'USDT', 'tether'),
+      createAdditionalToken('Tether', 'USDT', 'tether', 4),
       createAdditionalToken('USD Coin', 'USDC', 'usd-coin'),
       createAdditionalToken('SOAR', 'SOAR', 'soarchain'),
       createAdditionalToken('BNB Binance Coin', 'BNB', 'binancecoin'),
@@ -184,10 +182,11 @@ const serializeTokensPlugin = () => ({
       createAdditionalToken('WLD', 'WLD', 'wld'),
       createAdditionalToken('ACH', 'ACH', 'ach'),
       createAdditionalToken('ANKR', 'ANKR', 'ankr'),
-      
     ];
 
-    const finalAssetList = [...assetList, ...additionalTokens];
+    const finalAssetList = _.flatMap([...result, ...additionalTokens])
+      .sort((a, b) => a.weight - b.weight)
+      .reverse();
 
     fsPromises.writeFile(`./assets-list.json`, JSON.stringify(finalAssetList));
     fsPromises.writeFile(
