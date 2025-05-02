@@ -662,7 +662,7 @@ export default class Home extends PureComponent {
               >
                 <TransactionList />
               </Tab>
-
+{/*
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -671,7 +671,7 @@ export default class Home extends PureComponent {
                 tabKey="multisig"
               >
                 <MultiSignatureTab />
-              </Tab>
+              </Tab> */}
             </Tabs>
           </div>
 
