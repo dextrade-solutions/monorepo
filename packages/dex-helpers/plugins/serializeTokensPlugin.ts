@@ -134,7 +134,11 @@ const serializeTokensPlugin = () => ({
       .sort((a, b) => a.weight - b.weight)
       .reverse();
 
-    const createAdditionalToken = (name: string, symbol: string, uid: string): Token => ({
+    const createAdditionalToken = (
+      name: string,
+      symbol: string,
+      uid: string,
+    ): Token => ({
       chainId: null,
       contract: null,
       name,
@@ -155,7 +159,8 @@ const serializeTokensPlugin = () => ({
         contract: null,
         name: 'Bitcoin Lightning',
         symbol: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.symbol,
-        decimals: BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.decimals,
+        decimals:
+          BUILT_IN_NETWORKS[NetworkNames.bitcoin].nativeCurrency.decimals,
         uid: BUILT_IN_NETWORKS[NetworkNames.bitcoin].uid,
         network: NetworkNames.bitcoin,
         standard: 'LIGHTNING',
@@ -171,6 +176,15 @@ const serializeTokensPlugin = () => ({
       createAdditionalToken('PHIL', 'PHIL', 'philtoken'),
       createAdditionalToken('MEW', 'MEW', 'cat-in-a-dogs-world'),
       createAdditionalToken('SQR', 'SQR', 'sqr'),
+      createAdditionalToken('PENDLE', 'PENDLE', 'pendle'),
+      // createAdditionalToken('TOKEN', 'TOKEN', 'token'),
+      createAdditionalToken('CYBER', 'CYBER', 'cyber'),
+      createAdditionalToken('CTSI', 'CTSI', 'cartesi'),
+      createAdditionalToken('C98', 'C98', 'c98'),
+      createAdditionalToken('WLD', 'WLD', 'wld'),
+      createAdditionalToken('ACH', 'ACH', 'ach'),
+      createAdditionalToken('ANKR', 'ANKR', 'ankr'),
+      
     ];
 
     const finalAssetList = [...assetList, ...additionalTokens];
