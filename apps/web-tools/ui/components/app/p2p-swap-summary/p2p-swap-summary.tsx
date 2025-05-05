@@ -1,5 +1,5 @@
 import { Alert, Box, Card, CardContent, Chip, Typography } from '@mui/material';
-import { NetworkNames, getUserAvatarUrl } from 'dex-helpers';
+import { NetworkNames, formatCurrency, getUserAvatarUrl } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { ExchangerUserPreview, AssetPriceOutput } from 'dex-ui';
 import React from 'react';
@@ -56,43 +56,51 @@ export const P2PSwapSummary = ({ exchange: ad }: IProps) => {
             price={ad.coinPair.price}
             tickerFrom={tickerFrom}
             tickerTo={tickerTo}
+            priceInUsdtFrom={ad.coinPair.priceCoin1InUsdt}
+            priceInUsdtTo={ad.coinPair.priceCoin2InUsdt}
           />
         </Box>
         <Typography display="flex" alignItems="center">
           <span className="flex-grow">{t('reserve')}</span> {/* Changed here */}
-          <span className="row-summary__value">
+          <Typography component="span" display="flex" alignItems="center">
             <AssetPriceOutput
               amount={ad.reserveSum} // in coin 2
               price={ad.coinPair.price}
               tickerFrom={tickerTo}
               tickerTo={tickerFrom}
+              priceInUsdtFrom={ad.coinPair.priceCoin2InUsdt}
+              priceInUsdtTo={ad.coinPair.priceCoin1InUsdt}
             />
-          </span>
+          </Typography>
         </Typography>
         {ad.minimumExchangeAmountCoin1 > 0 && (
           <Typography display="flex" alignItems="center">
             <span className="flex-grow">{t('min')}</span>
-            <span className="row-summary__value">
+            <Typography component="span" display="flex" alignItems="center">
               <AssetPriceOutput
                 amount={ad.minimumExchangeAmountCoin1}
                 price={1 / ad.coinPair.price}
                 tickerFrom={tickerFrom}
                 tickerTo={tickerTo}
+                priceInUsdtFrom={ad.coinPair.priceCoin1InUsdt}
+                priceInUsdtTo={ad.coinPair.priceCoin2InUsdt}
               />
-            </span>
+            </Typography>
           </Typography>
         )}
         {!isMaxEqualReserve && ad.maximumExchangeAmountCoin1 > 0 && (
           <Typography mb={1} display="flex" alignItems="center">
             <span className="flex-grow">{t('max')}</span>
-            <span className="row-summary__value">
+            <Typography component="span" display="flex" alignItems="center">
               <AssetPriceOutput
                 amount={ad.maximumExchangeAmountCoin1}
                 price={1 / ad.coinPair.price}
                 tickerFrom={tickerFrom}
                 tickerTo={tickerTo}
+                priceInUsdtFrom={ad.coinPair.priceCoin1InUsdt}
+                priceInUsdtTo={ad.coinPair.priceCoin2InUsdt}
               />
-            </span>
+            </Typography>
           </Typography>
         )}
       </div>
