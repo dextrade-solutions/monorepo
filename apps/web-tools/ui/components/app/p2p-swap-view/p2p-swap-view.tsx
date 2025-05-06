@@ -372,17 +372,6 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }}
         marginTop={1}
       >
-        {assetInputFrom.asset.network === NetworkNames.tron &&
-          assetInputFrom.account && (
-            <Button
-              fullWidth
-              onClick={() => {
-                P2PService.requestEnergy(assetInputFrom.account.address);
-              }}
-            >
-              {t('requestEnergy')} {/* i18n added here */}
-            </Button>
-          )}
         <Button
           className={classNames({ 'btn-error': hasValidationErrors })}
           fullWidth

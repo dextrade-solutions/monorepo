@@ -227,7 +227,6 @@
   },
   "choosePaymentMethod": { "message": "Выберите способ оплаты" },
   "slippageTolerance": { "message": "Допуск проскальзывания" },
-  "requestEnergy": { "message": "Запросить энергию" },
   "atomic-swap": { "message": "Атомарный обмен" },
   "swap": {"message": "Обмен"},
   "theme": { "message": "Тема" },

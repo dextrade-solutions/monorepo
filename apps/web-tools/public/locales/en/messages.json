@@ -180,9 +180,6 @@
   "slippageTolerance": {
     "message": "Slippage Tolerance"
   },
-  "requestEnergy": {
-    "message": "Request Energy"
-  },
   "atomic-swap": {
     "message": "Atomic Swap"
   },
