@@ -230,9 +230,6 @@
   "slippageTolerance": {
     "message": "滑点容差"
   },
-  "requestEnergy": {
-    "message": "请求能量"
-  },
   "atomic-swap": {
     "message": "原子交换"
   },

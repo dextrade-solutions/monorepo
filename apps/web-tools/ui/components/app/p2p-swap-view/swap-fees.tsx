@@ -75,9 +75,15 @@ export function SwapFees(fees: {
   }, [loggedIn]);
 
   return (
-    <Card sx={{ bgcolor: 'secondary.dark' }} variant="outlined">
+    <Card
+      sx={{ border: 1, borderColor: 'divider' }}
+      variant="outlined"
+    >
       <CardActionArea onClick={() => setExpanded(!expanded)}>
         <CardHeader
+          sx={{
+            py: 1,
+          }}
           title={
             <Box display="flex" alignItems="center">
               <Box className="flex-grow">

@@ -7,11 +7,11 @@ import {
   Typography,
 } from '@mui/material';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
+import { AssetModel } from 'dex-helpers/types';
 import { AssetItem, Icon } from 'dex-ui';
 import React from 'react';
 
 import { getAssetByIso } from '../../../../app/helpers/p2p';
-import { AssetModel } from 'dex-helpers/types';
 
 interface PairGroup {
   fromTicker: string;

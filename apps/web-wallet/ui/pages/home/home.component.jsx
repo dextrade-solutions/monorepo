@@ -640,7 +640,7 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              <Tab
+              {/* <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__nfts-tab"
@@ -652,7 +652,7 @@ export default class Home extends PureComponent {
                     history.push(ADD_NFT_ROUTE);
                   }}
                 />
-              </Tab>
+              </Tab> */}
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -662,7 +662,7 @@ export default class Home extends PureComponent {
               >
                 <TransactionList />
               </Tab>
-
+{/*
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -671,7 +671,7 @@ export default class Home extends PureComponent {
                 tabKey="multisig"
               >
                 <MultiSignatureTab />
-              </Tab>
+              </Tab> */}
             </Tabs>
           </div>
 

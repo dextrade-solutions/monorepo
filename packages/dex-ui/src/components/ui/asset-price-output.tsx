@@ -1,4 +1,4 @@
-import { Box, Link } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { formatCurrency } from 'dex-helpers';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +9,8 @@ type Output = {
   tickerTo: string;
   amount?: number;
   disableToggle?: boolean;
+  priceInUsdtFrom?: number;
+  priceInUsdtTo?: number;
 };
 
 export default function AssetPriceOutput({
@@ -17,6 +19,8 @@ export default function AssetPriceOutput({
   tickerFrom,
   tickerTo,
   disableToggle,
+  priceInUsdtFrom,
+  priceInUsdtTo,
 }: Output) {
   const { t } = useTranslation();
   const [reversed, setReversed] = useState(false);
@@ -46,6 +50,7 @@ export default function AssetPriceOutput({
     value: reversed ? reversedAmount : nonReversedAmount,
     tickerFrom: reversed ? tickerTo : tickerFrom,
     tickerTo: reversed ? tickerFrom : tickerTo,
+    priceInUsdt: reversed ? priceInUsdtTo : priceInUsdtFrom,
   };
 
   return (
@@ -62,22 +67,33 @@ export default function AssetPriceOutput({
           {t('perOne', { ticker: output.tickerFrom })}
         </Link>
       )}
-      <Link
-        sx={{
-          cursor: 'pointer',
-          textDecoration: (disableToggle || isPerOne) && 'none',
-        }}
-        variant="body1"
-        fontWeight={isPerOne ? 'bold' : 'normal'}
-        color="inherit"
-        fontSize="inherit"
-        onClick={onClick}
-      >
-        {formatCurrency(
-          output.value,
-          isPerOne ? output.tickerTo : output.tickerFrom,
+      <Box display="flex">
+        <Link
+          sx={{
+            cursor: 'pointer',
+            textDecoration: (disableToggle || isPerOne) && 'none',
+          }}
+          variant="body1"
+          fontWeight={isPerOne ? 'bold' : 'normal'}
+          color="inherit"
+          fontSize="inherit"
+          onClick={onClick}
+        >
+          {formatCurrency(
+            output.value,
+            isPerOne ? output.tickerTo : output.tickerFrom,
+          )}
+        </Link>
+
+        {priceInUsdtFrom && (
+          <Typography ml={1} color="text.secondary">
+            {formatCurrency(
+              isPerOne ? output.priceInUsdt : output.value * output.priceInUsdt,
+              'usd',
+            )}
+          </Typography>
         )}
-      </Link>
+      </Box>
     </Box>
   );
 }

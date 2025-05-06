@@ -1,6 +1,9 @@
+import { createAppKit } from '@reown/appkit';
+// import { mainnet, arbitrum, base, polygon, bsc } from '@reown/appkit/networks';
+// import { createAppKit } from '@reown/appkit/react';
 import { createClient } from 'viem';
 import { okto } from '@okto_web3/wagmi-adapter';
-import { createConfig, http } from 'wagmi';
+import { createConfig, http, CreateConnectorFn } from 'wagmi';
 import {
   arbitrum,
   avalanche,
@@ -12,18 +15,17 @@ import {
 } from 'wagmi/chains';
 import { coinbaseWallet, metaMask } from 'wagmi/connectors';
 
-import { walletConnect } from '../../ui/helpers/utils/wc-connector';
-import { trustWalletConnect } from 'dex-connect';
+import { walletConnect as customWalletConnect } from '../../ui/helpers/utils/wc-connector-v2';
 
 // 1. Get projectId at https://cloud.walletconnect.com
 const projectId = '1ee56a25a2dad471b92feb59898b7aa6';
 
-// // 2. Create wagmiConfig
+// 2. Create metadata object
 export const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Example',
-  url: 'https://web3modal.com', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+  name: 'Dextrade',
+  description: 'Dextrade - Decentralized Exchange',
+  url: 'https://p2p.dextrade.com',
+  icons: ['https://p2p.dextrade.com/images/dextrade-full.svg'],
 };
 
 const mainnet = {
@@ -48,7 +50,15 @@ const xdc = {
   contracts: {},
 };
 
-const chains = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc] as const;
+const networks = [
+  mainnet,
+  arbitrum,
+  bsc,
+  avalanche,
+  base,
+  sepolia,
+  xdc,
+] as const;
 
 export const WC_PARAMS = {
   projectId,
@@ -60,81 +70,56 @@ export const WC_PARAMS = {
   },
 };
 
-export const config = createConfig({
-  chains,
+// 4. Set up networks
+// export const networks = [mainnet, arbitrum, base, polygon];
+
+// 5. Create Wagmi adapter
+// export const wagmiAdapter = new WagmiAdapter({
+//   projectId,
+//   networks,
+// });
+
+// 7. Create AppKit instance
+const appkit = createAppKit({
+  projectId,
+  networks,
   metadata,
-  connectors: [
-    okto({
-      environment: 'sandbox',
-      clientPrivateKey: import.meta.env.VITE_OKTO_CLIENT_PRIVATE_KEY as `0x${string}`,
-      clientSWA: import.meta.env.VITE_OKTO_CLIENT_SWA as `0x${string}`,
-      googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
-    }),
-    metaMask(),
-    trustWalletConnect(),
-    walletConnect({
-      ...WC_PARAMS,
-    }),
-    coinbaseWallet({
-      appName: 'Dextrade',
-      // CB SDK doesn't pass the parent origin context to their passkey site
-      // Flagged to CB team and can remove UNISWAP_WEB_URL once fixed
-      appLogoUrl: `https://p2p.dextrade.com/images/dextrade-full.svg`,
-      reloadOnDisconnect: false,
-      enableMobileWalletLink: true,
-    }),
-  ],
+  features: {
+    analytics: true,
+  },
+  themeVariables: {
+    '--w3m-z-index': '1000',
+  },
+});
+
+const connectors: CreateConnectorFn[] = [
+  okto({
+    environment: 'sandbox',
+    clientPrivateKey: import.meta.env.VITE_OKTO_CLIENT_PRIVATE_KEY as `0x${string}`,
+    clientSWA: import.meta.env.VITE_OKTO_CLIENT_SWA as `0x${string}`,
+    googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
+  }),
+  metaMask(),
+  customWalletConnect(
+    {
+      projectId,
+      networks,
+    },
+    appkit,
+  ),
+  coinbaseWallet({
+    appName: metadata.name,
+    appLogoUrl: metadata.icons[0],
+    reloadOnDisconnect: false,
+    enableMobileWalletLink: true,
+  }),
+];
+
+export const config = createConfig({
+  chains: networks,
+  metadata,
+  connectors,
   client({ chain }) {
     return createClient({ chain, transport: http() });
   },
 });
-
-// createWeb3Modal({
-//   wagmiConfig: config,
-//   projectId,
-//   enableAnalytics: true, // Optional - defaults to your Cloud configuration
-//   enableOnramp: true, // Optional - false as default
-// });
-
-// // 2. Create a metadata object - optional
-// const metadata = {
-//   name: 'AppKit',
-//   description: 'AppKit Example',
-//   url: 'https://example.com', // origin must match your domain & subdomain
-//   icons: ['https://avatars.githubusercontent.com/u/179229932'],
-// };
-
-// // 3. Set the networks
-// const networks = [mainnet, arbitrum, bsc, avalanche, base, sepolia, xdc, solana];
-
-// // 0. Set up Solana Adapter
-// export const solanaWeb3JsAdapter = new SolanaAdapter({
-//   wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
-// });
-
-// // const connectors: CreateConnectorFn[] = []
-// // connectors.push(walletConnect({ projectId, metadata, showQrModal: false })) // showQrModal must be false
-// // connectors.push(injected({ shimDisconnect: true }))
-// // connectors.push(
-// //   coinbaseWallet({
-// //     appName: metadata.name,
-// //     appLogoUrl: metadata.icons[0]
-// //   })
-// // );
-
-// // 4. Create Wagmi Adapter
-// export const wagmiAdapter = new WagmiAdapter({
-//   networks: chains,
-//   projectId,
-// });
-
-// // 5. Create modal
-// createAppKit({
-//   adapters: [wagmiAdapter],
-//   networks: chains,
-//   projectId,
-//   metadata,
-//   features: {
-//     analytics: true, // Optional - defaults to your Cloud configuration
-//   },
-// });
