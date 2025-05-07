@@ -75,9 +75,27 @@ export default function P2PAds() {
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
 
-  const { isLoading: isPairGroupsLoading, data: pairGroups } = useQuery({
+  const {
+    isLoading: isPairGroupsLoading,
+    fetchNextPage: fetchNextPairGroupsPage,
+    data: pairGroupsData,
+    hasNextPage: hasNextPairGroupsPage,
+  } = useInfiniteQuery({
     queryKey: ['pairGroups'],
-    queryFn: () => exchangerService.getExchangerFilterGroup(),
+    queryFn: ({ pageParam = 1 }) =>
+      exchangerService.getExchangerFilterGroup({
+        query: {
+          page: pageParam,
+          size: PER_PAGE_SIZE,
+        },
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data.length < PER_PAGE_SIZE) {
+        return null;
+      }
+      return lastPage.data.length ? allPages.length + 1 : null;
+    },
     enabled: !hasQueryParams,
   });
 
@@ -212,37 +230,44 @@ export default function P2PAds() {
             gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
             gap={2}
           >
-            {pairGroups?.data.map((group) => (
-              <PairGroupCard
-                key={`${group.fromTicker}-${group.toTicker}`}
-                group={{
-                  fromTicker: group.fromTicker || '',
-                  toTicker: group.toTicker || '',
-                  total: group.total || 0,
-                  officialMerchantCount: group.officialMerchantCount || 0,
-                  minTradeAmount: group.minTradeAmount || 0,
-                  maxTradeAmount: group.maxTradeAmount || 0,
-                  maxReserve: group.maxReserve || 0,
-                }}
-                onClick={() =>
-                  handlePairGroupClick(
-                    group.fromTicker || '',
-                    group.toTicker || '',
-                  )
-                }
-              />
-            ))}
+            {pairGroupsData?.pages.map((page) =>
+              page.data.map((group) => (
+                <PairGroupCard
+                  key={`${group.fromTicker}-${group.toTicker}`}
+                  group={{
+                    fromTicker: group.fromTicker || '',
+                    toTicker: group.toTicker || '',
+                    total: group.total || 0,
+                    officialMerchantCount: group.officialMerchantCount || 0,
+                    minTradeAmount: group.minTradeAmount || 0,
+                    maxTradeAmount: group.maxTradeAmount || 0,
+                    maxReserve: group.maxReserve || 0,
+                  }}
+                  onClick={() =>
+                    handlePairGroupClick(
+                      group.fromTicker || '',
+                      group.toTicker || '',
+                    )
+                  }
+                />
+              )),
+            )}
           </Box>
         )}
 
         <InView
           onChange={(inView) => {
-            if (inView && hasNextPage && hasQueryParams) {
-              fetchNextPage();
+            if (inView) {
+              if (hasQueryParams && hasNextPage) {
+                fetchNextPage();
+              } else if (!hasQueryParams && hasNextPairGroupsPage) {
+                fetchNextPairGroupsPage();
+              }
             }
           }}
         >
-          {isLoading || (!isLoading && hasNextPage) ? (
+          {isLoading ||
+          (!isLoading && (hasNextPage || hasNextPairGroupsPage)) ? (
             [...Array(3)].map((_, idx) => (
               <Box key={idx} marginTop={1} marginBottom={1}>
                 <AdPreviewSkeleton />

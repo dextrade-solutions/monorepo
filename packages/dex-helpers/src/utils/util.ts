@@ -113,16 +113,22 @@ export function formatFundsAmount(
   const beforeDecimal = parsed[0];
   let afterDecimal = parsed[1] || '0';
 
+  if (Number(amount) > 10) {
+    maxDecimalsLen = 2;
+  }
+
   if (afterDecimal !== '0') {
     afterDecimal = afterDecimal.replace(/0+$/, ''); // Remove trailing zeros
-    const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // default: grabs 3 most significant digits
+    const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // Default: grabs 3 most significant digits
     if (sigDigits) {
       afterDecimal = sigDigits[0];
     }
   }
+
   if (afterDecimal.length >= maxDecimalsLen) {
     afterDecimal = afterDecimal.slice(0, maxDecimalsLen);
   }
+
   if (Number(afterDecimal) > 0) {
     return `${beforeDecimal}.${afterDecimal} ${currencyCode}`;
   }
