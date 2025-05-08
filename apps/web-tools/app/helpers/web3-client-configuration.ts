@@ -1,9 +1,8 @@
 import { createAppKit } from '@reown/appkit';
-// import { mainnet, arbitrum, base, polygon, bsc } from '@reown/appkit/networks';
-// import { createAppKit } from '@reown/appkit/react';
-import { WagmiAdapter, authConnector } from '@reown/appkit-adapter-wagmi';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { createClient } from 'viem';
 import { createConfig, http, CreateConnectorFn } from 'wagmi';
+import { trustWalletConnect } from 'dex-connect';
 import {
   arbitrum,
   avalanche,
@@ -95,6 +94,7 @@ const appkit = createAppKit({
 
 const connectors: CreateConnectorFn[] = [
   metaMask(),
+  trustWalletConnect(),
   customWalletConnect(
     {
       projectId,

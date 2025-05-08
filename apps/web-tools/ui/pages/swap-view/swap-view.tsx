@@ -1,7 +1,7 @@
-import { Box, Typography } from '@mui/material';
+import { Alert, Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
-import { AdItem, AssetModel } from 'dex-helpers/types';
+import { AdItem, AssetModel, CoinModel } from 'dex-helpers/types';
 import { Icon, Button, Atom } from 'dex-ui';
 import React, { useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -36,6 +36,7 @@ export default function AdView() {
   const [assetFrom, setAssetFrom] = React.useState<AssetModel | null>(null);
   const [assetTo, setAssetTo] = React.useState<AssetModel | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<React.ReactNode | null>(null);
   const dispatch = useDispatch();
   const firstAdFilter = useMemo(
     () => ({
@@ -72,14 +73,36 @@ export default function AdView() {
 
   const [currentAd] = allAds;
 
+  const setAsset = (
+    coin: CoinModel,
+    priceInUsdt: number,
+    recieveClientCoin: boolean,
+  ) => {
+    try {
+      const asset = parseCoin(coin, priceInUsdt);
+      if (!asset) {
+        throw new Error('Asset is null');
+      }
+      if (recieveClientCoin) {
+        setAssetTo(asset);
+      } else {
+        setAssetFrom(asset);
+      }
+    } catch (e) {
+      setError(
+        <>
+          Coin <b>{coin.networkName}</b> <b>{coin.networkType}</b>{' '}
+          <b>{coin.ticker}</b> temporary is not supported, try again later or
+          contact support
+        </>,
+      );
+    }
+  };
+
   useEffect(() => {
     if (currentAd) {
-      setAssetFrom(
-        parseCoin(currentAd.fromCoin, currentAd.coinPair.priceCoin1InUsdt),
-      );
-      setAssetTo(
-        parseCoin(currentAd.toCoin, currentAd.coinPair.priceCoin2InUsdt),
-      );
+      setAsset(currentAd.fromCoin, currentAd.coinPair.priceCoin1InUsdt, false);
+      setAsset(currentAd.toCoin, currentAd.coinPair.priceCoin2InUsdt, true);
       if (initialAmount) {
         dispatch(setFromTokenInputValue(initialAmount));
       }
@@ -111,12 +134,15 @@ export default function AdView() {
           </Button>
         </Box>
       </Box>
-      <SwapViewContent
-        ad={currentAd}
-        assetFrom={assetFrom}
-        assetTo={assetTo}
-        isLoading={isLoading}
-      />
+      {!error && assetFrom && assetTo && (
+        <SwapViewContent
+          ad={currentAd}
+          assetFrom={assetFrom}
+          assetTo={assetTo}
+          isLoading={isLoading}
+        />
+      )}
+      {error && <Alert severity="error">{error}</Alert>}
     </Box>
   );
 }
