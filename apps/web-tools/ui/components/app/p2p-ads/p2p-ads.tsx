@@ -1,5 +1,5 @@
 import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { exchangerService } from 'dex-services';
@@ -104,7 +104,7 @@ export default function P2PAds() {
     isLoading: isAdsLoading,
     fetchNextPage,
     data,
-    hasNextPage,
+    hasNextPage: hasNextAdsPage,
   } = useInfiniteQuery<AdItem[]>({
     queryKey: ['p2pAds', filterModel],
     queryFn: ({ pageParam }) =>
@@ -151,6 +151,11 @@ export default function P2PAds() {
   const renderList = flatMap(data?.pages || []);
   const isLoading = isPairGroupsLoading || isAdsLoading;
   const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
+  const pairGroupsMode = !hasQueryParams;
+
+  const hasNextPage =
+    (!pairGroupsMode && hasNextAdsPage) ||
+    (pairGroupsMode && hasNextPairGroupsPage);
 
   return (
     <Box className="p2p-ads">
@@ -258,16 +263,15 @@ export default function P2PAds() {
         <InView
           onChange={(inView) => {
             if (inView) {
-              if (hasQueryParams && hasNextPage) {
-                fetchNextPage();
-              } else if (!hasQueryParams && hasNextPairGroupsPage) {
+              if (pairGroupsMode && hasNextPage) {
                 fetchNextPairGroupsPage();
+              } else if (!pairGroupsMode && hasNextPage) {
+                fetchNextPage();
               }
             }
           }}
         >
-          {isLoading ||
-          (!isLoading && (hasNextPage || hasNextPairGroupsPage)) ? (
+          {isLoading || (hasNextPage && !isEmptyResult) ? (
             [...Array(3)].map((_, idx) => (
               <Box key={idx} marginTop={1} marginBottom={1}>
                 <AdPreviewSkeleton />
