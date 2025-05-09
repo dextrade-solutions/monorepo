@@ -18,6 +18,7 @@ export function useEVMProviders({ config }: { config: any }) {
         ),
     )
     .map(function (item) {
+      const isOkto = item.id === 'okto';
       const connector: ConnectionProvider = {
         type: WalletConnectionType.eip6963,
         icon: item.icon || getWalletIcon(item.name),
@@ -35,7 +36,6 @@ export function useEVMProviders({ config }: { config: any }) {
         },
         async txSend(params) {
           const { asset, amount, recipient } = params;
-          debugger;
           const isConnected = await item.isAuthorized();
 
           if (!isConnected) {
@@ -50,7 +50,7 @@ export function useEVMProviders({ config }: { config: any }) {
           if (currentChainId !== hexChainId) {
             await provider.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: hexChainId }],
+              params: [isOkto ? asset.chainId : { chainId: hexChainId }],
             });
           }
 
@@ -66,6 +66,9 @@ export function useEVMProviders({ config }: { config: any }) {
               from,
               to: recipient,
             });
+            if (isOkto && !txParams.data) {
+              txParams.data = '0x';
+            }
             return sendTransactionAsync({
               connector: item,
               ...txParams,
