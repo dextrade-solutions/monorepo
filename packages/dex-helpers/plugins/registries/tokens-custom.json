@@ -131,5 +131,20 @@
         "symbol": null
       }
     ]
+  },
+  {
+    "uid": "usd-coin",
+    "name": "USD Coin",
+    "code": "USDC",
+    "market_cap_rank": null,
+    "coingecko_id": "usd-coin",
+    "platforms": [
+      {
+        "type": "solana",
+        "decimals": 6,
+        "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "symbol": null
+      }
+    ]
   }
 ]

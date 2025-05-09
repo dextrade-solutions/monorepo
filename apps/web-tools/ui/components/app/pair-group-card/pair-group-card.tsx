@@ -12,6 +12,7 @@ import { AssetItem, Icon } from 'dex-ui';
 import React from 'react';
 
 import { getAssetByIso } from '../../../../app/helpers/p2p';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 interface PairGroup {
   fromTicker: string;
@@ -29,6 +30,7 @@ interface IProps {
 }
 
 export const PairGroupCard = ({ group, onClick }: IProps) => {
+  const t = useI18nContext();
   const fromAsset = getAssetByIso(group.fromTicker);
   const toAsset = getAssetByIso(group.toTicker);
 
@@ -88,7 +90,7 @@ export const PairGroupCard = ({ group, onClick }: IProps) => {
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>Max Reserve</Typography>
+            <Typography>{t('reserve')}</Typography>
             <Typography fontWeight="bold">
               {formatCurrency(group.maxReserve || 0, group.toTicker)}
             </Typography>

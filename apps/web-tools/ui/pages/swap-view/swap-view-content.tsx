@@ -14,9 +14,9 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 
 // Define the type for the props of SwapViewContent
 export interface SwapViewContentProps {
-  ad: AdItem | null; // 'ad' can be an AdItem or null if no ad is found
-  assetFrom: AssetModel | null; // 'assetFrom' can be an AssetModel or null
-  assetTo: AssetModel | null; // 'assetTo' can be an AssetModel or null
+  ad: AdItem | null;
+  assetFrom: AssetModel;
+  assetTo: AssetModel;
   isLoading: boolean;
 }
 
@@ -82,7 +82,7 @@ export const SwapViewContent = ({
     );
   }
 
-  if (ad && assetFrom && assetTo) {
+  if (ad) {
     return <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
   }
 

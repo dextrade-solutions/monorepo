@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { PaymentContentTypes, humanizePaymentMethodName } from 'dex-helpers';
-import PropTypes from 'prop-types';
+import { PaymentMethod } from 'dex-helpers/types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,22 +9,20 @@ import Image from '../../ui/image';
 
 export default function PaymentMethodExpanded({
   title,
-  paymentMethod: item,
+  name,
+  fields = [],
   nocopy,
 }: {
   title: string;
-  paymentMethod: any;
+  name: string;
+  fields: PaymentMethod['fields'];
   nocopy?: boolean;
 }) {
   const { t } = useTranslation();
-  const fields = JSON.parse(item.data || '{}');
+  // const fields = JSON.parse(item.data || '{}');
 
-  function getOutput(fieldKey, value) {
-    const [contentType, id] = fieldKey.split(':');
-
-    const field = item.paymentMethod.fields.find((f) =>
-      id ? f.id === Number(id) : f.contentType === contentType,
-    );
+  function getOutput(field: PaymentMethod['fields'][0]) {
+    const { value } = field;
     const fieldName = field.name || t(field.contentType);
     switch (field.contentType) {
       case PaymentContentTypes.image:
@@ -32,7 +30,7 @@ export default function PaymentMethodExpanded({
         return <Image src={value} />;
       default:
         return (
-          <Box key={fieldKey} display="flex" alignItems="center">
+          <Box key={field.id} display="flex" alignItems="center">
             <Typography
               className="flex-grow nowrap"
               color="text.secondary"
@@ -50,7 +48,7 @@ export default function PaymentMethodExpanded({
     }
   }
 
-  const fieldsList = Object.entries(fields);
+  // const fieldsList = Object.entries(fields);
 
   return (
     <Box width="100%">
@@ -59,15 +57,13 @@ export default function PaymentMethodExpanded({
           {title}
         </Typography>
       )}
-      <Typography>
-        {humanizePaymentMethodName(item.paymentMethod.name, t)}
-      </Typography>
-      {fieldsList.length > 0 && (
+      <Typography>{humanizePaymentMethodName(name, t)}</Typography>
+      {fields.length > 0 && (
         <Box sx={{ bgcolor: 'secondary.dark', borderRadius: 0.5, mt: 1, p: 1 }}>
-          {fieldsList
-            .filter(([_, value]) => Boolean(value))
-            .map(([field, value]) => (
-              <Box key={field}>{getOutput(field, value)}</Box>
+          {fields
+            .filter((f) => Boolean(f.value))
+            .map((f) => (
+              <Box key={f.id}>{getOutput(f)}</Box>
             ))}
         </Box>
       )}

@@ -6,48 +6,6 @@ import { generateTxParams } from '../../app/helpers/transactions';
 import P2PService from '../../app/services/p2p-service';
 import { FeeParams, PublicFeeParams } from '../types';
 
-// Deprecated, useEstimatedFee
-// const useWCFee = ({ asset, amount = 0, from, to }: FeeParams) => {
-//   const chainId = asset.chainId ? hexToNumber(asset.chainId) : undefined;
-//   const estimateFeePerGas = useEstimateFeesPerGas({ chainId });
-
-//   const txParams = generateTxParams({
-//     asset,
-//     amount,
-//     from,
-//     to,
-//   });
-
-//   let bufferMultiplier = 1;
-//   if (txParams.data) {
-//     bufferMultiplier = 2;
-//   }
-
-//   const estimateGas = useEstimateGas({
-//     chainId,
-//     account: txParams.from,
-//     to: txParams.to,
-//     data: txParams.data,
-//     value: txParams.value,
-//   });
-
-//   if (estimateGas.data && estimateFeePerGas.data) {
-//     const fee =
-//       Number(
-//         formatUnits(estimateGas.data * estimateFeePerGas.data.maxFeePerGas, 18),
-//       ) * bufferMultiplier;
-
-//     return {
-//       fee,
-//       loading: false,
-//     };
-//   }
-
-//   return {
-//     loading: true,
-//   };
-// };
-
 export const useDexTradeFee = (params: PublicFeeParams) => {
   const { data, isLoading } = useQuery({
     queryKey: ['public-get-market-fee', params],
@@ -114,8 +72,31 @@ export const useDefaultFee = ({ asset, amount, from, to }: FeeParams) => {
     loading: isLoading,
   };
 };
+const useTransakFee = (params: FeeParams) => {
+  const { data: fee, isLoading } = useQuery({
+    queryKey: ['estimate-fee', params],
+    queryFn: () =>
+      P2PService.estimateFee({
+        from: params.ad.fromCoin.ticker,
+        to: params.ad.toCoin.ticker,
+        toNetwork: 'bsc',
+        amount: params.amount,
+        network: params.ad.fromCoin.networkName,
+      }).then(({ data }) => {
+        return Number(formatUnits(BigInt(data), 6));
+      }),
+  });
+
+  return {
+    fee,
+    loading: isLoading,
+  };
+};
 
 const getFeeHook = (params: FeeParams) => {
+  if (params.ad.provider === 'TRANSAK') {
+    return useTransakFee;
+  }
   if (params.asset.chainId) {
     return useEVMFee;
   }

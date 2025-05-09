@@ -111,7 +111,7 @@ const AdPreview = ({
             justifyContent="space-between"
             alignContent="center"
           >
-            <Typography>{t('quantity')}</Typography>
+            <Typography>{t('Available')}</Typography>
             <Typography fontWeight="bold">
               {formatCurrency(ad.reserveSum, ad.toCoin.ticker)}
             </Typography>

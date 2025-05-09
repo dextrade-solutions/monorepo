@@ -1,5 +1,5 @@
 import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { SECOND } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { exchangerService } from 'dex-services';
@@ -75,9 +75,27 @@ export default function P2PAds() {
     [fromToken, toToken, providerName, sortBy, sortDesc, fromTokenInputValue],
   );
 
-  const { isLoading: isPairGroupsLoading, data: pairGroups } = useQuery({
+  const {
+    isLoading: isPairGroupsLoading,
+    fetchNextPage: fetchNextPairGroupsPage,
+    data: pairGroupsData,
+    hasNextPage: hasNextPairGroupsPage,
+  } = useInfiniteQuery({
     queryKey: ['pairGroups'],
-    queryFn: () => exchangerService.getExchangerFilterGroup(),
+    queryFn: ({ pageParam = 1 }) =>
+      exchangerService.getExchangerFilterGroup({
+        query: {
+          page: pageParam,
+          size: PER_PAGE_SIZE,
+        },
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.data.length < PER_PAGE_SIZE) {
+        return null;
+      }
+      return lastPage.data.length ? allPages.length + 1 : null;
+    },
     enabled: !hasQueryParams,
   });
 
@@ -86,7 +104,7 @@ export default function P2PAds() {
     isLoading: isAdsLoading,
     fetchNextPage,
     data,
-    hasNextPage,
+    hasNextPage: hasNextAdsPage,
   } = useInfiniteQuery<AdItem[]>({
     queryKey: ['p2pAds', filterModel],
     queryFn: ({ pageParam }) =>
@@ -133,6 +151,11 @@ export default function P2PAds() {
   const renderList = flatMap(data?.pages || []);
   const isLoading = isPairGroupsLoading || isAdsLoading;
   const isEmptyResult = data && !isLoading && !isFetching && !renderList.length;
+  const pairGroupsMode = !hasQueryParams;
+
+  const hasNextPage =
+    (!pairGroupsMode && hasNextAdsPage) ||
+    (pairGroupsMode && hasNextPairGroupsPage);
 
   return (
     <Box className="p2p-ads">
@@ -212,37 +235,43 @@ export default function P2PAds() {
             gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
             gap={2}
           >
-            {pairGroups?.data.map((group) => (
-              <PairGroupCard
-                key={`${group.fromTicker}-${group.toTicker}`}
-                group={{
-                  fromTicker: group.fromTicker || '',
-                  toTicker: group.toTicker || '',
-                  total: group.total || 0,
-                  officialMerchantCount: group.officialMerchantCount || 0,
-                  minTradeAmount: group.minTradeAmount || 0,
-                  maxTradeAmount: group.maxTradeAmount || 0,
-                  maxReserve: group.maxReserve || 0,
-                }}
-                onClick={() =>
-                  handlePairGroupClick(
-                    group.fromTicker || '',
-                    group.toTicker || '',
-                  )
-                }
-              />
-            ))}
+            {pairGroupsData?.pages.map((page) =>
+              page.data.map((group) => (
+                <PairGroupCard
+                  key={`${group.fromTicker}-${group.toTicker}`}
+                  group={{
+                    fromTicker: group.fromTicker || '',
+                    toTicker: group.toTicker || '',
+                    total: group.total || 0,
+                    officialMerchantCount: group.officialMerchantCount || 0,
+                    minTradeAmount: group.minTradeAmount || 0,
+                    maxTradeAmount: group.maxTradeAmount || 0,
+                    maxReserve: group.maxReserve || 0,
+                  }}
+                  onClick={() =>
+                    handlePairGroupClick(
+                      group.fromTicker || '',
+                      group.toTicker || '',
+                    )
+                  }
+                />
+              )),
+            )}
           </Box>
         )}
 
         <InView
           onChange={(inView) => {
-            if (inView && hasNextPage && hasQueryParams) {
-              fetchNextPage();
+            if (inView) {
+              if (pairGroupsMode && hasNextPage) {
+                fetchNextPairGroupsPage();
+              } else if (!pairGroupsMode && hasNextPage) {
+                fetchNextPage();
+              }
             }
           }}
         >
-          {isLoading || (!isLoading && hasNextPage) ? (
+          {isLoading || (hasNextPage && !isEmptyResult) ? (
             [...Array(3)].map((_, idx) => (
               <Box key={idx} marginTop={1} marginBottom={1}>
                 <AdPreviewSkeleton />

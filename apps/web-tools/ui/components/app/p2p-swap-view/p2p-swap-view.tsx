@@ -162,6 +162,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     amount: assetInputFrom.value,
     from: assetInputFrom.account?.address,
     to: ad.walletAddress,
+    ad,
   });
 
   const insufficientNativeFee =

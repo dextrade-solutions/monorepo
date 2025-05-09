@@ -1,4 +1,4 @@
-import { AssetModel } from 'dex-helpers/types';
+import { AdItem, AssetModel } from 'dex-helpers/types';
 
 import { WalletConnectionType } from '../helpers/constants/wallets';
 
@@ -13,6 +13,8 @@ export type FeeParams = {
   amount?: string | number;
   from?: string | null;
   to: string;
+  provider?: string;
+  ad: AdItem;
 };
 
 export type PublicFeeParams = {

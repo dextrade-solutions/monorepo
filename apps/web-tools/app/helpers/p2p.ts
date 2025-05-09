@@ -10,6 +10,9 @@ import { EXCHANGE_VIEW_ROUTE } from '../../ui/helpers/constants/routes';
 const assetDict: { [key: string]: AssetModel } = allAssets;
 
 export function getAssetByIso(iso: string): AssetModel | undefined {
+  if (iso.toLowerCase() === 'bnb') {
+    return assetDict['BNB_BSC'];
+  }
   return assetDict[iso];
 }
 

@@ -178,7 +178,7 @@
     "message": "Choose Payment Method"
   },
   "slippageTolerance": {
-    "message": "Slippage Tolerance"
+    "message": "Slippage"
   },
   "atomic-swap": {
     "message": "Atomic Swap"
@@ -338,7 +338,7 @@
     "message": "Online"
   },
   "reserve": {
-    "message": "Available quantity"
+    "message": "Available"
   },
   "min": {
     "message": "Min"

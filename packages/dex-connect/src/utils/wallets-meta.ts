@@ -140,7 +140,7 @@ export const TRUSTWALLET = {
   get installed() {
     return Boolean(getTrustWalletProvider());
   },
-  deepLink: 'https://link.trustwallet.com/open_url?coin_id=20000714&url=',
+  deepLink: 'https://link.trustwallet.com/open_url?url=',
   downloadLink: 'https://trustwallet.com/browser-extension',
   guide: {
     desktop: 'https://trustwallet.com/browser-extension',
@@ -194,7 +194,7 @@ export const PHANTOM = {
   get installed() {
     return (
       typeof window !== 'undefined' &&
-      window.navigator.userAgent.includes('Phantom')
+      (window.navigator.userAgent.includes('Phantom') || window.phantom)
     );
   },
   get isWebView() {

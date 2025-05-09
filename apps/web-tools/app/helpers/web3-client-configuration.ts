@@ -1,9 +1,9 @@
 import { createAppKit } from '@reown/appkit';
-// import { mainnet, arbitrum, base, polygon, bsc } from '@reown/appkit/networks';
-// import { createAppKit } from '@reown/appkit/react';
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { createClient } from 'viem';
 import { okto } from '@okto_web3/wagmi-adapter';
 import { createConfig, http, CreateConnectorFn } from 'wagmi';
+import { trustWalletConnect } from 'dex-connect';
 import {
   arbitrum,
   avalanche,
@@ -100,6 +100,7 @@ const connectors: CreateConnectorFn[] = [
     googleClientId: import.meta.env.VITE_GOOGLE_CLIENT_ID as string,
   }),
   metaMask(),
+  trustWalletConnect(),
   customWalletConnect(
     {
       projectId,
