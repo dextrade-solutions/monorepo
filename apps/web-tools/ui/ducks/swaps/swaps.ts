@@ -182,9 +182,8 @@ export const createSwapP2P = (props: {
         amount1: Number(from.amount),
         amount2: Number(to.amount),
         exchangerPaymentMethodId,
-        // ? to.paymentMethod.flatMap((i) => i.userPaymentMethodId)
-        clientPaymentMethodId: to.paymentMethod
-          ? to.paymentMethod[0].userPaymentMethodId
+        clientPaymentMethodIds: to.paymentMethod
+          ? to.paymentMethod.flatMap((i) => i.userPaymentMethodId)
           : undefined,
         clientWalletAddress: getSerializedAddressFromInput(from),
         clientWalletAddressInNetwork2: getSerializedAddressFromInput(to),

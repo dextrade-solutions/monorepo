@@ -5,8 +5,6 @@ import {
   TextField,
   TextareaAutosize,
   Typography,
-  ListItem,
-  ListItemText,
   CircularProgress,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
@@ -18,7 +16,6 @@ import {
   humanizePaymentMethodName,
 } from 'dex-helpers';
 import { DextradeTypes, paymentService } from 'dex-services';
-import { Edit } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -84,6 +81,7 @@ const FieldProvider = ({
 interface PaymentMethodFormProps {
   value?: DextradeTypes.PaymentMethodsModel[];
   currency?: string | null;
+  isViewMode?: boolean;
   onCreated?: (
     v: DextradeTypes.PaymentMethodsModel[],
     updatedAll: boolean,
@@ -101,6 +99,7 @@ export const PaymentMethodForm = ({
   value = [], // selected payment methods
   currency = null,
   paymentMethods,
+  isViewMode,
   onCreated,
   onChoosePaymentMethod,
   paymentMethodCurrencies,
@@ -137,6 +136,9 @@ export const PaymentMethodForm = ({
     targetValue: any,
     foundErrors: string[] | null,
   ) => {
+    if (isViewMode) {
+      return;
+    }
     const forUpdate = {
       [targetName]: targetValue,
     };
@@ -155,26 +157,18 @@ export const PaymentMethodForm = ({
         [...(formValues.selectedPaymentMethods || []), paymentMethod],
         null,
       );
-      onChoosePaymentMethod &&
-        onChoosePaymentMethod(paymentMethod.userPaymentMethod);
+      onChoosePaymentMethod && onChoosePaymentMethod(paymentMethod);
       setPaymentMethod(undefined);
     }
   };
   const handleSetCurrentPaymentMethod = useCallback(
     (method: DextradeTypes.BankDictModel) => {
       setPaymentMethod(method);
-      if (method.userPaymentMethod) {
-        try {
-          const parsedData = JSON.parse(method.userPaymentMethod.data);
-          setFormValues({
-            ...formValues,
-            ...parsedData,
-            userPaymentMethodId: method.userPaymentMethod.userPaymentMethodId,
-            paymentMethod: method,
-          });
-        } catch (e) {
-          console.error('Error parsing userPaymentMethod.data', e);
-        }
+      if (method.userPaymentMethodId) {
+        setFormValues({
+          ...formValues,
+          userPaymentMethodId: method.userPaymentMethodId,
+        });
       } else {
         setEdit(true);
       }
@@ -270,7 +264,7 @@ export const PaymentMethodForm = ({
     <Box>
       {!paymentMethod && (
         <>
-          {!currency && (
+          {!currency && !isViewMode && (
             <FieldProvider
               name="currency"
               validators={[isRequired]}
@@ -321,10 +315,10 @@ export const PaymentMethodForm = ({
                       }}
                       marginRight={2}
                     />
-                    {option.userPaymentMethod && !selected ? (
+                    {option.userPaymentMethodId && !selected ? (
                       <PaymentMethodExpanded
-                        name={option.userPaymentMethod.paymentMethod.name}
-                        fields={option.userPaymentMethod.paymentMethod.fields}
+                        name={option.name}
+                        fields={option.fields}
                         nocopy
                       />
                     ) : (
@@ -337,7 +331,7 @@ export const PaymentMethodForm = ({
                   if (
                     v.length === 0 ||
                     method.fields.length === 0 ||
-                    method.userPaymentMethod ||
+                    method.userPaymentMethodId ||
                     isDeletion
                   ) {
                     onChangeWrapper(v);
