@@ -214,28 +214,20 @@ export const PaymentMethodForm = ({
       }));
 
       if (paymentMethod) {
-        const data = Object.keys(formValues).reduce(
-          (acc: any, formFieldName) => {
-            if (formFieldName.includes(':')) {
-              const [, id] = formFieldName.split(':');
-              const field = paymentMethod.fields.find(
-                (f: any) => f.id === Number(id),
-              );
-              if (field) {
-                return {
-                  ...acc,
-                  [formFieldName]: formValues[formFieldName],
-                };
-              }
-            }
-            return acc;
-          },
-          {},
-        );
+        const newFields = (paymentMethod.fields || []).map((field) => {
+          const formFieldName = `${field.contentType}:${field.id}`;
+          return {
+            ...field,
+            value: formValues[formFieldName],
+          };
+        });
+
         paymentMethodsPayload.push({
           balanceIsRequired: false,
-          paymentMethod,
-          data: JSON.stringify(data),
+          paymentMethod: {
+            ...paymentMethod,
+            fields: newFields,
+          },
           currency: { iso: formValues.currency },
         });
       }
@@ -331,7 +323,8 @@ export const PaymentMethodForm = ({
                     />
                     {option.userPaymentMethod && !selected ? (
                       <PaymentMethodExpanded
-                        paymentMethod={option.userPaymentMethod}
+                        name={option.userPaymentMethod.paymentMethod.name}
+                        fields={option.userPaymentMethod.paymentMethod.fields}
                         nocopy
                       />
                     ) : (

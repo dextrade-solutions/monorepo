@@ -26,7 +26,11 @@ export default function PaymentMethodDisplay({
       )}
       <Box {...args}>
         {expanded ? (
-          <PaymentMethodExpanded title={title} paymentMethod={paymentMethod} />
+          <PaymentMethodExpanded
+            title={title}
+            name={paymentMethod.paymentMethod.name}
+            fields={paymentMethod.paymentMethod.fields}
+          />
         ) : (
           <Box display="flex">
             <Typography className="flex-grow">{title}</Typography>

@@ -1,6 +1,7 @@
 import { Box, Modal } from '@mui/material';
 import { UserPaymentMethod } from 'dex-helpers/types';
 import React from 'react';
+
 import PaymentMethodExpanded from '../../payment-method-expanded';
 
 interface IProps {
@@ -21,7 +22,11 @@ export const PaymentMethodPreview = ({
         className="modal-generic"
         padding={2}
       >
-        <PaymentMethodExpanded title={title} paymentMethod={paymentMethod} />
+        <PaymentMethodExpanded
+          title={title}
+          fields={paymentMethod.paymentMethod.fields}
+          name={paymentMethod.paymentMethod.name}
+        />
       </Box>
     </Modal>
   );
