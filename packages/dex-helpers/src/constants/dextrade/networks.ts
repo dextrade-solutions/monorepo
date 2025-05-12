@@ -22,6 +22,7 @@ export enum NetworkTypes {
   solana = 'SOLANA',
   xrc20 = 'XRC20',
   polygon = 'POLYGON',
+  arbitrum = 'ARBITRUM',
 }
 
 export enum NetworkNames {
@@ -35,7 +36,7 @@ export enum NetworkNames {
   ton = 'the_open_network',
   bitcoin = 'bitcoin',
   ethereum = 'ethereum',
-  arbitrum = 'arbitrum',
+  arbitrum = 'arbitrumOne',
   avalance = 'avalance',
   gnosis = 'gnosis',
   base = 'base',
@@ -183,6 +184,10 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
   [NetworkTypes.xrc20]: {
     network: NetworkNames.xdc,
     info: BUILT_IN_NETWORKS[NetworkNames.xdc],
+  },
+  [NetworkTypes.arbitrum]: {
+    network: NetworkNames.arbitrum,
+    info: BUILT_IN_NETWORKS[NetworkNames.arbitrum],
   },
 };
 

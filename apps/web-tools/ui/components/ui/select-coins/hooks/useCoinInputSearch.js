@@ -1,7 +1,6 @@
 import Fuse from 'fuse.js';
 import { useRef, useCallback, useState } from 'react';
 
-
 export const useCoinInputSearch = (params) => {
   const { fuseSearchKeys } = params;
   const prevList = useRef([]);
@@ -11,7 +10,7 @@ export const useCoinInputSearch = (params) => {
   const handleSearch = async (value = '') => {
     const searchQuery = value.trim();
     const fuseSearchResult = fuseRef.current.search(searchQuery, {
-      limit: 6,
+      limit: 8,
     });
     const search = fuseSearchResult;
     setResult(search);
