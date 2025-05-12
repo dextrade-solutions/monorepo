@@ -28,7 +28,10 @@ export const getIsoCoin = (coin: CoinModel) => {
   if (isNativeCoin(coin)) {
     iso = `${BUILT_IN_NETWORKS[coin.networkName].iso}`;
     if (coin.networkName === NetworkNames.binance) {
-      iso = `BNB_${iso}`; // exception only of bnb network
+      iso = `BNB_${iso}`;
+    }
+    if (coin.networkName === NetworkNames.arbitrum) {
+      iso = `ETH_${iso}`;
     }
   } else if (isFiatCoin(coin)) {
     iso = `${coin.ticker}`;
