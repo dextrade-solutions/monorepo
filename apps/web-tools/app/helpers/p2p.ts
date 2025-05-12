@@ -37,6 +37,9 @@ export function getNative(network: NetworkNames): AssetModel {
   if (network === NetworkNames.binance) {
     iso = 'BNB_BSC'; // Exception rule for bnb
   }
+  if (network === NetworkNames.arbitrum) {
+    iso = 'ETH_ARB';
+  }
   const item = getAssetByIso(iso);
   if (!item) {
     throw new Error(`getNative - not found token with network ${network}`);
