@@ -5,13 +5,11 @@ import {
   Button,
   Card,
   CardContent,
-  Divider,
   Typography,
 } from '@mui/material';
 import { WalletConnectionType } from 'dex-connect';
 import {
   formatCurrency,
-  formatFundsAmount,
   P2P_STAGES,
   shortenAddress,
   TRADE_ACTIVE_STATUSES,
@@ -257,10 +255,9 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
                 {t('using your bank account and press the confirm button')}
               </Alert>
               <Box marginTop={3}>
-                <Card variant="outlined" sx={{ bgcolor: 'primary.light' }}>
+                <Card variant="outlined">
                   <CardContent>
                     <PaymentMethodDisplay
-                      title={t('Exchanger Payment Method')}
                       paymentMethod={exchange.exchangerPaymentMethod}
                       expanded
                     />

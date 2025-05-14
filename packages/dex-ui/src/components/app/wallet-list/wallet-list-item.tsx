@@ -64,7 +64,9 @@ const WalletListItem: React.FC<WalletListItemProps> = ({
       <ListItemText
         primary={
           <>
-            <Typography component="span">{item.name}</Typography>
+            <Typography component="span">
+              {item.meta?.displayName || item.name}
+            </Typography>
             {!hideConnectionType &&
               item.connectionType && ( // Only render if connectionType exists
                 <Typography component="span" color="text.secondary" ml={1}>

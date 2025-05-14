@@ -23,6 +23,7 @@ export enum NetworkTypes {
   xrc20 = 'XRC20',
   polygon = 'POLYGON',
   arbitrum = 'ARBITRUM',
+  somnia = 'SOMNIA',
 }
 
 export enum NetworkNames {
@@ -45,6 +46,7 @@ export enum NetworkNames {
   solana = 'solana',
   xdc = 'xdc_network',
   multiversx = 'elrond',
+  somnia = 'somnia',
 
   // testnets
   sepolia = 'sepolia',
@@ -154,6 +156,19 @@ export const BUILT_IN_NETWORKS = {
     name: 'Multiversx',
     nativeCurrency: { name: 'Multiversx', symbol: 'EGLD', decimals: 18 },
   },
+  [NetworkNames.somnia]: {
+    id: 5234,
+    rpcUrls: {
+      default: {
+        http: ['https://dream-rpc.somnia.network/'],
+      },
+    },
+    iso: 'STT',
+    key: NetworkNames.somnia,
+    uid: 'somnia',
+    name: 'Somnia',
+    nativeCurrency: { name: 'Somnia', symbol: 'STT', decimals: 18 },
+  },
 };
 
 export const NETWORK_INFO_BY_TOKEN_TYPE = {
@@ -188,6 +203,10 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
   [NetworkTypes.arbitrum]: {
     network: NetworkNames.arbitrum,
     info: BUILT_IN_NETWORKS[NetworkNames.arbitrum],
+  },
+  [NetworkTypes.somnia]: {
+    network: NetworkNames.somnia,
+    info: BUILT_IN_NETWORKS[NetworkNames.somnia],
   },
 };
 

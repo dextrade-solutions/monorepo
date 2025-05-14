@@ -5,14 +5,7 @@ import {
   getAssociatedTokenAddressSync,
 } from '@solana/spl-token';
 import type { Account } from '@solana/spl-token';
-import type {
-  Commitment,
-  ConfirmOptions,
-  Connection,
-  PublicKey,
-  Signer,
-} from '@solana/web3.js';
-import { sendAndConfirmTransaction, Transaction } from '@solana/web3.js';
+import type { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 // import { getAccount } from '../state/account.js';
 // import { getAssociatedTokenAddressSync } from '../state/mint.js';

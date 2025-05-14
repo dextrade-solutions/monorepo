@@ -71,8 +71,8 @@ export const WALLET_CONNECT = {
 };
 export const OKTO_CONNECT = {
   name: 'okto',
-  displayName: 'OKTO',
-  icon: '/images/wallets/okto-icon.png',
+  displayName: 'Login via Google',
+  icon: '/images/google.png',
   supportMobileBrowser: true,
 };
 export const XVERSE = {
