@@ -9,6 +9,11 @@
  * ---------------------------------------------------------------
  */
 
+export interface ApiErrorResponse {
+  error?: string;
+  message?: string;
+}
+
 export interface ZealyAccountsModel {
   email?: string;
   wallet?: string;
@@ -53,13 +58,188 @@ export interface UtilsUTXOResponseModel {
   data?: UtilsUTXODataModel[];
 }
 
-export interface ProviderExchangerSettingsStatusRequestModel {
-  projectName?: string;
-  /** @format int64 */
-  exchangerSettingsId?: number;
-  status?: boolean;
-  /** @format int64 */
-  userId?: number;
+export interface TestModel {
+  data?: string;
+}
+
+export interface AffiliateFee {
+  brokerAddress?: string;
+  /** @format int32 */
+  feeBps?: number;
+}
+
+export interface Asset {
+  asset?: string;
+  /** @format double */
+  price?: number;
+  image?: string;
+}
+
+export interface BuyAsset {
+  chain?: string;
+  asset?: string;
+}
+
+export interface Chainflip {
+  sellAsset?: SellAsset;
+  buyAsset?: BuyAsset;
+  destinationAddress?: string;
+  channelMetadata?: ChannelMetadata;
+  affiliateFees?: AffiliateFee[];
+  refundParameters?: RefundParameters;
+  dcaParameters?: DcaParameters;
+  /** @format int32 */
+  brokerCommissionBps?: number;
+  /** @format int32 */
+  maxBoostFeeBps?: number;
+}
+
+export interface ChannelMetadata {
+  cfParameters?: string;
+  gasBudget?: string;
+  message?: string;
+}
+
+export interface DcaParameters {
+  /** @format int32 */
+  chunkInterval?: number;
+  /** @format int32 */
+  numberOfChunks?: number;
+}
+
+export interface EstimatedTime {
+  /** @format double */
+  inbound?: number;
+  /** @format double */
+  swap?: number;
+  /** @format double */
+  outbound?: number;
+  /** @format double */
+  total?: number;
+}
+
+export interface Fee {
+  type?: string;
+  amount?: string;
+  asset?: string;
+  chain?: string;
+  protocol?: string;
+}
+
+export interface Kado {
+  widgetUrl?: string;
+}
+
+export interface Leg {
+  provider?: string;
+  sellAsset?: string;
+  sellAmount?: string;
+  buyAsset?: string;
+  buyAmount?: string;
+  buyAmountMaxSlippage?: string;
+  fees?: Fee[];
+}
+
+export interface Meta {
+  /** @format double */
+  priceImpact?: number;
+  assets?: Asset[];
+  approvalAddress?: string;
+  /** @format int32 */
+  streamingInterval?: number;
+  /** @format int32 */
+  maxStreamingQuantity?: number;
+  tags?: string[];
+  affiliate?: string;
+  affiliateFee?: string;
+  referrer?: string;
+  txType?: string;
+  chainflip?: Chainflip;
+  kado?: Kado;
+}
+
+export interface ProviderError {
+  provider?: string;
+  errorCode?: string;
+  message?: string;
+}
+
+export interface RefundParameters {
+  minPrice?: string;
+  refundAddress?: string;
+  /** @format int32 */
+  retryDuration?: number;
+}
+
+export interface Route {
+  providers?: string[];
+  sellAsset?: string;
+  sellAmount?: string;
+  buyAsset?: string;
+  expectedBuyAmount?: string;
+  expectedBuyAmountMaxSlippage?: string;
+  sourceAddress?: string;
+  destinationAddress?: string;
+  targetAddress?: string;
+  inboundAddress?: string;
+  expiration?: string;
+  memo?: string;
+  fees?: Fee[];
+  txType?: string;
+  tx?: Tx;
+  estimatedTime?: EstimatedTime;
+  /** @format int32 */
+  totalSlippageBps?: number;
+  legs?: Leg[];
+  warnings?: Warning[];
+  meta?: Meta;
+}
+
+export interface SellAsset {
+  chain?: string;
+  asset?: string;
+}
+
+export interface SwapKitQuoteResponseModel {
+  quoteId?: string;
+  routes?: Route[];
+  error?: string;
+  providerErrors?: ProviderError[];
+}
+
+export interface Tx {
+  to?: string;
+  from?: string;
+  gas?: string;
+  gasPrice?: string;
+  value?: string;
+  data?: string;
+}
+
+export interface Warning {
+  code?: string;
+  display?: string;
+  tooltip?: string;
+}
+
+export interface SwapKitQuoteRequestModel {
+  sellAsset?: string;
+  buyAsset?: string;
+  sellAmount?: string;
+  providers?: string[];
+  sourceAddress?: string;
+  destinationAddress?: string;
+  /** @format double */
+  slippage?: number;
+  affiliate?: string;
+  /** @format double */
+  affiliateFee?: number;
+  allowSmartContractSender?: boolean;
+  allowSmartContractReceiver?: boolean;
+  disableSecurityChecks?: boolean;
+  includeTx?: boolean;
+  cfBoost?: boolean;
+  referrer?: string;
 }
 
 export interface CoinCreateModel {
@@ -89,11 +269,23 @@ export interface CoinCreateModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+  reserve?: number;
 }
 
 export interface CoinPairsCreateModel {
-  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  currencyAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
   price?: number;
 }
 
@@ -113,18 +305,31 @@ export interface ProviderOptionalExchangerSettingsModel {
   tradeWithKycUsers?: boolean;
 }
 
-export interface ProviderUserExchangerSettingsUpdateModel {
+export interface ProviderUserExchangerSettingsCreateModel {
   projectName?: string;
   /** @format int64 */
-  exchangerSettingsId?: number;
-  /** @format int64 */
   userId?: number;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
   fromCoin?: CoinCreateModel;
   toCoin?: CoinCreateModel;
   coinPair?: CoinPairsCreateModel;
+  createReversedPair?: boolean;
+  addressToReceive?: string;
+  addressToSendFrom?: string;
   exchangersPolicy?: string;
   optionalSettings?: ProviderOptionalExchangerSettingsModel;
+  reversedOptionalSettings?: ProviderOptionalExchangerSettingsModel;
+  /** @format int64 */
+  pairId?: number;
 }
 
 export interface ProviderExchangerSettingsResponseModel {
@@ -134,43 +339,14 @@ export interface ProviderExchangerSettingsResponseModel {
   reversedExchangerSettingsId?: number;
 }
 
-export interface ProviderExchangerSettingsListRequestModel {
-  projectName?: string;
+export interface SwapKitNewTradeByAdIdModel {
   /** @format int64 */
-  userId?: number;
-}
-
-export interface BankDictModel {
-  /** @format int64 */
-  paymentMethodId: number;
-  name?: string;
-  description?: string;
-  fields?: BankFieldsInfoModel[];
-}
-
-export interface BankFieldsInfoModel {
-  /** @format int64 */
-  id?: number;
-  name?: string;
-  contentType?:
-    | "ADDITIONAL_INFO"
-    | "ADDITIONAL_INFO_WITH_TITLE"
-    | "CARD_NUMBER"
-    | "IBAN"
-    | "BAN"
-    | "IBAN_OR_CARD_NUMBER"
-    | "EMAIL"
-    | "NUMBER_ONLY"
-    | "IMAGE_QR"
-    | "LAST_4_DIGITS"
-    | "PHONE"
-    | "USERNAME"
-    | "FULL_NAME"
-    | "BANK_NAME"
-    | "ACCOUNT_OPENING_DEPARTMENT";
-  fieldType?: "TEXT_AREA" | "TEXT_FIELD" | "IMAGE";
-  required?: boolean;
-  validate?: boolean;
+  exchangerSettingsId?: number;
+  clientWalletAddress?: string;
+  clientWalletAddressInNetwork2?: string;
+  amount1?: number;
+  /** @format double */
+  clientSlippage?: number;
 }
 
 export interface CoinModel {
@@ -202,9 +378,261 @@ export interface CoinModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   /** @format int64 */
   networkId?: number;
+}
+
+export interface SwapKitNewTradeByCoinsModel {
+  from?: CoinModel;
+  to?: CoinModel;
+  clientWalletAddress?: string;
+  clientWalletAddressInNetwork2?: string;
+  amount1?: number;
+  /** @format double */
+  clientSlippage?: number;
+}
+
+export interface ProviderUserUpdateModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  name?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+}
+
+export interface ProviderUserAvatarModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  avatar?: string;
+}
+
+export interface CoinUpdateModel {
+  /** @format int64 */
+  coinId?: number;
+  ticker?: string;
+  tokenName?: string;
+  uuid?: string;
+  networkType?: string;
+  networkName?:
+    | "ethereum"
+    | "tron"
+    | "the_open_network"
+    | "binance_smart_chain"
+    | "binance_chain"
+    | "polygon"
+    | "optimism"
+    | "gnosis"
+    | "fantom"
+    | "avalanche"
+    | "solana"
+    | "bitcoin"
+    | "elrond"
+    | "litecoin"
+    | "dash"
+    | "dogecoin"
+    | "zcash"
+    | "ecash"
+    | "bitcoin_cash"
+    | "fiat"
+    | "arbitrumOne"
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+  reserve?: number;
+}
+
+export interface ProviderReserveUpdateModelV2 {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  coin?: CoinUpdateModel;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+}
+
+export interface ProviderReserveListUpdateModel {
+  projectName?: string;
+  users?: ProviderUserReserveModel[];
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+}
+
+export interface ProviderReserveModel {
+  coin?: CoinUpdateModel;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  message?: string;
+  updated?: boolean;
+}
+
+export interface ProviderUserReserveModel {
+  /** @format int64 */
+  userId?: number;
+  reserves?: ProviderReserveModel[];
+  message?: string;
+}
+
+export interface ProviderReserveBatchResponseModel {
+  users?: ProviderUserReserveModel[];
+}
+
+export interface ProviderReserveUpdateModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  coin?: CoinUpdateModel;
+}
+
+export interface ProviderExchangerSettingsStatusRequestModel {
+  projectName?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  status?: boolean;
+  /** @format int64 */
+  userId?: number;
+}
+
+export interface ProviderAdStatusModel {
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  status?: boolean;
+  message?: string;
+  updated?: boolean;
+}
+
+export interface ProviderExchangerSettingsStatusListUpdateModel {
+  projectName?: string;
+  users?: ProviderUserAdStatusModel[];
+}
+
+export interface ProviderUserAdStatusModel {
+  /** @format int64 */
+  userId?: number;
+  ads?: ProviderAdStatusModel[];
+  message?: string;
+}
+
+export interface ProviderAdStatusBatchResponseModel {
+  users?: ProviderUserAdStatusModel[];
+}
+
+export interface ProviderUserExchangerSettingsUpdateModel {
+  projectName?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  userId?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  fromCoin?: CoinCreateModel;
+  toCoin?: CoinCreateModel;
+  coinPair?: CoinPairsCreateModel;
+  addressToReceive?: string;
+  addressToSendFrom?: string;
+  exchangersPolicy?: string;
+  optionalSettings?: ProviderOptionalExchangerSettingsModel;
+  /** @format int64 */
+  pairId?: number;
+  /** @format int32 */
+  direction?: number;
+}
+
+export interface ProviderPushExternalSignerTaskModel {
+  projectName?: string;
+  mnemonicHash?: string;
+  backgroundPush?: boolean;
+}
+
+export interface ProviderExchangerSettingsListRequestModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  /** @format int64 */
+  page?: number;
+  /** @format int64 */
+  size?: number;
+}
+
+export interface BankDictModel {
+  /** @format int64 */
+  paymentMethodId?: number;
+  name?: string;
+  description?: string;
+  isAtm?: boolean;
+  fields?: BankFieldsInfoModel[];
+}
+
+export interface BankFieldsInfoModel {
+  /** @format int64 */
+  id?: number;
+  name?: string;
+  contentType?:
+    | "ADDITIONAL_INFO"
+    | "ADDITIONAL_INFO_WITH_TITLE"
+    | "CARD_NUMBER"
+    | "IBAN"
+    | "BAN"
+    | "IBAN_OR_CARD_NUMBER"
+    | "EMAIL"
+    | "NUMBER_ONLY"
+    | "IMAGE_QR"
+    | "LAST_4_DIGITS"
+    | "PHONE"
+    | "USERNAME"
+    | "FULL_NAME"
+    | "BANK_NAME"
+    | "ACCOUNT_OPENING_DEPARTMENT";
+  fieldType?: "TEXT_AREA" | "TEXT_FIELD" | "IMAGE";
+  required?: boolean;
+  validate?: boolean;
+  value?: string;
 }
 
 export interface CoinPairsModel {
@@ -217,14 +645,25 @@ export interface CoinPairsModel {
   nameTo?: string;
   originalPrice?: number;
   price?: number;
+  priceInCoin2?: number;
   priceCoin1InUsdt?: number;
   priceCoin2InUsdt?: number;
-  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  currencyAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
   flipped?: boolean;
   /** @format int64 */
   parentId?: number;
   /** @format int64 */
   userId?: number;
+  /** @format int64 */
+  dexpayPairId?: number;
 }
 
 export interface CountryDictModel {
@@ -261,6 +700,7 @@ export interface ExchangerSettingsInfoModel {
   paymentMethods?: PaymentMethodsModel[];
   statistic?: StatisticModel;
   isAtomicSwap?: boolean;
+  isReactiveAtomicSwap?: boolean;
   /** @format int64 */
   timeToRefund?: number;
   /** @format double */
@@ -271,7 +711,20 @@ export interface ExchangerSettingsInfoModel {
   amlRiskLimit?: number;
   officialMerchant?: boolean;
   tradeWithKycUsers?: boolean;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  /** @format int64 */
+  pairId?: number;
+  /** @format int32 */
+  direction?: number;
   /** @format int64 */
   cdt?: number;
 }
@@ -326,6 +779,40 @@ export interface StatisticModel {
   cdt?: string;
 }
 
+export interface PaginatedAdListModel {
+  /** @format int64 */
+  adsTotalCount?: number;
+  /** @format int64 */
+  currentPage?: number;
+  /** @format int64 */
+  totalPages?: number;
+  ads?: ExchangerSettingsInfoModel[];
+}
+
+export interface ProviderExchangerSettingsRequestModel {
+  projectName?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+}
+
+export interface ProviderUserExchangerSettingsDeleteModel {
+  projectName?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  userId?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+}
+
 export interface ProviderUserCreateModel {
   projectName?: string;
   name?: string;
@@ -341,18 +828,9 @@ export interface ProviderUserResponseModel {
   userId?: number;
 }
 
-export interface ProviderUserExchangerSettingsCreateModel {
+export interface ProviderCoinCreateModel {
   projectName?: string;
-  /** @format int64 */
-  userId?: number;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
-  fromCoin?: CoinCreateModel;
-  toCoin?: CoinCreateModel;
-  coinPair?: CoinPairsCreateModel;
-  createReversedPair?: boolean;
-  exchangersPolicy?: string;
-  optionalSettings?: ProviderOptionalExchangerSettingsModel;
-  reversedOptionalSettings?: ProviderOptionalExchangerSettingsModel;
+  name?: string;
 }
 
 export interface PriceResponseModel {
@@ -362,49 +840,6 @@ export interface PriceResponseModel {
   price_change_24h?: number;
   price?: number;
   uid?: string;
-}
-
-export interface PaymentCallBackModel {
-  event_type?: string;
-  payload?: PaymentPayloadModel[];
-}
-
-export interface TronScanBroadcastRequestModel {
-  tx?: string;
-  senderAddress?: string;
-}
-
-export interface PaymentCurrencyModel {
-  iso?: string;
-}
-
-export interface PaymentPayloadModel {
-  /** @format int64 */
-  id?: number;
-  amount?: string;
-  txid?: string;
-  type?: string;
-  from_address?: string;
-  to_address?: string;
-  /** @format int32 */
-  confirmations?: number;
-  /** @format int32 */
-  blockchain_status?: number;
-  /** @format int32 */
-  status?: number;
-  network_fee?: string;
-  user?: PaymentPayloadUserModel;
-  currency?: PaymentCurrencyModel;
-}
-
-export interface PaymentPayloadUserModel {
-  /** @format int64 */
-  id?: number;
-  external_id?: string;
-  /** @format int64 */
-  project_id?: number;
-  /** @format int64 */
-  status?: number;
 }
 
 export interface ExchangeModel {
@@ -428,6 +863,7 @@ export interface ExchangeModel {
   /** @format int64 */
   clientId?: number;
   clientWalletAddress?: string;
+  clientWalletAddressInNetwork2?: string;
   clientSentFromAddress?: string;
   clientSentAmount?: number;
   clientTransactionHash?: string;
@@ -456,8 +892,24 @@ export interface ExchangeModel {
   fromNetworkType?: string;
   toTicker?: string;
   toNetworkType?: string;
-  fromAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
-  toAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  fromAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
+  toAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
   exchangerBlockChain?:
     | "ethereum"
     | "tron"
@@ -480,7 +932,10 @@ export interface ExchangeModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   clientBlockChain?:
     | "ethereum"
     | "tron"
@@ -503,7 +958,10 @@ export interface ExchangeModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   exchangerSettings?: ExchangerSettingsInfoModel;
   statistic?: StatisticModel;
   statusHistory?: StatusHistoryModel[];
@@ -526,7 +984,26 @@ export interface ExchangeModel {
   clientSentFromAddressRiskScore?: number;
   clientSafe?: SafeModel;
   exchangerSafe?: SafeModel;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  clientIp?: Inet;
+  clientCountry?: string;
+  /** @format int64 */
+  invoiceId?: number;
+  invoiceUrl?: string;
+  isInvoicePayment?: boolean;
+}
+
+export interface Inet {
+  address?: string;
 }
 
 export interface RatingModel {
@@ -607,8 +1084,11 @@ export interface ExchangerFilterModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
-  orderBy?: "BY_PRICE" | "BY_RATING" | "BY_RESERVE";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+  orderBy?: "BY_PRICE" | "BY_RATING" | "BY_RESERVE" | "BY_VOLUME" | "BY_TRADES" | "BY_DATE";
   toTicker?: string;
   toNetworkType?: string;
   toNetworkName?:
@@ -633,7 +1113,10 @@ export interface ExchangerFilterModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   amountInCoin1?: number;
   /** @format int32 */
   rating?: number;
@@ -678,6 +1161,7 @@ export interface ExchangerModel {
   feedbacks?: UserRatingInfoModel[];
   /** @format int32 */
   exchangeCount?: number;
+  tradeVolumeInUSDT?: number;
   /** @format double */
   exchangeCompletionRate?: number;
   /** @format int32 */
@@ -694,6 +1178,7 @@ export interface ExchangerModel {
   coinPair?: CoinPairsModel;
   exchangersPolicy?: string;
   isAtomicSwap?: boolean;
+  isReactiveAtomicSwap?: boolean;
   /** @format int64 */
   timeToRefund?: number;
   isKycVerified?: boolean;
@@ -705,7 +1190,16 @@ export interface ExchangerModel {
   daysSinceFirstExchange?: number;
   /** @format int32 */
   counterpartiesCount?: number;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
   officialMerchant?: boolean;
   hasReversed?: boolean;
   exchangerActive?: boolean;
@@ -728,6 +1222,35 @@ export interface UserRatingInfoModel {
   positive?: boolean;
 }
 
+export interface ChangellyExchangeModel {
+  amount?: number;
+  from_crypto?: string;
+  from_network?: string;
+  to_crypto?: string;
+  to_network?: string;
+  to_address?: string;
+}
+
+export interface DepositData {
+  uid?: string;
+  deposit_address?: string;
+  deposit_extension_type_name?: string;
+  deposit_extension?: string;
+}
+
+export interface BtseExchangeCallBackModel {
+  type?: string;
+  status?: string;
+  address?: string;
+  asset?: string;
+  network?: string;
+  amount?: string;
+  /** @format int64 */
+  transactionTime?: number;
+  transactionHash?: string;
+  transactionRef?: string;
+}
+
 export interface AuthRequestModel {
   mnemonicHash?: string;
   masterPublicKey?: string;
@@ -736,6 +1259,8 @@ export interface AuthRequestModel {
   signature?: string;
   publicKey?: string;
   name?: string;
+  /** @format int64 */
+  telegramUserId?: number;
 }
 
 export interface AuthResponseModel {
@@ -766,14 +1291,26 @@ export interface UserModel {
   firstName?: string;
   middleName?: string;
   lastName?: string;
+  fullName?: string;
   email?: string;
   phone?: string;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
   rating?: TotalRatingResponseModel;
   /** @format int32 */
   exchangeCount?: number;
   /** @format double */
   exchangeCompletionRate?: number;
+  /** @format int64 */
+  telegramId?: number;
 }
 
 export interface IdNameModel {
@@ -788,10 +1325,6 @@ export interface AvatarModel {
 
 export interface DeviceIdRequestModel {
   deviceId?: string;
-}
-
-export interface TestModel {
-  data?: string;
 }
 
 export interface StatisticRequestModel {
@@ -821,6 +1354,7 @@ export interface PaymentMethodsCreateModel {
   userId?: number;
   balance?: number;
   data?: string;
+  remove?: boolean;
 }
 
 export interface PaymentBalanceUpdateModel {
@@ -829,9 +1363,52 @@ export interface PaymentBalanceUpdateModel {
   balance?: number;
 }
 
+export interface PaymentMethodsCreateV2Model {
+  /** @format int64 */
+  userPaymentMethodId?: number;
+  data?: string;
+  balance?: number;
+  paymentMethod?: BankDictModel;
+  currency?: PaymentMethodCurrencyModel;
+  country?: CountryDictModel;
+  remove?: boolean;
+}
+
+export interface PaymentMethodsFullModel {
+  /** @format int64 */
+  userPaymentMethodId?: number;
+  data?: string;
+  balance?: number;
+  balanceIsRequired?: boolean;
+  paymentMethod?: BankDictModel;
+  currency?: PaymentMethodCurrencyModel;
+  country?: CountryDictModel;
+  /** @format int64 */
+  userId?: number;
+}
+
+export interface PaymentMethodsListCreateModel {
+  paymentMethods?: PaymentMethodsCreateV2Model[];
+}
+
 export interface IdRequestModel {
   /** @format int64 */
   id?: number;
+}
+
+export interface BankDictCreateModel {
+  /** @format int64 */
+  paymentMethodId?: number;
+  name?: string;
+  description?: string;
+  currency?: string;
+  fields?: BankFieldsInfoModel[];
+}
+
+export interface FijaAddressRequestModel {
+  address?: string;
+  currency?: string;
+  strategy?: string;
 }
 
 export interface PaymentCreateExchangeRequestModel {
@@ -845,6 +1422,33 @@ export interface PaymentCreateExchangeRequestModel {
   toTicker?: string;
   fromNetworkType?: string;
   toNetworkType?: string;
+  transactionFee?: number;
+  priceAdjustment?: number;
+}
+
+export interface InvoiceModel {
+  /** @format int64 */
+  tariffId?: number;
+}
+
+export interface InvoiceResponseModel {
+  /** @format int64 */
+  id?: number;
+  public_id?: string;
+  payment_page_id?: string;
+  address?: string;
+  amount_requested?: string;
+  amount_received_total?: string;
+  /** @format int32 */
+  status?: number;
+  description?: string;
+  order_id?: string;
+  invoice_number?: string;
+  customer_email?: string;
+  due_to?: string;
+  discounts?: string;
+  tax?: string;
+  payment_page_url?: string;
 }
 
 export interface PriceApiKeyInfoRequestModel {
@@ -888,10 +1492,18 @@ export interface FeeEstimateModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   data?: string;
   parameter?: string;
   contractAddress?: string;
+  isToken?: boolean;
+  /** @format int64 */
+  userId?: number;
+  toNetwork?: string;
+  amount?: number;
 }
 
 export interface OnOffSettingsRequestModel {
@@ -925,6 +1537,7 @@ export interface ExchangerSettingsCreateModel {
   paymentMethods?: PaymentMethodsModel[];
   statistic?: StatisticModel;
   isAtomicSwap?: boolean;
+  isReactiveAtomicSwap?: boolean;
   /** @format int64 */
   timeToRefund?: number;
   /** @format double */
@@ -932,14 +1545,89 @@ export interface ExchangerSettingsCreateModel {
   exchangersPolicy?: string;
   /** @format double */
   amlRiskLimit?: number;
-  provider?: "DEXTRADE" | "EXOLIX" | "PANCAKE" | "UNISWAP" | "DEXPAY";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
   tradeWithKycUsers?: boolean;
+  /** @format int64 */
+  pairId?: number;
+  /** @format int32 */
+  direction?: number;
 }
 
 export interface ReserveRequestModel {
   reserves?: ReserveModel[];
   /** @format int64 */
   timestamp?: number;
+}
+
+export interface ExchangerModelMin {
+  /** @format int64 */
+  id?: number;
+  /** @format int64 */
+  coinId?: number;
+  /** @format int64 */
+  coinFromId?: number;
+  reserveLimitation?: number;
+  paymentMethods?: PaymentMethodsModel[];
+  priceInCoin2?: number;
+  transactionFee?: number;
+  priceAdjustment?: number;
+  minimumExchangeAmountCoin1?: number;
+  minimumExchangeAmountCoin2?: number;
+  maximumExchangeAmountCoin1?: number;
+  maximumExchangeAmountCoin2?: number;
+  avatar?: string;
+  name?: string;
+  rating?: TotalRatingResponseModel;
+  /** @format int32 */
+  exchangeCount?: number;
+  tradeVolumeInUSDT?: number;
+  /** @format double */
+  exchangeCompletionRate?: number;
+  /** @format int32 */
+  exchangeMonthlyCount?: number;
+  /** @format double */
+  exchangeMonthlyCompletionRate?: number;
+  fromCoin?: CoinModel;
+  toCoin?: CoinModel;
+  /** @format int64 */
+  lastActive?: number;
+  currentUserExchanger?: boolean;
+  /** @format int64 */
+  userId?: number;
+  coinPair?: CoinPairsModel;
+  isAtomicSwap?: boolean;
+  isReactiveAtomicSwap?: boolean;
+  isKycVerified?: boolean;
+  /** @format double */
+  amlRiskLimit?: number;
+  /** @format int32 */
+  daysSinceRegistration?: number;
+  /** @format int32 */
+  daysSinceFirstExchange?: number;
+  /** @format int32 */
+  counterpartiesCount?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  officialMerchant?: boolean;
+  hasReversed?: boolean;
+  exchangerActive?: boolean;
 }
 
 export interface PaymentMethodsDeleteModel {
@@ -949,11 +1637,25 @@ export interface PaymentMethodsDeleteModel {
   paymentMethodId?: number;
 }
 
+export interface PriceHistoryChartRequestModel {
+  pairs?: string[];
+  /** @format int32 */
+  width?: number;
+  /** @format int32 */
+  height?: number;
+  /** @format int64 */
+  points?: number;
+}
+
 export interface CreateRatingModel {
   /** @format uuid */
   exchangeId?: string;
   rating?: string;
   feedback?: string;
+}
+
+export interface ItrxRequestEnergyModel {
+  address?: string;
 }
 
 export interface ExchangeFilterModel {
@@ -988,7 +1690,7 @@ export interface ExchangeFilterModel {
     | "CANCELED"
     | "DISPUTE"
   )[];
-  orderBy?: "BY_FEE" | "BY_PRICE" | "BY_EARNED" | "BY_SPEND" | "BY_DATE";
+  orderBy?: "BY_FEE" | "BY_PRICE" | "BY_EARNED" | "BY_SPEND" | "BY_DATE" | "BY_DATE_DESC";
   sort?: "DESC" | "ASC";
   isExchanger?: boolean;
   network?:
@@ -1013,7 +1715,10 @@ export interface ExchangeFilterModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
   /** @format int64 */
   dateFrom?: number;
   /** @format int64 */
@@ -1035,6 +1740,7 @@ export interface ReserveVerifyModel {
   id?: string;
   isConfirmed?: boolean;
   exchangerConfirmedAmount?: number;
+  networkFee?: number;
   params?: string;
 }
 
@@ -1078,6 +1784,34 @@ export interface UUIDRequestModel {
   id?: string;
 }
 
+export interface DexPayEstimateFeeRequestModel {
+  addressTo?: string;
+  /** @format int64 */
+  exchangerSettingsId?: number;
+}
+
+export interface DexPayFeeResponseModel {
+  rateOfSecondInNative?: RateOfSecondInNative;
+  txEstimatedFee?: TxEstimatedFee;
+  estimatedFeeInCurrencyTo?: number;
+  /** @format int32 */
+  currencyFromId?: number;
+  /** @format int32 */
+  currencyToId?: number;
+}
+
+export interface RateData {
+  rate?: string;
+}
+
+export interface RateOfSecondInNative {
+  rateData?: RateData;
+}
+
+export interface TxEstimatedFee {
+  fee?: string;
+}
+
 export interface NewExchangeModel {
   /** @format int64 */
   exchangerSettingsId?: number;
@@ -1114,10 +1848,12 @@ export interface NewExchangeFiatModel {
   exchangerSettingsId?: number;
   amount1?: number;
   amount2?: number;
+  clientWalletAddress?: string;
   /** @format int64 */
   clientPaymentMethodId?: number;
   sessionId?: string;
   params?: string;
+  isInvoicePayment?: boolean;
 }
 
 export interface ClientSendCryptoRequestModel {
@@ -1130,6 +1866,11 @@ export interface ClientSendCryptoRequestModel {
 
 export interface ImageModel {
   data?: string;
+}
+
+export interface TronScanBroadcastRequestModel {
+  tx?: string;
+  senderAddress?: string;
 }
 
 export interface ClaimSwapOwnerModel {
@@ -1157,6 +1898,172 @@ export interface AmlAddressRequestModel {
   ticker?: string;
 }
 
+export interface Input {
+  /** @format int64 */
+  sequence?: number;
+  witness?: string;
+  script?: string;
+  /** @format int32 */
+  index?: number;
+  prev_out?: PrevOut;
+}
+
+export interface Output {
+  /** @format int32 */
+  type?: number;
+  spent?: boolean;
+  value?: number;
+  spending_outpoints?: SpendingOutpoint[];
+  /** @format int32 */
+  n?: number;
+  /** @format int64 */
+  tx_index?: number;
+  script?: string;
+  addr?: string;
+}
+
+export interface PrevOut {
+  /** @format int32 */
+  type?: number;
+  spent?: boolean;
+  /** @format int64 */
+  value?: number;
+  spending_outpoints?: SpendingOutpoint[];
+  /** @format int32 */
+  n?: number;
+  /** @format int64 */
+  tx_index?: number;
+  script?: string;
+  addr?: string;
+}
+
+export interface SpendingOutpoint {
+  /** @format int64 */
+  tx_index?: number;
+  /** @format int32 */
+  n?: number;
+}
+
+export interface Transaction {
+  hash?: string;
+  /** @format int32 */
+  ver?: number;
+  /** @format int32 */
+  vin_sz?: number;
+  /** @format int32 */
+  vout_sz?: number;
+  /** @format int32 */
+  size?: number;
+  /** @format int32 */
+  weight?: number;
+  /** @format int32 */
+  fee?: number;
+  relayed_by?: string;
+  /** @format int32 */
+  lock_time?: number;
+  /** @format int64 */
+  tx_index?: number;
+  double_spend?: boolean;
+  /** @format int64 */
+  time?: number;
+  /** @format int32 */
+  block_index?: number;
+  /** @format int32 */
+  block_height?: number;
+  inputs?: Input[];
+  out?: Output[];
+  /** @format int64 */
+  result?: number;
+  /** @format int64 */
+  balance?: number;
+  rbf?: boolean;
+}
+
+export interface BtseNetworksModel {
+  name?: string;
+}
+
+export interface TxInputs {
+  script_type?: string;
+  addresses?: string[];
+  prev_hash?: string;
+  /** @format int64 */
+  output_index?: number;
+  /** @format int64 */
+  output_value?: number;
+  script?: string;
+  /** @format int64 */
+  sequence?: number;
+  /** @format int32 */
+  age?: number;
+  wallet_name?: string;
+  wallet_token?: string;
+}
+
+export interface TxModel {
+  /** @format int64 */
+  block_height?: number;
+  hash?: string;
+  addresses?: string[];
+  /** @format int64 */
+  total?: number;
+  /** @format int64 */
+  fees?: number;
+  /** @format int64 */
+  size?: number;
+  /** @format int64 */
+  vsize?: number;
+  preference?: string;
+  relayed_by?: string;
+  received?: string;
+  /** @format int64 */
+  ver?: number;
+  /** @format int64 */
+  lock_time?: number;
+  double_spend?: boolean;
+  /** @format int64 */
+  vin_sz?: number;
+  /** @format int64 */
+  vout_sz?: number;
+  /** @format int64 */
+  confirmations?: number;
+  inputs?: TxInputs[];
+  outputs?: TxOutputs[];
+  opt_in_rbf?: boolean;
+  /** @format float */
+  confidence?: number;
+  confirmed?: string;
+  /** @format int32 */
+  receive_count?: number;
+  change_address?: string;
+  block_hash?: string;
+  /** @format int32 */
+  block_index?: number;
+  double_of?: string;
+  data_protocol?: string;
+  hex?: string;
+  next_inputs?: string;
+  next_outputs?: string;
+}
+
+export interface TxOutputs {
+  /** @format int64 */
+  value?: number;
+  addresses?: string[];
+  script?: string;
+  script_type?: string;
+  spent_by?: string;
+  data_hex?: string;
+  data_string?: string;
+}
+
+export interface TxSkeletonModel {
+  tx?: TxModel;
+  signatures?: string[];
+  tosign?: string[];
+  pubkeys?: string[];
+}
+
 export interface TariffModel {
   /** @format int64 */
   id?: number;
@@ -1165,6 +2072,8 @@ export interface TariffModel {
   price?: number;
   /** @format int64 */
   amlRequests?: number;
+  /** @format int64 */
+  refillGasRequests?: number;
   includeKyc?: boolean;
   isDefault?: boolean;
 }
@@ -1195,12 +2104,19 @@ export interface ReviewModel {
 
 export interface PaymentOrderInvoiceModel {
   address?: string;
+  payment_page_url?: string;
 }
 
 export interface PaymentOrderResponseModel {
   invoice?: PaymentOrderInvoiceModel;
+  amount_from_requested?: number;
   /** @format int32 */
   status?: number;
+  outgoing_transactions?: PaymentOrderTxModel[];
+}
+
+export interface PaymentOrderTxModel {
+  txid?: string;
 }
 
 export interface UserSessionInfoModel {
@@ -1208,11 +2124,113 @@ export interface UserSessionInfoModel {
   isUserActive?: boolean;
 }
 
+export interface CoinData {
+  coin?: string;
+  network?: string;
+  name?: string;
+  ticker?: string;
+  depositEnable?: boolean;
+  withdrawEnable?: boolean;
+  /** @format int32 */
+  confirmationTime?: number;
+  depositAmtMin?: number;
+  depositFeeMin?: number;
+  depositFeeRate?: number;
+  depositExtFees?: number;
+  depositExtFeeRate?: number;
+  needAddressExtension?: boolean;
+  addressExtensionTypeName?: string;
+  withdrawAmtMin?: number;
+  withdrawFeeMin?: number;
+  withdrawFeeRate?: number;
+  withdrawExtFees?: number;
+  withdrawExtFeeRate?: number;
+  to_coins?: ToCoin[];
+}
+
+export interface ExchangeInfo {
+  from?: string;
+  to?: string;
+  networkFee?: number;
+  amountFrom?: number;
+  amountTo?: number;
+  max?: number;
+  maxFrom?: number;
+  maxTo?: number;
+  min?: number;
+  minFrom?: number;
+  minTo?: number;
+  visibleAmount?: number;
+  rate?: number;
+  fee?: number;
+}
+
+export interface Network {
+  network?: string;
+  minExchAmount?: number;
+  exchangeInfo?: ExchangeInfo;
+}
+
+export interface ToCoin {
+  coin?: string;
+  networks?: Network[];
+}
+
+export interface ProviderCoinsModel {
+  /** @format int64 */
+  id?: number;
+  ticker?: string;
+  name?: string;
+  coin?: string;
+  uuid?: string;
+  networkType?: string;
+  network?:
+    | "ethereum"
+    | "tron"
+    | "the_open_network"
+    | "binance_smart_chain"
+    | "binance_chain"
+    | "polygon"
+    | "optimism"
+    | "gnosis"
+    | "fantom"
+    | "avalanche"
+    | "solana"
+    | "bitcoin"
+    | "elrond"
+    | "litecoin"
+    | "dash"
+    | "dogecoin"
+    | "zcash"
+    | "ecash"
+    | "bitcoin_cash"
+    | "fiat"
+    | "arbitrumOne"
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)";
+  providerNetwork?: string;
+  minAmount?: number;
+}
+
 export interface UserTariffModel {
   /** @format int64 */
   id?: number;
   /** @format int64 */
   amlRequests?: number;
+  /** @format int64 */
+  refillGasRequests?: number;
   includeKyc?: boolean;
 }
 
@@ -1307,13 +2325,36 @@ export interface IdNetworkModel {
     | "bitcoin_cash"
     | "fiat"
     | "arbitrumOne"
-    | "xdc_network";
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+}
+
+export interface ExchangerSettingsGroupModel {
+  fromTicker?: string;
+  toTicker?: string;
+  /** @format int32 */
+  total?: number;
+  /** @format int32 */
+  officialMerchantCount?: number;
+  minTradeAmount?: number;
+  maxTradeAmount?: number;
+  maxReserve?: number;
 }
 
 export interface CoinPairAggregatorModel {
   /** @format int64 */
   id?: number;
-  currencyAggregator?: "BINANCE" | "CRYPTO_COMPARE" | "COIN_MARKET_CUP" | "DEXPAY" | "COIN_GECKO" | "FIXED_PRICE";
+  currencyAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
   price?: number;
   priceCoin1InUsdt?: number;
   priceCoin2InUsdt?: number;
@@ -1322,14 +2363,4 @@ export interface CoinPairAggregatorModel {
 export interface CoinPairsAggregatorsModel {
   aggregators?: CoinPairAggregatorModel[];
   lowestPrice?: number;
-}
-
-export interface ExchangerFilterGroupModel {
-  fromTicker?: string;
-  toTicker?: string;
-  total?: number;
-  officialMerchantCount?: number;
-  minTradeAmount?: number;
-  maxTradeAmount?: number;
-  maxReserve?: number;
 }

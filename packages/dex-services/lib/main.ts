@@ -1,6 +1,7 @@
 import { Aml } from './Aml';
 import { Atomic } from './Atomic';
 import { Broadcast } from './Broadcast';
+import { Changelly } from './Changelly';
 import { Exchange } from './Exchange';
 import { Exchanger } from './Exchanger';
 import { Kyc } from './Kyc';
@@ -53,3 +54,4 @@ export const atomicService = new Atomic(opts);
 export const broadcastService = new Broadcast(opts);
 export const tariffService = new Tariff(opts);
 export const exchangerService = new Exchanger(opts);
+export const changellyService = new Changelly(opts);

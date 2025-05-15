@@ -36,6 +36,9 @@ export const getIsoCoin = (coin: CoinModel) => {
   } else if (isFiatCoin(coin)) {
     iso = `${coin.ticker}`;
   } else {
+    if (!BUILT_IN_NETWORKS[coin.networkName]) {
+      throw new Error(`Network ${coin.networkName} not found`);
+    }
     iso = `${coin.ticker}_${BUILT_IN_NETWORKS[coin.networkName].iso}`;
   }
   return iso;

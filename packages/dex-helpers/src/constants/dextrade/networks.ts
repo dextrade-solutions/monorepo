@@ -6,6 +6,7 @@ import {
   gnosis as gnosisConfig,
   base as baseConfig,
   xdc as xdcConfig,
+  avalanche as avalancheConfig,
 } from 'viem/chains';
 
 import { MINUTE } from '../time';
@@ -24,6 +25,7 @@ export enum NetworkTypes {
   polygon = 'POLYGON',
   arbitrum = 'ARBITRUM',
   somnia = 'SOMNIA',
+  avalanche = 'AVALANCHE',
 }
 
 export enum NetworkNames {
@@ -47,7 +49,7 @@ export enum NetworkNames {
   xdc = 'xdc_network',
   multiversx = 'elrond',
   somnia = 'somnia',
-
+  avalanche = 'avalanche',
   // testnets
   sepolia = 'sepolia',
 }
@@ -169,6 +171,12 @@ export const BUILT_IN_NETWORKS = {
     name: 'Somnia',
     nativeCurrency: { name: 'Somnia', symbol: 'STT', decimals: 18 },
   },
+  [NetworkNames.avalanche]: {
+    ...avalancheConfig,
+    iso: 'AVAX',
+    key: NetworkNames.avalanche,
+    uid: 'avalanche',
+  },
 };
 
 export const NETWORK_INFO_BY_TOKEN_TYPE = {
@@ -207,6 +215,10 @@ export const NETWORK_INFO_BY_TOKEN_TYPE = {
   [NetworkTypes.somnia]: {
     network: NetworkNames.somnia,
     info: BUILT_IN_NETWORKS[NetworkNames.somnia],
+  },
+  [NetworkTypes.avalanche]: {
+    network: NetworkNames.avalanche,
+    info: BUILT_IN_NETWORKS[NetworkNames.avalanche],
   },
 };
 
