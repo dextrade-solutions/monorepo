@@ -7,6 +7,7 @@ export const handleRequest = async (
   request: Promise<any>,
   opts: {
     on401?: () => void;
+    showModal?: (v: any) => void;
   } = {},
 ) => {
   try {
@@ -22,6 +23,16 @@ export const handleRequest = async (
     let message = e.response?.data?.message;
     if (!message) {
       message = e.message;
+    }
+    if (!message) {
+      message = e.error.message;
+    }
+    if (opts.showModal) {
+      opts.showModal({
+        name: 'ALERT_MODAL',
+        severity: 'error',
+        text: message,
+      });
     }
 
     throw new Error(message);

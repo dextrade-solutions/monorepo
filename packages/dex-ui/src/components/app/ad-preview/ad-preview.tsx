@@ -68,7 +68,7 @@ const AdPreview = ({
                   <Typography className="flex-grow" textAlign="right" color="success.main">
                     ~{' '}
                     {formatCurrency(
-                      fromTokenAmount * ad.priceInCoin2,
+                      fromTokenAmount * ad.coinPair.price,
                       ad.toCoin.ticker,
                     )}
                   </Typography>

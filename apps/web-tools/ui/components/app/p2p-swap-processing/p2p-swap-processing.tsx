@@ -182,7 +182,10 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
             <StageDirectTransfer
               key="directTransfer"
               from={from}
-              trade={exchange}
+              tradeId={exchange.id}
+              amount={exchange.amount1}
+              tradeStatus={exchange.status}
+              depositAddress={exchange.exchangerWalletAddress}
               value={stagesStatuses.directTransfer}
               onChange={(newStatus: StageStatuses) =>
                 setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }))

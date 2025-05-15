@@ -12,27 +12,34 @@ import { useSendTransaction } from '../../../hooks/asset/useSendTransaction';
 export default function StageDirectTransfer({
   value,
   onChange,
-  trade,
+  tradeId,
+  depositAddress,
+  amount,
+  tradeStatus,
+  transactionHash,
   from,
 }: {
-  trade: Trade;
+  transactionHash: string;
+  amount: number;
+  tradeId: string;
+  depositAddress: string;
   from: AssetModel;
+  tradeStatus: TradeStatus;
   value: StageStatuses | null;
   onChange: (status: StageStatuses) => void;
 }) {
   const { hideModal } = useGlobalModalContext();
-  const amount = Number(trade.amount1);
-  const recipient = parseAddress(from.network, trade.exchangerWalletAddress);
+  const recipient = parseAddress(from.network, depositAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
 
   const getTradeExtra = () => {
-    const tradeStore = window.localStorage.getItem(trade.id);
+    const tradeStore = window.localStorage.getItem(tradeId);
     const tradeData = tradeStore ? JSON.parse(tradeStore) : {};
     return {
       ...tradeData,
       commit() {
         const commitData = { ...this, commit: undefined };
-        window.localStorage.setItem(trade.id, JSON.stringify(commitData));
+        window.localStorage.setItem(tradeId, JSON.stringify(commitData));
       },
     };
   };
@@ -41,7 +48,7 @@ export default function StageDirectTransfer({
     onSuccess: (txHash: string) => {
       onChange(StageStatuses.success);
       exchangeService.clientSendCrypto({
-        id: trade.id,
+        id: tradeId,
         transactionHash: txHash,
       });
     },
@@ -72,17 +79,14 @@ export default function StageDirectTransfer({
   };
 
   useEffect(() => {
-    if (
-      value !== StageStatuses.requested &&
-      trade?.status === TradeStatus.new
-    ) {
+    if (value !== StageStatuses.requested && tradeStatus === TradeStatus.new) {
       // initiateNewTx();
-    } else if (trade.clientTransactionHash) {
+    } else if (transactionHash) {
       onChange(StageStatuses.success);
       hideModal();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trade]);
+  }, [tradeStatus]);
 
   return (
     <Stage

@@ -1,17 +1,23 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { TradeStatus } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { changellyService } from 'dex-services';
-import { Swap, useGlobalModalContext, Button } from 'dex-ui';
-import React, { useState } from 'react';
+import {
+  Swap,
+  useGlobalModalContext,
+  Button,
+  PulseLoader,
+  AdPreview,
+} from 'dex-ui';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { parseCoin } from '../../app/helpers/p2p';
+import StageDirectTransfer from '../components/app/p2p-swap-processing/stage-direct-transfer';
+import { StageStatuses } from '../components/app/p2p-swap-processing/stage-statuses';
+import { setAssetAccount } from '../ducks/app/app';
+import { useRequestHandler } from '../hooks/useRequestHandler';
 
 interface Pair {
   coin: string;
@@ -33,13 +39,71 @@ interface Pair {
   }>;
 }
 
+interface ChangellySwapProgressProps {
+  depositAddress: string;
+  asset: AssetModel;
+  id: string;
+  amount: number;
+  onCancel: () => void;
+}
+
+const ChangellySwapProgress = ({
+  depositAddress,
+  id,
+  amount,
+  asset,
+  onCancel,
+}: ChangellySwapProgressProps) => {
+  const [stageStatus, setStageStatus] = useState<StageStatuses>(null);
+  return (
+    <Box sx={{ mt: 3 }}>
+      <Card>
+        <CardContent>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap={2}
+          >
+            <PulseLoader />
+            <Typography variant="h6">Waiting for deposit</Typography>
+
+            <StageDirectTransfer
+              key="directTransfer"
+              from={asset}
+              tradeId={id}
+              amount={amount}
+              tradeStatus={TradeStatus.new}
+              depositAddress={depositAddress}
+              value={stageStatus}
+              onChange={setStageStatus}
+            />
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel Swap
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+};
+
+interface SwapResult {
+  deposit_address: string;
+}
+
 export default function ChangellySwap() {
   const [fromCoin, setFromCoin] = useState<AssetModel | null>(null);
   const [toCoin, setToCoin] = useState<AssetModel | null>(null);
   const [amount, setAmount] = useState<string>('');
   const [selectedPair, setSelectedPair] = useState<Pair | null>(null);
-  const [connectedWallet, setIsWalletConnected] = useState(false);
+  const [connectedWallet, setIsWalletConnected] = useState<{
+    address: string;
+  } | null>(null);
+  const [swapResult, setSwapResult] = useState<SwapResult | null>(null);
   const { showModal } = useGlobalModalContext();
+  const dispatch = useDispatch();
+  const { handleRequest } = useRequestHandler();
 
   // Fetch available coins
   const { data: coinsResponse } = useQuery({
@@ -61,18 +125,36 @@ export default function ChangellySwap() {
       })
       .filter((coin): coin is AssetModel => coin !== null) || [];
 
+  const pairsQuery = useMemo(() => {
+    return {
+      from: fromCoin?.symbol || '',
+      to: toCoin?.symbol || '',
+      fromNetwork: fromCoin?.providerNetwork || '',
+      toNetwork: toCoin?.providerNetwork || '',
+    };
+  }, [fromCoin, toCoin]);
+
+  // Clear selection when query changes
+  useEffect(() => {
+    setSelectedPair(null);
+    setAmount('');
+  }, [pairsQuery]);
+
   // Fetch pairs when from and to coins are selected
   const { data: pairsResponse, isLoading: isPairsLoading } = useQuery({
     queryKey: ['changellyPairs', fromCoin?.symbol, toCoin?.symbol],
-    queryFn: () =>
-      changellyService.getPairs({
-        from: fromCoin?.symbol || '',
-        to: toCoin?.symbol || '',
-      }),
+    queryFn: () => changellyService.getPairs(pairsQuery),
     enabled: Boolean(fromCoin) && Boolean(toCoin),
   });
 
   const pairs = (pairsResponse?.data || []) as Pair[];
+
+  // Auto-select first pair when pairs are loaded
+  useEffect(() => {
+    if (pairs.length > 0 && !selectedPair) {
+      setSelectedPair(pairs[0]);
+    }
+  }, [pairs, selectedPair]);
 
   // Calculate estimated amount
   const estimatedAmount = selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo
@@ -89,40 +171,48 @@ export default function ChangellySwap() {
       name: 'SET_WALLET',
       asset: fromCoin,
       isToAsset: false,
-      onChange: (walletConnection) => {
-        setIsWalletConnected(walletConnection);
+      onChange: (v) => {
+        setIsWalletConnected(v);
+        dispatch(
+          setAssetAccount({
+            asset: fromCoin,
+            assetAccount: v,
+          }),
+        );
       },
     });
   };
 
   // Handle swap creation
   const handleCreateSwap = async () => {
-    if (!fromCoin || !toCoin || !amount || !selectedPair) {
+    if (!fromCoin || !toCoin || !amount || !selectedPair || !connectedWallet) {
       return;
     }
 
-    try {
-      const result = await changellyService.create({
-        external_id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    const result = await handleRequest(
+      changellyService.create({
         amount: Number(amount),
         from_crypto: fromCoin.symbol,
         from_network: selectedPair.network,
         to_crypto: toCoin.symbol,
         to_network: selectedPair.to_coins[0]?.networks[0]?.network,
-        to_address: connectedWallet.address, // This should be provided by the user
-      });
+        to_address: connectedWallet.address,
+      }),
+    );
 
-      // Handle successful swap creation
-      console.log('Swap created:', result);
-      // TODO: Navigate to swap status page or show success message
-    } catch (error) {
-      console.error('Failed to create swap:', error);
-      // TODO: Show error message to user
+    if (result?.data?.deposit_address) {
+      setSwapResult({ deposit_address: result.data.deposit_address });
     }
   };
 
   const handlePairSelect = (pair: Pair) => {
     setSelectedPair(pair);
+  };
+
+  const handleCancelSwap = () => {
+    setSwapResult(null);
+    setSelectedPair(null);
+    setIsWalletConnected(null);
   };
 
   return (
@@ -131,92 +221,142 @@ export default function ChangellySwap() {
         Changelly Swap
       </Typography>
 
-      <Swap
-        assetsListBuy={coins}
-        assetsListSell={coins}
-        buyAsset={toCoin}
-        sellAsset={fromCoin}
-        loading={isPairsLoading}
-        sellAmount={amount}
-        buyAmount={estimatedAmount.toString()}
-        onReverse={() => {
-          setFromCoin(toCoin);
-          setToCoin(fromCoin);
-          setAmount('');
-        }}
-        disableReverse={false}
-        onBuyAssetChange={setToCoin}
-        onSellAssetChange={setFromCoin}
-        onSellAmountChange={(value) => setAmount(value)}
-        onBuyAmountChange={() => undefined} // Read-only
-      />
+      {/* Action Button or Progress */}
+      {swapResult ? (
+        <ChangellySwapProgress
+          asset={fromCoin}
+          id={swapResult.deposit_address}
+          amount={Number(amount)}
+          depositAddress={swapResult.deposit_address}
+          onCancel={handleCancelSwap}
+        />
+      ) : (
+        <>
+          <Swap
+            assetsListBuy={coins}
+            assetsListSell={coins}
+            buyAsset={toCoin}
+            sellAsset={fromCoin}
+            loading={isPairsLoading}
+            sellAmount={amount}
+            buyAmount={estimatedAmount.toString()}
+            onReverse={() => {
+              setFromCoin(toCoin);
+              setToCoin(fromCoin);
+              setAmount('');
+            }}
+            disableReverse={false}
+            onBuyAssetChange={setToCoin}
+            onSellAssetChange={setFromCoin}
+            onSellAmountChange={(value) => setAmount(value)}
+            onBuyAmountChange={() => undefined} // Read-only
+          />
 
-      {/* Pairs List */}
-      {pairs && pairs.length > 0 && (
-        <Box sx={{ mt: 3 }}>
-          <Typography ml={1} variant="caption" gutterBottom>
-            Available Providers
-          </Typography>
-          <Grid container spacing={2}>
-            {pairs.map((pair) => {
-              const rate = pair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
-              const isSelected = selectedPair?.coin === pair.coin;
-              return (
-                <Grid item xs={12} key={pair.coin}>
-                  <Card
-                    sx={{
-                      cursor: 'pointer',
-                      border: isSelected ? '2px solid primary.main' : 'none',
-                      '&:hover': {
-                        bgcolor: 'action.hover',
-                      },
-                    }}
-                    onClick={() => handlePairSelect(pair)}
-                  >
-                    <CardContent>
-                      <Box
-                        display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Box>
-                          <Typography variant="h6">{pair.name}</Typography>
-                          <Typography color="text.secondary">
-                            Network: {pair.network}
-                          </Typography>
-                        </Box>
-                        <Box textAlign="right">
-                          <Typography variant="h6">
-                            Rate: {rate ? rate.toFixed(8) : 'N/A'}
-                          </Typography>
-                          {rate && amount && (
-                            <Typography color="text.secondary">
-                              You get: {(Number(amount) * rate).toFixed(8)}{' '}
-                              {toCoin?.symbol}
-                            </Typography>
-                          )}
-                        </Box>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
+          {/* Pairs List */}
+          {pairs && pairs.length > 0 && (
+            <Box sx={{ mt: 3 }}>
+              <Typography
+                ml={1}
+                variant="caption"
+                color="text.secondary"
+                gutterBottom
+              >
+                Available Providers
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {pairs.map((pair) => {
+                  const rate = pair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
+                  const isSelected = selectedPair?.ticker === pair.ticker;
+                  return (
+                    <Box
+                      key={pair.ticker}
+                      onClick={() => handlePairSelect(pair)}
+                      sx={{
+                        cursor: 'pointer',
+                        border: isSelected ? '2px solid' : 'none',
+                        borderColor: 'primary.main',
+                        borderRadius: 1,
+                        '&:hover': {
+                          bgcolor: 'action.hover',
+                        },
+                      }}
+                    >
+                      <AdPreview
+                        hideTickers
+                        ad={{
+                          id: Number(pair.coin),
+                          name: pair.name,
+                          fromCoin: {
+                            ticker: pair.ticker,
+                            networkName: pair.network,
+                            uuid: pair.coin,
+                            networkType: pair.network,
+                          },
+                          toCoin: {
+                            ticker: toCoin?.symbol || '',
+                            networkName:
+                              pair.to_coins[0]?.networks[0]?.network || '',
+                            uuid: pair.to_coins[0]?.coin || '',
+                            networkType:
+                              pair.to_coins[0]?.networks[0]?.network || '',
+                          },
+                          coinPair: {
+                            id: 0,
+                            pair: `${pair.ticker}/${toCoin?.symbol || ''}`,
+                            nameFrom: pair.name,
+                            nameTo: toCoin?.name || '',
+                            price: rate || 0,
+                            priceCoin1InUsdt: 0,
+                            priceCoin2InUsdt: 0,
+                            originalPrice: rate || 0,
+                            currencyAggregator: 0,
+                          },
+                          reserveSum: Number(
+                            pair.to_coins[0]?.networks[0]?.exchangeInfo.max ||
+                              0,
+                          ),
+                          minimumExchangeAmountCoin1: Number(
+                            pair.to_coins[0]?.networks[0]?.exchangeInfo.min ||
+                              0,
+                          ),
+                          maximumExchangeAmountCoin2: Number(
+                            pair.to_coins[0]?.networks[0]?.exchangeInfo.max ||
+                              0,
+                          ),
+                          isExchangerActive: true,
+                          isKycVerified: true,
+                          officialMerchant: true,
+                          exchangeCount: 0,
+                          exchangeCompletionRate: 1,
+                          rating: {
+                            totalRating: 1,
+                          },
+                          lastActive: new Date().toISOString(),
+                          avatar: '',
+                          paymentMethods: [],
+                          transactionFee: 0,
+                        }}
+                        fromTokenAmount={Number(amount)}
+                        onClick={() => handlePairSelect(pair)}
+                      />
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
+          )}
+          <Button
+            sx={{ mt: 3 }}
+            gradient
+            fullWidth
+            variant="contained"
+            onClick={connectedWallet ? handleCreateSwap : handleConnectWallet}
+            disabled={!fromCoin || !toCoin || !amount || !selectedPair}
+          >
+            {connectedWallet ? 'Create Swap' : 'Connect Wallet'}
+          </Button>
+        </>
       )}
-
-      {/* Action Button */}
-      <Button
-        sx={{ mt: 3 }}
-        gradient
-        fullWidth
-        variant="contained"
-        onClick={connectedWallet ? handleCreateSwap : handleConnectWallet}
-        disabled={!fromCoin || !toCoin || !amount || !selectedPair}
-      >
-        {connectedWallet ? 'Create Swap' : 'Connect Wallet'}
-      </Button>
     </Box>
   );
 }
