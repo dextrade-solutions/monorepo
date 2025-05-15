@@ -115,10 +115,14 @@ export default function ChangellySwap() {
     coinsResponse?.data
       ?.map((coin) => {
         try {
-          return parseCoin({
-            ...coin,
-            networkName: coin.network,
-          } as CoinModel);
+          return parseCoin(
+            {
+              ...coin,
+              networkName: coin.network,
+            } as CoinModel,
+            0,
+            { providerNetwork: coin.providerNetwork },
+          );
         } catch (error) {
           return null;
         }

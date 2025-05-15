@@ -19,6 +19,7 @@ export function getAssetByIso(iso: string): AssetModel | undefined {
 export function parseCoin(
   coin: CoinModel,
   priceInUsdt?: number,
+  extra?: any,
 ): AssetModel | null {
   const iso = getIsoCoin(coin);
   const asset = getAssetByIso(iso);
@@ -26,6 +27,7 @@ export function parseCoin(
     return {
       ...asset,
       priceInUsdt,
+      ...(extra || {}),
     } as AssetModel; // Type assertion here
   }
   return null;
