@@ -144,6 +144,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "jsdoc": "^4.0.2",
+    "lerna": "^8.2.2",
     "prettier": "^3.2.5"
   }
 }

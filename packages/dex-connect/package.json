@@ -1,6 +1,9 @@
 {
   "name": "dex-connect",
   "version": "1.0.0",
+  "scripts": {
+    "release:version": "lerna version --no-changelog --no-push --no-git-tag-version --no-private"
+  },
   "dependencies": {
     "@multiversx/sdk-core": "^13.17.1",
     "@multiversx/sdk-extension-provider": "^4.0.1",
