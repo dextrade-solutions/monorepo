@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { formatFundsAmount, TradeStatus } from 'dex-helpers';
+import { formatFundsAmount, NetworkNames, TradeStatus } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { changellyService, coinPairsService } from 'dex-services';
 import {
@@ -20,10 +20,18 @@ import { StageStatuses } from '../components/app/p2p-swap-processing/stage-statu
 import { setAssetAccount } from '../ducks/app/app';
 import { useRequestHandler } from '../hooks/useRequestHandler';
 
-// Function that does nothing, used for read-only callbacks
-const noop = (): void => {
-  // This function intentionally does nothing
-};
+enum ChangellySwapStatus {
+  created = 'created',
+  waiting = 'waiting',
+  exchanging = 'exchanging',
+  sending = 'sending',
+  failed = 'failed',
+  refunded = 'refunded',
+  hold = 'hold',
+  overdue = 'overdue',
+  expired = 'expired',
+  finished = 'finished',
+}
 
 interface Pair {
   coin: string;
@@ -60,7 +68,59 @@ const ChangellySwapProgress = ({
   asset,
   onCancel,
 }: ChangellySwapProgressProps) => {
-  const [stageStatus, setStageStatus] = useState<StageStatuses>(null);
+  const [stageStatus, setStageStatus] = useState<StageStatuses>(StageStatuses.requested);
+
+  // Fetch swap status with refetch interval
+  const { data: swapStatus } = useQuery({
+    queryKey: ['changellySwapStatus', id],
+    queryFn: () => changellyService.getPairs({ externalId: id }),
+    refetchInterval: 8000, // Refetch every 8 seconds
+  });
+
+  // Map Changelly status to StageStatuses
+  useEffect(() => {
+    if (!swapStatus?.data?.status) {
+      return;
+    }
+
+    const status = String(swapStatus.data.status) as ChangellySwapStatus;
+    switch (status) {
+      case ChangellySwapStatus.created:
+      case ChangellySwapStatus.waiting:
+      case ChangellySwapStatus.exchanging:
+      case ChangellySwapStatus.sending:
+      case ChangellySwapStatus.hold:
+        setStageStatus(StageStatuses.requested);
+        break;
+      case ChangellySwapStatus.failed:
+      case ChangellySwapStatus.refunded:
+      case ChangellySwapStatus.overdue:
+      case ChangellySwapStatus.expired:
+        setStageStatus(StageStatuses.failed);
+        break;
+      case ChangellySwapStatus.finished:
+        setStageStatus(StageStatuses.success);
+        break;
+      default:
+        setStageStatus(StageStatuses.requested);
+    }
+  }, [swapStatus?.data?.status]);
+
+  // Ensure asset has all required properties
+  const assetModel: AssetModel = {
+    name: asset.name || asset.symbol,
+    symbol: asset.symbol,
+    uid: asset.uid || asset.symbol.toLowerCase(),
+    network: asset.network || NetworkNames.ethereum,
+    isFiat: false,
+    isNative: true,
+    chainId: asset.chainId,
+    decimals: asset.decimals,
+    contract: asset.contract,
+    standard: asset.standard,
+    iso: asset.symbol.toLowerCase(),
+  };
+
   return (
     <Box sx={{ mt: 3 }}>
       <Card>
@@ -71,21 +131,54 @@ const ChangellySwapProgress = ({
             alignItems="center"
             gap={2}
           >
-            <PulseLoader />
-            <Typography variant="h6">Waiting for deposit</Typography>
+            {String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? (
+              <>
+                <Typography variant="h5" color="success.main" fontWeight="bold">
+                  Swap Completed Successfully! 🎉
+                </Typography>
+                <Typography variant="body1" color="success.main">
+                  Your funds have been exchanged successfully
+                </Typography>
+              </>
+            ) : (
+              <>
+                <Typography variant="h6">
+                  {String(swapStatus?.data?.status) === ChangellySwapStatus.waiting
+                    ? 'Waiting for deposit'
+                    : 'Processing swap'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Status: {swapStatus?.data?.status || 'Unknown'}
+                </Typography>
+              </>
+            )}
 
             <StageDirectTransfer
               key="directTransfer"
-              from={asset}
+              from={assetModel}
               tradeId={id}
-              amount={amount}
+              amount={Number(amount)}
               tradeStatus={TradeStatus.new}
               depositAddress={depositAddress}
               value={stageStatus}
               onChange={setStageStatus}
+              transactionHash={swapStatus?.data?.transaction?.hash || ''}
             />
-            <Button variant="outlined" onClick={onCancel}>
-              Cancel Swap
+            <Button 
+              variant={String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? "contained" : "outlined"}
+              onClick={onCancel}
+              color={String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? "success" : "primary"}
+              sx={{
+                ...(String(swapStatus?.data?.status) === ChangellySwapStatus.finished && {
+                  '&:hover': {
+                    backgroundColor: 'success.dark',
+                  },
+                }),
+              }}
+            >
+              {String(swapStatus?.data?.status) === ChangellySwapStatus.finished 
+                ? 'Start New Swap' 
+                : 'Cancel Swap'}
             </Button>
           </Box>
         </CardContent>
@@ -95,6 +188,7 @@ const ChangellySwapProgress = ({
 };
 
 interface SwapResult {
+  external_id: string;
   uid: string;
   deposit_address: string;
 }
@@ -191,7 +285,7 @@ export default function ChangellySwap() {
   // Fetch pairs when from and to coins are selected
   const { data: pairsResponse, isLoading: isPairsLoading } = useQuery({
     queryKey: ['changellyPairs', fromCoin?.symbol, toCoin?.symbol],
-    queryFn: () => changellyService.getPairs(pairsQuery),
+    queryFn: () => changellyService.getPairs1(pairsQuery),
     enabled: Boolean(fromCoin) && Boolean(toCoin),
   });
 
@@ -203,12 +297,6 @@ export default function ChangellySwap() {
       setSelectedPair(pairs[0]);
     }
   }, [pairs, selectedPair]);
-
-  // Calculate estimated amount
-  const estimatedAmount = selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo
-    .rate
-    ? Number(amount) * selectedPair.to_coins[0].networks[0].exchangeInfo.rate
-    : 0;
 
   const handleBuyAmountChange = (value: string) => {
     if (!selectedPair || isUpdatingFromSell) {
@@ -289,7 +377,7 @@ export default function ChangellySwap() {
     );
 
     if (result?.data?.deposit_address) {
-      setSwapResult({ deposit_address: result.data.deposit_address });
+      setSwapResult(result.data);
     }
   };
 
@@ -318,7 +406,7 @@ export default function ChangellySwap() {
       {swapResult ? (
         <ChangellySwapProgress
           asset={fromCoin}
-          id={swapResult.uid}
+          id={swapResult.external_id}
           amount={Number(amount)}
           depositAddress={swapResult.deposit_address}
           onCancel={handleCancelSwap}

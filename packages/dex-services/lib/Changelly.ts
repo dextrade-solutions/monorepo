@@ -9,7 +9,14 @@
  * ---------------------------------------------------------------
  */
 
-import { ApiErrorResponse, ChangellyExchangeModel, CoinData, DepositData, ProviderCoinsModel } from "./data-contracts";
+import {
+  ApiErrorResponse,
+  ChangellyExchangeModel,
+  CoinData,
+  DataBlock,
+  DepositData,
+  ProviderCoinsModel,
+} from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
 export class Changelly<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -33,12 +40,33 @@ export class Changelly<SecurityDataType = unknown> extends HttpClient<SecurityDa
    *
    * @tags changelly-controller
    * @name GetPairs
-   * @request GET:/public/changelly/pairs
+   * @request GET:/public/changelly/status
    */
   getPairs = (
     query: {
+      externalId: string;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<DataBlock, ApiErrorResponse>({
+      path: `/public/changelly/status`,
+      method: "GET",
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags changelly-controller
+   * @name GetPairs1
+   * @request GET:/public/changelly/pairs
+   */
+  getPairs1 = (
+    query: {
       from: string;
       to: string;
+      fromNetwork: string;
+      toNetwork: string;
     },
     params: RequestParams = {},
   ) =>

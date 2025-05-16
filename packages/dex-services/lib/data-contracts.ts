@@ -1224,6 +1224,7 @@ export interface UserRatingInfoModel {
 
 export interface ChangellyExchangeModel {
   amount?: number;
+  external_id?: string;
   from_crypto?: string;
   from_network?: string;
   to_crypto?: string;
@@ -1232,6 +1233,7 @@ export interface ChangellyExchangeModel {
 }
 
 export interface DepositData {
+  external_id?: string;
   uid?: string;
   deposit_address?: string;
   deposit_extension_type_name?: string;
@@ -2122,6 +2124,16 @@ export interface PaymentOrderTxModel {
 export interface UserSessionInfoModel {
   isSessionActive?: boolean;
   isUserActive?: boolean;
+}
+
+export interface DataBlock {
+  /** @format int32 */
+  id?: number;
+  external_id?: string;
+  /** @format int32 */
+  status?: number;
+  provider_status?: string;
+  transaction?: Transaction;
 }
 
 export interface CoinData {
