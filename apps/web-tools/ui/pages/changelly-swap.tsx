@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { TradeStatus } from 'dex-helpers';
+import { formatFundsAmount, TradeStatus } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
-import { changellyService } from 'dex-services';
+import { changellyService, coinPairsService } from 'dex-services';
 import {
   Swap,
   useGlobalModalContext,
@@ -10,6 +10,7 @@ import {
   PulseLoader,
   AdPreview,
 } from 'dex-ui';
+import { divide } from 'lodash';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -18,6 +19,11 @@ import StageDirectTransfer from '../components/app/p2p-swap-processing/stage-dir
 import { StageStatuses } from '../components/app/p2p-swap-processing/stage-statuses';
 import { setAssetAccount } from '../ducks/app/app';
 import { useRequestHandler } from '../hooks/useRequestHandler';
+
+// Function that does nothing, used for read-only callbacks
+const noop = (): void => {
+  // This function intentionally does nothing
+};
 
 interface Pair {
   coin: string;
@@ -89,6 +95,7 @@ const ChangellySwapProgress = ({
 };
 
 interface SwapResult {
+  uid: string;
   deposit_address: string;
 }
 
@@ -96,7 +103,10 @@ export default function ChangellySwap() {
   const [fromCoin, setFromCoin] = useState<AssetModel | null>(null);
   const [toCoin, setToCoin] = useState<AssetModel | null>(null);
   const [amount, setAmount] = useState<string>('');
+  const [buyAmount, setBuyAmount] = useState<string>('');
   const [selectedPair, setSelectedPair] = useState<Pair | null>(null);
+  const [isUpdatingFromBuy, setIsUpdatingFromBuy] = useState(false);
+  const [isUpdatingFromSell, setIsUpdatingFromSell] = useState(false);
   const [connectedWallet, setIsWalletConnected] = useState<{
     address: string;
   } | null>(null);
@@ -111,6 +121,39 @@ export default function ChangellySwap() {
     queryFn: () => changellyService.getCoins(),
   });
 
+  // Helper function to handle USDT rate fetching and coin price updates
+  const useUsdtRate = (coin: AssetModel | null) => {
+    const { data: usdtRate } = useQuery({
+      queryKey: ['usdtRate', coin?.symbol, 'USDT'],
+      queryFn: () =>
+        coinPairsService
+          .getByAggregatorAndPair1({
+            currencies: 'BINANCE',
+            nameFrom: coin?.symbol || '',
+            nameTo: 'USDT',
+          })
+          .then((res) => res.data),
+      enabled: Boolean(coin?.symbol) && coin?.symbol !== 'USDT',
+    });
+
+    useEffect(() => {
+      if (coin) {
+        const newPriceInUsdt = usdtRate?.priceCoin1InUsdt;
+        if (newPriceInUsdt) {
+          if (coin === fromCoin) {
+            setFromCoin({ ...coin, priceInUsdt: newPriceInUsdt });
+          } else if (coin === toCoin) {
+            setToCoin({ ...coin, priceInUsdt: newPriceInUsdt });
+          }
+        }
+      }
+    }, [usdtRate]);
+  };
+
+  // Use the helper for both coins
+  useUsdtRate(fromCoin);
+  useUsdtRate(toCoin);
+
   const coins =
     coinsResponse?.data
       ?.map((coin) => {
@@ -120,7 +163,7 @@ export default function ChangellySwap() {
               ...coin,
               networkName: coin.network,
             } as CoinModel,
-            0,
+            coin.ticker === 'USDT' ? 1 : undefined,
             { providerNetwork: coin.providerNetwork },
           );
         } catch (error) {
@@ -142,6 +185,7 @@ export default function ChangellySwap() {
   useEffect(() => {
     setSelectedPair(null);
     setAmount('');
+    setBuyAmount('');
   }, [pairsQuery]);
 
   // Fetch pairs when from and to coins are selected
@@ -165,6 +209,46 @@ export default function ChangellySwap() {
     .rate
     ? Number(amount) * selectedPair.to_coins[0].networks[0].exchangeInfo.rate
     : 0;
+
+  const handleBuyAmountChange = (value: string) => {
+    if (!selectedPair || isUpdatingFromSell) {
+      return;
+    }
+    const rate = selectedPair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
+    if (!rate) {
+      return;
+    }
+
+    setIsUpdatingFromBuy(true);
+    try {
+      const newSellAmount = divide(Number(value), rate);
+      if (newSellAmount) {
+        setAmount(newSellAmount.toFixed(5));
+      } else {
+        setAmount('');
+      }
+      setBuyAmount(value);
+    } finally {
+      setIsUpdatingFromBuy(false);
+    }
+  };
+
+  const handleSellAmountChange = (value: string) => {
+    if (!isUpdatingFromBuy) {
+      setIsUpdatingFromSell(true);
+      try {
+        setAmount(formatFundsAmount(value));
+        // Recalculate buy amount based on new sell amount
+        const rate = selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo.rate;
+        if (rate) {
+          const newBuyAmount = Number(value) * rate;
+          setBuyAmount(newBuyAmount.toFixed(5));
+        }
+      } finally {
+        setIsUpdatingFromSell(false);
+      }
+    }
+  };
 
   const handleConnectWallet = () => {
     if (!fromCoin) {
@@ -218,18 +302,23 @@ export default function ChangellySwap() {
     setSelectedPair(null);
     setIsWalletConnected(null);
   };
-
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Changelly Swap
+      <Typography
+        variant="h4"
+        gutterBottom
+        textAlign="center"
+        fontWeight="bold"
+        mt={2}
+      >
+        Dextrade Swaps
       </Typography>
 
       {/* Action Button or Progress */}
       {swapResult ? (
         <ChangellySwapProgress
           asset={fromCoin}
-          id={swapResult.deposit_address}
+          id={swapResult.uid}
           amount={Number(amount)}
           depositAddress={swapResult.deposit_address}
           onCancel={handleCancelSwap}
@@ -242,18 +331,19 @@ export default function ChangellySwap() {
             buyAsset={toCoin}
             sellAsset={fromCoin}
             loading={isPairsLoading}
-            sellAmount={amount}
-            buyAmount={estimatedAmount.toString()}
+            sellAmount={formatFundsAmount(amount)}
+            buyAmount={formatFundsAmount(buyAmount)}
             onReverse={() => {
               setFromCoin(toCoin);
               setToCoin(fromCoin);
               setAmount('');
+              setBuyAmount('');
             }}
             disableReverse={false}
             onBuyAssetChange={setToCoin}
             onSellAssetChange={setFromCoin}
-            onSellAmountChange={(value) => setAmount(value)}
-            onBuyAmountChange={() => undefined} // Read-only
+            onSellAmountChange={handleSellAmountChange}
+            onBuyAmountChange={handleBuyAmountChange}
           />
 
           {/* Pairs List */}
@@ -289,7 +379,7 @@ export default function ChangellySwap() {
                         hideTickers
                         ad={{
                           id: Number(pair.coin),
-                          name: pair.name,
+                          name: 'Changelly',
                           fromCoin: {
                             ticker: pair.ticker,
                             networkName: pair.network,
@@ -310,8 +400,8 @@ export default function ChangellySwap() {
                             nameFrom: pair.name,
                             nameTo: toCoin?.name || '',
                             price: rate || 0,
-                            priceCoin1InUsdt: 0,
-                            priceCoin2InUsdt: 0,
+                            priceCoin1InUsdt: fromCoin?.priceInUsdt || 0,
+                            priceCoin2InUsdt: toCoin?.priceInUsdt || 0,
                             originalPrice: rate || 0,
                             currencyAggregator: 0,
                           },
@@ -340,7 +430,7 @@ export default function ChangellySwap() {
                           paymentMethods: [],
                           transactionFee: 0,
                         }}
-                        fromTokenAmount={Number(amount)}
+                        fromTokenAmount={amount}
                         onClick={() => handlePairSelect(pair)}
                       />
                     </Box>

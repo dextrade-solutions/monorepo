@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Paper } from '@mui/material';
+import { Box, Typography, Grid, Paper, Skeleton } from '@mui/material';
 import { formatCurrency, formatFundsAmount } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
 import React, { useCallback } from 'react';
@@ -110,9 +110,17 @@ const SwapInput: React.FC<SwapInputProps> = ({
               },
             }}
           />
-          <Typography color="text.secondary" mt={-1}>
-            {formatCurrency(value * asset?.priceInUsdt, 'usd')}
-          </Typography>
+          {value && asset && (
+            <>
+              {asset?.priceInUsdt ? (
+                <Typography color="text.secondary" mt={-1}>
+                  {formatCurrency(value * asset.priceInUsdt, 'usd')}
+                </Typography>
+              ) : (
+                <Skeleton variant="text" width={100} height={20} />
+              )}
+            </>
+          )}
         </Box>
       </Box>
       <SelectCoinsItem
