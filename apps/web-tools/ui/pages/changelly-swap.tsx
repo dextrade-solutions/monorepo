@@ -464,7 +464,7 @@ export default function ChangellySwap() {
                         id: Number(pair.coin),
                         name: 'Changelly',
                         fromCoin: {
-                          ticker: pair.ticker,
+                          ticker: pair.coin,
                           networkName: pair.network,
                           uuid: pair.coin,
                           networkType: pair.network,
