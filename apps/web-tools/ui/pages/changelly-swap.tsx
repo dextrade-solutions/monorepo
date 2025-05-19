@@ -397,15 +397,14 @@ export default function ChangellySwap() {
   };
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        textAlign="center"
-        fontWeight="bold"
-        mt={2}
-      >
-        Dextrade Swaps
-      </Typography>
+      <Box textAlign="center" gutterBottom mb={2}>
+        <Typography component="span" variant="h4" fontWeight="bold">
+          Dextrade
+        </Typography>
+        <Typography component="span" ml={1} variant="h4" color="text.secondary">
+          Swaps
+        </Typography>
+      </Box>
 
       <>
         <Swap
