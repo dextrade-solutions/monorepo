@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography, Collapse } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { formatFundsAmount, NetworkNames, TradeStatus } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
@@ -379,8 +379,20 @@ export default function ChangellySwap() {
       : undefined;
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
-      <Box textAlign="center" gutterBottom mb={2}>
+    <Box 
+      sx={{ 
+        p: 1,
+        minHeight: '80vh',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        transition: 'all 0.3s ease-in-out',
+        '& > *': {
+          transition: 'all 0.3s ease-in-out'
+        }
+      }}
+    >
+      <Box textAlign="center" mb={2}>
         <Typography component="span" variant="h4" fontWeight="bold">
           Dextrade
         </Typography>
@@ -413,7 +425,7 @@ export default function ChangellySwap() {
         />
 
         {/* Pairs List */}
-        {!swapResult && pairs && pairs.length > 0 && (
+        <Collapse in={!swapResult && Boolean(pairs?.length)} timeout={300}>
           <Box sx={{ mt: 3 }}>
             <Typography
               ml={1}
@@ -506,7 +518,7 @@ export default function ChangellySwap() {
               })}
             </Box>
           </Box>
-        )}
+        </Collapse>
         {swapResult && (
           <>
             <ChangellySwapProgress
