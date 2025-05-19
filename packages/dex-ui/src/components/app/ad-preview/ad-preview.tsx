@@ -27,6 +27,8 @@ interface IProps {
   ad: AdItem;
   fromTokenAmount?: number;
   exchanger: UserModel;
+  timeToSwap?: number;
+  estimateFee?: number;
   isSelfAd?: boolean;
   hideTickers?: boolean;
   onClick?: () => void;
@@ -35,6 +37,8 @@ interface IProps {
 
 const AdPreview = ({
   ad,
+  timeToSwap,
+  estimateFee,
   fromTokenAmount = 0,
   isSelfAd,
   hideTickers,
@@ -162,25 +166,31 @@ const AdPreview = ({
               ))}
             </Box>
           )}
-          {/* <Box mt={2}>
-            <Chip
-              variant="outlined"
-              label={
-                <Typography>
-                  <Fuel size={16} /> {formatCurrency(1, 'usd')}
-                </Typography>
-              }
-            />
-            <Chip
-              variant="outlined"
-              sx={{ ml: 1 }}
-              label={
-                <Typography lineHeight={1}>
-                  <Timer size={16} /> {formatDate(500000, "m'm'")}
-                </Typography>
-              }
-            />
-          </Box> */}
+          {estimateFee && timeToSwap && (
+            <Box mt={2}>
+              {estimateFee && (
+                <Chip
+                  variant="outlined"
+                  label={
+                    <Typography display="flex" gap={1} alignItems="center">
+                      <Fuel size={16} /> {formatCurrency(estimateFee, 'usd')}
+                    </Typography>
+                  }
+                />
+              )}
+              {timeToSwap && (
+                <Chip
+                  variant="outlined"
+                  sx={{ ml: 1 }}
+                  label={
+                    <Typography display="flex" gap={1} alignItems="center">
+                      <Timer size={16} /> {formatDate(timeToSwap, "m'm'")}
+                    </Typography>
+                  }
+                />
+              )}
+            </Box>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>

@@ -242,21 +242,28 @@ export default function ChangellySwap() {
       to: toCoin?.symbol || '',
       fromNetwork: fromCoin?.providerNetwork || '',
       toNetwork: toCoin?.providerNetwork || '',
+      amount: Number(amount),
     };
-  }, [fromCoin, toCoin]);
+  }, [fromCoin, toCoin, amount]);
 
   // Clear selection when query changes
   useEffect(() => {
     setSelectedPair(null);
     setAmount('');
     setBuyAmount('');
-  }, [pairsQuery]);
+  }, [fromCoin?.symbol, toCoin?.symbol]);
 
   // Fetch pairs when from and to coins are selected
   const { data: pairsResponse, isLoading: isPairsLoading } = useQuery({
     queryKey: ['changellyPairs', fromCoin?.symbol, toCoin?.symbol],
     queryFn: () => changellyService.getPairs1(pairsQuery),
     enabled: Boolean(fromCoin) && Boolean(toCoin),
+  });
+
+  const { data: exchangeInfoResponse } = useQuery({
+    queryKey: ['changellyFee', pairsQuery],
+    queryFn: () => changellyService.getExchangeInfo(pairsQuery),
+    enabled: Boolean(fromCoin) && Boolean(toCoin) && Boolean(amount),
   });
 
   const pairs = (pairsResponse?.data || []) as Pair[];
@@ -343,8 +350,9 @@ export default function ChangellySwap() {
         to_network: selectedPair.to_coins[0]?.networks[0]?.network,
         to_address: connectedWallet.address,
       }),
-    );
-    setIsCreatingSwap(false);
+    ).finally(() => {
+      setIsCreatingSwap(false);
+    });
 
     if (result?.data?.deposit_address) {
       setSwapResult(result.data);
@@ -360,6 +368,16 @@ export default function ChangellySwap() {
     setSelectedPair(null);
     setIsWalletConnected(null);
   };
+
+  const exchangeInfo =
+    exchangeInfoResponse?.data ||
+    selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo;
+
+  const estimateFee =
+    toCoin?.priceInUsdt && exchangeInfo
+      ? (exchangeInfo.fee + exchangeInfo.networkFee) * toCoin.priceInUsdt
+      : undefined;
+
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: 3 }}>
       <Box textAlign="center" gutterBottom mb={2}>
@@ -403,7 +421,7 @@ export default function ChangellySwap() {
               color="text.secondary"
               gutterBottom
             >
-              Available Providers
+              Best Rate
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {pairs.map((pair) => {
@@ -478,6 +496,8 @@ export default function ChangellySwap() {
                         paymentMethods: [],
                         transactionFee: 0,
                       }}
+                      timeToSwap={500000}
+                      estimateFee={estimateFee}
                       fromTokenAmount={amount}
                       onClick={() => handlePairSelect(pair)}
                     />
