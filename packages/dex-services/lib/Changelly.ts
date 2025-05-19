@@ -15,6 +15,7 @@ import {
   CoinData,
   DataBlock,
   DepositData,
+  ExchangeData,
   ProviderCoinsModel,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
@@ -72,6 +73,29 @@ export class Changelly<SecurityDataType = unknown> extends HttpClient<SecurityDa
   ) =>
     this.request<CoinData[], ApiErrorResponse>({
       path: `/public/changelly/pairs`,
+      method: "GET",
+      query: query,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags changelly-controller
+   * @name GetExchangeInfo
+   * @request GET:/public/changelly/exchange/info
+   */
+  getExchangeInfo = (
+    query: {
+      from: string;
+      to: string;
+      fromNetwork: string;
+      toNetwork: string;
+      amount: number;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<ExchangeData, ApiErrorResponse>({
+      path: `/public/changelly/exchange/info`,
       method: "GET",
       query: query,
       ...params,

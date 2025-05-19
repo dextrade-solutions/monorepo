@@ -58,6 +58,104 @@ export interface UtilsUTXOResponseModel {
   data?: UtilsUTXODataModel[];
 }
 
+export interface CoinCreateModel {
+  ticker?: string;
+  tokenName?: string;
+  uuid?: string;
+  networkType?: string;
+  networkName?:
+    | "ethereum"
+    | "tron"
+    | "the_open_network"
+    | "binance_smart_chain"
+    | "binance_chain"
+    | "polygon"
+    | "optimism"
+    | "gnosis"
+    | "fantom"
+    | "avalanche"
+    | "solana"
+    | "bitcoin"
+    | "elrond"
+    | "litecoin"
+    | "dash"
+    | "dogecoin"
+    | "zcash"
+    | "ecash"
+    | "bitcoin_cash"
+    | "fiat"
+    | "arbitrumOne"
+    | "xdc_network"
+    | "lightning"
+    | "taraxa"
+    | "somnia";
+  reserve?: number;
+}
+
+export interface CoinPairsCreateModel {
+  currencyAggregator?:
+    | "BINANCE"
+    | "CRYPTO_COMPARE"
+    | "COIN_MARKET_CUP"
+    | "BTSE"
+    | "DEXPAY"
+    | "COIN_GECKO"
+    | "SWAPKIT"
+    | "FIXED_PRICE";
+  price?: number;
+}
+
+export interface ProviderOptionalExchangerSettingsModel {
+  minimumExchangeAmountCoin1?: number;
+  maximumExchangeAmountCoin1?: number;
+  priceAdjustment?: number;
+  transactionFee?: number;
+  active?: boolean;
+  /** @format double */
+  amlRiskLimit?: number;
+  /** @format double */
+  slippage?: number;
+  reserveLimitation?: number;
+  /** @format int64 */
+  timeToPay?: number;
+  tradeWithKycUsers?: boolean;
+}
+
+export interface ProviderUserExchangerSettingsCreateModel {
+  projectName?: string;
+  /** @format int64 */
+  userId?: number;
+  provider?:
+    | "Provider.DEXTRADE(name=DexTrade)"
+    | "Provider.EXOLIX(name=Exolix)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
+    | "Provider.UNISWAP(name=Uniswap)"
+    | "Provider.DEXPAY(name=DexPay)"
+    | "Provider.SWAPKIT(name=SwapKit)"
+    | "Provider.BTSE(name=BTSE)"
+    | "Provider.CHANGELLY(name=CHANGELLY)"
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
+  fromCoin?: CoinCreateModel;
+  toCoin?: CoinCreateModel;
+  coinPair?: CoinPairsCreateModel;
+  createReversedPair?: boolean;
+  addressToReceive?: string;
+  addressToSendFrom?: string;
+  exchangersPolicy?: string;
+  optionalSettings?: ProviderOptionalExchangerSettingsModel;
+  reversedOptionalSettings?: ProviderOptionalExchangerSettingsModel;
+  /** @format int64 */
+  pairId?: number;
+}
+
+export interface ProviderExchangerSettingsResponseModel {
+  /** @format int64 */
+  exchangerSettingsId?: number;
+  /** @format int64 */
+  reversedExchangerSettingsId?: number;
+}
+
 export interface TestModel {
   data?: string;
 }
@@ -242,103 +340,6 @@ export interface SwapKitQuoteRequestModel {
   referrer?: string;
 }
 
-export interface CoinCreateModel {
-  ticker?: string;
-  tokenName?: string;
-  uuid?: string;
-  networkType?: string;
-  networkName?:
-    | "ethereum"
-    | "tron"
-    | "the_open_network"
-    | "binance_smart_chain"
-    | "binance_chain"
-    | "polygon"
-    | "optimism"
-    | "gnosis"
-    | "fantom"
-    | "avalanche"
-    | "solana"
-    | "bitcoin"
-    | "elrond"
-    | "litecoin"
-    | "dash"
-    | "dogecoin"
-    | "zcash"
-    | "ecash"
-    | "bitcoin_cash"
-    | "fiat"
-    | "arbitrumOne"
-    | "xdc_network"
-    | "lightning"
-    | "taraxa"
-    | "somnia";
-  reserve?: number;
-}
-
-export interface CoinPairsCreateModel {
-  currencyAggregator?:
-    | "BINANCE"
-    | "CRYPTO_COMPARE"
-    | "COIN_MARKET_CUP"
-    | "BTSE"
-    | "DEXPAY"
-    | "COIN_GECKO"
-    | "SWAPKIT"
-    | "FIXED_PRICE";
-  price?: number;
-}
-
-export interface ProviderOptionalExchangerSettingsModel {
-  minimumExchangeAmountCoin1?: number;
-  maximumExchangeAmountCoin1?: number;
-  priceAdjustment?: number;
-  transactionFee?: number;
-  active?: boolean;
-  /** @format double */
-  amlRiskLimit?: number;
-  /** @format double */
-  slippage?: number;
-  reserveLimitation?: number;
-  /** @format int64 */
-  timeToPay?: number;
-  tradeWithKycUsers?: boolean;
-}
-
-export interface ProviderUserExchangerSettingsCreateModel {
-  projectName?: string;
-  /** @format int64 */
-  userId?: number;
-  provider?:
-    | "Provider.DEXTRADE(name=DexTrade)"
-    | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
-    | "Provider.UNISWAP(name=Uniswap)"
-    | "Provider.DEXPAY(name=DexPay)"
-    | "Provider.SWAPKIT(name=SwapKit)"
-    | "Provider.BTSE(name=BTSE)"
-    | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
-  fromCoin?: CoinCreateModel;
-  toCoin?: CoinCreateModel;
-  coinPair?: CoinPairsCreateModel;
-  createReversedPair?: boolean;
-  addressToReceive?: string;
-  addressToSendFrom?: string;
-  exchangersPolicy?: string;
-  optionalSettings?: ProviderOptionalExchangerSettingsModel;
-  reversedOptionalSettings?: ProviderOptionalExchangerSettingsModel;
-  /** @format int64 */
-  pairId?: number;
-}
-
-export interface ProviderExchangerSettingsResponseModel {
-  /** @format int64 */
-  exchangerSettingsId?: number;
-  /** @format int64 */
-  reversedExchangerSettingsId?: number;
-}
-
 export interface SwapKitNewTradeByAdIdModel {
   /** @format int64 */
   exchangerSettingsId?: number;
@@ -459,13 +460,14 @@ export interface ProviderReserveUpdateModelV2 {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   coin?: CoinUpdateModel;
   /** @format int64 */
   exchangerSettingsId?: number;
@@ -477,13 +479,14 @@ export interface ProviderReserveListUpdateModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
 }
 
 export interface ProviderReserveModel {
@@ -512,13 +515,14 @@ export interface ProviderReserveUpdateModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   coin?: CoinUpdateModel;
 }
 
@@ -564,13 +568,14 @@ export interface ProviderUserExchangerSettingsUpdateModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   fromCoin?: CoinCreateModel;
   toCoin?: CoinCreateModel;
   coinPair?: CoinPairsCreateModel;
@@ -666,13 +671,6 @@ export interface CoinPairsModel {
   dexpayPairId?: number;
 }
 
-export interface CountryDictModel {
-  /** @format int64 */
-  id?: number;
-  iso?: string;
-  name?: string;
-}
-
 export interface ExchangerSettingsInfoModel {
   /** @format int64 */
   id?: number;
@@ -714,19 +712,26 @@ export interface ExchangerSettingsInfoModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   /** @format int64 */
   pairId?: number;
   /** @format int32 */
   direction?: number;
   /** @format int64 */
   cdt?: number;
+  transactionFeeType?:
+    | "TransactionFeeType.NETWORK"
+    | "TransactionFeeType.EXHANGER_PAY"
+    | "TransactionFeeType.FIXED"
+    | "TransactionFeeType.FIXED_AND_NETWORK";
+  transactionFeeFixedValue?: number;
 }
 
 export interface PaymentMethodCurrencyModel {
@@ -741,12 +746,11 @@ export interface PaymentMethodsModel {
   userPaymentMethodId?: number;
   paymentMethod?: BankDictModel;
   currency?: PaymentMethodCurrencyModel;
-  country?: CountryDictModel;
   balance?: number;
-  balanceIsRequired?: boolean;
   /** @format int64 */
   userId?: number;
   data?: string;
+  balanceRequired?: boolean;
 }
 
 export interface ReserveModel {
@@ -804,13 +808,14 @@ export interface ProviderUserExchangerSettingsDeleteModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
 }
 
 export interface ProviderUserCreateModel {
@@ -848,6 +853,7 @@ export interface ExchangeModel {
   isExchanger?: boolean;
   isClient?: boolean;
   clientPaymentMethod?: PaymentMethodsModel;
+  clientPaymentMethods?: PaymentMethodsModel[];
   exchangerPaymentMethod?: PaymentMethodsModel;
   /** @format int64 */
   exchangerId?: number;
@@ -987,19 +993,26 @@ export interface ExchangeModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   clientIp?: Inet;
   clientCountry?: string;
   /** @format int64 */
   invoiceId?: number;
   invoiceUrl?: string;
   isInvoicePayment?: boolean;
+  transactionFeeType?:
+    | "TransactionFeeType.NETWORK"
+    | "TransactionFeeType.EXHANGER_PAY"
+    | "TransactionFeeType.FIXED"
+    | "TransactionFeeType.FIXED_AND_NETWORK";
+  transactionFeeFixedValue?: number;
 }
 
 export interface Inet {
@@ -1193,15 +1206,22 @@ export interface ExchangerModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   officialMerchant?: boolean;
   hasReversed?: boolean;
+  transactionFeeType?:
+    | "TransactionFeeType.NETWORK"
+    | "TransactionFeeType.EXHANGER_PAY"
+    | "TransactionFeeType.FIXED"
+    | "TransactionFeeType.FIXED_AND_NETWORK";
+  transactionFeeFixedValue?: number;
   exchangerActive?: boolean;
 }
 
@@ -1299,13 +1319,14 @@ export interface UserModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   rating?: TotalRatingResponseModel;
   /** @format int32 */
   exchangeCount?: number;
@@ -1348,14 +1369,14 @@ export interface StatisticResponseModel {
 
 export interface PaymentMethodsCreateModel {
   /** @format int64 */
-  userPaymentMethodId?: number;
+  id?: number;
   /** @format int64 */
   paymentMethodId?: number;
-  currency?: string;
+  /** @format int64 */
+  currencyId?: number;
   /** @format int64 */
   userId?: number;
   balance?: number;
-  data?: string;
   remove?: boolean;
 }
 
@@ -1367,26 +1388,21 @@ export interface PaymentBalanceUpdateModel {
 
 export interface PaymentMethodsCreateV2Model {
   /** @format int64 */
-  userPaymentMethodId?: number;
-  data?: string;
+  id?: number;
   balance?: number;
   paymentMethod?: BankDictModel;
   currency?: PaymentMethodCurrencyModel;
-  country?: CountryDictModel;
   remove?: boolean;
 }
 
 export interface PaymentMethodsFullModel {
   /** @format int64 */
   userPaymentMethodId?: number;
-  data?: string;
   balance?: number;
-  balanceIsRequired?: boolean;
   paymentMethod?: BankDictModel;
   currency?: PaymentMethodCurrencyModel;
-  country?: CountryDictModel;
-  /** @format int64 */
-  userId?: number;
+  fields?: BankFieldsInfoModel[];
+  balanceRequired?: boolean;
 }
 
 export interface PaymentMethodsListCreateModel {
@@ -1521,7 +1537,7 @@ export interface ExchangerSettingsCreateModel {
   userId?: number;
   active?: boolean;
   priceAdjustment?: number;
-  transactionFee?: number;
+  transactionFeeInCoinTwo?: number;
   walletAddress?: string;
   walletAddressInNetwork2?: string;
   coinPair?: CoinPairsModel;
@@ -1550,18 +1566,25 @@ export interface ExchangerSettingsCreateModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   tradeWithKycUsers?: boolean;
   /** @format int64 */
   pairId?: number;
   /** @format int32 */
   direction?: number;
+  transactionFeeType?:
+    | "TransactionFeeType.NETWORK"
+    | "TransactionFeeType.EXHANGER_PAY"
+    | "TransactionFeeType.FIXED"
+    | "TransactionFeeType.FIXED_AND_NETWORK";
+  transactionFeeFixedValue?: number;
 }
 
 export interface ReserveRequestModel {
@@ -1620,15 +1643,22 @@ export interface ExchangerModelMin {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   officialMerchant?: boolean;
   hasReversed?: boolean;
+  transactionFeeType?:
+    | "TransactionFeeType.NETWORK"
+    | "TransactionFeeType.EXHANGER_PAY"
+    | "TransactionFeeType.FIXED"
+    | "TransactionFeeType.FIXED_AND_NETWORK";
+  transactionFeeFixedValue?: number;
   exchangerActive?: boolean;
 }
 
@@ -1841,6 +1871,7 @@ export interface CreatedExchangeModel {
   fee?: number;
   /** @format int64 */
   paymentMethodId?: number;
+  paymentMethodIds?: number[];
   exchangeWalletAddress?: string;
   clientParams?: string;
 }
@@ -1853,6 +1884,7 @@ export interface NewExchangeFiatModel {
   clientWalletAddress?: string;
   /** @format int64 */
   clientPaymentMethodId?: number;
+  clientPaymentMethodIds?: number[];
   sessionId?: string;
   params?: string;
   isInvoicePayment?: boolean;
@@ -2188,6 +2220,23 @@ export interface ToCoin {
   networks?: Network[];
 }
 
+export interface ExchangeData {
+  from?: string;
+  to?: string;
+  networkFee?: number;
+  amountFrom?: number;
+  amountTo?: number;
+  max?: number;
+  maxFrom?: number;
+  maxTo?: number;
+  min?: number;
+  minFrom?: number;
+  minTo?: number;
+  visibleAmount?: number;
+  rate?: number;
+  fee?: number;
+}
+
 export interface ProviderCoinsModel {
   /** @format int64 */
   id?: number;
@@ -2225,13 +2274,14 @@ export interface ProviderCoinsModel {
   provider?:
     | "Provider.DEXTRADE(name=DexTrade)"
     | "Provider.EXOLIX(name=Exolix)"
-    | "Provider.PANCAKE(name=PancakeSwap)"
+    | "Provider.PANCAKESWAP(name=PancakeSwap)"
     | "Provider.UNISWAP(name=Uniswap)"
     | "Provider.DEXPAY(name=DexPay)"
     | "Provider.SWAPKIT(name=SwapKit)"
     | "Provider.BTSE(name=BTSE)"
     | "Provider.CHANGELLY(name=CHANGELLY)"
-    | "Provider.TRANSAK(name=Transak)";
+    | "Provider.TRANSAK(name=Transak)"
+    | "Provider.OKTO(name=Okto)";
   providerNetwork?: string;
   minAmount?: number;
 }
@@ -2283,6 +2333,36 @@ export interface PaymentPricesModel {
   btc?: number;
   trx?: number;
   usdt?: number;
+}
+
+export interface Chain {
+  key?: string;
+  name?: string;
+}
+
+export interface OctavTransactionResponse {
+  transactions?: Transaction[];
+}
+
+export interface Protocol {
+  name?: string;
+  key?: string;
+}
+
+export interface OctavPortfolioResponse {
+  address?: string;
+  cashBalance?: string;
+  closedPnl?: string;
+  dailyIncome?: string;
+  dailyExpense?: string;
+  fees?: string;
+  feesFiat?: string;
+  lastUpdated?: string;
+  openPnl?: string;
+  networth?: string;
+  totalCostBasis?: string;
+  assetByProtocols?: Record<string, Protocol>;
+  chains?: Record<string, Chain>;
 }
 
 export interface KycModel {

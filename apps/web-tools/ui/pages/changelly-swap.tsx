@@ -135,7 +135,7 @@ const ChangellySwapProgress = ({
               onChange={setStageStatus}
               transactionHash={swapStatus?.data?.transaction?.hash || ''}
             />
-            <Box mt={3}></Box>
+            <Box mt={3} />
             <Button
               fullWidth
               variant={
@@ -144,18 +144,6 @@ const ChangellySwapProgress = ({
                   : 'outlined'
               }
               onClick={onCancel}
-              color={
-                String(txStatus) === ChangellySwapStatus.finished
-                  ? 'success'
-                  : 'primary'
-              }
-              sx={{
-                ...(String(txStatus) === ChangellySwapStatus.finished && {
-                  '&:hover': {
-                    backgroundColor: 'success.dark',
-                  },
-                }),
-              }}
             >
               {String(txStatus) === ChangellySwapStatus.finished
                 ? 'Start New Swap'
@@ -466,13 +454,16 @@ export default function ChangellySwap() {
                           currencyAggregator: 0,
                         },
                         reserveSum: Number(
-                          pair.to_coins[0]?.networks[0]?.exchangeInfo.max || 0,
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.maxTo ||
+                            0,
                         ),
-                        minimumExchangeAmountCoin1: Number(
-                          pair.to_coins[0]?.networks[0]?.exchangeInfo.min || 0,
+                        minimumExchangeAmountCoin2: Number(
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.minTo ||
+                            0,
                         ),
                         maximumExchangeAmountCoin2: Number(
-                          pair.to_coins[0]?.networks[0]?.exchangeInfo.max || 0,
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.maxTo ||
+                            0,
                         ),
                         isExchangerActive: true,
                         isKycVerified: true,

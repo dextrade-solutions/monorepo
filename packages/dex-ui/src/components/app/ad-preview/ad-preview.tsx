@@ -3,16 +3,19 @@ import {
   CardActionArea,
   Divider,
   Box,
+  Chip,
   CardContent,
   Typography,
 } from '@mui/material';
 import {
   formatCurrency,
+  formatDate,
   formatFundsAmount,
   getAdLimitPerExchange,
   getUserAvatarUrl,
 } from 'dex-helpers';
 import { AdItem, UserModel } from 'dex-helpers/types';
+import { Fuel, Timer } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { AssetItem, Icon } from '../../ui';
@@ -61,11 +64,15 @@ const AdPreview = ({
               rating={{
                 exchangeCount: ad.exchangeCount,
                 сompletionRate: ad.exchangeCompletionRate,
-                totalRating: ad.rating.totalRating,
+                totalRating: ad.rating?.totalRating,
               }}
               endAdornment={
                 Boolean(Number(fromTokenAmount)) && (
-                  <Typography className="flex-grow" textAlign="right" color="success.main">
+                  <Typography
+                    className="flex-grow"
+                    textAlign="right"
+                    color="success.main"
+                  >
                     ~{' '}
                     {formatCurrency(
                       fromTokenAmount * ad.coinPair.price,
@@ -131,7 +138,7 @@ const AdPreview = ({
             </Typography>
           </Box>
 
-          {Boolean(ad.paymentMethods.length) && (
+          {Boolean(ad.paymentMethods?.length) && (
             <Box marginTop={2}>
               {ad.paymentMethods.map((paymentMethod) => (
                 <Box
@@ -155,6 +162,25 @@ const AdPreview = ({
               ))}
             </Box>
           )}
+          {/* <Box mt={2}>
+            <Chip
+              variant="outlined"
+              label={
+                <Typography>
+                  <Fuel size={16} /> {formatCurrency(1, 'usd')}
+                </Typography>
+              }
+            />
+            <Chip
+              variant="outlined"
+              sx={{ ml: 1 }}
+              label={
+                <Typography lineHeight={1}>
+                  <Timer size={16} /> {formatDate(500000, "m'm'")}
+                </Typography>
+              }
+            />
+          </Box> */}
         </CardContent>
       </CardActionArea>
     </Card>
