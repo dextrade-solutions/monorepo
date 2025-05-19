@@ -34,6 +34,15 @@ export default function Stage({
       );
       message = 'Approving transaction';
       break;
+    case StageStatuses.overwaited:
+      severity = 'warning';
+      message = 'Transaction is taking longer than expected';
+      action = (
+        <Button disabled={loading} color="primary" onClick={onRequest}>
+          Try again
+        </Button>
+      );
+      break;
     case StageStatuses.failed:
       severity = 'error';
       action = (

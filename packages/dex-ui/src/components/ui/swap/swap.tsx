@@ -36,6 +36,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
   reversed,
   maxListItem = 10,
   loading,
+  disabled,
   fuseSearchKeys,
   shouldSearchForImports,
 }) => {
@@ -101,7 +102,7 @@ const SwapInput: React.FC<SwapInputProps> = ({
             clearable={false}
             allowNegative={false}
             onChange={handleInputChange}
-            disabled={loading}
+            disabled={loading || disabled}
             min="0"
             InputProps={{
               disableUnderline: true,
@@ -130,7 +131,8 @@ const SwapInput: React.FC<SwapInputProps> = ({
         placeholder={t('Select Token')}
         reversed={reversed}
         maxListItem={maxListItem}
-        loading={loading}
+        loading={loading || disabled}
+        disabled={disabled}
         fuseSearchKeys={fuseSearchKeys}
         shouldSearchForImports={shouldSearchForImports}
       />
@@ -156,6 +158,7 @@ interface SwapFormProps {
   buyBalanceUsdt?: string;
   loading?: boolean;
   disableReverse?: boolean;
+  disabled?: boolean;
 }
 
 export const SwapForm: React.FC<SwapFormProps> = ({
@@ -176,6 +179,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
   buyBalanceUsdt,
   loading,
   disableReverse,
+  disabled,
 }) => {
   const t = (v) => v;
 
@@ -194,6 +198,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
           placeholder={t('0')}
           loading={loading}
           reversed
+          disabled={disabled}
         />
       </Grid>
       <Box
@@ -204,7 +209,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
       >
         <Box sx={{ position: 'absolute', transform: 'translateY(-50%)' }}>
           <SelectCoinsSwap
-            disabled={disableReverse}
+            disabled={disableReverse || disabled}
             loading={loading}
             vertical
             onClick={onReverse}
@@ -224,6 +229,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({
           placeholder={t('0')}
           reversed
           loading={loading}
+          disabled={disabled}
         />
       </Grid>
     </Grid>

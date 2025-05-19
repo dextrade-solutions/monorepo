@@ -17,6 +17,7 @@ import {
   TradeType,
 } from 'dex-helpers';
 import { AssetModel, Trade } from 'dex-helpers/types';
+import { exchangeService } from 'dex-services';
 import {
   AssetItem,
   CountdownTimer,
@@ -186,10 +187,17 @@ export const P2PSwapProcessing = ({ exchange, from, to }: IProps) => {
               amount={exchange.amount1}
               tradeStatus={exchange.status}
               depositAddress={exchange.exchangerWalletAddress}
+              transactionHash={exchange.clientTransactionHash}
               value={stagesStatuses.directTransfer}
-              onChange={(newStatus: StageStatuses) =>
-                setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }))
-              }
+              onChange={(newStatus: StageStatuses, txHash?: string) => {
+                if (txHash) {
+                  exchangeService.clientSendCrypto({
+                    id: exchange.id,
+                    transactionHash: txHash,
+                  });
+                }
+                setStagesStatuses((v) => ({ ...v, directTransfer: newStatus }));
+              }}
             />
           ),
           key: 'directTransfer',

@@ -126,6 +126,7 @@ export const SelectCoinsItemSearch = ({
         onChange={handleChange}
         error={error}
         fullWidth
+        autoFocus
         InputProps={{
           endAdornment: <EndIcon value={network} onChange={onChangeNetwork} />,
         }}

@@ -1,15 +1,9 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { formatFundsAmount, NetworkNames, TradeStatus } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { changellyService, coinPairsService } from 'dex-services';
-import {
-  Swap,
-  useGlobalModalContext,
-  Button,
-  PulseLoader,
-  AdPreview,
-} from 'dex-ui';
+import { Swap, useGlobalModalContext, Button, AdPreview } from 'dex-ui';
 import { divide } from 'lodash';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
@@ -68,7 +62,7 @@ const ChangellySwapProgress = ({
   asset,
   onCancel,
 }: ChangellySwapProgressProps) => {
-  const [stageStatus, setStageStatus] = useState<StageStatuses>(StageStatuses.requested);
+  const [stageStatus, setStageStatus] = useState<StageStatuses>(null);
 
   // Fetch swap status with refetch interval
   const { data: swapStatus } = useQuery({
@@ -123,15 +117,11 @@ const ChangellySwapProgress = ({
 
   return (
     <Box sx={{ mt: 3 }}>
-      <Card>
+      <Card variant="outlined">
         <CardContent>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap={2}
-          >
-            {String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? (
+          <Box gap={2}>
+            {String(swapStatus?.data?.status) ===
+            ChangellySwapStatus.finished ? (
               <>
                 <Typography variant="h5" color="success.main" fontWeight="bold">
                   Swap Completed Successfully! 🎉
@@ -143,7 +133,8 @@ const ChangellySwapProgress = ({
             ) : (
               <>
                 <Typography variant="h6">
-                  {String(swapStatus?.data?.status) === ChangellySwapStatus.waiting
+                  {String(swapStatus?.data?.status) ===
+                  ChangellySwapStatus.waiting
                     ? 'Waiting for deposit'
                     : 'Processing swap'}
                 </Typography>
@@ -164,20 +155,33 @@ const ChangellySwapProgress = ({
               onChange={setStageStatus}
               transactionHash={swapStatus?.data?.transaction?.hash || ''}
             />
-            <Button 
-              variant={String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? "contained" : "outlined"}
+            <Box mt={3}></Box>
+            <Button
+              fullWidth
+              variant={
+                String(swapStatus?.data?.status) ===
+                ChangellySwapStatus.finished
+                  ? 'contained'
+                  : 'outlined'
+              }
               onClick={onCancel}
-              color={String(swapStatus?.data?.status) === ChangellySwapStatus.finished ? "success" : "primary"}
+              color={
+                String(swapStatus?.data?.status) ===
+                ChangellySwapStatus.finished
+                  ? 'success'
+                  : 'primary'
+              }
               sx={{
-                ...(String(swapStatus?.data?.status) === ChangellySwapStatus.finished && {
+                ...(String(swapStatus?.data?.status) ===
+                  ChangellySwapStatus.finished && {
                   '&:hover': {
                     backgroundColor: 'success.dark',
                   },
                 }),
               }}
             >
-              {String(swapStatus?.data?.status) === ChangellySwapStatus.finished 
-                ? 'Start New Swap' 
+              {String(swapStatus?.data?.status) === ChangellySwapStatus.finished
+                ? 'Start New Swap'
                 : 'Cancel Swap'}
             </Button>
           </Box>
@@ -205,6 +209,7 @@ export default function ChangellySwap() {
     address: string;
   } | null>(null);
   const [swapResult, setSwapResult] = useState<SwapResult | null>(null);
+  const [isCreatingSwap, setIsCreatingSwap] = useState(false);
   const { showModal } = useGlobalModalContext();
   const dispatch = useDispatch();
   const { handleRequest } = useRequestHandler();
@@ -358,13 +363,12 @@ export default function ChangellySwap() {
       },
     });
   };
-
   // Handle swap creation
   const handleCreateSwap = async () => {
     if (!fromCoin || !toCoin || !amount || !selectedPair || !connectedWallet) {
       return;
     }
-
+    setIsCreatingSwap(true);
     const result = await handleRequest(
       changellyService.create({
         amount: Number(amount),
@@ -375,6 +379,7 @@ export default function ChangellySwap() {
         to_address: connectedWallet.address,
       }),
     );
+    setIsCreatingSwap(false);
 
     if (result?.data?.deposit_address) {
       setSwapResult(result.data);
@@ -402,143 +407,145 @@ export default function ChangellySwap() {
         Dextrade Swaps
       </Typography>
 
-      {/* Action Button or Progress */}
-      {swapResult ? (
-        <ChangellySwapProgress
-          asset={fromCoin}
-          id={swapResult.external_id}
-          amount={Number(amount)}
-          depositAddress={swapResult.deposit_address}
-          onCancel={handleCancelSwap}
+      <>
+        <Swap
+          assetsListBuy={coins}
+          assetsListSell={coins}
+          buyAsset={toCoin}
+          sellAsset={fromCoin}
+          loading={isPairsLoading}
+          sellAmount={formatFundsAmount(amount)}
+          buyAmount={formatFundsAmount(buyAmount)}
+          onReverse={() => {
+            setFromCoin(toCoin);
+            setToCoin(fromCoin);
+            setAmount('');
+            setBuyAmount('');
+          }}
+          disabled={Boolean(swapResult)}
+          disableReverse={false}
+          onBuyAssetChange={setToCoin}
+          onSellAssetChange={setFromCoin}
+          onSellAmountChange={handleSellAmountChange}
+          onBuyAmountChange={handleBuyAmountChange}
         />
-      ) : (
-        <>
-          <Swap
-            assetsListBuy={coins}
-            assetsListSell={coins}
-            buyAsset={toCoin}
-            sellAsset={fromCoin}
-            loading={isPairsLoading}
-            sellAmount={formatFundsAmount(amount)}
-            buyAmount={formatFundsAmount(buyAmount)}
-            onReverse={() => {
-              setFromCoin(toCoin);
-              setToCoin(fromCoin);
-              setAmount('');
-              setBuyAmount('');
-            }}
-            disableReverse={false}
-            onBuyAssetChange={setToCoin}
-            onSellAssetChange={setFromCoin}
-            onSellAmountChange={handleSellAmountChange}
-            onBuyAmountChange={handleBuyAmountChange}
-          />
 
-          {/* Pairs List */}
-          {pairs && pairs.length > 0 && (
-            <Box sx={{ mt: 3 }}>
-              <Typography
-                ml={1}
-                variant="caption"
-                color="text.secondary"
-                gutterBottom
-              >
-                Available Providers
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {pairs.map((pair) => {
-                  const rate = pair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
-                  const isSelected = selectedPair?.ticker === pair.ticker;
-                  return (
-                    <Box
-                      key={pair.ticker}
-                      onClick={() => handlePairSelect(pair)}
-                      sx={{
-                        cursor: 'pointer',
-                        border: isSelected ? '2px solid' : 'none',
-                        borderColor: 'primary.main',
-                        borderRadius: 1,
-                        '&:hover': {
-                          bgcolor: 'action.hover',
+        {/* Pairs List */}
+        {!swapResult && pairs && pairs.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Typography
+              ml={1}
+              variant="caption"
+              color="text.secondary"
+              gutterBottom
+            >
+              Available Providers
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {pairs.map((pair) => {
+                const rate = pair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
+                const isSelected = selectedPair?.ticker === pair.ticker;
+                return (
+                  <Box
+                    key={pair.ticker}
+                    onClick={() => handlePairSelect(pair)}
+                    sx={{
+                      cursor: 'pointer',
+                      border: isSelected ? '2px solid' : 'none',
+                      borderColor: 'primary.main',
+                      borderRadius: 1,
+                      '&:hover': {
+                        bgcolor: 'action.hover',
+                      },
+                    }}
+                  >
+                    <AdPreview
+                      hideTickers
+                      ad={{
+                        id: Number(pair.coin),
+                        name: 'Changelly',
+                        fromCoin: {
+                          ticker: pair.ticker,
+                          networkName: pair.network,
+                          uuid: pair.coin,
+                          networkType: pair.network,
                         },
+                        toCoin: {
+                          ticker: toCoin?.symbol || '',
+                          networkName:
+                            pair.to_coins[0]?.networks[0]?.network || '',
+                          uuid: pair.to_coins[0]?.coin || '',
+                          networkType:
+                            pair.to_coins[0]?.networks[0]?.network || '',
+                        },
+                        coinPair: {
+                          id: 0,
+                          pair: `${pair.ticker}/${toCoin?.symbol || ''}`,
+                          nameFrom: pair.name,
+                          nameTo: toCoin?.name || '',
+                          price: rate || 0,
+                          priceCoin1InUsdt: fromCoin?.priceInUsdt || 0,
+                          priceCoin2InUsdt: toCoin?.priceInUsdt || 0,
+                          originalPrice: rate || 0,
+                          currencyAggregator: 0,
+                        },
+                        reserveSum: Number(
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.max || 0,
+                        ),
+                        minimumExchangeAmountCoin1: Number(
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.min || 0,
+                        ),
+                        maximumExchangeAmountCoin2: Number(
+                          pair.to_coins[0]?.networks[0]?.exchangeInfo.max || 0,
+                        ),
+                        isExchangerActive: true,
+                        isKycVerified: true,
+                        officialMerchant: true,
+                        exchangeCount: 0,
+                        exchangeCompletionRate: 1,
+                        rating: {
+                          totalRating: 1,
+                        },
+                        lastActive: new Date().toISOString(),
+                        avatar: '',
+                        paymentMethods: [],
+                        transactionFee: 0,
                       }}
-                    >
-                      <AdPreview
-                        hideTickers
-                        ad={{
-                          id: Number(pair.coin),
-                          name: 'Changelly',
-                          fromCoin: {
-                            ticker: pair.ticker,
-                            networkName: pair.network,
-                            uuid: pair.coin,
-                            networkType: pair.network,
-                          },
-                          toCoin: {
-                            ticker: toCoin?.symbol || '',
-                            networkName:
-                              pair.to_coins[0]?.networks[0]?.network || '',
-                            uuid: pair.to_coins[0]?.coin || '',
-                            networkType:
-                              pair.to_coins[0]?.networks[0]?.network || '',
-                          },
-                          coinPair: {
-                            id: 0,
-                            pair: `${pair.ticker}/${toCoin?.symbol || ''}`,
-                            nameFrom: pair.name,
-                            nameTo: toCoin?.name || '',
-                            price: rate || 0,
-                            priceCoin1InUsdt: fromCoin?.priceInUsdt || 0,
-                            priceCoin2InUsdt: toCoin?.priceInUsdt || 0,
-                            originalPrice: rate || 0,
-                            currencyAggregator: 0,
-                          },
-                          reserveSum: Number(
-                            pair.to_coins[0]?.networks[0]?.exchangeInfo.max ||
-                              0,
-                          ),
-                          minimumExchangeAmountCoin1: Number(
-                            pair.to_coins[0]?.networks[0]?.exchangeInfo.min ||
-                              0,
-                          ),
-                          maximumExchangeAmountCoin2: Number(
-                            pair.to_coins[0]?.networks[0]?.exchangeInfo.max ||
-                              0,
-                          ),
-                          isExchangerActive: true,
-                          isKycVerified: true,
-                          officialMerchant: true,
-                          exchangeCount: 0,
-                          exchangeCompletionRate: 1,
-                          rating: {
-                            totalRating: 1,
-                          },
-                          lastActive: new Date().toISOString(),
-                          avatar: '',
-                          paymentMethods: [],
-                          transactionFee: 0,
-                        }}
-                        fromTokenAmount={amount}
-                        onClick={() => handlePairSelect(pair)}
-                      />
-                    </Box>
-                  );
-                })}
-              </Box>
+                      fromTokenAmount={amount}
+                      onClick={() => handlePairSelect(pair)}
+                    />
+                  </Box>
+                );
+              })}
             </Box>
-          )}
+          </Box>
+        )}
+        {swapResult && (
+          <>
+            <ChangellySwapProgress
+              asset={fromCoin}
+              id={swapResult.external_id}
+              amount={Number(amount)}
+              depositAddress={swapResult.deposit_address}
+              onCancel={handleCancelSwap}
+            />
+          </>
+        )}
+        {!swapResult && (
           <Button
             sx={{ mt: 3 }}
             gradient
             fullWidth
             variant="contained"
             onClick={connectedWallet ? handleCreateSwap : handleConnectWallet}
-            disabled={!fromCoin || !toCoin || !amount || !selectedPair}
+            disabled={
+              !fromCoin || !toCoin || !amount || !selectedPair || isCreatingSwap
+            }
           >
             {connectedWallet ? 'Create Swap' : 'Connect Wallet'}
           </Button>
-        </>
-      )}
+        )}
+      </>
     </Box>
   );
 }

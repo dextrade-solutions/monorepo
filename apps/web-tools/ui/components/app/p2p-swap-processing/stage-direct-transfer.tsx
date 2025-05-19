@@ -1,6 +1,5 @@
 import { TradeStatus } from 'dex-helpers';
-import { AssetModel, Trade } from 'dex-helpers/types';
-import { exchangeService } from 'dex-services';
+import { AssetModel } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { useEffect, useState } from 'react';
 
@@ -19,18 +18,28 @@ export default function StageDirectTransfer({
   transactionHash,
   from,
 }: {
-  transactionHash: string;
+  transactionHash?: string;
   amount: number;
   tradeId: string;
   depositAddress: string;
   from: AssetModel;
   tradeStatus: TradeStatus;
   value: StageStatuses | null;
-  onChange: (status: StageStatuses) => void;
+  onChange: (status: StageStatuses, txHash?: string) => void;
 }) {
   const { hideModal } = useGlobalModalContext();
   const recipient = parseAddress(from.network, depositAddress);
   const [sendTransactionFailure, setSendTransactionFailure] = useState('');
+
+  useEffect(() => {
+    if (value === StageStatuses.requested) {
+      const timer = setTimeout(() => {
+        onChange(StageStatuses.overwaited);
+      }, 15000); // 15 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [value]);
 
   const getTradeExtra = () => {
     const tradeStore = window.localStorage.getItem(tradeId);
@@ -46,11 +55,7 @@ export default function StageDirectTransfer({
 
   const txSentHandlers = {
     onSuccess: (txHash: string) => {
-      onChange(StageStatuses.success);
-      exchangeService.clientSendCrypto({
-        id: tradeId,
-        transactionHash: txHash,
-      });
+      onChange(StageStatuses.success, txHash);
     },
     onError: (e) => {
       onChange(StageStatuses.failed);
@@ -69,8 +74,7 @@ export default function StageDirectTransfer({
     if (sendTransactionFailure) {
       setSendTransactionFailure('');
     }
-
-    if (!tradeData.initiated) {
+    if (!tradeData.initiated || value === StageStatuses.overwaited) {
       tradeData.initiated = true;
       tradeData.commit();
       sendTransaction(recipient, amount, txSentHandlers);
