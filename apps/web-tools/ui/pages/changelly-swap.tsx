@@ -139,28 +139,25 @@ const ChangellySwapProgress = ({
             <Button
               fullWidth
               variant={
-                String(swapStatus?.data?.status) ===
-                ChangellySwapStatus.finished
+                String(txStatus) === ChangellySwapStatus.finished
                   ? 'contained'
                   : 'outlined'
               }
               onClick={onCancel}
               color={
-                String(swapStatus?.data?.status) ===
-                ChangellySwapStatus.finished
+                String(txStatus) === ChangellySwapStatus.finished
                   ? 'success'
                   : 'primary'
               }
               sx={{
-                ...(String(swapStatus?.data?.status) ===
-                  ChangellySwapStatus.finished && {
+                ...(String(txStatus) === ChangellySwapStatus.finished && {
                   '&:hover': {
                     backgroundColor: 'success.dark',
                   },
                 }),
               }}
             >
-              {String(swapStatus?.data?.status) === ChangellySwapStatus.finished
+              {String(txStatus) === ChangellySwapStatus.finished
                 ? 'Start New Swap'
                 : 'Cancel Swap'}
             </Button>
