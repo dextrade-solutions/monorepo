@@ -70,35 +70,17 @@ const ChangellySwapProgress = ({
     queryFn: () => changellyService.getPairs({ externalId: id }),
     refetchInterval: 8000, // Refetch every 8 seconds
   });
+  const txStatus = swapStatus?.data.transaction?.status as ChangellySwapStatus;
 
   // Map Changelly status to StageStatuses
   useEffect(() => {
-    if (!swapStatus?.data?.status) {
+    if (!txStatus) {
       return;
     }
-
-    const status = String(swapStatus.data.status) as ChangellySwapStatus;
-    switch (status) {
-      case ChangellySwapStatus.created:
-      case ChangellySwapStatus.waiting:
-      case ChangellySwapStatus.exchanging:
-      case ChangellySwapStatus.sending:
-      case ChangellySwapStatus.hold:
-        setStageStatus(StageStatuses.requested);
-        break;
-      case ChangellySwapStatus.failed:
-      case ChangellySwapStatus.refunded:
-      case ChangellySwapStatus.overdue:
-      case ChangellySwapStatus.expired:
-        setStageStatus(StageStatuses.failed);
-        break;
-      case ChangellySwapStatus.finished:
-        setStageStatus(StageStatuses.success);
-        break;
-      default:
-        setStageStatus(StageStatuses.requested);
+    if (txStatus === ChangellySwapStatus.finished) {
+      setStageStatus(StageStatuses.success);
     }
-  }, [swapStatus?.data?.status]);
+  }, [txStatus]);
 
   // Ensure asset has all required properties
   const assetModel: AssetModel = {
@@ -120,8 +102,7 @@ const ChangellySwapProgress = ({
       <Card variant="outlined">
         <CardContent>
           <Box gap={2}>
-            {String(swapStatus?.data?.status) ===
-            ChangellySwapStatus.finished ? (
+            {txStatus === ChangellySwapStatus.finished ? (
               <>
                 <Typography variant="h5" color="success.main" fontWeight="bold">
                   Swap Completed Successfully! 🎉
@@ -133,13 +114,12 @@ const ChangellySwapProgress = ({
             ) : (
               <>
                 <Typography variant="h6">
-                  {String(swapStatus?.data?.status) ===
-                  ChangellySwapStatus.waiting
+                  {txStatus === ChangellySwapStatus.waiting
                     ? 'Waiting for deposit'
                     : 'Processing swap'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Status: {swapStatus?.data?.status || 'Unknown'}
+                  Status: {txStatus || 'Unknown'}
                 </Typography>
               </>
             )}
