@@ -33,7 +33,7 @@ import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import { SwapFees } from './swap-fees';
 import './index.scss';
-import { getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
+import { getAdPathname, getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
 import { getCurrentTheme } from '../../../ducks/app/app';
 
 interface IProps {
@@ -58,13 +58,22 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const { login } = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
 
+  const adPath = getAdPathname({
+    fromNetworkName: ad.fromCoin.networkName,
+    fromTicker: ad.fromCoin.ticker,
+    toNetworkName: ad.toCoin.networkName,
+    toTicker: ad.toCoin.ticker,
+    name: ad.name,
+    amount: formatFundsAmount(fromTokenInputValue),
+  });
+
   const assetInputFrom = useAssetInput({
     asset: assetFrom,
-    ad,
+    deeplinkPath: adPath,
   });
   const assetInputTo = useAssetInput({
     asset: assetTo,
-    ad,
+    deeplinkPath: adPath,
     isToAsset: true,
   });
 

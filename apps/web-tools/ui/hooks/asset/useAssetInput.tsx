@@ -24,11 +24,11 @@ import { useAuthP2P } from '../useAuthP2P';
 export const useAssetInput = ({
   asset,
   isToAsset,
-  ad,
+  deeplinkPath,
 }: {
   asset: AssetModel;
   isToAsset?: boolean;
-  ad: AdItem;
+  deeplinkPath?: string;
 }) => {
   const { showModal } = useGlobalModalContext();
   const dispatch = useDispatch();
@@ -59,24 +59,12 @@ export const useAssetInput = ({
   const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
-    const amount = Number(inputAmount);
-    const adPath = getAdPathname({
-      fromNetworkName: ad.fromCoin.networkName,
-      fromTicker: ad.fromCoin.ticker,
-      toNetworkName: ad.toCoin.networkName,
-      toTicker: ad.toCoin.ticker,
-      name: ad.name,
-      amount: formatFundsAmount(
-        isToAsset ? amount / ad.coinPair.price : amount,
-      ),
-    });
-
     showModal({
       name: 'SET_WALLET',
       asset,
       isToAsset,
       value: walletConnection,
-      adPath,
+      adPath: deeplinkPath,
       onChange: (v: WalletConnection) => {
         dispatch(
           setAssetAccount({
