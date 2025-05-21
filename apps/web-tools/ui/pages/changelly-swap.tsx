@@ -10,7 +10,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   formatCurrency,
   formatFundsAmount,
-  NetworkNames,
   shortenAddress,
   TradeStatus,
 } from 'dex-helpers';
@@ -20,7 +19,6 @@ import { Swap, Button, AdPreview, UrlIcon } from 'dex-ui';
 import { divide } from 'lodash';
 import React, { useState, useEffect, useMemo } from 'react';
 
-import asset from '../../../web-wallet/ui/components/ui/asset';
 import { parseCoin } from '../../app/helpers/p2p';
 import StageDirectTransfer from '../components/app/p2p-swap-processing/stage-direct-transfer';
 import { StageStatuses } from '../components/app/p2p-swap-processing/stage-statuses';
@@ -130,7 +128,7 @@ const ChangellySwapProgress = ({
                   Status: {txStatus || 'Unknown'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Network fee: {formatFundsAmount(networkFee || 0)}{' '}(
+                  Network fee: {formatFundsAmount(networkFee || 0)} (
                   {formatCurrency(networkFee * assetTo.priceInUsdt, 'usd')}){' '}
                   {assetTo.symbol}
                 </Typography>
@@ -322,7 +320,6 @@ interface SwapResult {
 export default function ChangellySwap() {
   const [fromCoin, setFromCoin] = useState<AssetModel | null>(null);
   const [toCoin, setToCoin] = useState<AssetModel | null>(null);
-  const [amount, setAmount] = useState<string>('');
   const [selectedPair, setSelectedPair] = useState<Pair | null>(null);
   const [isUpdatingFromBuy, setIsUpdatingFromBuy] = useState(false);
   const [isUpdatingFromSell, setIsUpdatingFromSell] = useState(false);
@@ -425,7 +422,8 @@ export default function ChangellySwap() {
   const { data: exchangeInfoResponse } = useQuery({
     queryKey: ['changellyFee', pairsQuery],
     queryFn: () => changellyService.getExchangeInfo(pairsQuery),
-    enabled: Boolean(fromCoin) && Boolean(toCoin) && Boolean(amount),
+    enabled:
+      Boolean(fromCoin) && Boolean(toCoin) && Boolean(assetInputs.from?.amount),
   });
 
   const pairs = (pairsResponse?.data || []) as Pair[];
@@ -657,7 +655,7 @@ export default function ChangellySwap() {
                       }}
                       timeToSwap={500000}
                       estimateFee={estimateFee}
-                      fromTokenAmount={amount}
+                      fromTokenAmount={assetInputs.from?.amount}
                       onClick={() => handlePairSelect(pair)}
                     />
                   </Box>
@@ -672,7 +670,7 @@ export default function ChangellySwap() {
               assetFrom={fromCoin}
               assetTo={toCoin}
               id={swapResult.external_id}
-              amount={Number(amount)}
+              amount={Number(assetInputs.from?.amount)}
               depositAddress={swapResult.deposit_address}
               onCancel={handleCancelSwap}
             />
