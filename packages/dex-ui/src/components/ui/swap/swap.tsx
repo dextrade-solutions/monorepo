@@ -52,28 +52,16 @@ const SwapInput: React.FC<SwapInputProps> = ({
   const renderBalance = () => (
     <Box display="flex" justifyContent="space-between" alignItems="center">
       {balance !== undefined && (
-        <Box display="flex" alignItems="center">
-          <Typography variant="caption" color="text.secondary">
-            {t('Balance')}:{' '}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
+        <Box display="flex" alignItems="center" onClick={handleMaxClick}>
+          <Typography color="text.secondary">{t('Balance')}: </Typography>
+          <Typography color="text.secondary" ml={1}>
             {formatFundsAmount(balance)}
           </Typography>
-          {balanceUsdt && (
-            <Typography variant="caption" color="text.secondary" marginLeft={1}>
+          {balanceUsdt !== undefined && (
+            <Typography color="text.secondary" ml={1}>
               ({formatCurrency(balanceUsdt, 'usd')})
             </Typography>
           )}
-          <Typography
-            component="span"
-            marginLeft={1}
-            fontWeight="bold"
-            color="primary"
-            sx={{ cursor: 'pointer' }}
-            onClick={handleMaxClick}
-          >
-            {t('Max')}
-          </Typography>
         </Box>
       )}
     </Box>
@@ -93,7 +81,12 @@ const SwapInput: React.FC<SwapInputProps> = ({
       }}
     >
       <Box>
-        <Typography color="text.secondary">{label}</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography color="text.secondary">
+            {balance !== undefined ? renderBalance() : `${label}`}
+          </Typography>
+        </Box>
+
         <Box flexGrow={1} marginRight={2}>
           <NumericTextField
             variant="standard"

@@ -94,7 +94,7 @@ const useTransakFee = (params: FeeParams) => {
 };
 
 const getFeeHook = (params: FeeParams) => {
-  if (params.ad.provider === 'TRANSAK') {
+  if (params.ad?.provider === 'TRANSAK') {
     return useTransakFee;
   }
   if (params.asset.chainId) {

@@ -26,12 +26,12 @@ export function useAdValidation({
 }: AdParams) {
   const t = useI18nContext();
 
-  let tickerFrom = ad.fromCoin.ticker;
-  let tickerTo = ad.toCoin.ticker;
+  let tickerFrom = assetInputFrom.asset.symbol;
+  let tickerTo = assetInputTo.asset.symbol;
 
   if (tickerFrom === tickerTo) {
-    tickerFrom = ad.fromCoin.networkType;
-    tickerTo = ad.toCoin.networkType;
+    tickerFrom = assetInputFrom.asset.standard;
+    tickerTo = assetInputTo.asset.standard;
   }
 
   const params: ValidationParams = {

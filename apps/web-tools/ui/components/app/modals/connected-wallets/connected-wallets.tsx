@@ -1,5 +1,5 @@
 import { Box, Typography, Divider } from '@mui/material';
-import { UrlIcon, ButtonIcon, ModalProps, useGlobalModalContext, WalletList } from 'dex-ui';
+import { ButtonIcon, ModalProps, WalletList } from 'dex-ui';
 import React from 'react';
 
 import { useWallets } from '../../../../hooks/asset/useWallets';
@@ -12,7 +12,7 @@ const WalletsList = ({ hideModal }: ModalProps) => {
   return (
     <Box padding={5}>
       <Box display="flex" justifyContent="space-between" marginBottom={2}>
-        <Typography>{t('Connected wallets')}</Typography> 
+        <Typography>{t('Connected wallets')}</Typography>
         <ButtonIcon
           iconName="close"
           ariaLabel={t('close')}

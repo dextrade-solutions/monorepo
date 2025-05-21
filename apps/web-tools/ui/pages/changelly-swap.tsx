@@ -6,9 +6,9 @@ import {
   Collapse,
   Paper,
 } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { determineConnectionType } from 'dex-connect';
+import { useQuery } from '@tanstack/react-query';
 import {
+  formatCurrency,
   formatFundsAmount,
   NetworkNames,
   shortenAddress,
@@ -16,25 +16,18 @@ import {
 } from 'dex-helpers';
 import { AssetModel, CoinModel } from 'dex-helpers/types';
 import { changellyService, coinPairsService } from 'dex-services';
-import {
-  Swap,
-  useGlobalModalContext,
-  Button,
-  AdPreview,
-  UrlIcon,
-} from 'dex-ui';
+import { Swap, Button, AdPreview, UrlIcon } from 'dex-ui';
 import { divide } from 'lodash';
 import React, { useState, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import asset from '../../../web-wallet/ui/components/ui/asset';
 import { parseCoin } from '../../app/helpers/p2p';
 import StageDirectTransfer from '../components/app/p2p-swap-processing/stage-direct-transfer';
 import { StageStatuses } from '../components/app/p2p-swap-processing/stage-statuses';
-import { getAssetAccount, setAssetAccount } from '../ducks/app/app';
 import { useAssetInput } from '../hooks/asset/useAssetInput';
+import { useAdValidation } from '../hooks/useAdValidation';
+import { useFee } from '../hooks/useFee';
 import { useRequestHandler } from '../hooks/useRequestHandler';
-import { RootState } from '../store/store';
 
 enum ChangellySwapStatus {
   created = 'created',
@@ -69,9 +62,15 @@ interface Pair {
   }>;
 }
 
+interface Balance {
+  value: string;
+  inUsdt: number;
+}
+
 interface ChangellySwapProgressProps {
   depositAddress: string;
-  asset: AssetModel;
+  assetFrom: AssetModel;
+  assetTo: AssetModel;
   id: string;
   amount: number;
   onCancel: () => void;
@@ -81,7 +80,8 @@ const ChangellySwapProgress = ({
   depositAddress,
   id,
   amount,
-  asset,
+  assetFrom,
+  assetTo,
   onCancel,
 }: ChangellySwapProgressProps) => {
   const [stageStatus, setStageStatus] = useState<StageStatuses>(null);
@@ -93,6 +93,7 @@ const ChangellySwapProgress = ({
     refetchInterval: 8000, // Refetch every 8 seconds
   });
   const txStatus = swapStatus?.data.transaction?.status as ChangellySwapStatus;
+  const networkFee = swapStatus?.data.transaction?.networkFee || 0;
 
   // Map Changelly status to StageStatuses
   useEffect(() => {
@@ -103,21 +104,6 @@ const ChangellySwapProgress = ({
       setStageStatus(StageStatuses.success);
     }
   }, [txStatus]);
-
-  // Ensure asset has all required properties
-  const assetModel: AssetModel = {
-    name: asset.name || asset.symbol,
-    symbol: asset.symbol,
-    uid: asset.uid || asset.symbol.toLowerCase(),
-    network: asset.network || NetworkNames.ethereum,
-    isFiat: false,
-    isNative: true,
-    chainId: asset.chainId,
-    decimals: asset.decimals,
-    contract: asset.contract,
-    standard: asset.standard,
-    iso: asset.symbol.toLowerCase(),
-  };
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -143,12 +129,17 @@ const ChangellySwapProgress = ({
                 <Typography variant="body2" color="text.secondary">
                   Status: {txStatus || 'Unknown'}
                 </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Network fee: {formatFundsAmount(networkFee || 0)}{' '}(
+                  {formatCurrency(networkFee * assetTo.priceInUsdt, 'usd')}){' '}
+                  {assetTo.symbol}
+                </Typography>
               </>
             )}
 
             <StageDirectTransfer
               key="directTransfer"
-              from={assetModel}
+              from={assetFrom}
               tradeId={id}
               amount={Number(amount)}
               tradeStatus={TradeStatus.new}
@@ -182,12 +173,14 @@ function SetRecipient({
   fromCoin,
   toCoin,
   loading,
+  onAssetInputChange,
   handleCreateSwap,
 }: {
   fromCoin: AssetModel;
   toCoin: AssetModel;
   loading: boolean;
-  handleCreateSwap: (recipient: string) => void;
+  handleCreateSwap: () => void;
+  onAssetInputChange: ({ from, to }: { from: Balance; to: Balance }) => void;
 }) {
   const assetInputFrom = useAssetInput({
     asset: fromCoin,
@@ -203,13 +196,46 @@ function SetRecipient({
   const canUseSameAddress =
     (fromCoin.chainId && toCoin.chainId) || fromCoin.network === toCoin.network;
 
+  const shouldSetRecipientWallet = !canUseSameAddress && !assetInputTo.account;
+
+  const { fee: outgoingFee } = useFee({
+    asset: fromCoin,
+    amount: assetInputFrom.value,
+    from: assetInputFrom.account?.address,
+    to: assetInputFrom.account?.address,
+  });
+
+  const insufficientNativeFee =
+    outgoingFee &&
+    (Number(assetInputFrom.balanceNative?.value) || 0) < outgoingFee;
+
+  const { submitBtnText, hasValidationErrors } = useAdValidation({
+    ad: {},
+    assetInputFrom,
+    assetInputTo,
+    outgoingFee,
+  });
+
   const onCreateSwap = () => {
-    const recipient =
-      assetInputTo.account?.address || assetInputFrom.account?.address;
-    handleCreateSwap(recipient);
+    if (hasValidationErrors) {
+      return;
+    }
+    if (insufficientNativeFee) {
+      assetInputFrom.showDeposit({
+        awaitingDepositAmount: outgoingFee,
+        onSuccess: () => handleCreateSwap(),
+      });
+      return;
+    }
+    handleCreateSwap();
   };
 
-  const shouldSetRecipientWallet = !canUseSameAddress && !assetInputTo.account;
+  useEffect(() => {
+    onAssetInputChange({
+      from: assetInputFrom,
+      to: assetInputTo,
+    });
+  }, [assetInputFrom, assetInputTo]);
   return (
     <>
       {!canUseSameAddress && (
@@ -259,10 +285,18 @@ function SetRecipient({
         }
         disabled={!fromCoin || !toCoin || loading || shouldSetRecipientWallet}
       >
-        {assetInputFrom.account ? `Create Swap` : 'Connect Wallet'}
+        {assetInputFrom.account
+          ? submitBtnText || `Create Swap`
+          : 'Connect Wallet'}
       </Button>
       {assetInputFrom.account && (
-        <Box mt={1} display="flex" justifyContent="center" alignItems="center">
+        <Box
+          mt={1}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          onClick={() => assetInputFrom.showConfigureWallet()}
+        >
           <Typography
             variant="caption"
             color="text.secondary"
@@ -271,7 +305,7 @@ function SetRecipient({
             Connected wallet: {shortenAddress(assetInputFrom.account?.address)}
           </Typography>
           <Box marginLeft={2}>
-            <UrlIcon size={16} url={assetInputTo.wallet?.icon} />
+            <UrlIcon size={16} url={assetInputFrom.wallet?.icon} />
           </Box>
         </Box>
       )}
@@ -289,14 +323,18 @@ export default function ChangellySwap() {
   const [fromCoin, setFromCoin] = useState<AssetModel | null>(null);
   const [toCoin, setToCoin] = useState<AssetModel | null>(null);
   const [amount, setAmount] = useState<string>('');
-  const [buyAmount, setBuyAmount] = useState<string>('');
   const [selectedPair, setSelectedPair] = useState<Pair | null>(null);
   const [isUpdatingFromBuy, setIsUpdatingFromBuy] = useState(false);
   const [isUpdatingFromSell, setIsUpdatingFromSell] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResult | null>(null);
   const [isCreatingSwap, setIsCreatingSwap] = useState(false);
-  const { showModal } = useGlobalModalContext();
-  const dispatch = useDispatch();
+  const [assetInputs, setAssetInputs] = useState<{
+    from: AssetInput;
+    to: AssetInput;
+  }>({
+    from: null,
+    to: null,
+  });
   const { handleRequest } = useRequestHandler();
 
   // Fetch available coins
@@ -362,16 +400,20 @@ export default function ChangellySwap() {
       to: toCoin?.symbol || '',
       fromNetwork: fromCoin?.providerNetwork || '',
       toNetwork: toCoin?.providerNetwork || '',
-      amount: Number(amount),
+      amount: assetInputs.from ? Number(assetInputs.from.amount) : undefined,
     };
-  }, [fromCoin, toCoin, amount]);
+  }, [fromCoin, toCoin, assetInputs.from?.amount]);
+
+  const clearSelectionAndInputs = () => {
+    setSelectedPair(null);
+    assetInputs.from?.setInputAmount('');
+    assetInputs.to?.setInputAmount('');
+  };
 
   // Clear selection when query changes
   useEffect(() => {
-    setSelectedPair(null);
-    setAmount('');
-    setBuyAmount('');
-  }, [fromCoin?.symbol, toCoin?.symbol]);
+    clearSelectionAndInputs();
+  }, [assetInputs.from?.asset?.symbol, assetInputs.to?.asset?.symbol]);
 
   // Fetch pairs when from and to coins are selected
   const { data: pairsResponse, isLoading: isPairsLoading } = useQuery({
@@ -408,11 +450,12 @@ export default function ChangellySwap() {
     try {
       const newSellAmount = divide(Number(value), rate);
       if (newSellAmount) {
-        setAmount(newSellAmount.toFixed(5));
+        // setAmount(newSellAmount.toFixed(5));
+        assetInputs.from.setInputAmount(newSellAmount.toFixed(5));
       } else {
-        setAmount('');
+        assetInputs.from.setInputAmount('');
       }
-      setBuyAmount(value);
+      assetInputs.to.setInputAmount(value);
     } finally {
       setIsUpdatingFromBuy(false);
     }
@@ -422,57 +465,36 @@ export default function ChangellySwap() {
     if (!isUpdatingFromBuy) {
       setIsUpdatingFromSell(true);
       try {
-        setAmount(formatFundsAmount(value));
+        // setAmount(formatFundsAmount(value));
+        assetInputs.from.setInputAmount(formatFundsAmount(value));
         // Recalculate buy amount based on new sell amount
         const rate = selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo.rate;
         if (rate) {
           const newBuyAmount = Number(value) * rate;
-          setBuyAmount(newBuyAmount.toFixed(5));
+          assetInputs.to.setInputAmount(newBuyAmount.toFixed(5));
+          // setBuyAmount(newBuyAmount.toFixed(5));
         }
       } finally {
         setIsUpdatingFromSell(false);
       }
     }
   };
-
-  const handleConnectWallet = (isToAsset?: boolean) => {
-    let asset = fromCoin;
-    if (isToAsset) {
-      asset = toCoin;
-    }
-
-    if (!asset) {
-      return;
-    }
-
-    showModal({
-      name: 'SET_WALLET',
-      asset,
-      isToAsset,
-      onChange: (v) => {
-        dispatch(
-          setAssetAccount({
-            asset,
-            assetAccount: v,
-          }),
-        );
-      },
-    });
-  };
   // Handle swap creation
-  const handleCreateSwap = async (recipient: string) => {
-    if (!fromCoin || !toCoin || !amount || !selectedPair) {
+  const handleCreateSwap = async () => {
+    if (!selectedPair) {
       return;
     }
     setIsCreatingSwap(true);
     const result = await handleRequest(
       changellyService.create({
-        amount: Number(amount),
+        amount: assetInputs.from.amount,
         from_crypto: fromCoin.symbol,
         from_network: selectedPair.network,
         to_crypto: toCoin.symbol,
         to_network: selectedPair.to_coins[0]?.networks[0]?.network,
-        to_address: recipient,
+        to_address:
+          assetInputs.to?.account?.address ||
+          assetInputs.from?.account?.address,
       }),
     ).finally(() => {
       setIsCreatingSwap(false);
@@ -500,7 +522,6 @@ export default function ChangellySwap() {
     toCoin?.priceInUsdt && exchangeInfo
       ? (exchangeInfo.fee + exchangeInfo.networkFee) * toCoin.priceInUsdt
       : undefined;
-
   return (
     <Box
       sx={{
@@ -526,18 +547,21 @@ export default function ChangellySwap() {
 
       <>
         <Swap
+          buyBalance={assetInputs.to?.balance?.value}
+          sellBalance={assetInputs.from?.balance?.value}
+          buyBalanceUsdt={assetInputs.to?.balance?.inUsdt}
+          sellBalanceUsdt={assetInputs.from?.balance?.inUsdt}
           assetsListBuy={coins}
           assetsListSell={coins}
           buyAsset={toCoin}
           sellAsset={fromCoin}
           loading={isPairsLoading}
-          sellAmount={formatFundsAmount(amount)}
-          buyAmount={formatFundsAmount(buyAmount)}
+          sellAmount={formatFundsAmount(assetInputs.from?.amount || '')}
+          buyAmount={formatFundsAmount(assetInputs.to?.amount || '')}
           onReverse={() => {
             setFromCoin(toCoin);
             setToCoin(fromCoin);
-            setAmount('');
-            setBuyAmount('');
+            clearSelectionAndInputs();
           }}
           disabled={Boolean(swapResult)}
           disableReverse={false}
@@ -548,8 +572,8 @@ export default function ChangellySwap() {
         />
 
         {/* Pairs List */}
-        <Collapse in={!swapResult && Boolean(pairs?.length)} timeout={300}>
-          <Box sx={{ mt: 3 }}>
+        <Collapse in={!swapResult && Boolean(pairs?.length)} timeout={200}>
+          <Box sx={{ mt: 3 }} minHeight={270}>
             <Typography
               ml={1}
               variant="caption"
@@ -645,7 +669,8 @@ export default function ChangellySwap() {
         {swapResult && (
           <>
             <ChangellySwapProgress
-              asset={fromCoin}
+              assetFrom={fromCoin}
+              assetTo={toCoin}
               id={swapResult.external_id}
               amount={Number(amount)}
               depositAddress={swapResult.deposit_address}
@@ -661,6 +686,7 @@ export default function ChangellySwap() {
               toCoin={toCoin}
               handleCreateSwap={handleCreateSwap}
               loading={isCreatingSwap}
+              onAssetInputChange={setAssetInputs}
             />
           </>
         )}
