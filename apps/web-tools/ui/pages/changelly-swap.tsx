@@ -427,7 +427,7 @@ export default function ChangellySwap() {
 
     setIsUpdatingFromBuy(true);
     try {
-      const newSellAmount = divide(Number(value + buyCoinTradeFee), rate);
+      const newSellAmount = divide(Number(value) + buyCoinTradeFee, rate);
       if (value) {
         assetInputFrom.setInputAmount(newSellAmount.toFixed(5));
       } else {

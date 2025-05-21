@@ -150,16 +150,16 @@ export const PaymentMethodForm = ({
     });
   };
 
-  const confirmChoosePaymentMethod = () => {
-    if (paymentMethod) {
-      handleOnChange(
-        'selectedPaymentMethods',
-        [...(formValues.selectedPaymentMethods || []), paymentMethod],
-        null,
-      );
-      onChoosePaymentMethod && onChoosePaymentMethod(paymentMethod);
-      setPaymentMethod(undefined);
-    }
+  const confirmChoosePaymentMethod = (
+    method: DextradeTypes.PaymentMethodsModel,
+  ) => {
+    handleOnChange(
+      'selectedPaymentMethods',
+      [...(formValues.selectedPaymentMethods || []), method],
+      null,
+    );
+    onChoosePaymentMethod && onChoosePaymentMethod(method);
+    setPaymentMethod(undefined);
   };
   const handleSetCurrentPaymentMethod = useCallback(
     (method: DextradeTypes.BankDictModel) => {
@@ -180,7 +180,7 @@ export const PaymentMethodForm = ({
     if (!isMounted && defaultCurrency && paymentMethods.length) {
       if (paymentMethods.length === 1) {
         const [method] = paymentMethods;
-        if (method.fields.length > 0 && !method.userPaymentMethod) {
+        if (method.fields.length > 0 && !method.userPaymentMethodId) {
           handleSetCurrentPaymentMethod(paymentMethods[0]);
         }
       }
@@ -232,7 +232,15 @@ export const PaymentMethodForm = ({
 
       const result = await paymentMethodCreateOrUpdate(payload);
       onCreated && onCreated(result.data, !paymentMethod);
-      confirmChoosePaymentMethod();
+      if (paymentMethod) {
+        const createdPaymentMethod = result.data.find(
+          (p) => p.paymentMethod.id === paymentMethod?.id,
+        );
+        confirmChoosePaymentMethod({
+          ...paymentMethod,
+          ...createdPaymentMethod,
+        });
+      }
     } catch (error) {
       console.error('Error saving payment method:', error);
       // Handle error, e.g., show an error message to the user

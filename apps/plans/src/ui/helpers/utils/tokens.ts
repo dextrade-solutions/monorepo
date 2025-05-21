@@ -29,6 +29,7 @@ const LOCAL_COINS_URLS = {
   sek: './images/coins/sek.svg',
   try: './images/coins/try.svg',
   usd: './images/coins/usd.svg',
+  kzt: './images/coins/kzt.svg',
   vnd: './images/coins/vnd.svg',
   thb: './images/coins/thb.svg',
   uah: './images/coins/uah.svg',

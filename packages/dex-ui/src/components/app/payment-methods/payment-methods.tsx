@@ -94,7 +94,7 @@ const PaymentMethods = ({
     v: DextradeTypes.PaymentMethodsModel[],
     updatedAll: boolean,
   ) => {
-    refetch();
+    await refetch();
     if (updatedAll) {
       onSelect(v);
     } else if (paymentMethods.length === 1) {
