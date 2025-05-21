@@ -43,7 +43,7 @@ export const DebugProvider = ({ children }: { children: React.ReactNode }) => {
     if (clickCount !== 9) {
       resetTimeoutRef.current = setTimeout(() => {
         setClickCount(0);
-      }, 1000);
+      }, 500);
     }
 
     document.addEventListener('click', handleClick);
