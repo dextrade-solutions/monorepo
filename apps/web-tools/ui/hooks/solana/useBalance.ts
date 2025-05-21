@@ -5,12 +5,11 @@ import { SECOND } from 'dex-helpers';
 
 import { getAssociatedTokenAccount } from '../../../app/helpers/solana/get-associated-token-account';
 
-export default function useSolanaBalance(address: string, contract?: string) {
+export default function useSolanaBalance(address: string, contract?: string, enabled: boolean = true) {
   const { connection } = useConnection();
 
   const { data } = useQuery({
     queryKey: ['useSolanaBalance', address, contract],
-    enabled: Boolean(address),
     queryFn: async () => {
       if (!connection || !address) {
         throw new Error('Wallet not connected or connection unavailable');
@@ -32,6 +31,7 @@ export default function useSolanaBalance(address: string, contract?: string) {
       const accountInfo = await connection.getAccountInfo(publicKey);
       return BigInt(accountInfo?.lamports || 0);
     },
+    enabled: Boolean(address) && enabled,
     refetchInterval: 8 * SECOND,
   });
   return data;

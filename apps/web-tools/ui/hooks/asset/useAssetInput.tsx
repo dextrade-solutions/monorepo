@@ -1,11 +1,6 @@
-import { isTMA } from '@telegram-apps/sdk';
-import { formatFundsAmount, NetworkNames } from 'dex-helpers';
-import {
-  AdItem,
-  AssetModel,
-  CoinModel,
-  UserPaymentMethod,
-} from 'dex-helpers/types';
+import assetDict from 'dex-helpers/assets-dict';
+import { NetworkNames } from 'dex-helpers';
+import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
 import { useEffect, useState } from 'react';
@@ -13,9 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
 
 import { useAssetBalance } from './useAssetBalance';
-import { useSendTransaction } from './useSendTransaction';
 import { useWallets } from './useWallets';
-import { getAdPathname, getNative } from '../../../app/helpers/p2p';
+import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
 import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
@@ -35,7 +29,7 @@ export const useAssetInput = ({
   const { login } = useAuthP2P();
   const wallets = useWallets();
   const walletConnection = useSelector((state) =>
-    getAssetAccount(state, asset),
+    asset ? getAssetAccount(state, asset) : null,
   );
 
   const [native, setNative] = useState<AssetModel>();
@@ -49,14 +43,14 @@ export const useAssetInput = ({
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
 
-  const canChooseWallet = asset.network !== NetworkNames.fiat;
-  const canPasteWallet = Boolean(isToAsset) && !asset.isFiat;
-  const canChoosePaymentMethod = Boolean(isToAsset) && asset.isFiat;
+  const canChooseWallet = asset?.network !== NetworkNames.fiat;
+  const canPasteWallet = Boolean(isToAsset) && !asset?.isFiat;
+  const canChoosePaymentMethod = Boolean(isToAsset) && asset?.isFiat;
   const walletId =
     walletConnection &&
     `${walletConnection.walletName}:${walletConnection.connectionType}`;
   const wallet = wallets.find((w) => w.id === walletId);
-  const { sendTransaction } = useSendTransaction(asset);
+  // const { sendTransaction } = useSendTransaction(asset);
 
   const showConfigureWallet = () => {
     showModal({
@@ -89,17 +83,20 @@ export const useAssetInput = ({
     });
   };
 
-  const makeTransfer = (recipient: string) => {
-    sendTransaction(recipient, Number(inputAmount), {
-      onSuccess: (txHash) => {
-        console.info(txHash);
-      },
-      onError: (err) => {},
-    });
-  };
+  // const makeTransfer = (recipient: string) => {
+  //   sendTransaction(recipient, Number(inputAmount), {
+  //     onSuccess: (txHash) => {
+  //       console.info(txHash);
+  //     },
+  //     onError: (err) => {},
+  //   });
+  // };
 
   // initialize
   useEffect(() => {
+    if (!asset) {
+      return;
+    }
     if (asset.isNative || asset.isFiat) {
       setNative(asset);
       return;
@@ -129,6 +126,7 @@ export const useAssetInput = ({
     awaitingDepositAmount?: number;
     onSuccess: () => void;
   }) => {
+    debugger;
     showModal({
       name: 'DEPOSIT_WALLET',
       asset: native,
@@ -146,7 +144,7 @@ export const useAssetInput = ({
   };
 
   const value =
-    inputAmount && asset.decimals
+    inputAmount && asset?.decimals
       ? Number(parseUnits(Number(inputAmount).toFixed(10), asset.decimals))
       : inputAmount;
 
@@ -177,7 +175,7 @@ export const useAssetInput = ({
     setLimits,
     showPaymentMethod,
     showConfigureWallet,
-    makeTransfer,
+    // makeTransfer,
     showDeposit,
   };
 };

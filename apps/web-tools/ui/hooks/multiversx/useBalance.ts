@@ -4,15 +4,18 @@ import { SECOND } from 'dex-helpers';
 
 import { multiversxService } from '../../../app/services/multiversx';
 
-export default function useBalance(address: string) {
+export default function useMultiversxBalance(
+  address: string,
+  enabled: boolean = true,
+) {
   const { data } = useQuery({
     queryKey: ['multiversxBalance', address],
-    enabled: Boolean(address),
     queryFn: async () => {
       const account = new Address(address);
       const response = await multiversxService.getAccount(account);
       return BigInt(response.balance);
     },
+    enabled: Boolean(address) && enabled,
     refetchInterval: 5 * SECOND,
   });
   return data;

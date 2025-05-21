@@ -1,6 +1,7 @@
 import { NetworkNames } from 'dex-helpers';
 import { AssetModel } from 'dex-helpers/types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useGlobalModalContext } from 'dex-ui';
+import { useSelector } from 'react-redux';
 
 import { useWallets } from './useWallets';
 import { getAssetAccount } from '../../ducks/app/app';
@@ -8,19 +9,18 @@ import useSendTxBitcoin from '../bitcoin/useSendTx';
 import useSendTxEvm from '../evm/useSendTx';
 import useSendTxSolana from '../solana/useSendTx';
 import useSendTxTron from '../tron/useSendTx';
-import { useGlobalModalContext } from 'dex-ui';
 
-function getSendTxHook(asset: AssetModel) {
-  if (asset.network === NetworkNames.bitcoin) {
+function getSendTxHook(asset?: AssetModel) {
+  if (asset?.network === NetworkNames.bitcoin) {
     return () => useSendTxBitcoin(asset);
   }
-  if (asset.network === NetworkNames.tron) {
+  if (asset?.network === NetworkNames.tron) {
     return () => useSendTxTron(asset);
   }
-  if (asset.network === NetworkNames.solana) {
+  if (asset?.network === NetworkNames.solana) {
     return () => useSendTxSolana(asset);
   }
-  if (asset.chainId) {
+  if (asset?.chainId) {
     return () => useSendTxEvm(asset);
   }
   return () => () => {
@@ -35,7 +35,9 @@ export function useSendTransaction(asset: AssetModel) {
   const txSend = useSendTx();
   const { showModal } = useGlobalModalContext();
 
-  const assetAccount = useSelector((state) => getAssetAccount(state, asset));
+  const assetAccount = useSelector((state) =>
+    asset ? getAssetAccount(state, asset) : null,
+  );
   const walletConnections = useWallets();
   const connection = walletConnections.find(
     ({ id }) =>

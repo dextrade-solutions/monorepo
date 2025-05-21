@@ -6,13 +6,8 @@ export default function useErc20Balance(
   address: `0x${string}`,
   contract: `0x${string}`,
   chainId?: number,
+  enabled?: boolean,
 ) {
-  if (!contract) {
-    throw new Error('useErc20Balance - no contract provided');
-  }
-  if (!chainId) {
-    throw new Error('useErc20Balance - no asset chain id provided');
-  }
   const result = useReadContracts({
     allowFailure: false,
     contracts: [
@@ -32,6 +27,7 @@ export default function useErc20Balance(
     ],
     query: {
       refetchInterval: 5 * SECOND,
+      enabled,
     },
   });
   if (result.data) {

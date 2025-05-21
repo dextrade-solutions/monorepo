@@ -9,41 +9,100 @@ import useMultiversxBalance from '../multiversx/useBalance';
 import useSolanaBalance from '../solana/useBalance';
 import useTronBalance from '../tron/useBalance';
 
-type BalanceHookParams = {
-  address: string;
-  chainId?: number;
-  contract?: string;
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}`;
+
+type BalanceConfig = {
+  network?: NetworkNames;
+  isEnabled: (asset: AssetModel) => boolean;
 };
 
-export function getBalanceHook(
-  asset: AssetModel,
-): (params: BalanceHookParams) => bigint | null | undefined {
+const balanceConfigs: Record<string, BalanceConfig> = {
+  tron: {
+    network: NetworkNames.tron,
+    isEnabled: (asset) => asset.network === NetworkNames.tron,
+  },
+  solana: {
+    network: NetworkNames.solana,
+    isEnabled: (asset) => asset.network === NetworkNames.solana,
+  },
+  bitcoin: {
+    network: NetworkNames.bitcoin,
+    isEnabled: (asset) => asset.network === NetworkNames.bitcoin,
+  },
+  multiversx: {
+    network: NetworkNames.multiversx,
+    isEnabled: (asset) => asset.network === NetworkNames.multiversx,
+  },
+  erc20: {
+    isEnabled: (asset) => Boolean(asset.contract),
+  },
+  evm: {
+    isEnabled: (asset) => !asset.isFiat && !asset.contract,
+  },
+};
+
+export function useAssetBalance(asset?: AssetModel, address?: string) {
+  const safeAddress = address || '';
+  const safeContract = asset?.contract || '';
+  const safeChainId = asset?.chainId;
+
+  // Call all hooks unconditionally with proper type handling
+  const tronBalance = useTronBalance(
+    safeAddress,
+    safeContract,
+    Boolean(asset && address && balanceConfigs.tron.isEnabled(asset)),
+  );
+  const solanaBalance = useSolanaBalance(
+    safeAddress,
+    safeContract,
+    Boolean(asset && address && balanceConfigs.solana.isEnabled(asset)),
+  );
+  const bitcoinBalance = useBitcoinBalance(
+    safeAddress,
+    Boolean(asset && address && balanceConfigs.bitcoin.isEnabled(asset)),
+  );
+  const multiversxBalance = useMultiversxBalance(
+    safeAddress,
+    Boolean(asset && address && balanceConfigs.multiversx.isEnabled(asset)),
+  );
+  const erc20Balance = useErc20Balance(
+    safeAddress as `0x${string}`,
+    safeContract as `0x${string}`,
+    safeChainId,
+    Boolean(asset && address && balanceConfigs.erc20.isEnabled(asset)),
+  );
+  const evmBalance = useEvmAccountBalance(
+    safeAddress as `0x${string}`,
+    safeChainId,
+    Boolean(asset && address && balanceConfigs.evm.isEnabled(asset)),
+  );
+
+  if (!asset || !address) {
+    return null;
+  }
+
+  const activeConfig = Object.values(balanceConfigs).find(
+    (config) => config.isEnabled(asset),
+  );
+  if (!activeConfig) {
+    return null;
+  }
+
+  let result: bigint | null | undefined;
+
   if (asset.network === NetworkNames.tron) {
-    return ({ address, contract }) => useTronBalance(address, contract);
-  }
-  if (asset.network === NetworkNames.solana) {
-    return ({ address, contract }) => useSolanaBalance(address, contract);
-  }
-  if (asset.network === NetworkNames.bitcoin) {
-    return ({ address }) => useBitcoinBalance(address);
-  }
-  if (asset.network === NetworkNames.multiversx) {
-    return ({ address }) => useMultiversxBalance(address);
-  }
-  if (asset.contract) {
-    return ({ address, chainId, contract }) =>
-      useErc20Balance(address, contract, chainId);
+    result = tronBalance;
+  } else if (asset.network === NetworkNames.solana) {
+    result = solanaBalance;
+  } else if (asset.network === NetworkNames.bitcoin) {
+    result = bitcoinBalance;
+  } else if (asset.network === NetworkNames.multiversx) {
+    result = multiversxBalance;
+  } else if (asset.contract) {
+    result = erc20Balance;
   } else if (!asset.isFiat) {
-    return ({ address, chainId }) => useEvmAccountBalance(address, chainId);
+    result = evmBalance;
   }
-  return () => null;
-}
-
-export function useAssetBalance(asset: AssetModel, address?: string) {
-  const useBalanceHook = getBalanceHook(asset);
-
-  const chainId = asset.chainId ? asset.chainId : undefined;
-  const result = useBalanceHook({ address, chainId, contract: asset.contract });
 
   if (typeof result === 'bigint') {
     if (!asset.decimals) {
