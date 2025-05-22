@@ -26,6 +26,7 @@ import { useAssetInput } from '../hooks/asset/useAssetInput';
 import { useAdValidation } from '../hooks/useAdValidation';
 import { useFee } from '../hooks/useFee';
 import { useRequestHandler } from '../hooks/useRequestHandler';
+import { useDebouncedCallback } from 'use-debounce';
 
 enum ChangellySwapStatus {
   created = 'created',
@@ -304,6 +305,8 @@ export default function ChangellySwap() {
   const [isCreatingSwap, setIsCreatingSwap] = useState(false);
   const assetInputFrom = useAssetInput({ asset: fromCoin });
   const assetInputTo = useAssetInput({ asset: toCoin, isToAsset: true });
+  const [exchangeInfoResponse, setExchangeInfoResponse] =
+    useState<ExchangeInfoResponse | null>(null);
 
   const { handleRequest } = useRequestHandler();
 
@@ -370,7 +373,6 @@ export default function ChangellySwap() {
       to: toCoin?.symbol || '',
       fromNetwork: fromCoin?.providerNetwork || '',
       toNetwork: toCoin?.providerNetwork || '',
-      amount: assetInputFrom ? Number(assetInputFrom.amount) : undefined,
     };
   }, [fromCoin, toCoin, assetInputFrom.amount]);
 
@@ -392,19 +394,12 @@ export default function ChangellySwap() {
     enabled: Boolean(fromCoin) && Boolean(toCoin),
   });
 
-  const { data: exchangeInfoResponse } = useQuery({
-    queryKey: ['changellyFee', pairsQuery],
-    queryFn: () => changellyService.getExchangeInfo(pairsQuery),
-    enabled:
-      Boolean(fromCoin) && Boolean(toCoin) && Boolean(assetInputFrom.amount),
-  });
-
   const pairs = (pairsResponse?.data || []) as Pair[];
 
   const exchangeInfo =
-    exchangeInfoResponse?.data ||
+    exchangeInfoResponse ||
     selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo;
-  const rate = exchangeInfo?.rate;
+  const rate = selectedPair?.to_coins[0]?.networks[0]?.exchangeInfo?.rate;
   const buyCoinTradeFee = exchangeInfo?.fee + exchangeInfo?.networkFee;
   const estimateFee = toCoin?.priceInUsdt
     ? buyCoinTradeFee * toCoin.priceInUsdt
@@ -417,40 +412,52 @@ export default function ChangellySwap() {
     }
   }, [pairs, selectedPair]);
 
-  const handleBuyAmountChange = (value: string) => {
+  const handleBuyAmountChange = useDebouncedCallback(async (value: string) => {
     if (!selectedPair || isUpdatingFromSell) {
       return;
     }
     if (!rate) {
       return;
     }
+    assetInputTo.setInputAmount(value);
 
     setIsUpdatingFromBuy(true);
+    const { data } = await changellyService.getExchangeInfo({
+      ...pairsQuery,
+      amount: divide(Number(value), rate),
+    });
+    setExchangeInfoResponse(data);
+    const fee = data.fee + data.networkFee;
     try {
-      const newSellAmount = divide(Number(value) + buyCoinTradeFee, rate);
+      const newSellAmount = divide(Number(value) + fee, data.rate);
       if (value) {
         assetInputFrom.setInputAmount(newSellAmount.toFixed(5));
       } else {
         assetInputFrom.setInputAmount('');
       }
-      assetInputTo.setInputAmount(value);
     } finally {
       setIsUpdatingFromBuy(false);
     }
-  };
+  }, 1000);
 
-  const handleSellAmountChange = (value: string) => {
+  const handleSellAmountChange = useDebouncedCallback(async (value: string) => {
     if (!isUpdatingFromBuy) {
       if (!value) {
         assetInputFrom.setInputAmount('');
         assetInputTo.setInputAmount('');
         return;
       }
+      assetInputFrom.setInputAmount(value);
       setIsUpdatingFromSell(true);
       try {
-        assetInputFrom.setInputAmount(formatFundsAmount(value));
+        const { data } = await changellyService.getExchangeInfo({
+          ...pairsQuery,
+          amount: value,
+        });
+        setExchangeInfoResponse(data);
+        const fee = data.fee + data.networkFee;
         if (rate) {
-          const newBuyAmount = Number(value) * rate - buyCoinTradeFee;
+          const newBuyAmount = Number(value) * rate - fee;
           if (newBuyAmount <= 0) {
             assetInputTo.setInputAmount('');
           } else {
@@ -461,7 +468,7 @@ export default function ChangellySwap() {
         setIsUpdatingFromSell(false);
       }
     }
-  };
+  }, 1000);
   // Handle swap creation
   const handleCreateSwap = async () => {
     if (!selectedPair) {
@@ -558,7 +565,6 @@ export default function ChangellySwap() {
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {pairs.map((pair) => {
-                const rate = pair.to_coins[0]?.networks[0]?.exchangeInfo.rate;
                 const isSelected = selectedPair?.ticker === pair.ticker;
                 return (
                   <Box
