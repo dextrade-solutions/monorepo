@@ -1,19 +1,14 @@
-import { Box, Button, Card, Typography } from '@mui/material';
-import classNames from 'classnames';
+import { Box, Button, Typography } from '@mui/material';
 import { Icon, useGlobalModalContext } from 'dex-ui';
 import React from 'react';
 
-import InputAmount from './input-amount';
 import { useWallets } from '../../../hooks/asset/useWallets';
-import { useDetectSticky } from '../../../hooks/useDetectStycky';
-import SelectCoins from '../../ui/select-coins';
 import ButtonAppConfig from '../button-app-config';
-import P2PExchangers from '../p2p-ads';
 import './index.scss';
+import P2P from '../p2p';
 
 export default function P2PSwap() {
   const { showModal } = useGlobalModalContext();
-  const [isSticky, ref] = useDetectSticky();
   const wallets = useWallets();
   const connectedWalletsLength = wallets.filter((w) => w.connected).length;
 
@@ -48,20 +43,7 @@ export default function P2PSwap() {
           <ButtonAppConfig />
         </Box>
       </Box>
-      <Card
-        ref={ref}
-        className={classNames('select-coins-wrap', {
-          'select-coins-wrap--is-sticky': Boolean(isSticky),
-        })}
-        variant="outlined"
-        sx={{ bgcolor: 'primary.light' }}
-      >
-        <Box padding={2}>
-          <SelectCoins includeFiats />
-          <InputAmount />
-        </Box>
-      </Card>
-      <P2PExchangers />
+      <P2P />
     </>
   );
 }

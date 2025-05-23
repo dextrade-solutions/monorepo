@@ -13,3 +13,4 @@ export const PAYMENT_METHODS_ROUTE = '/settings/payment-methods';
 export const INVOICE_ROUTE = '/invoice';
 export const PAIR_GROUPS_ROUTE = '/pair-groups';
 export const SWAPS_ROUTE = '/swaps';
+export const ADS_FRAME_ROUTE = '/ads-frame';

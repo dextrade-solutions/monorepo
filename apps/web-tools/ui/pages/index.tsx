@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { NoMatchPage } from './404';
+import AdsFrame from './ads-frame';
 import ChangellySwap from './changelly-swap';
 import DappOpen from './dapp';
 import Home from './home';
@@ -34,6 +35,7 @@ import {
   SWAP_WIDGET_ROUTE,
   PAIR_GROUPS_ROUTE,
   SWAPS_ROUTE,
+  ADS_FRAME_ROUTE,
 } from '../helpers/constants/routes';
 import { AuthType, useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -65,6 +67,7 @@ export default function RoutesRoot() {
         <Route path={SWAP_WIDGET_ROUTE} element={<SwapWidget />} />
         <Route path={PAIR_GROUPS_ROUTE} element={<PairGroups />} />
         <Route path={SWAPS_ROUTE} element={<ChangellySwap />} />
+        <Route path={ADS_FRAME_ROUTE} element={<AdsFrame />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}

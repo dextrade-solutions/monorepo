@@ -27,7 +27,7 @@ import { PairGroupCard } from '../pair-group-card/pair-group-card';
 
 const PER_PAGE_SIZE = 8;
 
-export default function P2PAds() {
+export default function P2PAds({ iosIFrame = false }: { iosIFrame?: boolean }) {
   const { showModal } = useGlobalModalContext();
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export default function P2PAds() {
   };
 
   const cleanFilter = () => {
-    navigate('/');
+    setSearchParams(new URLSearchParams());
   };
 
   const filterModel = useMemo(
@@ -123,19 +123,23 @@ export default function P2PAds() {
   });
 
   const handleAdPreviewClick = (ad: AdItem) => {
-    navigate({
-      pathname: getAdPathname({
-        fromNetworkName: ad.fromCoin.networkName,
-        fromTicker: ad.fromCoin.ticker,
-        toNetworkName: ad.toCoin.networkName,
-        toTicker: ad.toCoin.ticker,
-        name: ad.name,
-      }),
-    });
+    if (iosIFrame) {
+      window.webkit.messageHandlers.productHandler.postMessage(ad.id);
+    } else {
+      navigate({
+        pathname: getAdPathname({
+          fromNetworkName: ad.fromCoin.networkName,
+          fromTicker: ad.fromCoin.ticker,
+          toNetworkName: ad.toCoin.networkName,
+          toTicker: ad.toCoin.ticker,
+          name: ad.name,
+        }),
+      });
+    }
   };
 
   const handlePairGroupClick = (fromTicker: string, toTicker: string) => {
-    navigate(`/?fromToken=${fromTicker}&toToken=${toTicker}`);
+    navigate(`?fromToken=${fromTicker}&toToken=${toTicker}`);
   };
 
   const handleProviderNameChange = (value: string) => {
