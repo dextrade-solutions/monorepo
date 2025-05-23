@@ -21,16 +21,28 @@ export function parseCoin(
   priceInUsdt?: number,
   extra?: any,
 ): AssetModel | null {
-  const iso = getIsoCoin(coin);
-  const asset = getAssetByIso(iso);
-  if (asset) {
-    return {
-      ...asset,
-      priceInUsdt,
-      ...(extra || {}),
-    } as AssetModel; // Type assertion here
+  try {
+    const iso = getIsoCoin(coin);
+    const asset = getAssetByIso(iso);
+    if (asset) {
+      return {
+        ...asset,
+        priceInUsdt,
+        ...(extra || {}),
+      } as AssetModel; // Type assertion here
+    }
+  } catch (error) {
+    // pass
   }
-  return null;
+  return {
+    chainId: null,
+    contract: null,
+    name: coin.tokenName,
+    symbol: coin.ticker,
+    uid: coin.uuid,
+    network: coin.networkName,
+    standard: coin.networkType,
+  };
 }
 
 export function getNative(network: NetworkNames): AssetModel {
