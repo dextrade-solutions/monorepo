@@ -66,7 +66,7 @@
     "message": "Подтвердить возврат"
   },
     "Plan": {
-    "message": "План"
+    "message": "Прогноз"
   },
     "Fact": {
     "message": "Факт"
@@ -219,7 +219,7 @@
   "message": "Способ оплаты"
 },
 "Set Wallet": {
-  "message": "Установить кошелек"
+  "message": "Подключить кошелек"
 },
 
   "read_policy_alert": {

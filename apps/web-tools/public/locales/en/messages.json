@@ -66,10 +66,10 @@
     "message": "Approve refund"
   },
     "Plan": {
-    "message": "Plan"
+    "message": "Estimated"
   },
      "Fact": {
-    "message": "Fact"
+    "message": "Actual"
   },
     "Claim": {
     "message": "Claim"
@@ -169,7 +169,7 @@
     "message": "Payment method"
   },
   "Set Wallet": {
-    "message": "Set Wallet"
+    "message": "Connect Wallet"
   },
   "read_policy_alert": {
     "message": "Please read the exchanger's terms and conditions before placing an order. Failure to do so may result in a failed transaction and financial losses."
