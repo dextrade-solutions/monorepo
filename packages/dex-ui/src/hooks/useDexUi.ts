@@ -67,6 +67,17 @@ export function useDexUI({
             },
             defaultProps: {
               disableElevation: true,
+              disableRipple: true,
+            },
+          },
+          MuiButtonBase: {
+            defaultProps: {
+              disableRipple: true,
+            },
+          },
+          MuiIconButton: {
+            defaultProps: {
+              disableRipple: true,
             },
           },
           MuiCssBaseline: {

@@ -1,3 +1,4 @@
+import { getIsoCoin } from 'dex-helpers';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
@@ -18,6 +19,11 @@ export const useQueryAds = () => {
 
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
+    const fromNetworkName = newSearchParams.get('fromNetworkName');
+    const toNetworkName = newSearchParams.get('toNetworkName');
+    const fromTicker = newSearchParams.get('fromTicker');
+    const toTicker = newSearchParams.get('toTicker');
+
     const fromString = newSearchParams.get('fromToken');
     const toString = newSearchParams.get('toToken');
     let assetFrom, assetTo;
@@ -33,6 +39,19 @@ export const useQueryAds = () => {
       dispatch(setToToken(assetTo));
     } else {
       dispatch(setToToken(null));
+    }
+    if (fromNetworkName && fromTicker) {
+      const iso = getIsoCoin({
+        networkName: fromNetworkName,
+        ticker: fromTicker,
+      });
+      assetFrom = getAssetByIso(iso);
+      dispatch(setFromToken(assetFrom));
+    }
+    if (toNetworkName && toTicker) {
+      const iso = getIsoCoin({ networkName: toNetworkName, ticker: toTicker });
+      assetTo = getAssetByIso(iso);
+      dispatch(setToToken(assetTo));
     }
 
     if (assetFrom) {

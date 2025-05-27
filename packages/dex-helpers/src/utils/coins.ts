@@ -16,30 +16,33 @@ export const isNativeCoin = (coin: CoinModel) => {
   return networkInfo.nativeCurrency.symbol === coin.ticker;
 };
 
-export const isFiatCoin = (coin: CoinModel) => {
-  if (!coin) {
-    return false;
-  }
-  return coin.networkType === NetworkTypes.fiat;
+export const isFiatCoin = ({ networkName }: { networkName: string }) => {
+  return networkName === NetworkNames.fiat;
 };
 
-export const getIsoCoin = (coin: CoinModel) => {
+export const getIsoCoin = ({
+  networkName,
+  ticker,
+}: {
+  networkName: string;
+  ticker: string;
+}) => {
   let iso = '';
-  if (isNativeCoin(coin)) {
-    iso = `${BUILT_IN_NETWORKS[coin.networkName].iso}`;
-    if (coin.networkName === NetworkNames.binance) {
+  if (isNativeCoin({ networkName, ticker })) {
+    iso = `${BUILT_IN_NETWORKS[networkName].iso}`;
+    if (networkName === NetworkNames.binance) {
       iso = `BNB_${iso}`;
     }
-    if (coin.networkName === NetworkNames.arbitrum) {
+    if (networkName === NetworkNames.arbitrum) {
       iso = `ETH_${iso}`;
     }
-  } else if (isFiatCoin(coin)) {
-    iso = `${coin.ticker}`;
+  } else if (isFiatCoin({ networkName })) {
+    iso = ticker;
   } else {
-    if (!BUILT_IN_NETWORKS[coin.networkName]) {
-      throw new Error(`Network ${coin.networkName} not found`);
+    if (!BUILT_IN_NETWORKS[networkName]) {
+      throw new Error(`Network ${networkName} not found`);
     }
-    iso = `${coin.ticker}_${BUILT_IN_NETWORKS[coin.networkName].iso}`;
+    iso = `${ticker}_${BUILT_IN_NETWORKS[networkName].iso}`;
   }
   return iso;
 };
