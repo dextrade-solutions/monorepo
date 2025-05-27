@@ -124,7 +124,10 @@ export default function P2PAds({ iosIFrame = false }: { iosIFrame?: boolean }) {
 
   const handleAdPreviewClick = (ad: AdItem) => {
     if (iosIFrame) {
-      window.webkit.messageHandlers.productHandler.postMessage(ad.id);
+      window.webkit.messageHandlers.productHandler.postMessage({
+        adId: ad.id,
+        clientSendsAmount: fromTokenInputValue,
+      });
     } else {
       navigate({
         pathname: getAdPathname({
