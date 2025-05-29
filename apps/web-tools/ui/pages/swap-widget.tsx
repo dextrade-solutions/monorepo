@@ -95,22 +95,20 @@ export default function SwapWidget() {
       setToValue(newValue);
       if (currentAd) {
         setFromValue(
-          formatFundsAmount(
-            newValue / currentAd.coinPair.price,
-            undefined,
-            getMaxOutputDecimalPlaces(assetFrom),
-          ),
+          formatFundsAmount(newValue / currentAd.coinPair.price, undefined, {
+            maxDecimalsLen: getMaxOutputDecimalPlaces(assetFrom),
+            decimalsToKeep: 6,
+          }),
         );
       }
     } else {
       setFromValue(newValue);
       if (currentAd) {
         setToValue(
-          formatFundsAmount(
-            newValue * currentAd.coinPair.price,
-            undefined,
-            getMaxOutputDecimalPlaces(assetTo),
-          ),
+          formatFundsAmount(newValue * currentAd.coinPair.price, undefined, {
+            maxDecimalsLen: getMaxOutputDecimalPlaces(assetTo),
+            decimalsToKeep: 6,
+          }),
         );
       }
     }

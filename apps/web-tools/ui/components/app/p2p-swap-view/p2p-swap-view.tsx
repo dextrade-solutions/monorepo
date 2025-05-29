@@ -33,7 +33,10 @@ import AssetAmountField from '../../ui/asset-amount-field';
 import P2PSwapSummary from '../p2p-swap-summary';
 import { SwapFees } from './swap-fees';
 import './index.scss';
-import { getAdPathname, getMaxOutputDecimalPlaces } from '../../../../app/helpers/p2p';
+import {
+  getAdPathname,
+  getMaxOutputDecimalPlaces,
+} from '../../../../app/helpers/p2p';
 import { getCurrentTheme } from '../../../ducks/app/app';
 
 interface IProps {
@@ -138,11 +141,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     sumInCoin2 -= feeInCoin2;
     assetInputTo.setInputAmount(
       sumInCoin2 > 0
-        ? formatFundsAmount(
-            sumInCoin2,
-            undefined,
-            getMaxOutputDecimalPlaces(assetTo),
-          )
+        ? formatFundsAmount(sumInCoin2, undefined, {
+            maxDecimalsLen: getMaxOutputDecimalPlaces(assetTo),
+            decimalsToKeep: 6,
+          })
         : 0,
     );
     assetInputTo.setLoading(false);
@@ -156,11 +158,10 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     sumInCoin1 += feeInCoin1;
     assetInputFrom.setInputAmount(
       sumInCoin1 > 0
-        ? formatFundsAmount(
-            sumInCoin1,
-            undefined,
-            getMaxOutputDecimalPlaces(assetFrom),
-          )
+        ? formatFundsAmount(sumInCoin1, undefined, {
+            maxDecimalsLen: getMaxOutputDecimalPlaces(assetFrom),
+            decimalsToKeep: 6,
+          })
         : 0,
     );
     assetInputFrom.setLoading(false);

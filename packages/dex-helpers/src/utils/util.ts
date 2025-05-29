@@ -97,9 +97,13 @@ export function parseBalance(balance: string) {
 export function formatFundsAmount(
   amount: string | number,
   currencyCode: string = '',
-  maxDecimalsLenInitial = 10,
+  options?: {
+    maxDecimalsLen?: number;
+    decimalsToKeep?: number;
+  },
 ) {
-  let maxDecimalsLen = maxDecimalsLenInitial;
+  let maxDecimalsLen = options?.maxDecimalsLen || 10;
+  const decimalsToKeep = options?.decimalsToKeep || 3;
   if (currencyCode && currencyCode.toLowerCase().includes('usd')) {
     maxDecimalsLen = 2;
   }
@@ -114,12 +118,12 @@ export function formatFundsAmount(
   let afterDecimal = parsed[1] || '0';
 
   if (Number(amount) > 10) {
-    maxDecimalsLen = 2;
+    maxDecimalsLen = options?.decimalsToKeep || 2;
   }
 
   if (afterDecimal !== '0') {
     afterDecimal = afterDecimal.replace(/0+$/, ''); // Remove trailing zeros
-    const sigDigits = afterDecimal.match(/^0*(.{1,5})/u); // Default: grabs 3 most significant digits
+    const sigDigits = afterDecimal.match(new RegExp(`^0*(.{1,${decimalsToKeep}})`, 'u')); // Uses decimalsToKeep parameter
     if (sigDigits) {
       afterDecimal = sigDigits[0];
     }
