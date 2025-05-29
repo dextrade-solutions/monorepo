@@ -119,7 +119,7 @@ export function formatFundsAmount(
 
   if (afterDecimal !== '0') {
     afterDecimal = afterDecimal.replace(/0+$/, ''); // Remove trailing zeros
-    const sigDigits = afterDecimal.match(/^0*(.{1,3})/u); // Default: grabs 3 most significant digits
+    const sigDigits = afterDecimal.match(/^0*(.{1,5})/u); // Default: grabs 3 most significant digits
     if (sigDigits) {
       afterDecimal = sigDigits[0];
     }
