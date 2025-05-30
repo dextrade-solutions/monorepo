@@ -152,7 +152,7 @@ export const P2PSwapView = ({
       sumInCoin2 > 0
         ? formatFundsAmount(sumInCoin2, undefined, {
             maxDecimalsLen: getMaxOutputDecimalPlaces(assetTo),
-            decimalsToKeep: 6,
+            decimalsToKeep: getMaxOutputDecimalPlaces(assetTo),
           })
         : 0,
     );
@@ -169,7 +169,7 @@ export const P2PSwapView = ({
       sumInCoin1 > 0
         ? formatFundsAmount(sumInCoin1, undefined, {
             maxDecimalsLen: getMaxOutputDecimalPlaces(assetFrom),
-            decimalsToKeep: 6,
+            decimalsToKeep: getMaxOutputDecimalPlaces(assetFrom),
           })
         : 0,
     );

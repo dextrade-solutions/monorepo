@@ -68,7 +68,7 @@ export function getMaxOutputDecimalPlaces(asset: AssetModel) {
   ) {
     return 2;
   }
-  return 10;
+  return 6;
 }
 
 // Define a type for the expected parameters
