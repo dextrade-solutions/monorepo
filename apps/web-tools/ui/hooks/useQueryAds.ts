@@ -19,6 +19,7 @@ export const useQueryAds = () => {
 
   useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams);
+    // backward compatibility with old search params
     const fromNetworkName = newSearchParams.get('fromNetworkName');
     const toNetworkName = newSearchParams.get('toNetworkName');
     const fromTicker = newSearchParams.get('fromTicker');
@@ -31,16 +32,22 @@ export const useQueryAds = () => {
     if (fromString) {
       assetFrom = getAssetByIso(fromString);
       dispatch(setFromToken(assetFrom));
+
+      newSearchParams.delete('fromNetworkName');
+      newSearchParams.delete('fromTicker');
     } else {
       dispatch(setFromToken(null));
     }
     if (toString) {
       assetTo = getAssetByIso(toString);
       dispatch(setToToken(assetTo));
+
+      newSearchParams.delete('toNetworkName');
+      newSearchParams.delete('toTicker');
     } else {
       dispatch(setToToken(null));
     }
-    if (fromNetworkName && fromTicker) {
+    if (fromNetworkName && fromTicker && !assetFrom) {
       const iso = getIsoCoin({
         networkName: fromNetworkName,
         ticker: fromTicker,
@@ -48,7 +55,7 @@ export const useQueryAds = () => {
       assetFrom = getAssetByIso(iso);
       dispatch(setFromToken(assetFrom));
     }
-    if (toNetworkName && toTicker) {
+    if (toNetworkName && toTicker && !assetTo) {
       const iso = getIsoCoin({ networkName: toNetworkName, ticker: toTicker });
       assetTo = getAssetByIso(iso);
       dispatch(setToToken(assetTo));

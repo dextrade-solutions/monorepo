@@ -123,7 +123,9 @@ export function formatFundsAmount(
 
   if (afterDecimal !== '0') {
     afterDecimal = afterDecimal.replace(/0+$/, ''); // Remove trailing zeros
-    const sigDigits = afterDecimal.match(new RegExp(`^0*(.{1,${decimalsToKeep}})`, 'u')); // Uses decimalsToKeep parameter
+    const sigDigits = afterDecimal.match(
+      new RegExp(`^0*(.{1,${decimalsToKeep}})`, 'u'),
+    );
     if (sigDigits) {
       afterDecimal = sigDigits[0];
     }
