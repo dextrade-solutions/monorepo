@@ -126,7 +126,6 @@ export const useAssetInput = ({
     awaitingDepositAmount?: number;
     onSuccess: () => void;
   }) => {
-    debugger;
     showModal({
       name: 'DEPOSIT_WALLET',
       asset: native,

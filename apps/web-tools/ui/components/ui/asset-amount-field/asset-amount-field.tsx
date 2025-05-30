@@ -9,6 +9,7 @@ import {
   CardActionArea,
   Button,
   Divider,
+  CircularProgress,
 } from '@mui/material';
 import {
   formatCurrency,
@@ -29,6 +30,7 @@ interface IProps {
   onShowPaymentMethods: () => void;
   onChange: (v: string | number) => void;
   reserve?: number;
+  onFocusChange?: (isFocused: boolean) => void;
 }
 
 export const AssetAmountField = ({
@@ -36,6 +38,7 @@ export const AssetAmountField = ({
   onChange,
   onShowPaymentMethods,
   reserve,
+  onFocusChange,
 }: IProps) => {
   const { asset, account } = assetInput;
   const displayBalance = Boolean(account);
@@ -125,6 +128,8 @@ export const AssetAmountField = ({
             }
             onChange(value);
           }}
+          onFocus={() => onFocusChange?.(true)}
+          onBlur={() => onFocusChange?.(false)}
         />
         {Boolean(assetInput.amount) && asset.priceInUsdt && (
           <Typography
@@ -133,6 +138,12 @@ export const AssetAmountField = ({
             marginTop={-1}
             marginBottom={2}
           >
+            {assetInput.loading && (
+              <CircularProgress
+                sx={{ color: 'text.secondary', mr: 1 }}
+                size={12}
+              />
+            )}
             {formatCurrency(
               Number(assetInput.amount) * asset.priceInUsdt,
               'usd',

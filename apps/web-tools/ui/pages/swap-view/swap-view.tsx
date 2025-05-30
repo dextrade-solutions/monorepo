@@ -56,7 +56,7 @@ export default function AdView() {
     notSupportedCoins: [],
   };
 
-  const { data } = useQuery<AdItem[]>({
+  const { data, isRefetching } = useQuery<AdItem[]>({
     queryKey: ['p2pAds', currentFilter],
     queryFn: () => P2PService.filterAds(currentFilter),
     refetchInterval: 20 * SECOND,
@@ -140,6 +140,7 @@ export default function AdView() {
           assetFrom={assetFrom}
           assetTo={assetTo}
           isLoading={isLoading}
+          isRefetching={isRefetching}
         />
       )}
       {error && <Alert severity="error">{error}</Alert>}

@@ -25,6 +25,7 @@ export const SwapViewContent = ({
   assetFrom,
   assetTo,
   isLoading,
+  isRefetching,
 }: SwapViewContentProps) => {
   const t = useI18nContext();
 
@@ -83,7 +84,14 @@ export const SwapViewContent = ({
   }
 
   if (ad) {
-    return <P2PSwapView ad={ad} assetFrom={assetFrom} assetTo={assetTo} />;
+    return (
+      <P2PSwapView
+        ad={ad}
+        assetFrom={assetFrom}
+        assetTo={assetTo}
+        isRefetching={isRefetching}
+      />
+    );
   }
 
   return (

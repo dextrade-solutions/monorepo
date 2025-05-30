@@ -5,6 +5,7 @@ import {
   getAdLimitPerExchange,
   NetworkNames,
   NetworkTypes,
+  SECOND,
 } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
@@ -43,12 +44,18 @@ interface IProps {
   ad: AdItem;
   assetFrom: AssetModel;
   assetTo: AssetModel;
-  onSetWallet: () => void;
+  isRefetching: boolean;
 }
 
-const RECALCULATE_DELAY = 1000;
+const RECALCULATE_DELAY = SECOND;
+const RECALCULATE_REFETCH_INTERVAL = 10 * SECOND;
 
-export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
+export const P2PSwapView = ({
+  ad,
+  assetFrom,
+  assetTo,
+  isRefetching,
+}: IProps) => {
   const { showModal } = useGlobalModalContext();
   const theme = useSelector(getCurrentTheme);
   const muiTheme = useTheme();
@@ -56,6 +63,8 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const navigate = useNavigate();
   const [slippage, setSlippage] = useState(0.5);
   const [loadingStartExchange, setLoadingStartExchange] = useState(false);
+  const [isFocusedFromInput, setIsFocusedFromInput] = useState(false);
+  const [isFocusedToInput, setIsFocusedToInput] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
   const { login } = useAuthP2P();
@@ -202,6 +211,38 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Add auto-recalculation for from input
+  useEffect(() => {
+    if (!isFocusedFromInput) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (assetInputFrom.amount) {
+        assetInputTo.setLoading(true);
+        recalculateTo(assetInputFrom.amount);
+      }
+    }, RECALCULATE_REFETCH_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [isFocusedFromInput, assetInputFrom.amount, recalculateTo]);
+
+  // Add auto-recalculation for to input
+  useEffect(() => {
+    if (!isFocusedToInput) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (assetInputTo.amount) {
+        assetInputFrom.setLoading(true);
+        recalculateFrom(assetInputTo.amount);
+      }
+    }, RECALCULATE_REFETCH_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [isFocusedToInput, assetInputTo.amount, recalculateFrom]);
+
   const startExchange = async ({
     exchangerPaymentMethodId,
   }: {
@@ -308,6 +349,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           assetInput={assetInputFrom}
           hasValidationErrors={hasValidationErrors}
           onChange={onInputAmountFrom}
+          onFocusChange={(isFocused) => {
+            if (isFocused) {
+              setIsFocusedFromInput(true);
+              setIsFocusedToInput(false);
+            }
+          }}
         />
       </Box>
       <Box marginBottom={2}>
@@ -325,6 +372,12 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           reserve={getAdLimitPerExchange(ad)}
           onChange={onInputAmountTo}
           onShowPaymentMethods={onShowPaymentMethods}
+          onFocusChange={(isFocused) => {
+            if (isFocused) {
+              setIsFocusedToInput(true);
+              setIsFocusedFromInput(false);
+            }
+          }}
         />
       </Box>
       <Box
