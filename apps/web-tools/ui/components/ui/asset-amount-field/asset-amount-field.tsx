@@ -183,6 +183,7 @@ export const AssetAmountField = ({
               size="large"
               fullWidth
               disableElevation
+              dataTestId="asset-amount-field__choose-payment-method"
               onClick={onShowPaymentMethods}
             >
               {paymentMethod && (
@@ -208,6 +209,7 @@ export const AssetAmountField = ({
               }}
               disableElevation
               fullWidth
+              dataTestId="asset-amount-field__connect-wallet"
               onClick={() => assetInput.showConfigureWallet()}
             >
               {assetInput.account && (

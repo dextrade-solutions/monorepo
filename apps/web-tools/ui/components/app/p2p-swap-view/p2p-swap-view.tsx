@@ -50,11 +50,7 @@ interface IProps {
 const RECALCULATE_DELAY = SECOND;
 const RECALCULATE_REFETCH_INTERVAL = 10 * SECOND;
 
-export const P2PSwapView = ({
-  ad,
-  assetFrom,
-  assetTo,
-}: IProps) => {
+export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const { showModal } = useGlobalModalContext();
   const theme = useSelector(getCurrentTheme);
   const muiTheme = useTheme();
