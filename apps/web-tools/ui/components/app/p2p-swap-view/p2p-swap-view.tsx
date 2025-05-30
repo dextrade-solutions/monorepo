@@ -134,10 +134,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }
       }
       if (ad.transactionFeeType === 'FIXED_AND_NETWORK') {
-        setIncomingFee(incomingFeeCalculated + ad.transactionFeeFixedValue);
-      } else {
-        setIncomingFee(incomingFeeCalculated);
+        incomingFeeCalculated += ad.transactionFeeFixedValue
       }
+      setIncomingFee(incomingFeeCalculated);
       return incomingFeeCalculated;
     },
     [assetInputTo, assetTo, ad],
