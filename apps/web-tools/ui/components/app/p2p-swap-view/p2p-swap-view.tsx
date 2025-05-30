@@ -54,7 +54,6 @@ export const P2PSwapView = ({
   ad,
   assetFrom,
   assetTo,
-  isRefetching,
 }: IProps) => {
   const { showModal } = useGlobalModalContext();
   const theme = useSelector(getCurrentTheme);
@@ -66,7 +65,7 @@ export const P2PSwapView = ({
   const [isFocusedFromInput, setIsFocusedFromInput] = useState(false);
   const [isFocusedToInput, setIsFocusedToInput] = useState(false);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
-  const [incomingFee, setIncomingFee] = useState(ad.transactionFee);
+  const [incomingFee, setIncomingFee] = useState(ad.transactionFeeFixedValue);
   const { login } = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -103,9 +102,9 @@ export const P2PSwapView = ({
       if (
         ad.isAtomicSwap ||
         !native?.chainId ||
-        ad.transactionFee !== undefined
+        ad.transactionFeeType === 'FIXED' // todo: change to const
       ) {
-        return ad.transactionFee || 0;
+        return ad.transactionFeeFixedValue || 0;
       }
 
       let incomingFeeCalculated = 0;
@@ -138,7 +137,11 @@ export const P2PSwapView = ({
           incomingFeeCalculated *= normalizeRate;
         }
       }
-      setIncomingFee(incomingFeeCalculated);
+      if (ad.transactionFeeType === 'FIXED_AND_NETWORK') {
+        setIncomingFee(incomingFeeCalculated + ad.transactionFeeFixedValue);
+      } else {
+        setIncomingFee(incomingFeeCalculated);
+      }
       return incomingFeeCalculated;
     },
     [assetInputTo, assetTo, ad],
