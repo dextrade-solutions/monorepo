@@ -209,12 +209,14 @@ const TradeHistoryRowModal = ({
           <Box display="flex" marginTop={1}>
             <Typography className="flex-grow">{t('transactionFee')}</Typography>
             <Typography>
-              {trade.transactionFee
-                ? formatFundsAmount(
-                    trade.transactionFee,
-                    trade.exchangerSettings.to.ticker,
-                  )
-                : t('auto')}
+              {trade.exchangerSettings.transactionFeeFixedValue &&
+                formatFundsAmount(
+                  trade.exchangerSettings.transactionFeeFixedValue,
+                  trade.exchangerSettings.to.ticker,
+                )}
+            </Typography>
+            <Typography ml={1}>
+              {trade.exchangerSettings.transactionFeeType}
             </Typography>
           </Box>
         </Box>
