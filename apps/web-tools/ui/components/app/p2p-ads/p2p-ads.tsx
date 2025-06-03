@@ -123,8 +123,13 @@ export default function P2PAds({ iosIFrame = false }: { iosIFrame?: boolean }) {
   });
 
   const handleAdPreviewClick = (ad: AdItem) => {
-    if (iosIFrame) {
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.productHandler) {
       window.webkit.messageHandlers.productHandler.postMessage({
+        adId: ad.id,
+        clientSendsAmount: fromTokenInputValue,
+      });
+    } else if (window.Android && window.Android.postMessage) {
+      window.Android.postMessage({
         adId: ad.id,
         clientSendsAmount: fromTokenInputValue,
       });
