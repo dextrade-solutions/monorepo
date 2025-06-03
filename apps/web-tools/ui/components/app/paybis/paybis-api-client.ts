@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { BUILT_IN_NETWORKS, NetworkNames, NetworkTypes } from 'dex-helpers';
 
 export interface PaybisConfig {
   apiKey: string;
@@ -73,6 +74,11 @@ export type NetworkNames =
   | 'avalanche'
   | 'solana';
 
+interface NetworkMapEntry {
+  config: (typeof BUILT_IN_NETWORKS)[NetworkNames];
+  networkType: NetworkTypes;
+}
+
 export type AssetModel = {
   chainId?: number;
   contract?: string;
@@ -112,42 +118,58 @@ export interface PaybisCurrencyResponse {
 export function transformPaybisCurrencyToAssetModel(
   currency: PaybisCurrencyResponse,
 ): AssetModel {
-  const chainIdMap = {
-    ethereum: 1,
-    bsc: 56,
-    polygon: 137,
-    tron: 728126428,
-    arbitrum: 42161,
-    optimism: 10,
-    base: 8453,
-    avalanche: 43114,
-    solana: 1399811149,
+  const networkMap: Record<string, NetworkMapEntry> = {
+    ethereum: {
+      config: BUILT_IN_NETWORKS[NetworkNames.ethereum],
+      networkType: NetworkTypes.erc20,
+    },
+    'binance-smart-chain': {
+      config: BUILT_IN_NETWORKS[NetworkNames.binance],
+      networkType: NetworkTypes.bep20,
+    },
+    polygon: {
+      config: BUILT_IN_NETWORKS[NetworkNames.polygon],
+      networkType: NetworkTypes.polygon,
+    },
+    bitcoin: {
+      config: BUILT_IN_NETWORKS[NetworkNames.bitcoin],
+      networkType: NetworkTypes.bip86,
+    },
+    tron: {
+      config: BUILT_IN_NETWORKS[NetworkNames.tron],
+      networkType: NetworkTypes.trc20,
+    },
+    solana: {
+      config: BUILT_IN_NETWORKS[NetworkNames.solana],
+      networkType: NetworkTypes.solana,
+    },
+    base: {
+      config: BUILT_IN_NETWORKS[NetworkNames.base],
+      networkType: NetworkTypes.erc20,
+    },
   };
-  const networkMap: Record<string, NetworkNames> = {
-    ethereum: 'ethereum',
-    bsc: 'bsc',
-    polygon: 'polygon',
-    tron: 'tron',
-    arbitrum: 'arbitrum',
-    optimism: 'optimism',
-    base: 'base',
-    avalanche: 'avalanche',
-    solana: 'solana',
-  };
+  if (currency.network_data?.network === 'testnet') {
+    return null;
+  }
   try {
-    const network = networkMap[currency.network.toLowerCase()] || 'ethereum';
+    const network = networkMap[currency.network_data?.blockchain.toLowerCase()];
+    if (!network) {
+      throw new Error(
+        `unknown blockchain ${currency.network_data?.blockchain}`,
+      );
+    }
 
     return {
       name: currency.name,
       symbol: currency.symbol,
       uid: currency.image,
-      network,
+      network: network.config.key,
       isFiat: false,
       isNative: !currency.network_data?.tokenContract,
       contract: currency.network_data?.tokenContract,
       decimals: currency.network_data?.decimals,
-      standard: currency.network_data?.tokenContract ? 'ERC20' : undefined,
-      chainId: chainIdMap[network],
+      standard: network.networkType,
+      chainId: network.config.id,
     };
   } catch (error) {
     console.error(currency);
@@ -181,7 +203,9 @@ export class PaybisClient {
           error.response?.data || error.message,
         );
         return Promise.reject(
-          new Error(`Paybis API Error: ${error.response?.data?.message || error.message}`),
+          new Error(
+            `Paybis API Error: ${error.response?.data?.message || error.message}`,
+          ),
         );
       },
     );
@@ -210,24 +234,22 @@ export class PaybisClient {
    * @param userIp
    * @returns Promise<CurrencyResponse[]>
    */
-  async getCurrencies(
-    side: 'buy' | 'sell',
-    userId: string,
-    userIp: string,
-  ): Promise<CurrencyResponse[]> {
+  async getCurrencies(side: 'buy' | 'sell'): Promise<CurrencyResponse[]> {
     const config = this.getApiRequestConfig(
       'GET',
-      `/paybis/currencies/crypto/${side}?user_id=${userId}&user_ip=${userIp}`,
+      `/paybis/currencies/crypto/${side}`,
     );
     const response = await this.axiosInstance(config);
-    return response.data.response.map((currency: any) => ({
-      ...transformPaybisCurrencyToAssetModel(currency),
-      id: currency.id,
-      isSuspended: currency.isSuspended ?? false,
-      isSellSupported: currency.isSellSupported ?? true,
-      supportsTestMode: currency.supportsTestMode ?? true,
-      supportsLiveMode: currency.supportsLiveMode ?? true,
-    }));
+    return response.data.response
+      .map((currency: any) => ({
+        ...transformPaybisCurrencyToAssetModel(currency),
+        id: currency.id,
+        isSuspended: currency.isSuspended ?? false,
+        isSellSupported: currency.isSellSupported ?? true,
+        supportsTestMode: currency.supportsTestMode ?? true,
+        supportsLiveMode: currency.supportsLiveMode ?? true,
+      }))
+      .filter((asset) => asset.network);
   }
 
   /**
@@ -327,9 +349,6 @@ export class PaybisClient {
       depositRedirectUrl: this.config.depositRedirectUrl,
       mode: side,
       ...all_params,
-      user_id: this.config.user_id,
-      user_ip: '95.156.205.116',
-      email: this.config.email,
       locale: this.config.locale,
     };
 

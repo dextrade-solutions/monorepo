@@ -2,13 +2,10 @@ import {
   Box,
   Container,
   Typography,
-  TextField,
-  Autocomplete,
   Paper,
   CircularProgress,
   Alert,
   Fade,
-  FormControl,
   Stack,
   Tabs,
   Tab,
@@ -76,13 +73,9 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
         setError(null);
         const currenciesData = await paybis.getCurrencies({
           side: 'buy',
-          userId: paybisConfig.user_id,
-          userIp: '95.156.205.116',
         });
         const currenciesDataSell = await paybis.getCurrencies({
           side: 'sell',
-          userId: paybisConfig.user_id,
-          userIp: '95.156.205.116',
         });
         const isTestMode = await paybis.isSandbox();
 
@@ -178,20 +171,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
         </Button>
       </Box>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {transactionId && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          Transaction was created! ID: {transactionId}
-        </Alert>
-      )}
-
-      <Fade in={!showWidget} unmountOnExit>
-        <Paper elevation={0} sx={{ p: 2, bgcolor: 'primary.light' }}>
+      {!showWidget && (<Paper elevation={0} sx={{ p: 2, bgcolor: 'primary.light' }}>
           <Tabs
             value={activeTab}
             onChange={(_, newValue) => setActiveTab(newValue)}
@@ -214,7 +194,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
                   disabled={buyInput.loading}
                   placeholder="0"
                   allowNegative={false}
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', mr: 2 }}
                   variant="standard"
                   valueIsNumericString
                   inputProps={{ inputMode: 'decimal' }}
@@ -250,7 +230,10 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
                   value={selectedCurrency}
                   placeholder="Select coin"
                   items={currencies}
-                  onChange={(v) => setSelectedCurrency(v)}
+                  onChange={(v) => {
+                    setSelectedCurrency(v);
+                    setConnectedWallet(undefined);
+                  }}
                   maxListItem={6}
                 />
               </Box>
@@ -262,6 +245,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
                   startIcon={<ShoppingCart size={20} />}
                   onClick={() => {
                     setShowWidget(true);
+                    setError(null);
                     setSide('buy');
                   }}
                   fullWidth
@@ -295,7 +279,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
                   disabled={sellInput.loading}
                   placeholder="0"
                   allowNegative={false}
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', mr: 2 }}
                   variant="standard"
                   valueIsNumericString
                   inputProps={{ inputMode: 'decimal' }}
@@ -334,6 +318,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
                 startIcon={<ArrowDownUp size={20} />}
                 onClick={() => {
                   setShowWidget(true);
+                  setError(null);
                   setSide('sell');
                 }}
                 fullWidth
@@ -344,7 +329,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
             </Stack>
           )}
         </Paper>
-      </Fade>
+      )}
 
       <Fade in={showWidget}>
         <Box>
@@ -355,7 +340,17 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
           >
             Back
           </Button>
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
 
+          {transactionId && (
+            <Alert severity="success" sx={{ mb: 3 }}>
+              Transaction was created! ID: {transactionId}
+            </Alert>
+          )}
           {showWidget && (
             <PaybisWidget
               config={paybisConfig}
