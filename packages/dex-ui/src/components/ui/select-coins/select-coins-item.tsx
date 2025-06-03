@@ -20,6 +20,7 @@ interface SelectCoinsItemProps {
   loading?: boolean;
   fuseSearchKeys?: any; // You might want to define a more specific type for this
   shouldSearchForImports?: boolean;
+  sx?: any;
 }
 
 export const SelectCoinsItem = memo<SelectCoinsItemProps>(
@@ -34,6 +35,7 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
     loading = false,
     maxListItem,
     fuseSearchKeys,
+    sx,
     shouldSearchForImports,
   }) => {
     const t = (v) => v;
@@ -77,12 +79,13 @@ export const SelectCoinsItem = memo<SelectCoinsItemProps>(
         })}
         sx={{
           ...(loading ? disabledProps : {}),
+          ...(sx || {}),
         }}
         tabIndex={0}
         data-testid="select-coin"
+        onClick={onToggle}
       >
         <div
-          onClick={onToggle} // Call onToggle only if not loading
           className={classnames('select-coins__item__label', {
             'select-coins__item__label-reversed': reversed,
           })}

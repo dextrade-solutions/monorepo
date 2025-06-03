@@ -36,8 +36,10 @@ import {
   PAIR_GROUPS_ROUTE,
   SWAPS_ROUTE,
   ADS_FRAME_ROUTE,
+  PAYBIS_ROUTE,
 } from '../helpers/constants/routes';
 import { AuthType, useAuthP2P } from '../hooks/useAuthP2P';
+import Paybis from './paybis';
 
 export default function RoutesRoot() {
   const { login } = useAuthP2P();
@@ -68,6 +70,7 @@ export default function RoutesRoot() {
         <Route path={PAIR_GROUPS_ROUTE} element={<PairGroups />} />
         <Route path={SWAPS_ROUTE} element={<ChangellySwap />} />
         <Route path={ADS_FRAME_ROUTE} element={<AdsFrame />} />
+        <Route path={PAYBIS_ROUTE} element={<Paybis />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}
