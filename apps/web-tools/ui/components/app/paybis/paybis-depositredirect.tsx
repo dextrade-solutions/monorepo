@@ -159,7 +159,7 @@ function DepositPage({ paybisConfig }: Props) {
           </Typography>
           <Grid container spacing={3}>
             {transaction.status && (
-              <Grid item xs={12} sm={6}>
+              <Grid item sx={{ textTransform: 'capitalize' }} xs={12} sm={6}>
                 <Typography
                   variant="caption"
                   color="text.secondary"
@@ -193,8 +193,8 @@ function DepositPage({ paybisConfig }: Props) {
               >
                 To Address
               </Typography>
-              {transaction.to.address
-                ? shortenAddress(transaction.to.address)
+              {paymentDetails.data.depositAddress
+                ? shortenAddress(paymentDetails.data.depositAddress)
                 : 'Not available'}
             </Grid>
             <Grid item xs={12} sm={6}>
