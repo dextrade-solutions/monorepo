@@ -85,7 +85,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
         showWalletAddressForm: false,
       };
 
-      if (side && side === 'sell') {
+      if (mode === 'sell') {
         params.currencyCode = defaultCurrencyCodeSell;
         params.defaultCurrencyCode = defaultCurrencyCodeSell;
         params.baseCurrencyCode = defaultBaseCurrencyCode; // fiat
@@ -98,7 +98,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
       params.email = 'sshevaiv+@gmail.com';
       params.externalCustomerId = '1';
 
-      const urlData = await client.createWidgetUrl(params, side);
+      const urlData = await client.createWidgetUrl(params, mode);
       window.location.replace(urlData.url);
     },
   });
