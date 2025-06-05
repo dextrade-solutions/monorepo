@@ -40,7 +40,7 @@ function getStatusConfig(status: string) {
 function DepositPage({ paybisConfig }: Props) {
   const { requestId: tempId } = useParams();
   const paybis = usePaybis(paybisConfig);
-  const actualRequestId = localStorage.getItem(`paybis_temp_${tempId}`);
+  const actualRequestId = localStorage.getItem(`paybis_temp_${tempId}`) || '1764626d-e52f-4cda-89aa-64c515230ca4';
 
   if (!actualRequestId) {
     return (
@@ -94,14 +94,9 @@ function DepositPage({ paybisConfig }: Props) {
         address: paymentDetails.data.depositAddress,
         amount_requested: paymentDetails.data.amount,
         amount_requested_f: paymentDetails.data.amount,
-        amount_received_total:
-          transaction?.amounts?.receivedOriginal?.amount || '0',
-        amount_received_total_f:
-          transaction?.amounts?.receivedOriginal?.amount || '0',
-        converted_amount_received_total_f:
-          transaction?.amounts?.receivedOriginal?.amount || '0',
-        converted_amount_requested: paymentDetails.data.amount,
-        converted_amount_requested_f: paymentDetails.data.amount,
+        amount_received_total_f: '0',
+        converted_amount_requested: paymentDetails.data.amount || '0',
+        converted_amount_requested_f: paymentDetails.data.amount || '0',
         status:
           transaction?.status === 'completed'
             ? 3
@@ -163,6 +158,19 @@ function DepositPage({ paybisConfig }: Props) {
             Transaction Details
           </Typography>
           <Grid container spacing={3}>
+            {transaction.status && (
+              <Grid item xs={12} sm={6}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  gutterBottom
+                >
+                  Status
+                </Typography>
+                {transaction.status}
+              </Grid>
+            )}
             {transaction.from.address && (
               <Grid item xs={12} sm={6}>
                 <Typography
@@ -210,7 +218,7 @@ function DepositPage({ paybisConfig }: Props) {
                 display="block"
                 gutterBottom
               >
-                Amount Received
+                Amount Get
               </Typography>
               <Typography variant="body1">
                 {transaction.amounts.receivedOriginal.amount}{' '}

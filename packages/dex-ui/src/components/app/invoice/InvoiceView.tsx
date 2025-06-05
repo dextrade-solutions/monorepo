@@ -417,7 +417,7 @@ export default function InvoiceView({
         <Alert severity="warning">
           <Typography>The invoice partially paid.</Typography>
           <Typography>
-            Paid: {formatCurrency(primaryRecievedAmount, primarySendCoin)}
+            Paid: {formatCurrency(primaryRecievedAmount, primarySendCoin || '')}
           </Typography>
           <Typography>Due: {deltaStr}</Typography>
         </Alert>
