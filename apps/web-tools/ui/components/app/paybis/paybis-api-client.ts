@@ -346,8 +346,10 @@ export class PaybisClient {
       all_params.walletAddress = params.walletAddress;
     }
 
+    // Generate a temporary ID and store the mapping
+    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const payload = {
-      depositRedirectUrl: params.depositRedirectUrl,
+      depositRedirectUrl: `${params.depositRedirectUrl}/${tempId}`,
       mode: side,
       ...all_params,
       locale: this.config.locale,
@@ -363,10 +365,8 @@ export class PaybisClient {
     const config = this.getApiRequestConfig('POST', endpoint, payload);
     const response = await this.axiosInstance(config);
     const requestId = response.data;
-
-    // Generate a temporary ID and store the mapping
-    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     localStorage.setItem(`paybis_temp_${tempId}`, requestId);
+
 
     const urlParams = new URLSearchParams({
       requestId,

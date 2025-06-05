@@ -96,7 +96,6 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
       }
       params.email = 'sshevaiv+@gmail.com';
       params.externalCustomerId = '1';
-      params.depositRedirectUrl = paybisConfig.depositRedirectUrl;
 
       const urlData = await client.createWidgetUrl(params, mode);
       window.location.replace(urlData.url);
