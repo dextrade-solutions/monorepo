@@ -47,7 +47,7 @@ export default function Paybis() {
     apiUrl: getEnvVar('VITE_API_BASE_URL'),
     backUrl: `${window.location.protocol}//${window.location.host}/paybis`,
     failureBackUrl: `${window.location.protocol}//${window.location.host}/paybis/failure`,
-    depositRedirectUrl: `${window.location.protocol}//${window.location.host}/paybis/deposit-redirect`,
+    depositRedirectUrl: `${window.location.protocol}//${window.location.host}/paybis/deposit`,
     user_id: '2',
     email: 'sshevaiv++@gmail.com',
     locale: 'en',
