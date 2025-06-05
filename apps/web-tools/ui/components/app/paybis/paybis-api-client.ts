@@ -349,7 +349,7 @@ export class PaybisClient {
     // Generate a temporary ID and store the mapping
     const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const payload = {
-      depositRedirectUrl: `${params.depositRedirectUrl}/${tempId}`,
+      depositRedirectUrl: `${this.config.depositRedirectUrl}/${tempId}`,
       mode: side,
       ...all_params,
       locale: this.config.locale,
