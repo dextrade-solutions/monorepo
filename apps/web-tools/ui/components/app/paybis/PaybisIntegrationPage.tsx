@@ -61,7 +61,6 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
   const [currencies, setCurrencies] = useState<CurrencyResponse[]>([]);
   const [currenciesSell, setCurrenciesSell] = useState<CurrencyResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [side, setSide] = useState<string>('buy');
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -81,6 +80,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
         baseCurrencyCode: defaultBaseCurrencyCode,
         baseCurrencyAmount: amount,
         walletAddress,
+        cryptoWalletAddressForRefund: walletAddress,
         showWalletAddressForm: false,
       };
 
@@ -313,18 +313,29 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
               />
             </Box>
 
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<ArrowDownUp size={20} />}
-              onClick={() => {
-                onStartTrade('sell');
-              }}
-              fullWidth
-              loading={loading}
-            >
-              Sell via Paybis
-            </Button>
+            {connectedWallet ? (
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<ArrowDownUp size={20} />}
+                onClick={() => {
+                  onStartTrade('sell');
+                }}
+                fullWidth
+                loading={loading}
+              >
+                Sell via Paybis
+              </Button>
+            ) : (
+              <Button
+                gradient
+                onClick={() =>
+                  selectedCurrencySell && onConnectWallet(selectedCurrencySell)
+                }
+              >
+                Connect wallet
+              </Button>
+            )}
           </Stack>
         )}
       </Paper>
