@@ -1,11 +1,4 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  Chip,
-  Grid,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Paper, Typography, Grid, CircularProgress, Alert } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { SECOND, shortenAddress } from 'dex-helpers';
 import { InvoiceView } from 'dex-ui';
@@ -47,9 +40,17 @@ function getStatusConfig(status: string) {
 function DepositPage({ paybisConfig }: Props) {
   const { requestId: tempId } = useParams();
   const paybis = usePaybis(paybisConfig);
-  const actualRequestId =
-    localStorage.getItem(`paybis_temp_${tempId}`) ||
-    '149bee5b-5d16-449e-8efe-74476aacb322';
+  const actualRequestId = localStorage.getItem(`paybis_temp_${tempId}`);
+
+  if (!actualRequestId) {
+    return (
+      <Box p={3} maxWidth="lg" mx="auto">
+        <Alert severity="error">
+          Transaction not found. The request ID is invalid or has expired.
+        </Alert>
+      </Box>
+    );
+  }
 
   const { data: paymentDetails, isLoading: isPaymentLoading } = useQuery({
     queryKey: ['paybis-payment-details', tempId],
@@ -97,24 +98,23 @@ function DepositPage({ paybisConfig }: Props) {
           transaction?.amounts?.receivedOriginal?.amount || '0',
         amount_received_total_f:
           transaction?.amounts?.receivedOriginal?.amount || '0',
-        // converted_amount_received_total_f: transaction?.amounts?.receivedOriginal?.amount || '0',
-        // converted_amount_requested: paymentDetails.data.amount,
-        // converted_amount_requested_f: paymentDetails.data.amount,
+        converted_amount_received_total_f:
+          transaction?.amounts?.receivedOriginal?.amount || '0',
+        converted_amount_requested: paymentDetails.data.amount,
+        converted_amount_requested_f: paymentDetails.data.amount,
         status:
           transaction?.status === 'completed'
             ? 3
             : transaction?.status === 'payment_error'
               ? 2
               : 1,
-
         coin: { iso: paymentDetails.data.currencyCode },
         currency: {
-          iso_with_network: paymentDetails.data.network,
           type: 1,
           iso: paymentDetails.data.currencyCode,
           native_currency_iso: paymentDetails.data.currencyCode,
           token_type: null,
-          iso_with_network: '',
+          iso_with_network: paymentDetails.data.network,
           network_name: paymentDetails.data.network,
           symbol: paymentDetails.data.currencyCode,
         },
@@ -124,6 +124,10 @@ function DepositPage({ paybisConfig }: Props) {
         tax: null,
         payment_page_url: '',
         logo_url: null,
+        discounts_f: null,
+        converted_discounts_f: null,
+        tax_f: null,
+        converted_tax_f: null,
       }
     : null;
 
