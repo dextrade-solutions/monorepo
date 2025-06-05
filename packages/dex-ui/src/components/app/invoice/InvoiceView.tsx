@@ -65,6 +65,7 @@ export default function InvoiceView({
       setError('Sorry, this coin is not available now');
     },
   });
+
   const paymentAssetId = invoice.currency?.iso_with_network;
 
   const paymentAsset = useMemo<AssetModel | null>(() => {

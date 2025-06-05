@@ -214,13 +214,27 @@ export const usePaybis = (config: PaybisConfig) => {
     [client],
   );
 
+  const getTransactionByRequestId = useCallback(
+    async (params: Record<string, string | number | boolean>) => {
+      return client.getTransactionByRequestId(params);
+    },
+    [client],
+  );
+
   return useMemo(
     () => ({
       getCurrencies,
       getPaymentDetails,
       createWidgetUrl,
       isSandbox,
+      getTransactionByRequestId,
     }),
-    [getPaymentDetails, getCurrencies, createWidgetUrl, isSandbox],
+    [
+      getPaymentDetails,
+      getCurrencies,
+      createWidgetUrl,
+      isSandbox,
+      getTransactionByRequestId,
+    ],
   );
 };

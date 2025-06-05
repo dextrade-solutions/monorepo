@@ -64,6 +64,95 @@ export interface TransactionResponse {
   redirectUrl: string;
 }
 
+export interface PaybisTransactionAsset {
+  id: string;
+  name: string;
+  currency: {
+    code: string;
+  };
+  blockchain: {
+    name: string;
+    network: string;
+  };
+}
+
+export interface PaybisTransactionAmount {
+  amount: string;
+  currency: string;
+}
+
+export interface PaybisTransactionFees {
+  paybisFee: PaybisTransactionAmount | null;
+  paymentFee: PaybisTransactionAmount | null;
+  networkFee: PaybisTransactionAmount | null;
+  partnerFee: PaybisTransactionAmount | null;
+  partnerFeeFiat: PaybisTransactionAmount | null;
+}
+
+export interface PaybisTransactionAmounts {
+  spentOriginal: PaybisTransactionAmount;
+  spentFiat: PaybisTransactionAmount;
+  receivedOriginal: PaybisTransactionAmount;
+  receivedFiat: PaybisTransactionAmount;
+}
+
+export interface PaybisTransactionExchangeRate {
+  currencyTo: PaybisTransactionAmount;
+  currencyFrom: PaybisTransactionAmount;
+}
+
+export interface PaybisTransactionUser {
+  id: string;
+  email: string;
+  country: {
+    name: string;
+    code: string;
+  };
+}
+
+export interface PaybisTransactionRequest {
+  id: string;
+  flow: string;
+  createdAt: string;
+}
+
+export interface PaybisTransaction {
+  id: string;
+  gateway: string;
+  status: string;
+  from: {
+    name: string;
+    asset: PaybisTransactionAsset;
+    address: string;
+    destinationTag: string | null;
+  };
+  to: {
+    name: string;
+    asset: PaybisTransactionAsset | null;
+    address: string | null;
+    destinationTag: string | null;
+  };
+  exchangeRate: PaybisTransactionExchangeRate;
+  hash: string | null;
+  explorerLink: string | null;
+  createdAt: string;
+  paidAt: string;
+  completedAt: string | null;
+  amounts: PaybisTransactionAmounts;
+  fees: PaybisTransactionFees;
+  user: PaybisTransactionUser;
+  request: PaybisTransactionRequest;
+}
+
+export interface PaybisTransactionResponse {
+  data: PaybisTransaction[];
+  meta: {
+    limit: number;
+    currentCursor: string | null;
+    nextCursor: string | null;
+  };
+}
+
 export type NetworkNames =
   | 'ethereum'
   | 'bsc'
@@ -212,7 +301,7 @@ export class PaybisClient {
     );
   }
 
-  private getRequestConfig(
+  getRequestConfig(
     method: string,
     endpoint: string,
     data?: any,
@@ -302,7 +391,7 @@ export class PaybisClient {
     return response.data;
   }
 
-  private getApiRequestConfig(
+  getApiRequestConfig(
     method: string,
     endpoint: string,
     data?: any,
@@ -313,6 +402,22 @@ export class PaybisClient {
       url,
       data,
     };
+  }
+
+  /**
+   * Get transaction details by requestId
+   * @param requestId - The request ID to fetch transaction details for
+   * @returns Promise<PaybisTransactionResponse>
+   */
+  async getTransactionByRequestId(
+    requestId: string,
+  ): Promise<PaybisTransactionResponse> {
+    const config = this.getApiRequestConfig(
+      'GET',
+      `/paybis/transaction/${requestId}`,
+    );
+    const response = await this.axiosInstance(config);
+    return response.data;
   }
 
   /**
@@ -366,7 +471,6 @@ export class PaybisClient {
     const response = await this.axiosInstance(config);
     const requestId = response.data;
     localStorage.setItem(`paybis_temp_${tempId}`, requestId);
-
 
     const urlParams = new URLSearchParams({
       requestId,
