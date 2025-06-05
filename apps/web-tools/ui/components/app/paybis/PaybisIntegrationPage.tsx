@@ -79,7 +79,6 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
       const params: Record<string, string | number | boolean> = {
         currencyCode: defaultCurrencyCode,
         baseCurrencyCode: defaultBaseCurrencyCode,
-        // colorCode: colorCode.replace('#', ''),
         baseCurrencyAmount: amount,
         walletAddress,
         showWalletAddressForm: false,
@@ -97,6 +96,7 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
       }
       params.email = 'sshevaiv+@gmail.com';
       params.externalCustomerId = '1';
+      params.depositRedirectUrl = paybisConfig.depositRedirectUrl;
 
       const urlData = await client.createWidgetUrl(params, mode);
       window.location.replace(urlData.url);
@@ -181,17 +181,6 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
         <Typography m={2} variant="h4" component="h1" fontWeight="bold">
           Paybis
         </Typography>
-
-        <Button
-          color="primary"
-          startIcon={<ArrowUpDown size={20} />}
-          onClick={() => {
-            setSide('swap');
-          }}
-          loading={loading}
-        >
-          Swap via Paybis
-        </Button>
       </Box>
 
       <Paper elevation={0} sx={{ p: 2, bgcolor: 'primary.light' }}>

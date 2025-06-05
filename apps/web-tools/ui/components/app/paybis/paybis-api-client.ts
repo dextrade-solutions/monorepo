@@ -37,6 +37,7 @@ export interface CurrencyResponse {
 export interface WidgetUrlData {
   url: string;
   requestId: string;
+  tempId: string;
 }
 
 export interface QuoteResponse {
@@ -346,7 +347,7 @@ export class PaybisClient {
     }
 
     const payload = {
-      depositRedirectUrl: this.config.depositRedirectUrl,
+      depositRedirectUrl: params.depositRedirectUrl,
       mode: side,
       ...all_params,
       locale: this.config.locale,
@@ -362,33 +363,24 @@ export class PaybisClient {
     const config = this.getApiRequestConfig('POST', endpoint, payload);
     const response = await this.axiosInstance(config);
     const requestId = response.data;
+
+    // Generate a temporary ID and store the mapping
+    const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem(`paybis_temp_${tempId}`, requestId);
+
     const urlParams = new URLSearchParams({
       requestId,
     });
     if (all_params.walletAddress) {
       urlParams.set('cryptoAddress', String(all_params.walletAddress));
     }
-    /*
-    if (payload.mode === 'sell') {
-      urlParams.set('currencyCodeFrom', String(all_params.defaultCrypto));
-      urlParams.set('currencyCodeTo', 'USD');
-    }
-    if (payload.mode === 'buy') {
-      urlParams.set('currencyCodeTo', String(all_params.defaultCrypto));
-      urlParams.set('currencyCodeFrom', 'USD');      
-    }
-    if (all_params.defaultAmount) {
-      urlParams.set('amountFrom', all_params.defaultAmount.toString());
-    }
-    */
 
     const urlString = `${baseUrl}?${urlParams.toString()}`;
-    // encodeURIComponent(urlString);
-    const backUrl = `${this.config.backUrl}?requestId=${requestId}`;
-    const failureBackUrl = `${this.config.failureBackUrl}?requestId=${requestId}`;
+    const backUrl = `${this.config.backUrl}/${tempId}`;
+    const failureBackUrl = `${this.config.failureBackUrl}/${tempId}`;
     const wUrl = `${urlString}&successReturnURL=${encodeURIComponent(backUrl)}&failureReturnURL=${encodeURIComponent(failureBackUrl)}`;
     console.log('wUrl:', wUrl);
-    return { url: wUrl, requestId };
+    return { url: wUrl, requestId, tempId };
   }
 }
 

@@ -1,4 +1,10 @@
+import { Routes, Route, Outlet } from 'react-router-dom';
+
+import PaybisDepositRedirectPage from '../components/app/paybis/paybis-depositredirect';
+import PaybisFailurePage from '../components/app/paybis/paybis-failure';
 import PaybisIntegrationPage from '../components/app/paybis/PaybisIntegrationPage';
+import { PAYBIS_ROUTE } from '../helpers/constants/routes';
+import { Box } from '@mui/material';
 
 interface PaybisConfig {
   apiKey: string;
@@ -39,13 +45,31 @@ export default function Paybis() {
       : getEnvVar('VITE_PAYBIS_WIDGETSELL_URL_SANDBOX', 'not_configured'),
     isLive: isProduction,
     apiUrl: getEnvVar('VITE_API_BASE_URL'),
-    backUrl: getEnvVar('VITE_BACK_URL'),
-    failureBackUrl: getEnvVar('VITE_BACK_FAILURE_URL'),
+    backUrl: `${window.location.protocol}//${window.location.host}/paybis`,
+    failureBackUrl: `${window.location.protocol}//${window.location.host}/paybis/failure`,
     depositRedirectUrl: `${window.location.protocol}//${window.location.host}/paybis/deposit-redirect`,
     user_id: '2',
     email: 'sshevaiv++@gmail.com',
     locale: 'en',
   };
 
-  return <PaybisIntegrationPage paybisConfig={paybisConfig} />;
+  return (
+    <>
+      <Routes>
+        <Route
+          path="failure/:requestId"
+          element={<PaybisFailurePage paybisConfig={paybisConfig} />}
+        />
+        <Route
+          path="deposit/:requestId"
+          element={<PaybisDepositRedirectPage paybisConfig={paybisConfig} />}
+        />
+
+        <Route
+          path="*"
+          element={<PaybisIntegrationPage paybisConfig={paybisConfig} />}
+        />
+      </Routes>
+    </>
+  );
 }
