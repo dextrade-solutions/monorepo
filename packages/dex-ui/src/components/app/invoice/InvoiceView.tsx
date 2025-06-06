@@ -16,6 +16,7 @@ import { formatCurrency, isMobileWeb, shortenAddress } from 'dex-helpers';
 import assetsDict from 'dex-helpers/assets-dict';
 import { AssetModel } from 'dex-helpers/types';
 import _ from 'lodash';
+import { CreditCard } from 'lucide-react';
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 
 import { InvoicePayBtn } from './InvoicePayBtn';
@@ -34,6 +35,8 @@ import InvoiceQr from './InvoiceQr';
 import usePaymentAddress from './react-queries/mutations/usePaymentAddress';
 import useCurrencies from './react-queries/queries/useCurrencies';
 import { IInvoiceFull } from './types/entities';
+import { usePaybisForm } from '../paybis/use-paybis-form';
+import { ISO_PAYBIS_ID_MAP } from '../paybis/config';
 
 export default function InvoiceView({
   invoice,
@@ -41,12 +44,14 @@ export default function InvoiceView({
   hideHeader,
   showInvoiceUrlQr,
   showQrListItem,
+  fiatPayDisable,
   deeplinkUrl,
   connections: allConnections = [],
   onBack,
 }: {
   showInvoiceUrlQr?: boolean;
   showQrListItem?: boolean;
+  fiatPayDisable: boolean;
   preview?: boolean;
   invoice: IInvoiceFull;
   hideHeader?: boolean;
@@ -65,8 +70,10 @@ export default function InvoiceView({
       setError('Sorry, this coin is not available now');
     },
   });
-
+  const paybisForm = usePaybisForm();
   const paymentAssetId = invoice.currency?.iso_with_network;
+  const paybisCryptoId = ISO_PAYBIS_ID_MAP[paymentAssetId];
+  const canFiatPay = paybisCryptoId && !fiatPayDisable;
 
   const paymentAsset = useMemo<AssetModel | null>(() => {
     if (!paymentAssetId || !assetsDict) {
@@ -305,6 +312,31 @@ export default function InvoiceView({
             />,
           ]
         : [
+            canFiatPay && (
+              <ListItemButton
+                key="fiat-pay"
+                className="bordered"
+                data-testid="fiat-pay"
+                onClick={() => {
+                  paybisForm.submit({
+                    receiveAmount: String(secondaryDelta),
+                    mode: 'buy',
+                    walletAddress: invoice.address,
+                    // amount,
+                    fiatId: primarySendCoin,
+                    cryptoId: paybisCryptoId,
+                  });
+                }}
+              >
+                <ListItemAvatar sx={{ pl: 1.3 }}>
+                  <CreditCard size={30} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary="Fiat"
+                  secondary="Pay using VISA, Master Card, etc"
+                />
+              </ListItemButton>
+            ),
             showQrListItem && (
               <ListItemButton
                 key="qr-code-payment-uri"

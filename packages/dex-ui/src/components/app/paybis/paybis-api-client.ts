@@ -12,9 +12,6 @@ export interface PaybisConfig {
   backUrl: string;
   failureBackUrl: string;
   depositRedirectUrl: string;
-  user_id: string;
-  email: string;
-  locale: string;
 }
 
 export interface CurrencyResponse {
@@ -32,6 +29,7 @@ export interface CurrencyResponse {
   isSuspended: boolean;
   supportsTestMode: boolean;
   supportsLiveMode: boolean;
+  fiats: string[];
 }
 
 export interface WidgetUrlData {
@@ -392,30 +390,12 @@ export class PaybisClient {
    * @returns URL
    */
   async createWidgetUrl(
-    params: Record<string, string | number | boolean>,
+    all_params: Record<string, string | number | boolean>,
     side: string,
   ): Promise<WidgetUrlData> {
     const baseUrl =
       side === 'sell' ? this.config.widgetUrlSell : this.config.widgetUrl;
 
-    const all_params: Record<string, string | number | boolean> = {};
-    if (params.currencyCode) {
-      all_params.defaultCrypto = params.currencyCode;
-      all_params.sell_defaultCrypto = params.currencyCode;
-    }
-    if (params.baseCurrencyCode) {
-      all_params.defaultFiat = params.baseCurrencyCode;
-      all_params.sell_defaultFiat = params.baseCurrencyCode;
-    }
-    if (params.baseCurrencyAmount) {
-      all_params.defaultAmount = params.baseCurrencyAmount;
-    }
-    if (params.quoteCurrencyAmount) {
-      all_params.defaultAmount = params.quoteCurrencyAmount;
-    }
-    if (params.walletAddress) {
-      all_params.walletAddress = params.walletAddress;
-    }
 
     // Generate a temporary ID and store the mapping
     const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -426,7 +406,6 @@ export class PaybisClient {
       locale: this.config.locale,
     };
 
-    console.log(params);
     let endpoint;
     if (side === 'swap') {
       endpoint = '/paybis/makeSwapRequestId';

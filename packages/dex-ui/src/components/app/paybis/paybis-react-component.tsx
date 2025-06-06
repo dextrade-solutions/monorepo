@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { PaybisClient, PaybisConfig } from './paybis-api-client';
+import { config } from './config';
 
 interface PaybisWidgetProps {
   config: PaybisConfig;
@@ -176,8 +177,8 @@ export const PaybisWidget: React.FC<PaybisWidgetProps> = ({
  * React Hook API Paybis
  * @param config - Paybis configuration object
  */
-export const usePaybis = (config: PaybisConfig) => {
-  const client = useMemo(() => new PaybisClient(config), [config]);
+export const usePaybis = () => {
+  const client = useMemo(() => new PaybisClient(config), []);
 
   const isSandbox = useCallback(async () => {
     return await client.isTestMode();

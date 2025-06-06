@@ -9,3 +9,4 @@ export { default as DexPlans } from './dex-plans';
 export { default as WalletList } from './wallet-list';
 export * from './hoc';
 export * from './invoice';
+export * from './paybis';

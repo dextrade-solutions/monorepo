@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 import { networkMap } from './networks-map';
 import { PaybisConfig } from './paybis-api-client';
 import { usePaybis } from './paybis-react-component';
-import { useWallets } from '../../../hooks/asset/useWallets';
+// import { useWallets } from '../../../../hooks/asset/useWallets';
 
 interface Props {
   paybisConfig: PaybisConfig;
