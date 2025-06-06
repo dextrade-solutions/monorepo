@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { BUILT_IN_NETWORKS, NetworkNames, NetworkTypes } from 'dex-helpers';
+import { networkMap } from './networks-map';
 
 export interface PaybisConfig {
   apiKey: string;
@@ -164,10 +164,6 @@ export type NetworkNames =
   | 'avalanche'
   | 'solana';
 
-interface NetworkMapEntry {
-  config: (typeof BUILT_IN_NETWORKS)[NetworkNames];
-  networkType: NetworkTypes;
-}
 
 export type AssetModel = {
   chainId?: number;
@@ -208,36 +204,6 @@ export interface PaybisCurrencyResponse {
 export function transformPaybisCurrencyToAssetModel(
   currency: PaybisCurrencyResponse,
 ): AssetModel {
-  const networkMap: Record<string, NetworkMapEntry> = {
-    ethereum: {
-      config: BUILT_IN_NETWORKS[NetworkNames.ethereum],
-      networkType: NetworkTypes.erc20,
-    },
-    'binance-smart-chain': {
-      config: BUILT_IN_NETWORKS[NetworkNames.binance],
-      networkType: NetworkTypes.bep20,
-    },
-    polygon: {
-      config: BUILT_IN_NETWORKS[NetworkNames.polygon],
-      networkType: NetworkTypes.polygon,
-    },
-    bitcoin: {
-      config: BUILT_IN_NETWORKS[NetworkNames.bitcoin],
-      networkType: NetworkTypes.bip86,
-    },
-    tron: {
-      config: BUILT_IN_NETWORKS[NetworkNames.tron],
-      networkType: NetworkTypes.trc20,
-    },
-    solana: {
-      config: BUILT_IN_NETWORKS[NetworkNames.solana],
-      networkType: NetworkTypes.solana,
-    },
-    base: {
-      config: BUILT_IN_NETWORKS[NetworkNames.base],
-      networkType: NetworkTypes.erc20,
-    },
-  };
   if (currency.network_data?.network === 'testnet') {
     return null;
   }

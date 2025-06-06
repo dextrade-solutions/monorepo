@@ -1,12 +1,21 @@
-import { Box, Paper, Typography, Grid, CircularProgress, Alert } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Typography,
+  Grid,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { SECOND, shortenAddress } from 'dex-helpers';
+import { getIsoCoin, SECOND, shortenAddress } from 'dex-helpers';
 import { InvoiceView } from 'dex-ui';
 import { CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
+import { networkMap } from './networks-map';
 import { PaybisConfig } from './paybis-api-client';
 import { usePaybis } from './paybis-react-component';
+import { useWallets } from '../../../hooks/asset/useWallets';
 
 interface Props {
   paybisConfig: PaybisConfig;
@@ -38,9 +47,12 @@ function getStatusConfig(status: string) {
 }
 
 function DepositPage({ paybisConfig }: Props) {
+  const connections = useWallets();
   const { requestId: tempId } = useParams();
   const paybis = usePaybis(paybisConfig);
-  const actualRequestId = localStorage.getItem(`paybis_temp_${tempId}`) || '1764626d-e52f-4cda-89aa-64c515230ca4';
+  const actualRequestId =
+    localStorage.getItem(`paybis_temp_${tempId}`) ||
+    '1764626d-e52f-4cda-89aa-64c515230ca4';
 
   if (!actualRequestId) {
     return (
@@ -85,7 +97,8 @@ function DepositPage({ paybisConfig }: Props) {
   }
 
   const transaction = transactionDetails?.data?.[0];
-  const statusConfig = transaction ? getStatusConfig(transaction.status) : null;
+
+  const network = networkMap[paymentDetails.data.blockchain].config;
 
   // Convert Paybis data to InvoiceView format
   const invoiceData = paymentDetails?.data
@@ -109,7 +122,10 @@ function DepositPage({ paybisConfig }: Props) {
           iso: paymentDetails.data.currencyCode,
           native_currency_iso: paymentDetails.data.currencyCode,
           token_type: null,
-          iso_with_network: paymentDetails.data.network,
+          iso_with_network: getIsoCoin({
+            networkName: network.key,
+            ticker: paymentDetails.data.currencyCode,
+          }),
           network_name: paymentDetails.data.network,
           symbol: paymentDetails.data.currencyCode,
         },
@@ -142,6 +158,7 @@ function DepositPage({ paybisConfig }: Props) {
             hideHeader
             showQrListItem
             showInvoiceUrlQr
+            connections={connections}
           />
         </Paper>
       )}
