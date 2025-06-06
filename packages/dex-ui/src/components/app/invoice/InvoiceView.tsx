@@ -10,6 +10,7 @@ import {
   Skeleton,
   Typography,
   Avatar,
+  Badge,
 } from '@mui/material';
 import { Connection, determineConnectionType } from 'dex-connect';
 import { formatCurrency, isMobileWeb, shortenAddress } from 'dex-helpers';
@@ -332,7 +333,27 @@ export default function InvoiceView({
                   <CreditCard size={30} />
                 </ListItemAvatar>
                 <ListItemText
-                  primary="Fiat"
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      Fiat
+                      <Box
+                        sx={{
+                          backgroundColor: 'primary.main',
+                          color: 'white',
+                          fontSize: '0.6rem',
+                          height: '16px',
+                          minWidth: '16px',
+                          padding: '0 4px',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        New
+                      </Box>
+                    </Box>
+                  }
                   secondary="Pay using VISA, Master Card, etc"
                 />
               </ListItemButton>
