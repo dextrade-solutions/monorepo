@@ -60,7 +60,7 @@ export const useAssetInput = ({
       });
     };
 
-    if (asset?.iso) {
+    if (isMobileWeb && asset?.iso) {
       updateWallet();
     }
   }, [asset?.iso]);
