@@ -8,3 +8,4 @@ export * from './tron';
 export * from './solana';
 export * from './get-qr-uri-payment';
 export * from './coins';
+export * from './web-view-bridge';
