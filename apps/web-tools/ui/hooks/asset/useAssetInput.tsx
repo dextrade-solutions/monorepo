@@ -3,7 +3,7 @@ import { isMobileWeb, NetworkNames, WebViewBridge } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
 
@@ -63,7 +63,7 @@ export const useAssetInput = ({
     if (isMobileWeb) {
       updateWallet();
     }
-  }, [asset]);
+  }, [asset?.iso]);
 
   const canChooseWallet = asset?.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset?.isFiat;
