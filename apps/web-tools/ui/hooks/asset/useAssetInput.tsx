@@ -1,5 +1,5 @@
-import assetDict from 'dex-helpers/assets-dict';
-import { NetworkNames } from 'dex-helpers';
+import { WalletConnectionType } from 'dex-connect';
+import { isMobileWeb, NetworkNames, WebViewBridge } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
@@ -28,9 +28,13 @@ export const useAssetInput = ({
   const dispatch = useDispatch();
   const { login } = useAuthP2P();
   const wallets = useWallets();
-  const walletConnection = useSelector((state) =>
+  const [customWalletConnection, setCustomWalletConnection] =
+    useState<WalletConnection>();
+  const defaultWalletConnection = useSelector((state) =>
     asset ? getAssetAccount(state, asset) : null,
   );
+
+  const walletConnection = customWalletConnection || defaultWalletConnection;
 
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
@@ -42,6 +46,24 @@ export const useAssetInput = ({
   });
   const [loading, setLoading] = useState(false);
   const [loadingNative, setLoadingNative] = useState(false);
+
+  useEffect(() => {
+    const updateWallet = async () => {
+      const walletAddress = await WebViewBridge.sendToNative('setAsset', {
+        asset,
+      });
+
+      setCustomWalletConnection({
+        walletName: 'Dextrade',
+        connectionType: WalletConnectionType.dextrade,
+        address: walletAddress,
+      });
+    };
+
+    if (isMobileWeb) {
+      updateWallet();
+    }
+  }, [asset]);
 
   const canChooseWallet = asset?.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset?.isFiat;

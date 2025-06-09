@@ -1,6 +1,6 @@
 import { Alert, Box, Fade, InputAdornment, TextField } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { SECOND } from 'dex-helpers';
+import { SECOND, WebViewBridge } from 'dex-helpers';
 import { AdItem } from 'dex-helpers/types';
 import { exchangerService } from 'dex-services';
 import {
@@ -124,8 +124,8 @@ export default function P2PAds({ iosIFrame = false }: { iosIFrame?: boolean }) {
 
   const handleAdPreviewClick = (ad: AdItem) => {
     if (iosIFrame) {
-      window.webkit.messageHandlers.productHandler.postMessage({
-        adId: ad.id,
+      WebViewBridge.sendToNative('openAd', {
+        adId: ad,
         clientSendsAmount: fromTokenInputValue,
       });
     } else {

@@ -19,8 +19,8 @@ export const WebViewBridge = {
       requestMap[requestId] = { resolve, reject };
 
       // Android
-      if (window.AndroidInterface?.postMessage) {
-        window.AndroidInterface.postMessage(payload);
+      if (window.Android?.postMessage) {
+        window.Android.postMessage(payload);
       }
       // iOS
       else if (window.webkit?.messageHandlers?.productHandler) {
