@@ -166,14 +166,15 @@ export const SelectCoinsItemList = ({
                   {IconComponent && <IconComponent />}
                   <div className="select-coins__list__item__label">
                     <div className="select-coins__list__item__label__block">
-                      {name && (
-                        <Typography
-                          fontWeight="bold"
-                          className="searchable-item-list__primary-label"
-                        >
-                          {`${symbol} (${name})`}
-                        </Typography>
-                      )}
+                      {symbol ||
+                        (name && (
+                          <Typography
+                            fontWeight="bold"
+                            className="searchable-item-list__primary-label"
+                          >
+                            {`${symbol} (${name})`}
+                          </Typography>
+                        ))}
                       {standard && (
                         <Typography fontWeight="light">
                           {standard.toUpperCase()}

@@ -49,18 +49,18 @@ export const useAssetInput = ({
 
   useEffect(() => {
     const updateWallet = async () => {
-      const walletAddress = await WebViewBridge.sendToNative('setAsset', {
+      const result = await WebViewBridge.sendToNative('setAsset', {
         asset,
       });
 
       setCustomWalletConnection({
         walletName: 'Dextrade',
         connectionType: WalletConnectionType.dextrade,
-        address: walletAddress,
+        address: result.address,
       });
     };
 
-    if (isMobileWeb) {
+    if (asset?.iso) {
       updateWallet();
     }
   }, [asset?.iso]);
