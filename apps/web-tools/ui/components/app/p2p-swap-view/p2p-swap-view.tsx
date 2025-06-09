@@ -3,12 +3,17 @@ import classNames from 'classnames';
 import {
   formatFundsAmount,
   getAdLimitPerExchange,
-  NetworkNames,
   NetworkTypes,
   SECOND,
 } from 'dex-helpers';
 import { AdItem, AssetModel, UserPaymentMethod } from 'dex-helpers/types';
-import { bgPrimaryGradient, ButtonIcon, useGlobalModalContext } from 'dex-ui';
+import {
+  bgPrimaryGradient,
+  ButtonIcon,
+  ISO_PAYBIS_ID_MAP,
+  useGlobalModalContext,
+  usePaybisForm,
+} from 'dex-ui';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -64,6 +69,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
   const [incomingFee, setIncomingFee] = useState(ad.transactionFeeFixedValue);
   const { login } = useAuthP2P();
   const dispatch = useDispatch<AppDispatch>();
+  const paybisForm = usePaybisForm();
 
   const adPath = getAdPathname({
     fromNetworkName: ad.fromCoin.networkName,
@@ -134,7 +140,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
         }
       }
       if (ad.transactionFeeType === 'FIXED_AND_NETWORK') {
-        incomingFeeCalculated += ad.transactionFeeFixedValue
+        incomingFeeCalculated += ad.transactionFeeFixedValue;
       }
       setIncomingFee(incomingFeeCalculated);
       return incomingFeeCalculated;
@@ -332,6 +338,23 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     const transakUrl = `${baseUrl}?${queryParams.toString()}`;
     window.open(transakUrl, '_blank');
   };
+
+  const openPaybisClient = () => {
+    const mode = assetFrom.isFiat ? 'buy' : 'sell';
+
+    const [fiat, crypto] = assetFrom.isFiat
+      ? [assetInputFrom, assetInputTo]
+      : [assetInputTo, assetInputFrom];
+
+    paybisForm.submit({
+      mode,
+      walletAddress: crypto.account?.address,
+      amount: fiat.amount,
+      fiatId: fiat.asset.iso,
+      cryptoId: ISO_PAYBIS_ID_MAP[crypto.asset.iso] || crypto.asset.symbol,
+    });
+  };
+
   return (
     <Box>
       <Box marginBottom={2}>
@@ -369,7 +392,9 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           hasValidationErrors={hasValidationErrors}
           reserve={getAdLimitPerExchange(ad)}
           onChange={onInputAmountTo}
-          onShowPaymentMethods={onShowPaymentMethods}
+          onShowPaymentMethods={
+            !['PAYBIS', 'TRANSAK'].includes(ad.provider) && onShowPaymentMethods
+          }
           onFocusChange={(isFocused) => {
             if (isFocused) {
               setIsFocusedToInput(true);
@@ -447,12 +472,15 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           variant="contained"
           size="large"
           onClick={() => {
+            if (ad.provider === 'TRANSAK') {
+              return openTransakClient();
+            }
+            if (ad.provider === 'PAYBIS') {
+              return openPaybisClient();
+            }
             if (needPickupClientPaymentMethod) {
               return onShowPaymentMethods();
             } else if (needPickupExchangerPaymentMethod) {
-              if (ad.provider === 'TRANSAK') {
-                return openTransakClient();
-              }
               return pickupExchangerPaymentMethod();
             } else if (needPickupRecipientAddress) {
               return assetInputTo.showConfigureWallet();

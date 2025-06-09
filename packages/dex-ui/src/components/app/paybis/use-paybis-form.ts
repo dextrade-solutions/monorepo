@@ -1,6 +1,5 @@
 import { config } from './config';
 import { PaybisClient } from './paybis-api-client';
-import { usePaybis } from './paybis-react-component';
 import { useForm } from '../../../hooks/useForm';
 
 type WidgetParams = {

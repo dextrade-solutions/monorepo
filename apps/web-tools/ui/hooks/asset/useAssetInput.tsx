@@ -101,16 +101,20 @@ export const useAssetInput = ({
       setNative(asset);
       return;
     }
-    setLoadingNative(true);
-    const nativeAsset = getNative(asset.network);
-    fetchRates('USDT', [nativeAsset.symbol]).then((result) => {
-      const rate = result.data.USDT[nativeAsset.symbol];
-      setNative({
-        ...nativeAsset,
-        priceInUsdt: rate ? 1 / rate : undefined,
+    try {
+      setLoadingNative(true);
+      const nativeAsset = getNative(asset.network);
+      fetchRates('USDT', [nativeAsset.symbol]).then((result) => {
+        const rate = result.data.USDT[nativeAsset.symbol];
+        setNative({
+          ...nativeAsset,
+          priceInUsdt: rate ? 1 / rate : undefined,
+        });
+        setLoadingNative(false);
       });
-      setLoadingNative(false);
-    });
+    } catch {
+      // pass
+    }
   }, []);
 
   const balance = useAssetBalance(asset, walletConnection?.address);

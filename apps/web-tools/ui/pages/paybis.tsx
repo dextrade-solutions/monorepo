@@ -25,19 +25,13 @@ export default function Paybis() {
   return (
     <>
       <Routes>
-        <Route
-          path="failure/:requestId"
-          element={<PaybisFailurePage paybisConfig={paybisConfig} />}
-        />
+        <Route path="failure/:requestId" element={<PaybisFailurePage />} />
         <Route
           path="deposit/:requestId"
-          element={<PaybisDepositRedirectPage paybisConfig={paybisConfig} />}
+          element={<PaybisDepositRedirectPage />}
         />
 
-        <Route
-          path="*"
-          element={<PaybisIntegrationPage paybisConfig={paybisConfig} />}
-        />
+        <Route path="*" element={<PaybisIntegrationPage />} />
       </Routes>
     </>
   );
