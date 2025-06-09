@@ -10,6 +10,7 @@ import DappOpen from './dapp';
 import Home from './home';
 import InvoicePage from './invoice';
 import PairGroups from './pair-groups';
+import Paybis from './paybis';
 import AppSettings from './settings';
 import AppSettingsGeneral from './settings/general';
 import { Plans } from './settings/plans';
@@ -36,6 +37,7 @@ import {
   PAIR_GROUPS_ROUTE,
   SWAPS_ROUTE,
   ADS_FRAME_ROUTE,
+  PAYBIS_ROUTE,
 } from '../helpers/constants/routes';
 import { AuthType, useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -68,6 +70,7 @@ export default function RoutesRoot() {
         <Route path={PAIR_GROUPS_ROUTE} element={<PairGroups />} />
         <Route path={SWAPS_ROUTE} element={<ChangellySwap />} />
         <Route path={ADS_FRAME_ROUTE} element={<AdsFrame />} />
+        <Route path={'/paybis/*'} element={<Paybis />} />
         <Route
           path={`${AWAITING_SWAP_ROUTE}/:id`}
           element={<SwapProcessing />}

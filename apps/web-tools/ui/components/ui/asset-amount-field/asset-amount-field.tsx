@@ -171,62 +171,63 @@ export const AssetAmountField = ({
       </Box>
       {(assetInput.permissions.canChoosePaymentMethod ||
         assetInput.permissions.canChooseWallet ||
-        assetInput.permissions.canPasteWallet) && (
-        <Box>
-          {assetInput.permissions.canChoosePaymentMethod && (
-            <Button
-              className="configure-holder-btn"
-              sx={{
-                bgcolor: 'tertiary.light',
-                color: 'text.primary',
-              }}
-              size="large"
-              fullWidth
-              disableElevation
-              dataTestId="asset-amount-field__choose-payment-method"
-              onClick={onShowPaymentMethods}
-            >
-              {paymentMethod && (
-                <Box display="flex">
-                  <Box>
-                    {getStrPaymentMethodInstance(paymentMethod)}{' '}
-                    {assetInput.paymentMethod.length > 1 &&
-                      `(+${assetInput.paymentMethod.length - 1})`}
+        assetInput.permissions.canPasteWallet) &&
+        onShowPaymentMethods && (
+          <Box>
+            {assetInput.permissions.canChoosePaymentMethod && (
+              <Button
+                className="configure-holder-btn"
+                sx={{
+                  bgcolor: 'tertiary.light',
+                  color: 'text.primary',
+                }}
+                size="large"
+                fullWidth
+                disableElevation
+                dataTestId="asset-amount-field__choose-payment-method"
+                onClick={onShowPaymentMethods}
+              >
+                {paymentMethod && (
+                  <Box display="flex">
+                    <Box>
+                      {getStrPaymentMethodInstance(paymentMethod)}{' '}
+                      {assetInput.paymentMethod.length > 1 &&
+                        `(+${assetInput.paymentMethod.length - 1})`}
+                    </Box>
                   </Box>
-                </Box>
-              )}
-              {!paymentMethod && t('Payment method')}
-            </Button>
-          )}
-          {(assetInput.permissions.canPasteWallet ||
-            assetInput.permissions.canChooseWallet) && (
-            <Button
-              className="configure-holder-btn"
-              size="large"
-              sx={{
-                bgcolor: 'tertiary.light',
-                color: 'text.primary',
-              }}
-              disableElevation
-              fullWidth
-              dataTestId="asset-amount-field__connect-wallet"
-              onClick={() => assetInput.showConfigureWallet()}
-            >
-              {assetInput.account && (
-                <Box display="flex">
-                  <Typography textTransform="none">
-                    {shortenAddress(assetInput.account.address)}
-                  </Typography>
-                  <Box marginLeft={2}>
-                    <UrlIcon url={assetInput.wallet?.icon} />
+                )}
+                {!paymentMethod && t('Payment method')}
+              </Button>
+            )}
+            {(assetInput.permissions.canPasteWallet ||
+              assetInput.permissions.canChooseWallet) && (
+              <Button
+                className="configure-holder-btn"
+                size="large"
+                sx={{
+                  bgcolor: 'tertiary.light',
+                  color: 'text.primary',
+                }}
+                disableElevation
+                fullWidth
+                dataTestId="asset-amount-field__connect-wallet"
+                onClick={() => assetInput.showConfigureWallet()}
+              >
+                {assetInput.account && (
+                  <Box display="flex">
+                    <Typography textTransform="none">
+                      {shortenAddress(assetInput.account.address)}
+                    </Typography>
+                    <Box marginLeft={2}>
+                      <UrlIcon url={assetInput.wallet?.icon} />
+                    </Box>
                   </Box>
-                </Box>
-              )}
-              {!assetInput.account && t('Set Wallet')}
-            </Button>
-          )}
-        </Box>
-      )}
+                )}
+                {!assetInput.account && t('Set Wallet')}
+              </Button>
+            )}
+          </Box>
+        )}
     </Card>
   );
 };

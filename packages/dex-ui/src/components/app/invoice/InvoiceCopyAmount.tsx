@@ -37,7 +37,7 @@ export const InvoiceCopyAmount = ({
         </Typography>
         <CopyData data={invoice.address} />
       </Box>
-      {showInvoiceUrlQr && (
+      {showInvoiceUrlQr && paymentLink && (
         <>
           <Box>
             <QRCode value={paymentLink} hideDownloadQr />

@@ -43,6 +43,9 @@ const LOCAL_COINS_URLS = {
 export const COIN_DEFAULT = LOCAL_COINS_URLS.default;
 
 export const getCoinIconByUid = (uid: string) => {
+  if (uid && uid.includes('http')) {
+    return uid;
+  }
   const coinIcon = LOCAL_COINS_URLS[uid];
   if (coinIcon) {
     return coinIcon;
