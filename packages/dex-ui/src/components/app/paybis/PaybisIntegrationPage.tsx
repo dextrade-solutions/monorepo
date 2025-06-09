@@ -16,6 +16,7 @@ import {
   useGlobalModalContext,
   NumericTextField,
   useForm,
+  usePaybisForm,
 } from 'dex-ui';
 import { ArrowUpDown, ArrowDownUp, ShoppingCart } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
@@ -41,7 +42,7 @@ interface WalletConnection {
   network: string;
 }
 
-const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
+const PaybisIntegrationPage: React.FC<Props> = () => {
   const { showModal } = useGlobalModalContext();
   const [selectedCurrency, setSelectedCurrency] = useState<AssetModel | null>(
     null,
@@ -64,43 +65,9 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
 
-  const paybis = usePaybis(paybisConfig);
+  const paybis = usePaybis();
 
-  const paybisRequestForm = useForm({
-    method: async (_, mode) => {
-      const amount = mode === 'buy' ? buyInput.amount : sellInput.amount;
-      const defaultCurrencyCode = selectedCurrency?.id;
-      const defaultCurrencyCodeSell = selectedCurrencySell?.id;
-      const defaultBaseCurrencyCode = 'usd';
-
-      const client = new PaybisClient(paybisConfig);
-
-      const params: Record<string, string | number | boolean> = {
-        currencyCode: defaultCurrencyCode,
-        baseCurrencyCode: defaultBaseCurrencyCode,
-        baseCurrencyAmount: amount,
-        walletAddress,
-        cryptoWalletAddressForRefund: walletAddress,
-        showWalletAddressForm: false,
-      };
-
-      if (mode === 'sell') {
-        params.currencyCode = defaultCurrencyCodeSell;
-        params.defaultCurrencyCode = defaultCurrencyCodeSell;
-        params.baseCurrencyCode = defaultBaseCurrencyCode; // fiat
-
-        if (amount) {
-          delete params.baseCurrencyAmount;
-          params.quoteCurrencyAmount = amount;
-        }
-      }
-      params.email = 'sshevaiv+@gmail.com';
-      params.externalCustomerId = '1';
-
-      const urlData = await client.createWidgetUrl(params, mode);
-      window.location.replace(urlData.url);
-    },
-  });
+  const paybisRequestForm = usePaybisForm();
 
   useEffect(() => {
     const loadCurrencies = async () => {
@@ -171,7 +138,19 @@ const PaybisIntegrationPage: React.FC<Props> = ({ paybisConfig }) => {
   };
 
   const onStartTrade = async (mode: 'buy' | 'sell') => {
-    return paybisRequestForm.submit(mode);
+    const amount = mode === 'buy' ? buyInput.amount : sellInput.amount;
+
+    const [fiat, crypto] = selectedCurrency?.isFiat
+      ? [selectedCurrency, selectedCurrencySell]
+      : [selectedCurrencySell, selectedCurrency];
+
+    return paybisRequestForm.submit({
+      mode,
+      walletAddress,
+      amount,
+      fiatId: 'usd',
+      cryptoId: crypto.id,
+    });
   };
 
   return (
