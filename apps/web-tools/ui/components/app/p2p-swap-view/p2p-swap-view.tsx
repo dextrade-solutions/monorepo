@@ -79,15 +79,18 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
     name: ad.name,
     amount: formatFundsAmount(fromTokenInputValue),
   });
+  const disableSetPaymentMethod = ['PAYBIS', 'TRANSAK'].includes(ad.provider);
 
   const assetInputFrom = useAssetInput({
     asset: assetFrom,
     deeplinkPath: adPath,
+    disableSetPaymentMethod,
   });
   const assetInputTo = useAssetInput({
     asset: assetTo,
     deeplinkPath: adPath,
     isToAsset: true,
+    disableSetPaymentMethod,
   });
 
   const exchangeRate = ad.coinPair.price;
@@ -392,9 +395,7 @@ export const P2PSwapView = ({ ad, assetFrom, assetTo }: IProps) => {
           hasValidationErrors={hasValidationErrors}
           reserve={getAdLimitPerExchange(ad)}
           onChange={onInputAmountTo}
-          onShowPaymentMethods={
-            !['PAYBIS', 'TRANSAK'].includes(ad.provider) && onShowPaymentMethods
-          }
+          onShowPaymentMethods={onShowPaymentMethods}
           onFocusChange={(isFocused) => {
             if (isFocused) {
               setIsFocusedToInput(true);

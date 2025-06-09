@@ -27,7 +27,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 interface IProps {
   assetInput: ReturnType<typeof useAssetInput>;
   hasValidationErrors: boolean;
-  onShowPaymentMethods: () => void;
+  onShowPaymentMethods?: () => void;
   onChange: (v: string | number) => void;
   reserve?: number;
   onFocusChange?: (isFocused: boolean) => void;
@@ -171,8 +171,7 @@ export const AssetAmountField = ({
       </Box>
       {(assetInput.permissions.canChoosePaymentMethod ||
         assetInput.permissions.canChooseWallet ||
-        assetInput.permissions.canPasteWallet) &&
-        onShowPaymentMethods && (
+        assetInput.permissions.canPasteWallet) && (
           <Box>
             {assetInput.permissions.canChoosePaymentMethod && (
               <Button
