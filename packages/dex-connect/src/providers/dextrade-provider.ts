@@ -1,3 +1,5 @@
+import { WebViewBridge } from 'dex-helpers';
+
 import { ConnectionProvider, TxParams } from './interface';
 import { WalletConnectionType } from '../constants';
 
@@ -19,7 +21,7 @@ export class DextradeProvider implements ConnectionProvider {
   }
 
   async txSend(params: TxParams) {
-    throw new Error('no implemented');
+    return WebViewBridge.sendToNative('sendTx', params);
   }
 
   async signMessage(message: string) {

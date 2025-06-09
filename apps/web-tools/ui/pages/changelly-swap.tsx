@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   formatCurrency,
   formatFundsAmount,
+  isMobileWeb,
   shortenAddress,
   TradeStatus,
 } from 'dex-helpers';
@@ -18,6 +19,7 @@ import { changellyService, coinPairsService } from 'dex-services';
 import { Swap, Button, AdPreview, UrlIcon } from 'dex-ui';
 import { divide } from 'lodash';
 import React, { useState, useEffect, useMemo } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { parseCoin } from '../../app/helpers/p2p';
 import StageDirectTransfer from '../components/app/p2p-swap-processing/stage-direct-transfer';
@@ -26,7 +28,6 @@ import { useAssetInput } from '../hooks/asset/useAssetInput';
 import { useAdValidation } from '../hooks/useAdValidation';
 import { useFee } from '../hooks/useFee';
 import { useRequestHandler } from '../hooks/useRequestHandler';
-import { useDebouncedCallback } from 'use-debounce';
 
 enum ChangellySwapStatus {
   created = 'created',
@@ -517,14 +518,21 @@ export default function ChangellySwap() {
         },
       }}
     >
-      <Box textAlign="center" mb={2}>
-        <Typography component="span" variant="h4" fontWeight="bold">
-          Dextrade
-        </Typography>
-        <Typography component="span" ml={1} variant="h4" color="text.secondary">
-          Swaps
-        </Typography>
-      </Box>
+      {!isMobileWeb && (
+        <Box textAlign="center" mb={2}>
+          <Typography component="span" variant="h4" fontWeight="bold">
+            Dextrade
+          </Typography>
+          <Typography
+            component="span"
+            ml={1}
+            variant="h4"
+            color="text.secondary"
+          >
+            Swaps
+          </Typography>
+        </Box>
+      )}
 
       <>
         <Swap

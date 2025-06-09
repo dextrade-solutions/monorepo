@@ -11,7 +11,11 @@ import { useAssetBalance } from './useAssetBalance';
 import { useWallets } from './useWallets';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
+import {
+  getAssetAccount,
+  setAssetAccount,
+  setWalletConnection,
+} from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
 
@@ -28,13 +32,9 @@ export const useAssetInput = ({
   const dispatch = useDispatch();
   const { login } = useAuthP2P();
   const wallets = useWallets();
-  const [customWalletConnection, setCustomWalletConnection] =
-    useState<WalletConnection>();
-  const defaultWalletConnection = useSelector((state) =>
+  const walletConnection = useSelector((state) =>
     asset ? getAssetAccount(state, asset) : null,
   );
-
-  const walletConnection = customWalletConnection || defaultWalletConnection;
 
   const [native, setNative] = useState<AssetModel>();
   const [paymentMethod, setPaymentMethod] = useState<UserPaymentMethod>();
@@ -53,11 +53,13 @@ export const useAssetInput = ({
         asset,
       });
 
-      setCustomWalletConnection({
-        walletName: 'Dextrade',
-        connectionType: WalletConnectionType.dextrade,
-        address: result.address,
-      });
+      dispatch(
+        setWalletConnection({
+          walletName: 'Dextrade',
+          connectionType: WalletConnectionType.dextrade,
+          address: result.address,
+        }),
+      );
     };
 
     if (isMobileWeb && asset?.iso) {
