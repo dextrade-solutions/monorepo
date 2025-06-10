@@ -3,7 +3,7 @@ import { isMobileWeb, NetworkNames, WebViewBridge } from 'dex-helpers';
 import { AssetModel, UserPaymentMethod } from 'dex-helpers/types';
 import { useGlobalModalContext } from 'dex-ui';
 import { floor } from 'lodash';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseUnits } from 'viem';
 
@@ -54,12 +54,14 @@ export const useAssetInput = ({
       const result = await WebViewBridge.sendToNative('setAsset', {
         asset,
       });
-
       dispatch(
-        setWalletConnection({
-          walletName: 'Dextrade',
-          connectionType: WalletConnectionType.dextrade,
-          address: result.address,
+        setAssetAccount({
+          asset,
+          assetAccount: {
+            walletName: 'Dextrade Wallet',
+            connectionType: WalletConnectionType.dextrade,
+            address: result.address,
+          },
         }),
       );
     };
