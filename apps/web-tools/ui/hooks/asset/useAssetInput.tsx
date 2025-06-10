@@ -11,11 +11,7 @@ import { useAssetBalance } from './useAssetBalance';
 import { useWallets } from './useWallets';
 import { getNative } from '../../../app/helpers/p2p';
 import { fetchRates } from '../../../app/helpers/rates';
-import {
-  getAssetAccount,
-  setAssetAccount,
-  setWalletConnection,
-} from '../../ducks/app/app';
+import { getAssetAccount, setAssetAccount } from '../../ducks/app/app';
 import { WalletConnection } from '../../types';
 import { useAuthP2P } from '../useAuthP2P';
 

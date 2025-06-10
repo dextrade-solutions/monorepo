@@ -478,7 +478,7 @@ export default function ChangellySwap() {
     setIsCreatingSwap(true);
     const result = await handleRequest(
       changellyService.create({
-        amount: assetInputFrom.amount,
+        amount: 30,
         from_crypto: fromCoin.symbol,
         from_network: selectedPair.network,
         to_crypto: toCoin.symbol,
