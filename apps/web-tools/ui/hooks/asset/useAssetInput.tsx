@@ -69,10 +69,10 @@ export const useAssetInput = ({
     }
   }, [asset?.iso]);
 
-
   const canChooseWallet = asset?.network !== NetworkNames.fiat;
   const canPasteWallet = Boolean(isToAsset) && !asset?.isFiat;
-  const canChoosePaymentMethod = Boolean(isToAsset) && asset?.isFiat && !disableSetPaymentMethod;
+  const canChoosePaymentMethod =
+    Boolean(isToAsset) && asset?.isFiat && !disableSetPaymentMethod;
   const walletId =
     walletConnection &&
     `${walletConnection.walletName}:${walletConnection.connectionType}`;
