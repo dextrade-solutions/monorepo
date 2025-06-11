@@ -16,7 +16,6 @@ export const useCoinInputSearch = (params) => {
     setResult(search);
     return search;
   };
-
   const handleSetFuse = useCallback(
     (list, searchQuery) => {
       if (fuseRef.current) {
@@ -24,11 +23,16 @@ export const useCoinInputSearch = (params) => {
         fuseRef.current.setCollection(list);
       } else {
         fuseRef.current = new Fuse(list, {
-          location: 0,
-          distance: 100,
-          maxPatternLength: 32,
-          minMatchCharLength: 1,
           keys: fuseSearchKeys,
+          threshold: 0.1, // Lower threshold means more strict matching
+          distance: 50, // Reduce distance for more precise matching
+          minMatchCharLength: 1,
+          includeScore: true,
+          shouldSort: true,
+          findAllMatches: false,
+          location: 0,
+          ignoreLocation: false,
+          useExtendedSearch: true,
         });
       }
       handleSearch(searchQuery);

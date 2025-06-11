@@ -53,9 +53,9 @@ export const SelectCoinsItemDropdown = ({
   loading,
   placeholderInput,
   fuseSearchKeys = [
-    { name: 'name', weight: 0.499 },
-    { name: 'symbol', weight: 0.499 },
-    { name: 'address', weight: 0.002 },
+    { name: 'name', weight: 0.7 },
+    { name: 'symbol', weight: 0.3 },
+    { name: 'contract', weight: 0.01 },
   ],
   shouldSearchForImports,
 }) => {

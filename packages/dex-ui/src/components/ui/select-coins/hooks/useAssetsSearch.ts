@@ -1,11 +1,11 @@
 import { AssetModel } from 'dex-helpers/types';
-import Fuse, { FuseSearchOptions } from 'fuse.js';
+import Fuse from 'fuse.js';
 import { useEffect, useCallback, useRef, useState } from 'react';
 
 const DEFAULT_SEARCH_KEYS = [
-  { name: 'name', weight: 0.499 },
-  { name: 'symbol', weight: 0.499 },
-  { name: 'address', weight: 0.002 },
+  { name: 'symbol', weight: 0.7 },
+  { name: 'name', weight: 0.2 },
+  { name: 'contract', weight: 0.1 },
 ];
 
 export function useAssetsSearch({
@@ -13,21 +13,24 @@ export function useAssetsSearch({
   searchKeys = DEFAULT_SEARCH_KEYS,
 }: {
   assetsList: AssetModel[];
-  searchKeys?: FuseSearchOptions[];
+  searchKeys?: typeof DEFAULT_SEARCH_KEYS;
 }) {
-  const fuseRef = useRef(null);
-  const [searchResults, setSearchResults] = useState([]);
-  const [initial, setInitial] = useState([]);
+  const fuseRef = useRef<Fuse<AssetModel> | null>(null);
+  const [searchResults, setSearchResults] = useState<AssetModel[]>([]);
+  const [initial, setInitial] = useState<AssetModel[]>([]);
 
   const initializeFuse = useCallback(() => {
     fuseRef.current = new Fuse(assetsList, {
       keys: searchKeys,
-      // ... other fuse options like location, distance, etc.
-      // Example:
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
+      threshold: 0.1, // Lower threshold means more strict matching
+      distance: 50, // Reduce distance for more precise matching
       minMatchCharLength: 1,
+      includeScore: true,
+      shouldSort: true,
+      findAllMatches: false,
+      location: 0,
+      ignoreLocation: false,
+      useExtendedSearch: true,
     });
     const initialList = assetsList.slice(0, 6);
     setInitial(initialList);
@@ -40,8 +43,6 @@ export function useAssetsSearch({
   const handleSearch = useCallback(
     (searchQuery = '') => {
       if (!fuseRef.current) {
-        // Handle the case where fuse is not yet initialized
-        // Perhaps by returning an empty array or showing a loading indicator
         setSearchResults([]);
         return;
       }
