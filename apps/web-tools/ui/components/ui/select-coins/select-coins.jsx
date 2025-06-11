@@ -26,15 +26,18 @@ const SelectCoinsComponents = () => {
 
   const toggle = useCallback(() => setChecked(!checked), [checked]);
 
-  const updateToken = useCallback((token, param) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (token) {
-      newSearchParams.set(param, token.iso);
-    } else {
-      newSearchParams.delete(param);
-    }
-    setSearchParams(newSearchParams);
-  }, [searchParams, setSearchParams]);
+  const updateToken = useCallback(
+    (token, param) => {
+      const newSearchParams = new URLSearchParams(searchParams);
+      if (token) {
+        newSearchParams.set(param, token.iso);
+      } else {
+        newSearchParams.delete(param);
+      }
+      setSearchParams(newSearchParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
   const setCoinFrom = useCallback(
     (token) => {
@@ -52,10 +55,16 @@ const SelectCoinsComponents = () => {
 
   const onSwapCoin = useCallback(() => {
     const newSearchParams = new URLSearchParams(searchParams);
-    if (toToken) newSearchParams.set('fromToken', toToken.iso);
-    else newSearchParams.delete('fromToken');
-    if (fromToken) newSearchParams.set('toToken', fromToken.iso);
-    else newSearchParams.delete('toToken');
+    if (toToken) {
+      newSearchParams.set('fromToken', toToken.iso);
+    } else {
+      newSearchParams.delete('fromToken');
+    }
+    if (fromToken) {
+      newSearchParams.set('toToken', fromToken.iso);
+    } else {
+      newSearchParams.delete('toToken');
+    }
     setSearchParams(newSearchParams);
   }, [fromToken, toToken, searchParams, setSearchParams]);
 

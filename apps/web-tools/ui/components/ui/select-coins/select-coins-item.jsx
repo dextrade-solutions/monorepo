@@ -2,10 +2,10 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 
-import { SelectCoinsItemDropdown } from './select-coins-item-dropdown';
 import { SelectCoinsItemDropdownCollapse } from './select-coins-item-dropdown-collapse';
 import { SelectCoinsItemLabel } from './select-coins-item-label';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SelectCoinsItemDropdown } from 'dex-ui';
 
 export const SelectCoinsItem = memo(
   ({
