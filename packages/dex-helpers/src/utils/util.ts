@@ -483,6 +483,7 @@ export function formatCurrency(value: string | number, currencyCode: string) {
     currencies.find((currency) => currency.code === upperCaseCurrencyCode)
     ? currencyFormatter.format(Number(value), {
         code: upperCaseCurrencyCode,
+        decimal: '.',
       })
     : formatFundsAmount(value, currencyCode);
 }

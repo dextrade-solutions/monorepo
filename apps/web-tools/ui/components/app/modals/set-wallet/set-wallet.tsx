@@ -124,21 +124,6 @@ const SetWallet = ({
         </Box>
       ) : (
         <Box>
-          {canConnectExternalWallet && (
-            <WalletList
-              wallets={wallets}
-              value={savedValue}
-              deeplinkUrl={adPath && `${DEXTRADE_P2P_LINK}${adPath}`}
-              connectingWallet={loadingWallet}
-              onSelectWallet={onSelectWallet}
-              hideConnectionType
-            />
-          )}
-          {canPasteAddress && canConnectExternalWallet && (
-            <Typography color="text.secondary" marginY={3}>
-              {t('OR')}
-            </Typography>
-          )}
           {canPasteAddress && (
             <Box>
               <Typography marginBottom={1} variant="h6">
@@ -167,6 +152,21 @@ const SetWallet = ({
                 )}
               </Box>
             </Box>
+          )}
+          {canPasteAddress && canConnectExternalWallet && (
+            <Typography color="text.secondary" marginY={3}>
+              {t('OR')}
+            </Typography>
+          )}
+          {canConnectExternalWallet && (
+            <WalletList
+              wallets={wallets}
+              value={savedValue}
+              deeplinkUrl={adPath && `${DEXTRADE_P2P_LINK}${adPath}`}
+              connectingWallet={loadingWallet}
+              onSelectWallet={onSelectWallet}
+              hideConnectionType
+            />
           )}
         </Box>
       )}
