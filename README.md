@@ -108,4 +108,10 @@ This repository contains sensitive code for handling payments and wallet operati
 
 ## License
 
-[Add your license information here]
+Copyright (c) Dextrade 2025
+
+All rights reserved.
+
+This software is proprietary and confidential. No part of this software may be used, copied, modified, distributed, or reverse-engineered without the express written permission of the author.
+
+To request permission, contact: dev@dextrade.com

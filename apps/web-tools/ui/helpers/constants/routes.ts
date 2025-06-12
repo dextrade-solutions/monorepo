@@ -15,3 +15,4 @@ export const PAIR_GROUPS_ROUTE = '/pair-groups';
 export const SWAPS_ROUTE = '/swaps';
 export const ADS_FRAME_ROUTE = '/ads-frame';
 export const PAYBIS_ROUTE = '/paybis';
+export const TERMS_ROUTE = '/terms';

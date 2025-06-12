@@ -12,6 +12,7 @@ import SetWalletComponent from './components/app/modals/set-wallet';
 import TradeHistoryRowModalComponent from './components/app/modals/trade-history-row-modal';
 import Web3ModalProvider from './components/app/web3-modal-provider';
 import Web3SolanaProvider from './components/app/web3-solana-provider/web3-solana-provider';
+import { Footer } from './components/app/footer';
 import { UserAuthProvider } from './contexts/auth-context';
 import { getCurrentTheme, setTheme } from './ducks/app/app';
 import { getCurrentLocale } from './ducks/locale/locale';
@@ -62,10 +63,16 @@ export function App() {
               <Container
                 ref={ref}
                 className="h-root"
-                sx={{ py: 2 }}
+                sx={{ 
+                  py: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minHeight: '100vh'
+                }}
                 maxWidth="sm"
               >
                 <Pages />
+                <Footer />
               </Container>
             </UserAuthProvider>
           </DexUiProvider>

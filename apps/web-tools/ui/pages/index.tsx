@@ -17,6 +17,7 @@ import { Plans } from './settings/plans';
 import SwapProcessing from './swap-processing';
 import SwapView from './swap-view';
 import SwapWidget from './swap-widget';
+import { TermsPage } from './terms';
 import SwapHistory from './trade-history';
 import engine from '../../app/engine';
 import SigningModal from '../components/app/modals/signing-modal';
@@ -38,6 +39,7 @@ import {
   SWAPS_ROUTE,
   ADS_FRAME_ROUTE,
   PAYBIS_ROUTE,
+  TERMS_ROUTE,
 } from '../helpers/constants/routes';
 import { AuthType, useAuthP2P } from '../hooks/useAuthP2P';
 
@@ -77,6 +79,7 @@ export default function RoutesRoot() {
         />
         <Route path={`${INVOICE_ROUTE}/:id`} element={<InvoicePage />} />
         <Route path={SWAPS_HISTORY_ROUTE} element={<SwapHistory />} />
+        <Route path={TERMS_ROUTE} element={<TermsPage />} />
         <Route path={SETTINGS_ROUTE} element={<AppSettings />}>
           <Route path={KYC_ROUTE} element={<Kyc />} />
           <Route path={PAYMENT_METHODS_ROUTE} element={<PaymentMethods />} />
